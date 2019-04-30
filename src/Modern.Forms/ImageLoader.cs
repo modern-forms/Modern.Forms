@@ -9,7 +9,7 @@ namespace Modern.Forms
     public static class ImageLoader
     {
         private static Dictionary<string, SKBitmap> _cache = new Dictionary<string, SKBitmap> ();
-        private static string _defaultLocation = "images";
+        private static string _defaultLocation = "Images";
 
         public static SKBitmap Get (string filename)
         {

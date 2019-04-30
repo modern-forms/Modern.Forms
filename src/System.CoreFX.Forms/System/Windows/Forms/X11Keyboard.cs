@@ -123,10 +123,11 @@ namespace System.Windows.Forms {
 				return;
 
 			KeyboardLayouts layouts = new KeyboardLayouts ();
-			KeyboardLayout layout = DetectLayout (layouts);
-			lcid = layout.Lcid;
-			CreateConversionArray (layouts, layout);
-			SetupXIM ();
+            // TODO: This may mean keyboards don't work on X11, not sure.
+			//KeyboardLayout layout = DetectLayout (layouts);
+			//lcid = layout.Lcid;
+			//CreateConversionArray (layouts, layout);
+			//SetupXIM ();
 			initialized = true;
 		}
 
@@ -1238,90 +1239,90 @@ namespace System.Windows.Forms {
 			}
 		}
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern IntPtr XOpenIM (IntPtr display, IntPtr rdb, IntPtr res_name, IntPtr res_class);
 
-		[DllImport ("libX11", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport (XplatUIX11.LIBX11, CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr XCreateIC (IntPtr xim, string name, XIMProperties im_style, string name2, IntPtr value2, IntPtr terminator);
-		[DllImport ("libX11", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport (XplatUIX11.LIBX11, CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr XCreateIC (IntPtr xim, string name, XIMProperties im_style, string name2, IntPtr value2, string name3, IntPtr value3, IntPtr terminator);
-//		[DllImport ("libX11", CallingConvention = CallingConvention.Cdecl)]
+//		[DllImport (XplatUIX11.LIBX11, CallingConvention = CallingConvention.Cdecl)]
 //		private static extern IntPtr XCreateIC (IntPtr xim, string name, XIMProperties im_style, string name2, IntPtr value2, string name3, IntPtr value3, string name4, IntPtr value4, IntPtr terminator);
 
-		[DllImport ("libX11", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport (XplatUIX11.LIBX11, CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr XVaCreateNestedList (int dummy, IntPtr name0, XPoint value0, IntPtr terminator);
-		[DllImport ("libX11", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport (XplatUIX11.LIBX11, CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr XVaCreateNestedList (int dummy, IntPtr name0, XPoint value0, IntPtr name1, IntPtr value1, IntPtr terminator);
-		[DllImport ("libX11", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport (XplatUIX11.LIBX11, CallingConvention = CallingConvention.Cdecl)]
 		private static extern IntPtr XVaCreateNestedList (int dummy, IntPtr name0, IntPtr value0, IntPtr name1, IntPtr value1, IntPtr name2, IntPtr value2, IntPtr name3, IntPtr value3, IntPtr terminator);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern IntPtr XCreateFontSet (IntPtr display, string name, out IntPtr list, out int count, IntPtr terminator);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		internal extern static void XFreeFontSet (IntPtr data);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern void XFreeStringList (IntPtr ptr);
 
-		//[DllImport ("libX11")]
-		//private static extern IntPtr XIMOfIC (IntPtr xic);
+        //[DllImport (XplatUIX11.LIBX11)]
+        //private static extern IntPtr XIMOfIC (IntPtr xic);
 
-		[DllImport ("libX11")]
+        [DllImport (XplatUIX11.LIBX11)]
 		private static extern void XCloseIM (IntPtr xim);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern void XDestroyIC (IntPtr xic);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern string XGetIMValues (IntPtr xim, string name, out IntPtr value, IntPtr terminator);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern string XGetICValues (IntPtr xic, string name, out EventMask value, IntPtr terminator);
 
-		[DllImport ("libX11", CallingConvention = CallingConvention.Cdecl)]
+		[DllImport (XplatUIX11.LIBX11, CallingConvention = CallingConvention.Cdecl)]
 		private static extern void XSetICValues (IntPtr xic, string name, IntPtr value, IntPtr terminator);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern void XSetICFocus (IntPtr xic);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern void XUnsetICFocus (IntPtr xic);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern string Xutf8ResetIC (IntPtr xic);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern bool XSupportsLocale ();
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern bool XSetLocaleModifiers (string mods);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		internal extern static int XLookupString(ref XEvent xevent, StringBuilder buffer, int num_bytes, out IntPtr keysym, out IntPtr status);
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		internal extern static int Xutf8LookupString(IntPtr xic, ref XEvent xevent, byte [] buffer, int num_bytes, out IntPtr keysym, out XLookupStatus status);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern IntPtr XGetKeyboardMapping (IntPtr display, byte first_keycode, int keycode_count, 
 				out int keysyms_per_keycode_return);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern void XDisplayKeycodes (IntPtr display, out int min, out int max);
 
-		[DllImport ("libX11", EntryPoint="XKeycodeToKeysym")]
+		[DllImport (XplatUIX11.LIBX11, EntryPoint="XKeycodeToKeysym")]
 		private static extern uint XKeycodeToKeysym (IntPtr display, int keycode, int index);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		private static extern int XKeysymToKeycode (IntPtr display, IntPtr keysym);
 		private static int XKeysymToKeycode (IntPtr display, int keysym) {
 			return XKeysymToKeycode(display, (IntPtr)keysym);
 		}
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		internal extern static IntPtr XGetModifierMapping (IntPtr display);
 
-		[DllImport ("libX11")]
+		[DllImport (XplatUIX11.LIBX11)]
 		internal extern static int XFreeModifiermap (IntPtr modmap);
 
 
