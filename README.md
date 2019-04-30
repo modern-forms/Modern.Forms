@@ -35,7 +35,7 @@ The goal of this proof of concept is to create a spiritual successor to Winforms
 * Ensure `Explorer` is set at the Startup project
 * Hit F5
 
-![Windows Screenshot](https://github.com/jpobst/Modern.Forms/docs/explorer-windows.png "Windows Screenshot")
+![Windows Screenshot](https://github.com/jpobst/Modern.Forms/blob/master/docs/explorer-windows.png "Windows Screenshot")
 
 ### Ubuntu 19.04 AMD64
 
@@ -52,7 +52,7 @@ The goal of this proof of concept is to create a spiritual successor to Winforms
 * Navigate to `samples/Explorer`
 * Run `dotnet run`
 
-![Ubuntu Screenshot](https://github.com/jpobst/Modern.Forms/docs/explorer-ubuntu.png "Ubuntu Screenshot")
+![Ubuntu Screenshot](https://github.com/jpobst/Modern.Forms/blob/master/docs/explorer-ubuntu.png "Ubuntu Screenshot")
 
 ### OSX
 
