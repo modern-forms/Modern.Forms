@@ -1,6 +1,6 @@
 ## What is Modern.Forms?
 
-*** This is just a proof of concept. The demo runs well, but that's all that has been implemented. ***
+*** **This is just a proof of concept. The demo runs well, but that's all that has been implemented.** ***
 
 Modern.Forms is a cross-platform spiritual successor to Winforms for .NET Core 3.0.
 
@@ -32,7 +32,7 @@ The goal of this proof of concept is to create a spiritual successor to Winforms
 * Install .NET Core 3.0 Preview 4+
   * https://dotnet.microsoft.com/download/dotnet-core/3.0
 * Open `Modern.Forms.sln` in Visual Studio 2019
-* Ensure `Explorer` is set at the Startup project
+* Ensure `Explorer` is set as the Startup project
 * Hit F5
 
 ![Windows Screenshot](https://github.com/jpobst/Modern.Forms/blob/master/docs/explorer-windows.png "Windows Screenshot")
