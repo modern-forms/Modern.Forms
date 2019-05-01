@@ -10,6 +10,11 @@ namespace Modern.Forms
 {
     public class ModernFormTitleBar : ModernControl
     {
+        public new static ControlStyle DefaultStyle = new ControlStyle (ModernControl.DefaultStyle,
+           (style) => style.BackgroundColor = Theme.RibbonColor);
+
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+
         private Rectangle close_button_bounds;
         private bool close_button_hover;
         private Rectangle minimize_button_bounds;
@@ -22,10 +27,11 @@ namespace Modern.Forms
         public SKBitmap Image { get; set; }
         public bool AllowMinimize { get; set; } = true;
 
+        protected override Size DefaultSize => new Size (600, 34);
+
         public ModernFormTitleBar ()
         {
             Dock = DockStyle.Top;
-            Height = 34;
         }
 
         protected override void OnMouseClick (MouseEventArgs e)
@@ -81,34 +87,32 @@ namespace Modern.Forms
             SetMinimizeHover (false);
         }
 
-        protected override void OnPaintSurface (SKPaintSurfaceEventArgs e)
+        protected override void OnPaint (SKPaintEventArgs e)
         {
-            base.OnPaintSurface (e);
+            base.OnPaint (e);
 
             close_button_bounds = new Rectangle (Width - 46, 0, 46, Height);
             minimize_button_bounds = new Rectangle (Width - 92, 0, 46, Height);
 
-            e.Surface.Canvas.Clear (Theme.RibbonColor);
-
             if (!string.IsNullOrWhiteSpace (Text))
-                e.Surface.Canvas.DrawCenteredText (Text.Trim (), Theme.UIFont, 14, Left + Width / 2, Top + 21, Theme.LightText);
+                e.Canvas.DrawCenteredText (Text.Trim (), Theme.UIFont, 14, Left + Width / 2, Top + 21, Theme.LightTextColor);
 
             if (Image != null)
-                e.Surface.Canvas.DrawBitmap (Image, Bounds.Left + 7, Bounds.Top + 7);
+                e.Canvas.DrawBitmap (Image, Bounds.Left + 7, Bounds.Top + 7);
 
             if (close_button_hover)
-                e.Surface.Canvas.FillRectangle (close_button_bounds, Theme.FormCloseHighlight);
+                e.Canvas.FillRectangle (close_button_bounds, Theme.FormCloseHighlightColor);
 
             if (AllowMinimize && minimize_button_hover)
-                e.Surface.Canvas.FillRectangle (minimize_button_bounds, Theme.RibbonTabHighlightColor);
+                e.Canvas.FillRectangle (minimize_button_bounds, Theme.RibbonTabHighlightColor);
 
             // Draw the close X
-            e.Surface.Canvas.DrawLine (close_button_bounds.X + 18, close_button_bounds.Y + 12, close_button_bounds.X + 28, close_button_bounds.Y + 22, Theme.LightText);
-            e.Surface.Canvas.DrawLine (close_button_bounds.X + 18, close_button_bounds.Y + 22, close_button_bounds.X + 28, close_button_bounds.Y + 12, Theme.LightText);
+            e.Canvas.DrawLine (close_button_bounds.X + 18, close_button_bounds.Y + 12, close_button_bounds.X + 28, close_button_bounds.Y + 22, Theme.LightTextColor);
+            e.Canvas.DrawLine (close_button_bounds.X + 18, close_button_bounds.Y + 22, close_button_bounds.X + 28, close_button_bounds.Y + 12, Theme.LightTextColor);
 
             // Draw the minimize -
             if (AllowMinimize)
-                e.Surface.Canvas.DrawLine (minimize_button_bounds.X + 18, minimize_button_bounds.Y + 17, minimize_button_bounds.X + 28, minimize_button_bounds.Y + 17, Theme.LightText);
+                e.Canvas.DrawLine (minimize_button_bounds.X + 18, minimize_button_bounds.Y + 17, minimize_button_bounds.X + 28, minimize_button_bounds.Y + 17, Theme.LightTextColor);
         }
 
         private void SetCloseHover (bool hover)

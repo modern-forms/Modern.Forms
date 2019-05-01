@@ -10,32 +10,37 @@ namespace Modern.Forms
 {
     public class RibbonControl : ModernControl
     {
+        public new static ControlStyle DefaultStyle = new ControlStyle (ModernControl.DefaultStyle, 
+            (style) => {
+                style.BackgroundColor = Theme.RibbonColor;
+                style.Border.Bottom.Width = 1;
+            });
+
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+
         public List<RibbonTabPage> TabPages { get; } = new List<RibbonTabPage> ();
+
+        protected override Size DefaultSize => new Size (600, 111);
 
         public RibbonControl ()
         {
-            Height = 111;
+            Dock = DockStyle.Top;
         }
 
-        protected override void OnPaintSurface (SKPaintSurfaceEventArgs e)
+        protected override void OnPaint (SKPaintEventArgs e)
         {
-            base.OnPaintSurface (e);
-
-            e.Surface.Canvas.Clear (Theme.RibbonColor);
+            base.OnPaint (e);
 
             // Tabs
             LayoutTabs ();
 
             foreach (var item in TabPages)
-                item.DrawTab (e.Surface.Canvas);
+                item.DrawTab (e.Canvas);
 
             // TabPage
             var selected_tab = TabPages.First (tp => tp.Selected);
-            selected_tab.SetBounds (0, 28, Width, Height - 28);
-            selected_tab.DrawTabPage (e.Surface.Canvas);
-
-            // Bottom Border
-            e.Surface.Canvas.DrawLine (0, Height - 1, Width, Height - 1, Theme.BorderGray);
+            selected_tab.SetBounds (0, 28, Width, Height - 29);
+            selected_tab.DrawTabPage (e.Canvas);
         }
 
         private void LayoutTabs ()

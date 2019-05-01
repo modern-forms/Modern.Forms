@@ -7,19 +7,6 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class SKPaintSurfaceEventArgs : EventArgs
-    {
-        public SKPaintSurfaceEventArgs (SKSurface surface, SKImageInfo info)
-        {
-            Surface = surface;
-            Info = info;
-        }
-
-        public SKSurface Surface { get; private set; }
-
-        public SKImageInfo Info { get; private set; }
-    }
-
     [DefaultEvent ("PaintSurface")]
     [DefaultProperty ("Name")]
     public class ModernControl : Control
@@ -27,6 +14,7 @@ namespace Modern.Forms
         private readonly bool designMode;
 
         private Bitmap bitmap;
+        private ControlBehaviors behaviors;
 
         public ModernControl ()
         {
@@ -36,14 +24,42 @@ namespace Modern.Forms
             designMode = DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime;
         }
 
-        [Bindable (false)]
-        [Browsable (false)]
-        [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-        [EditorBrowsable (EditorBrowsableState.Never)]
-        public SKSize CanvasSize => bitmap == null ? SKSize.Empty : new SKSize (bitmap.Width, bitmap.Height);
+        public static ControlStyle DefaultStyle = new ControlStyle (ModernControl.DefaultStyle,
+            (style) => {
+                style.ForegroundColor = Theme.DarkTextColor;
+                style.BackgroundColor = Theme.NeutralGray;
+                style.Font = Theme.UIFont;
+                style.FontSize = Theme.FontSize;
+                style.Border.Radius = 0;
+                style.Border.Color = Theme.BorderGray;
+                style.Border.Width = 0;
+            });
 
-        [Category ("Appearance")]
-        public event EventHandler<SKPaintSurfaceEventArgs> PaintSurface;
+        public static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle);
+
+        public virtual ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+        public virtual ControlStyle StyleHover { get; } = new ControlStyle (DefaultStyleHover);
+
+        public virtual ControlStyle CurrentStyle => IsHovering ? StyleHover : Style;
+
+        protected void SetControlBehavior (ControlBehaviors behavior, bool value)
+        {
+            if (value)
+                behaviors |= behavior;
+            else
+                behaviors &= behavior;
+        }
+        //[Bindable (false)]
+        //[Browsable (false)]
+        //[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
+        //[EditorBrowsable (EditorBrowsableState.Never)]
+        //public SKSize CanvasSize => bitmap == null ? SKSize.Empty : new SKSize (bitmap.Width, bitmap.Height);
+
+        // TODO: Wire up Paint/PaintBackground events to Skia
+        //[Category ("Appearance")]
+        //public event EventHandler<SKPaintSurfaceEventArgs> PaintSurface;
+
+        public bool IsHovering { get; private set; }
 
         protected override void OnPaint (PaintEventArgs e)
         {
@@ -60,7 +76,10 @@ namespace Modern.Forms
             var info = new SKImageInfo (Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
             using (var surface = SKSurface.Create (info, data.Scan0, data.Stride)) {
                 // start drawing
-                OnPaintSurface (new SKPaintSurfaceEventArgs (surface, info));
+                var args = new SKPaintEventArgs (surface, info);
+
+                OnPaintBackground (args);
+                OnPaint (args);
 
                 surface.Canvas.Flush ();
             }
@@ -70,10 +89,34 @@ namespace Modern.Forms
             e.Graphics.DrawImage (bitmap, 0, 0);
         }
 
-        protected virtual void OnPaintSurface (SKPaintSurfaceEventArgs e)
+        protected virtual void OnPaintBackground (SKPaintEventArgs e)
         {
-            // invoke the event
-            PaintSurface?.Invoke (this, e);
+            e.Canvas.DrawBackground (Bounds, CurrentStyle);
+            e.Canvas.DrawBorder (Bounds, CurrentStyle);
+        }
+
+        protected virtual void OnPaint (SKPaintEventArgs e)
+        {
+        }
+
+        protected override void OnMouseEnter (EventArgs e)
+        {
+            base.OnMouseEnter (e);
+
+            if (behaviors.HasFlag (ControlBehaviors.Hoverable)) {
+                IsHovering = true;
+                Invalidate ();
+            }
+        }
+
+        protected override void OnMouseLeave (EventArgs e)
+        {
+            base.OnMouseLeave (e);
+
+            if (behaviors.HasFlag (ControlBehaviors.Hoverable)) {
+                IsHovering = false;
+                Invalidate ();
+            }
         }
 
         protected override void Dispose (bool disposing)

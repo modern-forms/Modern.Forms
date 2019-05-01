@@ -28,7 +28,7 @@ namespace Modern.Forms
             if (Image != null)
                 canvas.DrawBitmap (Image, Bounds.Left + 7, Bounds.Top + 7);
 
-            canvas.DrawText (Text.Trim (), Theme.UIFont, 14, Bounds.Left + 31, Bounds.Top + 20, Theme.DarkText);
+            canvas.DrawText (Text.Trim (), Theme.UIFont, 14, Bounds.Left + 31, Bounds.Top + 20, Theme.DarkTextColor);
         }
     }
 }

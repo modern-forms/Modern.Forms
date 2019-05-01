@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using Modern.Forms;
 
-namespace Sample
+namespace Explorer
 {
     public partial class MainForm : ModernForm
     {
@@ -26,17 +26,14 @@ namespace Sample
 
             // TreeControl
             tree = new TreeControl {
-                Dock = DockStyle.Left,
-                Width = 250
+                Dock = DockStyle.Left
             };
 
             tree.ItemSelected += Tree_ItemSelected;
             Controls.Add (tree);
 
             // RibbonControl
-            ribbon = new RibbonControl {
-                Dock = DockStyle.Top
-            };
+            ribbon = new RibbonControl ();
 
             var home_tab = new RibbonTabPage { Text = "Home", Selected = true };
 

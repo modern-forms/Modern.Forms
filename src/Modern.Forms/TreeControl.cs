@@ -10,28 +10,32 @@ namespace Modern.Forms
 {
     public class TreeControl : ModernControl
     {
+        public new static ControlStyle DefaultStyle = new ControlStyle (ModernControl.DefaultStyle,
+            (style) => {
+                style.BackgroundColor = Theme.LightNeutralGray;
+                style.Border.Right.Width = 1;
+            });
+
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+
         public List<TreeItem> Items { get; } = new List<TreeItem> ();
 
         public event EventHandler<EventArgs<TreeItem>> ItemSelected;
 
+        protected override Size DefaultSize => new Size (250, 500);
+
         public TreeControl ()
         {
-            Width = 200;
         }
 
-        protected override void OnPaintSurface (SKPaintSurfaceEventArgs e)
+        protected override void OnPaint (SKPaintEventArgs e)
         {
-            base.OnPaintSurface (e);
-
-            e.Surface.Canvas.Clear (Theme.LightNeutralGray);
+            base.OnPaint (e);
 
             LayoutItems ();
 
             foreach (var item in Items)
-                item.DrawItem (e.Surface.Canvas);
-
-            // Side Border
-            e.Surface.Canvas.DrawLine (Right - 2, 0, Right - 2, Height, Theme.BorderGray);
+                item.DrawItem (e.Canvas);
         }
 
         protected override void OnMouseClick (MouseEventArgs e)
@@ -69,7 +73,7 @@ namespace Modern.Forms
         {
             var x = 0;
             var y = 0;
-            var item_width = Width;
+            var item_width = Width - 1;
             var item_height = 30;
 
             foreach (var item in Items) {

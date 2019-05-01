@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using SkiaSharp;
 
@@ -42,9 +43,12 @@ namespace Modern.Forms
                 canvas.DrawText (text, x, y, paint);
         }
 
-        public static void DrawLine (this SKCanvas canvas, float x1, float y1, float x2, float y2, SKColor color)
+        public static void DrawCenteredText (this SKCanvas canvas, string text, int x, int y, ControlStyle style)
+            => canvas.DrawCenteredText (text, style.GetFont (), style.GetFontSize (), x, y, style.GetForegroundColor ());
+
+        public static void DrawLine (this SKCanvas canvas, float x1, float y1, float x2, float y2, SKColor color, int thickness = 1)
         {
-            using (var paint = new SKPaint { Color = color })
+            using (var paint = new SKPaint { Color = color, StrokeWidth = thickness })
                 canvas.DrawLine (x1, y1, x2, y2, paint);
         }
 
@@ -83,6 +87,54 @@ namespace Modern.Forms
             })
             //using (var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth })
                 canvas.DrawRoundRect (x + .5f, y + .5f, width, height, rx, ry, paint);
+        }
+
+        public static void DrawBorder (this SKCanvas canvas, Rectangle bounds, ControlStyle style)
+        {
+            // Left Border
+            if (style.Border.Left.GetWidth () > 0) {
+                var left_offset = style.Border.Left.GetWidth () / 2f;
+                canvas.DrawLine (left_offset, 0, left_offset, bounds.Height, style.Border.Left.GetColor (), style.Border.Left.GetWidth ());
+            }
+
+            // Right Border
+            if (style.Border.Right.GetWidth () > 0) {
+                var right_offset = style.Border.Right.GetWidth () / 2f;
+                canvas.DrawLine (bounds.Width - right_offset, 0, bounds.Width - right_offset, bounds.Height, style.Border.Right.GetColor (), style.Border.Right.GetWidth ());
+            }
+
+            // Top Border
+            if (style.Border.Top.GetWidth () > 0) {
+                var top_offset = style.Border.Top.GetWidth () / 2f;
+                canvas.DrawLine (0, top_offset, bounds.Width, top_offset, style.Border.Top.GetColor (), style.Border.Top.GetWidth ());
+            }
+
+            // Bottom Border
+            if (style.Border.Bottom.GetWidth () > 0) {
+                var bottom_offset = style.Border.Bottom.GetWidth () / 2f;
+                canvas.DrawLine (0, bounds.Height - bottom_offset, bounds.Width, bounds.Height - bottom_offset, style.Border.Bottom.GetColor (), style.Border.Bottom.GetWidth ());
+            }
+            //if (CurrentStyle.BorderRadius > 0) { }
+            ////canvas.DrawRoundedRectangle (1, 1, Width - (CurrentStyle.BorderWidth * 2), Height - (CurrentStyle.BorderWidth * 2), CurrentStyle.BorderColor, CurrentStyle.BorderRadius, CurrentStyle.BorderRadius, .5f);
+            //else {
+            //    //canvas.DrawRectangle (0, 0, Width - CurrentStyle.BorderWidth, Height - CurrentStyle.BorderWidth, CurrentStyle.BorderColor, CurrentStyle.BorderWidth);
+            //    canvas.DrawBorder (Bounds, CurrentStyle);
+            //}
+        }
+
+        public static void DrawBackground (this SKCanvas canvas, Rectangle bounds, ControlStyle style)
+        {
+
+            //if (CurrentStyle.BorderRadius > 0) {
+            //    canvas.Clear (SKColors.Transparent);
+            //    canvas.Save ();
+            //    canvas.ClipRoundRect (new SKRoundRect (new SKRect (1.5f, 1.5f , Width - 1, Height - 1), CurrentStyle.BorderRadius, CurrentStyle.BorderRadius));
+            //    canvas.Clear (CurrentStyle.BackgroundColor);
+            //    canvas.Restore ();
+            //} else {
+            //    canvas.Clear (CurrentStyle.BackgroundColor);
+            //}
+            canvas.Clear (style.GetBackgroundColor ());
         }
     }
 }

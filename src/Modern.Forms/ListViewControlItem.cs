@@ -23,7 +23,7 @@ namespace Modern.Forms
 
         internal void DrawItem (SKCanvas canvas)
         {
-            var background_color = Selected ? Theme.RibbonItemHighlightColor : Theme.FormBackColor;
+            var background_color = Selected ? Theme.RibbonItemHighlightColor : Theme.FormBackgroundColor;
 
             canvas.FillRectangle (Bounds, background_color);
 
@@ -35,10 +35,10 @@ namespace Modern.Forms
 
             var lines = Text.Split (' ');
 
-            canvas.DrawCenteredText (lines[0].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 50, Theme.DarkText);
+            canvas.DrawCenteredText (lines[0].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 50, Theme.DarkTextColor);
 
             if (lines.Length > 1)
-                canvas.DrawCenteredText (lines[1].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 66, Theme.DarkText);
+                canvas.DrawCenteredText (lines[1].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 66, Theme.DarkTextColor);
 
             canvas.Restore ();
         }

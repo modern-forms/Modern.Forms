@@ -4,7 +4,7 @@ using System.Linq;
 using Modern.Forms;
 using SkiaSharp;
 
-namespace Sample
+namespace Explorer
 {
     public partial class MainForm : ModernForm
     {
@@ -79,35 +79,45 @@ namespace Sample
         {
             var item = sender as RibbonItem;
 
-            Theme.FormBackColor = SKColors.White;
+            Theme.FormBackgroundColor = SKColors.White;
             Theme.NeutralGray = new SKColor (240, 240, 240);
             Theme.LightNeutralGray = new SKColor (251, 251, 251);
             Theme.RibbonItemHighlightColor = new SKColor (198, 198, 198);
 
             switch (item.Text) {
                 case "Default":
-                    Theme.RibbonColor = new SKColor (16, 110, 190);
+                    Theme.BeginUpdate ();
                     Theme.RibbonTabHighlightColor = new SKColor (42, 138, 208);
+                    Theme.RibbonColor = new SKColor (16, 110, 190);
+                    Theme.EndUpdate ();
                     break;
                 case "Green":
-                    Theme.RibbonColor = new SKColor (33, 115, 70);
+                    Theme.BeginUpdate ();
                     Theme.RibbonTabHighlightColor = new SKColor (67, 148, 103);
+                    Theme.RibbonColor = new SKColor (33, 115, 70);
+                    Theme.EndUpdate ();
                     break;
                 case "Orange":
-                    Theme.RibbonColor = new SKColor (183, 71, 42);
+                    Theme.BeginUpdate ();
                     Theme.RibbonTabHighlightColor = new SKColor (220, 89, 57);
+                    Theme.RibbonColor = new SKColor (183, 71, 42);
+                    Theme.EndUpdate ();
                     break;
                 case "Purple":
-                    Theme.RibbonColor = new SKColor (128, 57, 123);
+                    Theme.BeginUpdate ();
                     Theme.RibbonTabHighlightColor = new SKColor (163, 86, 158);
+                    Theme.RibbonColor = new SKColor (128, 57, 123);
+                    Theme.EndUpdate ();
                     break;
                 case "Hotdog Stand":
-                    Theme.RibbonColor = new SKColor (255, 0, 0);
+                    Theme.BeginUpdate ();
                     Theme.RibbonTabHighlightColor = new SKColor (255, 128, 128);
-                    Theme.FormBackColor = SKColors.Yellow;
+                    Theme.FormBackgroundColor = SKColors.Yellow;
                     Theme.NeutralGray = SKColors.White;
                     Theme.LightNeutralGray = new SKColor (255, 0, 0);
                     Theme.RibbonItemHighlightColor = new SKColor (255, 255, 255);
+                    Theme.RibbonColor = new SKColor (255, 0, 0);
+                    Theme.EndUpdate ();
                     break;
             }
 

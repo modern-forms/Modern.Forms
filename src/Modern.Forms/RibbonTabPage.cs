@@ -36,7 +36,7 @@ namespace Modern.Forms
             var background_color = Selected ? Theme.NeutralGray : Highlighted ? Theme.RibbonTabHighlightColor : Theme.RibbonColor;
             canvas.FillRectangle (TabBounds, background_color);
 
-            var font_color = Selected ? Theme.RibbonColor : Theme.LightText;
+            var font_color = Selected ? Theme.RibbonColor : Theme.LightTextColor;
             canvas.DrawCenteredText (Text, Theme.UIFont, 14, TabBounds.X + 28, 20, font_color);
         }
 

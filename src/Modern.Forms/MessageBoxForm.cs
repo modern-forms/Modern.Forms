@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
@@ -12,7 +13,6 @@ namespace Modern.Forms
 
         public MessageBoxForm ()
         {
-            Size = new System.Drawing.Size (400, 200);
             Text = "Demo";
             StartPosition = FormStartPosition.CenterParent;
 
@@ -33,6 +33,8 @@ namespace Modern.Forms
             Controls.Add (button);
         }
 
+        protected override Size DefaultSize => new Size (400, 200);
+
         public MessageBoxForm (string title, string text) : this ()
         {
             Text = title;
@@ -40,13 +42,11 @@ namespace Modern.Forms
             this.text = text;
         }
 
-        protected override void OnPaintSurface (SKPaintSurfaceEventArgs e)
+        protected override void OnPaintSurface (SKPaintEventArgs e)
         {
             base.OnPaintSurface (e);
 
-            e.Surface.Canvas.FillRectangle (1, 1, Width - 2, Height - 2, Theme.FormBackColor);
-
-            e.Surface.Canvas.DrawCenteredText (text, Theme.UIFont, 16, 200, 75, Theme.DarkText);
+            e.Canvas.DrawCenteredText (text, Theme.UIFont, 16, 200, 75, Theme.DarkTextColor);
         }
 
         protected override CreateParams CreateParams {

@@ -21,14 +21,14 @@ namespace Modern.Forms
             SetStyle (ControlStyles.ResizeRedraw, true);
             BackColor = Color.White;
 
-            Height = 720;
-            Width = 1080;
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.None;
             Padding = new Padding (1);
 
             designMode = DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime;
         }
+
+        protected override Size DefaultSize => new Size (1080, 720);
 
         [Bindable (false)]
         [Browsable (false)]
@@ -37,7 +37,7 @@ namespace Modern.Forms
         public SKSize CanvasSize => bitmap == null ? SKSize.Empty : new SKSize (bitmap.Width, bitmap.Height);
 
         [Category ("Appearance")]
-        public event EventHandler<SKPaintSurfaceEventArgs> PaintSurface;
+        public event EventHandler<SKPaintEventArgs> PaintSurface;
 
         protected override void OnPaint (PaintEventArgs e)
         {
@@ -57,7 +57,7 @@ namespace Modern.Forms
                 surface.Canvas.DrawRectangle (0, 0, Width - 1, Height - 1, Theme.RibbonColor);
 
                 // start drawing
-                OnPaintSurface (new SKPaintSurfaceEventArgs (surface, info));
+                OnPaintSurface (new SKPaintEventArgs (surface, info));
 
                 surface.Canvas.Flush ();
             }
@@ -67,7 +67,7 @@ namespace Modern.Forms
             e.Graphics.DrawImage (bitmap, 0, 0);
         }
 
-        protected virtual void OnPaintSurface (SKPaintSurfaceEventArgs e)
+        protected virtual void OnPaintSurface (SKPaintEventArgs e)
         {
             // invoke the event
             PaintSurface?.Invoke (this, e);
