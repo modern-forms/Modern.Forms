@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Modern.Forms\Modern.Forms.csproj" />
-    <ProjectReference Include="..\..\src\System.CoreFX.Forms\System.CoreFX.Forms.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -40,5 +40,16 @@ namespace Modern.Forms
 
             e.Canvas.DrawCenteredText (Text, Width / 2, 20, CurrentStyle);
         }
+
+        public void PerformClick ()
+        {
+            if (CanSelect)
+                OnClick (EventArgs.Empty);
+        }
+
+        // TODO: Button.NotifyDefault
+        public void NotifyDefault (bool def) { }
+
+        public DialogResult DialogResult { get; set; }
     }
 }
