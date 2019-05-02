@@ -249,7 +249,7 @@ namespace System.Windows.Forms.Layout
 			int height;
 			Size preferredsize = child.PreferredSize;
 
-			if (child.GetAutoSizeMode () == AutoSizeMode.GrowAndShrink || (child.Dock != DockStyle.None && !(child is ButtonControl) && !(child is FlowLayoutPanel))) {
+			if (child.GetAutoSizeMode () == AutoSizeMode.GrowAndShrink || (child.Dock != DockStyle.None && !(child is Button) && !(child is FlowLayoutPanel))) {
 				width = preferredsize.Width;
 				height = preferredsize.Height;
 			} else {

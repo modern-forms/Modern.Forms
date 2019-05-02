@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class StatusBarControl : ModernControl
+    public class StatusBar : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (ModernControl.DefaultStyle,
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
                 style.Border.Top.Width = 1;
                 style.FontSize = 13;
@@ -17,7 +18,7 @@ namespace Modern.Forms
 
         protected override Size DefaultSize => new Size (600, 25);
 
-        public StatusBarControl ()
+        public StatusBar ()
         {
             Dock = System.Windows.Forms.DockStyle.Bottom;
         }

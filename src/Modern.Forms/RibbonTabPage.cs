@@ -33,16 +33,16 @@ namespace Modern.Forms
 
         public void DrawTab (SKCanvas canvas)
         {
-            var background_color = Selected ? Theme.NeutralGray : Highlighted ? Theme.RibbonTabHighlightColor : Theme.RibbonColor;
+            var background_color = Selected ? ModernTheme.NeutralGray : Highlighted ? ModernTheme.RibbonTabHighlightColor : ModernTheme.RibbonColor;
             canvas.FillRectangle (TabBounds, background_color);
 
-            var font_color = Selected ? Theme.RibbonColor : Theme.LightTextColor;
-            canvas.DrawCenteredText (Text, Theme.UIFont, 14, TabBounds.X + 28, 20, font_color);
+            var font_color = Selected ? ModernTheme.RibbonColor : ModernTheme.LightTextColor;
+            canvas.DrawCenteredText (Text, ModernTheme.UIFont, 14, TabBounds.X + 28, 20, font_color);
         }
 
         public void DrawTabPage (SKCanvas canvas)
         {
-            canvas.FillRectangle (Bounds, Theme.NeutralGray);
+            canvas.FillRectangle (Bounds, ModernTheme.NeutralGray);
 
             LayoutItems ();
 

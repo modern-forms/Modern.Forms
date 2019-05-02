@@ -65,8 +65,8 @@ namespace System.Windows.Forms {
 		private bool			help_button;
 		private bool			show_in_taskbar;
 		private bool			topmost;
-		private ButtonControl		accept_button;
-		private ButtonControl		cancel_button;
+		private Button		accept_button;
+		private Button		cancel_button;
 		private DialogResult		dialog_result;
 		private FormStartPosition	start_position;
 		private Form			owner;
@@ -463,7 +463,7 @@ namespace System.Windows.Forms {
 
 		#region Public Instance Properties
 		[DefaultValue(null)]
-		public ButtonControl AcceptButton {
+		public Button AcceptButton {
 			get {
 				return accept_button;
 			}
@@ -612,7 +612,7 @@ namespace System.Windows.Forms {
 		}
 
 		[DefaultValue(null)]
-		public ButtonControl CancelButton {
+		public Button CancelButton {
 			get {
 				return cancel_button;
 			}
@@ -2271,8 +2271,8 @@ namespace System.Windows.Forms {
 				if (keyData == Keys.Enter) {
 					IntPtr window = XplatUI.GetFocus ();
 					Control c = Control.FromHandle (window);
-					if (c is ButtonControl && c.FindForm () == this) {
-						((ButtonControl)c).PerformClick ();
+					if (c is Button && c.FindForm () == this) {
+						((Button)c).PerformClick ();
 						return true;
 					}
 					else if (accept_button != null) {
@@ -2919,7 +2919,7 @@ namespace System.Windows.Forms {
         internal override void CheckAcceptButton ()
 		{
 			if (accept_button != null) {
-				ButtonControl a_button = accept_button as ButtonControl;
+				Button a_button = accept_button as Button;
 
 				if (ActiveControl == a_button)
 					return;

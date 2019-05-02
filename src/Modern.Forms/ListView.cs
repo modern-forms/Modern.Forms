@@ -1,32 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class TreeControl : ModernControl
+    public class ListView : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (ModernControl.DefaultStyle,
-            (style) => {
-                style.BackgroundColor = Theme.LightNeutralGray;
-                style.Border.Right.Width = 1;
-            });
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
+            (style) => style.BackgroundColor = ModernTheme.FormBackgroundColor);
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        public List<TreeItem> Items { get; } = new List<TreeItem> ();
+        public List<ListViewControlItem> Items { get; } = new List<ListViewControlItem> ();
 
-        public event EventHandler<EventArgs<TreeItem>> ItemSelected;
+        public event EventHandler<EventArgs<ListViewControlItem>> ItemDoubleClicked;
 
-        protected override Size DefaultSize => new Size (250, 500);
-
-        public TreeControl ()
-        {
-        }
+        protected override Size DefaultSize => new Size (450, 450);
 
         protected override void OnPaint (SKPaintEventArgs e)
         {
@@ -45,16 +36,20 @@ namespace Modern.Forms
             var clicked_item = Items.FirstOrDefault (tp => tp.Bounds.Contains (e.Location));
 
             SetSelectedItem (clicked_item);
-
-            if (clicked_item != null)
-                ItemSelected?.Invoke (this, new EventArgs<TreeItem> (clicked_item));
         }
 
-        public void SetSelectedItem (TreeItem item)
+        protected override void OnMouseDoubleClick (MouseEventArgs e)
         {
-            if (item == null)
-                return;
+            base.OnMouseDoubleClick (e);
 
+            var clicked_item = Items.FirstOrDefault (tp => tp.Bounds.Contains (e.Location));
+
+            if (clicked_item != null)
+                ItemDoubleClicked?.Invoke (this, new EventArgs<ListViewControlItem> (clicked_item));
+        }
+
+        public void SetSelectedItem (ListViewControlItem item)
+        {
             var old = Items.FirstOrDefault (i => i.Selected);
 
             if (old == item)
@@ -71,14 +66,20 @@ namespace Modern.Forms
 
         private void LayoutItems ()
         {
-            var x = 0;
-            var y = 0;
-            var item_width = Width - 1;
-            var item_height = 30;
+            var x = 3;
+            var y = 3;
+            var item_width = 70;
+            var item_height = 70;
+            var item_padding = 6;
 
             foreach (var item in Items) {
                 item.SetBounds (x, y, item_width, item_height);
-                y += item_height;
+                x += item_width + item_padding;
+
+                if (x + item_width > Width) {
+                    x = 3;
+                    y += item_height + item_padding;
+                }
             }
         }
     }

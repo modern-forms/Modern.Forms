@@ -8,11 +8,11 @@ using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class RibbonControl : ModernControl
+    public class Ribbon : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (ModernControl.DefaultStyle, 
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
             (style) => {
-                style.BackgroundColor = Theme.RibbonColor;
+                style.BackgroundColor = ModernTheme.RibbonColor;
                 style.Border.Bottom.Width = 1;
             });
 
@@ -22,7 +22,7 @@ namespace Modern.Forms
 
         protected override Size DefaultSize => new Size (600, 111);
 
-        public RibbonControl ()
+        public Ribbon ()
         {
             Dock = DockStyle.Top;
         }

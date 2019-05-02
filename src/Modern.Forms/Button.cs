@@ -10,16 +10,16 @@ namespace Modern.Forms
     // Image
     // IsDefault?
     // TextAlign/ImageAlign
-    public class ButtonControl : ModernControl
+    public class Button : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (ModernControl.DefaultStyle, 
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
             (style) => style.Border.Width = 1);
 
         public new static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle, 
             (style) => {
-                style.BackgroundColor = Theme.RibbonTabHighlightColor;
-                style.Border.Color = Theme.RibbonColor;
-                style.ForegroundColor = Theme.LightTextColor;
+                style.BackgroundColor = ModernTheme.RibbonTabHighlightColor;
+                style.Border.Color = ModernTheme.RibbonColor;
+                style.ForegroundColor = ModernTheme.LightTextColor;
             });
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
@@ -27,7 +27,7 @@ namespace Modern.Forms
 
         protected override Size DefaultSize => new Size (100, 30);
 
-        public ButtonControl ()
+        public Button ()
         {
             SetControlBehavior (ControlBehaviors.Hoverable, true);
 

@@ -21,14 +21,14 @@ namespace Modern.Forms
 
         internal void DrawItem (SKCanvas canvas)
         {
-            var background_color = Selected ? Theme.RibbonItemHighlightColor : Theme.LightNeutralGray;
+            var background_color = Selected ? ModernTheme.RibbonItemHighlightColor : ModernTheme.LightNeutralGray;
 
             canvas.FillRectangle (Bounds, background_color);
 
             if (Image != null)
                 canvas.DrawBitmap (Image, Bounds.Left + 7, Bounds.Top + 7);
 
-            canvas.DrawText (Text.Trim (), Theme.UIFont, 14, Bounds.Left + 31, Bounds.Top + 20, Theme.DarkTextColor);
+            canvas.DrawText (Text.Trim (), ModernTheme.UIFont, 14, Bounds.Left + 31, Bounds.Top + 20, ModernTheme.DarkTextColor);
         }
     }
 }

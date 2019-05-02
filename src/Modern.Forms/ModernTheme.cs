@@ -6,7 +6,7 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public static class Theme
+    public static class ModernTheme
     {
         private static int suspend_count = 0;
         private static bool suspended_raise_waiting = false;
@@ -15,7 +15,7 @@ namespace Modern.Forms
 
         public static event EventHandler ThemeChanged;
 
-        static Theme ()
+        static ModernTheme ()
         {
             values["RibbonColor"] = new SKColor (16, 110, 190);
             values["DarkTextColor"] = SKColors.Black;

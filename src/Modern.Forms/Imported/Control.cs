@@ -46,6 +46,9 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
+using Modern.Forms;
+using SkiaSharp;
+using System.Drawing.Imaging;
 
 namespace System.Windows.Forms
 {
@@ -59,10 +62,73 @@ namespace System.Windows.Forms
 	public class Control : Component, ISynchronizeInvoke, IWin32Window
 		, IBindableComponent, IDropTarget, IBounds
 	{
-		#region Local Variables
+        #region ModernControl
+        private readonly bool designMode;
 
-		// Basic
-		internal Rectangle		bounds;			// bounding rectangle for control (client area + decorations)
+        private Bitmap bitmap;
+        private ControlBehaviors behaviors;
+
+        public static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+            (style) => {
+                style.ForegroundColor = ModernTheme.DarkTextColor;
+                style.BackgroundColor = ModernTheme.NeutralGray;
+                style.Font = ModernTheme.UIFont;
+                style.FontSize = ModernTheme.FontSize;
+                style.Border.Radius = 0;
+                style.Border.Color = ModernTheme.BorderGray;
+                style.Border.Width = 0;
+            });
+
+        public static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle);
+
+        public virtual ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+        public virtual ControlStyle StyleHover { get; } = new ControlStyle (DefaultStyleHover);
+
+        public bool IsHovering { get; private set; }
+
+        public virtual ControlStyle CurrentStyle => IsHovering ? StyleHover : Style;
+
+        protected void SetControlBehavior (ControlBehaviors behavior, bool value)
+        {
+            if (value)
+                behaviors |= behavior;
+            else
+                behaviors &= behavior;
+        }
+
+        protected virtual void OnPaintBackground (SKPaintEventArgs e)
+        {
+            e.Canvas.DrawBackground (Bounds, CurrentStyle);
+            e.Canvas.DrawBorder (Bounds, CurrentStyle);
+        }
+
+        protected virtual void OnPaint (SKPaintEventArgs e)
+        {
+        }
+
+        private void CreateBitmap ()
+        {
+            if (bitmap == null || bitmap.Width != Width || bitmap.Height != Height) {
+                FreeBitmap ();
+
+                bitmap = new Bitmap (Width, Height, PixelFormat.Format32bppPArgb);
+            }
+        }
+
+        private void FreeBitmap ()
+        {
+            if (bitmap != null) {
+                bitmap.Dispose ();
+                bitmap = null;
+            }
+        }
+
+        #endregion
+
+        #region Local Variables
+
+        // Basic
+        internal Rectangle		bounds;			// bounding rectangle for control (client area + decorations)
 		Rectangle               explicit_bounds; // explicitly set bounds
 		internal object			creator_thread;		// thread that created the control
 		internal                ControlNativeWindow	window;			// object for native window handle
@@ -982,7 +1048,11 @@ namespace System.Windows.Forms
 				}
 			}
 			is_disposed = true;
-			base.Dispose(disposing);
+
+            // Modern
+            FreeBitmap ();
+
+            base.Dispose(disposing);
 		}
 		#endregion 	// Public Constructors
 
@@ -6045,9 +6115,14 @@ namespace System.Windows.Forms
 			EventHandler eh = (EventHandler)(Events [MouseEnterEvent]);
 			if (eh != null)
 				eh (this, e);
-		}
 
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+            if (behaviors.HasFlag (ControlBehaviors.Hoverable)) {
+                IsHovering = true;
+                Invalidate ();
+            }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
 		protected virtual void OnMouseHover(EventArgs e) {
 			EventHandler eh = (EventHandler)(Events [MouseHoverEvent]);
 			if (eh != null)
@@ -6059,9 +6134,14 @@ namespace System.Windows.Forms
 			EventHandler eh = (EventHandler)(Events [MouseLeaveEvent]);
 			if (eh != null)
 				eh (this, e);
-		}
 
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+            if (behaviors.HasFlag (ControlBehaviors.Hoverable)) {
+                IsHovering = false;
+                Invalidate ();
+            }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
 		protected virtual void OnMouseMove(MouseEventArgs e) {
 			MouseEventHandler eh = (MouseEventHandler)(Events [MouseMoveEvent]);
 			if (eh != null)
@@ -6105,9 +6185,32 @@ namespace System.Windows.Forms
 			PaintEventHandler eh = (PaintEventHandler)(Events [PaintEvent]);
 			if (eh != null)
 				eh (this, e);
-		}
 
-		internal virtual void OnPaintBackgroundInternal(PaintEventArgs e) {
+            if (designMode)
+                return;
+
+            // get the bitmap
+            CreateBitmap ();
+            var data = bitmap.LockBits (new Rectangle (0, 0, Width, Height), ImageLockMode.WriteOnly, bitmap.PixelFormat);
+
+            // create the surface
+            var info = new SKImageInfo (Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+            using (var surface = SKSurface.Create (info, data.Scan0, data.Stride)) {
+                // start drawing
+                var args = new SKPaintEventArgs (surface, info);
+
+                OnPaintBackground (args);
+                OnPaint (args);
+
+                surface.Canvas.Flush ();
+            }
+
+            // write the bitmap to the graphics
+            bitmap.UnlockBits (data);
+            e.Graphics.DrawImage (bitmap, 0, 0);
+        }
+
+        internal virtual void OnPaintBackgroundInternal(PaintEventArgs e) {
 			// Override me
 		}
 

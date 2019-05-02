@@ -23,7 +23,7 @@ namespace Modern.Forms
 
             Controls.Add (titlebar);
 
-            var button = new ButtonControl {
+            var button = new Button {
                 Text = "OK",
                 Location = new System.Drawing.Point (150, 150)
             };
@@ -42,11 +42,11 @@ namespace Modern.Forms
             this.text = text;
         }
 
-        protected override void OnPaintSurface (SKPaintEventArgs e)
+        protected override void OnPaint (SKPaintEventArgs e)
         {
-            base.OnPaintSurface (e);
+            base.OnPaint (e);
 
-            e.Canvas.DrawCenteredText (text, Theme.UIFont, 16, 200, 75, Theme.DarkTextColor);
+            e.Canvas.DrawCenteredText (text, ModernTheme.UIFont, 16, 200, 75, ModernTheme.DarkTextColor);
         }
 
         protected override CreateParams CreateParams {

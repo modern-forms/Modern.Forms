@@ -6,10 +6,10 @@ namespace Explorer
 {
     public partial class MainForm : ModernForm
     {
-        private RibbonControl ribbon;
-        private TreeControl tree;
-        private ListViewControl view;
-        private StatusBarControl statusbar;
+        private Ribbon ribbon;
+        private TreeView tree;
+        private ListView view;
+        private StatusBar statusbar;
         private ModernFormTitleBar titlebar;
 
         private void InitializeComponent ()
@@ -17,7 +17,7 @@ namespace Explorer
             SuspendLayout ();
 
             // ListView
-            view = new ListViewControl {
+            view = new ListView {
                 Dock = DockStyle.Fill
             };
 
@@ -25,7 +25,7 @@ namespace Explorer
             Controls.Add (view);
 
             // TreeControl
-            tree = new TreeControl {
+            tree = new TreeView {
                 Dock = DockStyle.Left
             };
 
@@ -33,7 +33,7 @@ namespace Explorer
             Controls.Add (tree);
 
             // RibbonControl
-            ribbon = new RibbonControl ();
+            ribbon = new Ribbon ();
 
             var home_tab = new RibbonTabPage { Text = "Home", Selected = true };
 
@@ -77,7 +77,7 @@ namespace Explorer
             Controls.Add (ribbon);
 
             // StatusBar
-            statusbar = new StatusBarControl ();
+            statusbar = new StatusBar ();
 
             Controls.Add (statusbar);
 
