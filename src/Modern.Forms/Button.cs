@@ -29,7 +29,7 @@ namespace Modern.Forms
 
         public Button ()
         {
-            SetControlBehavior (ControlBehaviors.Hoverable, true);
+            SetControlBehavior (ControlBehaviors.Hoverable);
 
             Cursor = Cursors.Hand;
         }

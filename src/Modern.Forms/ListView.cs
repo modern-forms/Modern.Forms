@@ -13,9 +13,9 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        public List<ListViewControlItem> Items { get; } = new List<ListViewControlItem> ();
+        public List<ListViewItem> Items { get; } = new List<ListViewItem> ();
 
-        public event EventHandler<EventArgs<ListViewControlItem>> ItemDoubleClicked;
+        public event EventHandler<EventArgs<ListViewItem>> ItemDoubleClicked;
 
         protected override Size DefaultSize => new Size (450, 450);
 
@@ -45,10 +45,10 @@ namespace Modern.Forms
             var clicked_item = Items.FirstOrDefault (tp => tp.Bounds.Contains (e.Location));
 
             if (clicked_item != null)
-                ItemDoubleClicked?.Invoke (this, new EventArgs<ListViewControlItem> (clicked_item));
+                ItemDoubleClicked?.Invoke (this, new EventArgs<ListViewItem> (clicked_item));
         }
 
-        public void SetSelectedItem (ListViewControlItem item)
+        public void SetSelectedItem (ListViewItem item)
         {
             var old = Items.FirstOrDefault (i => i.Selected);
 

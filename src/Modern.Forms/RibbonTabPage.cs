@@ -18,26 +18,9 @@ namespace Modern.Forms
         // This is the bounds for the tab page, where the buttons are
         public Rectangle Bounds { get; private set; }
 
-        // This is the bounds for the tab, like "File" or "Edit"
-        public Rectangle TabBounds { get; private set; }
-
         public void SetBounds (int x, int y, int width, int height)
         {
             Bounds = new Rectangle (x, y, width, height);
-        }
-
-        public void SetTabBounds (int x, int y, int width, int height)
-        {
-            TabBounds = new Rectangle (x, y, width, height);
-        }
-
-        public void DrawTab (SKCanvas canvas)
-        {
-            var background_color = Selected ? ModernTheme.NeutralGray : Highlighted ? ModernTheme.RibbonTabHighlightColor : ModernTheme.RibbonColor;
-            canvas.FillRectangle (TabBounds, background_color);
-
-            var font_color = Selected ? ModernTheme.RibbonColor : ModernTheme.LightTextColor;
-            canvas.DrawCenteredText (Text, ModernTheme.UIFont, 14, TabBounds.X + 28, 20, font_color);
         }
 
         public void DrawTabPage (SKCanvas canvas)

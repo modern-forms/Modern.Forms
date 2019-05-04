@@ -7,7 +7,7 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class ListViewControlItem
+    public class ListViewItem
     {
         public string Text { get; set; }
         public SKBitmap Image { get; set; }

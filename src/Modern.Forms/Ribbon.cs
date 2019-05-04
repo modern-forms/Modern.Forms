@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Modern.Forms
@@ -25,39 +23,43 @@ namespace Modern.Forms
         public Ribbon ()
         {
             Dock = DockStyle.Top;
+
+            TabStrip = new TabStrip {
+                Dock = DockStyle.Top
+            };
+
+            TabStrip.SelectedTabChanged += (o, e) => SetSelectedTab ();
+            Controls.Add (TabStrip);
+        }
+
+        public TabStrip TabStrip { get; }
+
+        public RibbonTabPage AddTabPage (string name)
+        {
+            var page = new RibbonTabPage { Text = name };
+            TabPages.Add (page);
+
+            TabStrip.Tabs.Add (new TabStripItem { Text = name });
+
+            if (TabStrip.Tabs.Count == 1)
+                TabStrip.SelectedTab = TabStrip.Tabs[0];
+
+            return page;
         }
 
         protected override void OnPaint (SKPaintEventArgs e)
         {
             base.OnPaint (e);
 
-            // Tabs
-            LayoutTabs ();
-
-            foreach (var item in TabPages)
-                item.DrawTab (e.Canvas);
-
-            // TabPage
-            var selected_tab = TabPages.First (tp => tp.Selected);
-            selected_tab.SetBounds (0, 28, Width, Height - 29);
-            selected_tab.DrawTabPage (e.Canvas);
-        }
-
-        private void LayoutTabs ()
-        {
-            var left = 0;
-
-            foreach (var item in TabPages) {
-                item.SetTabBounds (left, 0, 56, 28);
-                left += 56;
-            }
+            // TabPages
+            var selected_tab = TabPages.FirstOrDefault (tp => tp.Selected);
+            selected_tab?.SetBounds (0, 28, Width, Height - 29);
+            selected_tab?.DrawTabPage (e.Canvas);
         }
 
         protected override void OnMouseMove (MouseEventArgs e)
         {
             base.OnMouseMove (e);
-
-            SetHighlight (TabPages.FirstOrDefault (tp => tp.TabBounds.Contains (e.Location)));
 
             if (SelectedPage != null)
                 SetHighlight (SelectedPage.Groups.SelectMany (g => g.Items).FirstOrDefault (item => item.Bounds.Contains (e.Location)));
@@ -67,7 +69,6 @@ namespace Modern.Forms
         {
             base.OnMouseLeave (e);
 
-            SetHighlight ((RibbonTabPage)null);
             SetHighlight ((RibbonItem)null);
         }
 
@@ -75,46 +76,27 @@ namespace Modern.Forms
         {
             base.OnMouseClick (e);
 
-            var clicked_tab = TabPages.FirstOrDefault (tp => tp.TabBounds.Contains (e.Location));
-
-            if (clicked_tab != null)
-                SetSelectedTab (clicked_tab);
-
             var clicked_item = GetItemAtPosition (e.Location);
 
             if (clicked_item != null)
                 clicked_item.PerformClick ();
         }
 
-        private void SetHighlight (RibbonTabPage page)
-        {
-            var old = TabPages.FirstOrDefault (tp => tp.Highlighted);
+        public RibbonTabPage SelectedPage {
+            get {
+                var selected_tab = TabStrip.SelectedTab;
 
-            if (page == null || page != old) {
-                // Clear any existing highlights
-                if (old != null) {
-                    old.Highlighted = false;
-                    Invalidate (old.TabBounds);
-                }
+                if (selected_tab == null)
+                    return null;
 
-                if (page == null)
-                    return;
+                return TabPages.FirstOrDefault (tp => tp.Text == selected_tab.Text);
             }
-
-            if (page.Highlighted)
-                return;
-
-            page.Highlighted = true;
-
-            Invalidate (page.TabBounds);
         }
-
-        public RibbonTabPage SelectedPage => TabPages?.First (tp => tp.Selected);
 
         private void SetHighlight (RibbonItem item)
         {
             var page = SelectedPage;
-            var old = SelectedPage.Groups.SelectMany (g => g.Items).FirstOrDefault (tp => tp.Highlighted);
+            var old = SelectedPage?.Groups.SelectMany (g => g.Items).FirstOrDefault (tp => tp.Highlighted);
 
             if (item == null || item != old) {
                 // Clear any existing highlights
@@ -135,17 +117,17 @@ namespace Modern.Forms
             Invalidate (item.Bounds);
         }
 
-        public void SetSelectedTab (RibbonTabPage page)
+        public void SetSelectedTab ()
         {
-            if (page == null)
-                throw new ArgumentNullException (nameof (page));
-
+            var item = TabStrip.SelectedTab;
+            var page = TabPages.FirstOrDefault (tp => tp.Text == item.Text);
             var old = TabPages.FirstOrDefault (tp => tp.Selected);
 
             if (old == page)
                 return;
 
-            old.Selected = false;
+            if (old != null)
+                old.Selected = false;
             page.Selected = true;
 
             Invalidate ();

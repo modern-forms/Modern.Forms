@@ -5,7 +5,7 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class TreeItem
+    public class TreeViewItem
     {
         public string Text { get; set; }
         public SKBitmap Image { get; set; }

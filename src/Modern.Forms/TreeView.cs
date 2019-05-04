@@ -18,9 +18,9 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        public List<TreeItem> Items { get; } = new List<TreeItem> ();
+        public List<TreeViewItem> Items { get; } = new List<TreeViewItem> ();
 
-        public event EventHandler<EventArgs<TreeItem>> ItemSelected;
+        public event EventHandler<EventArgs<TreeViewItem>> ItemSelected;
 
         protected override Size DefaultSize => new Size (250, 500);
 
@@ -47,10 +47,10 @@ namespace Modern.Forms
             SetSelectedItem (clicked_item);
 
             if (clicked_item != null)
-                ItemSelected?.Invoke (this, new EventArgs<TreeItem> (clicked_item));
+                ItemSelected?.Invoke (this, new EventArgs<TreeViewItem> (clicked_item));
         }
 
-        public void SetSelectedItem (TreeItem item)
+        public void SetSelectedItem (TreeViewItem item)
         {
             if (item == null)
                 return;

@@ -16,7 +16,7 @@ namespace Explorer
 
             // Populate the drive list
             foreach (var drive in DriveInfo.GetDrives ().Where (d => d.IsReady))
-                tree.Items.Add (new TreeItem { Text = $"{drive.Name.Trim ('\\')} - {drive.VolumeLabel}", Image = ImageLoader.Get ("drive.png"), Tag = drive });
+                tree.Items.Add (new TreeViewItem { Text = $"{drive.Name.Trim ('\\')} - {drive.VolumeLabel}", Image = ImageLoader.Get ("drive.png"), Tag = drive });
 
             tree.Items.First ().Selected = true;
 
@@ -24,7 +24,7 @@ namespace Explorer
             SetSelectedDirectory (((DriveInfo)tree.Items.First().Tag).Name);
         }
 
-        private void View_ItemDoubleClicked (object sender, EventArgs<ListViewControlItem> e)
+        private void View_ItemDoubleClicked (object sender, EventArgs<ListViewItem> e)
         {
             var item = e.Value;
 
@@ -32,7 +32,7 @@ namespace Explorer
                 SetSelectedDirectory (Path.Combine (current_directory, item.Text));
         }
 
-        private void Tree_ItemSelected (object sender, EventArgs<TreeItem> e)
+        private void Tree_ItemSelected (object sender, EventArgs<TreeViewItem> e)
         {
             var drive = (DriveInfo)e.Value.Tag;
 
@@ -50,12 +50,12 @@ namespace Explorer
 
             try {
                 foreach (var d in Directory.EnumerateDirectories (directory).Take (30))
-                    view.Items.Add (new ListViewControlItem { Text = Path.GetFileName (d), Image = ImageLoader.Get ("folder-closed.png"), Tag = "Directory" });
+                    view.Items.Add (new ListViewItem { Text = Path.GetFileName (d), Image = ImageLoader.Get ("folder-closed.png"), Tag = "Directory" });
 
                 directories = view.Items.Count;
 
                 foreach (var f in Directory.EnumerateFiles (directory).Take (50))
-                    view.Items.Add (new ListViewControlItem { Text = Path.GetFileName (f), Image = ImageLoader.Get ("new.png") });
+                    view.Items.Add (new ListViewItem { Text = Path.GetFileName (f), Image = ImageLoader.Get ("new.png") });
 
                 files = view.Items.Count - directories;
 

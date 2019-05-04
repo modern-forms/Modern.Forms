@@ -68,7 +68,7 @@ namespace System.Windows.Forms
         private Bitmap bitmap;
         private ControlBehaviors behaviors;
 
-        public static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+        public static ControlStyle DefaultStyle = new ControlStyle (null,
             (style) => {
                 style.ForegroundColor = ModernTheme.DarkTextColor;
                 style.BackgroundColor = ModernTheme.NeutralGray;
@@ -88,7 +88,7 @@ namespace System.Windows.Forms
 
         public virtual ControlStyle CurrentStyle => IsHovering ? StyleHover : Style;
 
-        protected void SetControlBehavior (ControlBehaviors behavior, bool value)
+        protected void SetControlBehavior (ControlBehaviors behavior, bool value = true)
         {
             if (value)
                 behaviors |= behavior;
@@ -3198,6 +3198,10 @@ namespace System.Windows.Forms
 				if (text!=value) {
 					text=value;
 					UpdateWindowText ();
+
+                    if (behaviors.HasFlag (ControlBehaviors.InvalidateOnTextChanged))
+                        Invalidate ();
+
 					OnTextChanged (EventArgs.Empty);
 
 					// Label has its own AutoSize implementation
@@ -3828,7 +3832,7 @@ namespace System.Windows.Forms
 				if (invalidateChildren) {
 					Control [] controls = child_controls.GetAllControls ();
 					for (int i=0; i<controls.Length; i++)
-						controls [i].Invalidate ();
+						controls [i].Invalidate (invalidateChildren);
 				} else {
 					// If any of our children are transparent, we
 					// have to invalidate them anyways

@@ -20,7 +20,7 @@ namespace Modern.Forms
             values["RibbonColor"] = new SKColor (16, 110, 190);
             values["DarkTextColor"] = SKColors.Black;
             values["LightTextColor"] = SKColors.White;
-            values["FormBackgroundColor"] = SKColors.White;
+            values["FormBackgroundColor"] = new SKColor (251, 251, 251);
             values["FormCloseHighlightColor"] = new SKColor (232, 17, 35);
             values["RibbonTabHighlightColor"] = new SKColor (42, 138, 208);
             values["RibbonItemHighlightColor"] = new SKColor (198, 198, 198);

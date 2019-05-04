@@ -35,7 +35,7 @@ namespace Explorer
             // RibbonControl
             ribbon = new Ribbon ();
 
-            var home_tab = new RibbonTabPage { Text = "Home", Selected = true };
+            var home_tab = ribbon.AddTabPage ("Home");
 
             var group1 = new RibbonItemGroup { Text = "Home" };
 
@@ -50,9 +50,7 @@ namespace Explorer
             home_tab.Groups.Add (group1);
             home_tab.Groups.Add (group2);
 
-            ribbon.TabPages.Add (home_tab);
-
-            var share_tab = new RibbonTabPage { Text = "Share" };
+            var share_tab = ribbon.AddTabPage ("Share");
             var share_group = new RibbonItemGroup { Text = "Send" };
 
             share_group.Items.Add (new RibbonItem ("Email", ImageLoader.Get ("mail.png"), new EventHandler (NotImplemented_Clicked)));
@@ -61,9 +59,8 @@ namespace Explorer
             share_group.Items.Add (new RibbonItem ("Print", ImageLoader.Get ("print.png"), new EventHandler (NotImplemented_Clicked)));
 
             share_tab.Groups.Add (share_group);
-            ribbon.TabPages.Add (share_tab);
 
-            var view_tab = new RibbonTabPage { Text = "View" };
+            var view_tab = ribbon.AddTabPage ("View");
             var group3 = new RibbonItemGroup { Text = "Themes" };
             group3.Items.Add (new RibbonItem ("Default", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
             group3.Items.Add (new RibbonItem ("Green", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
@@ -72,7 +69,6 @@ namespace Explorer
             group3.Items.Add (new RibbonItem ("Hotdog Stand", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
 
             view_tab.Groups.Add (group3);
-            ribbon.TabPages.Add (view_tab);
 
             Controls.Add (ribbon);
 
