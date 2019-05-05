@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Modern.Forms
@@ -18,15 +16,45 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        public List<TreeViewItem> Items { get; } = new List<TreeViewItem> ();
+        public TreeViewItemCollection Items { get; }
 
-        public event EventHandler<EventArgs<TreeViewItem>> ItemSelected;
-
-        protected override Size DefaultSize => new Size (250, 500);
+        private StackLayoutEngine layout_engine = new StackLayoutEngine (Orientation.Vertical, true);
 
         public TreeView ()
         {
+            Items = new TreeViewItemCollection (this);
         }
+
+        public event EventHandler<EventArgs<TreeViewItem>> ItemSelected;
+
+        public TreeViewItem GetItemAtLocation (Point location) => Items.FirstOrDefault (tp => tp.Bounds.Contains (location));
+
+        public TreeViewItem SelectedItem {
+            get => Items.FirstOrDefault (i => i.Selected);
+            set {
+                // Don't allow user to unselect items
+                if (value == null)
+                    return;
+
+                var old = SelectedItem;
+
+                if (old == value)
+                    return;
+
+                if (old != null)
+                    old.Selected = false;
+
+                value.Selected = true;
+
+                Invalidate ();
+
+                OnItemSelected (new EventArgs<TreeViewItem> (value));
+            }
+        }
+
+        protected override Size DefaultSize => new Size (250, 500);
+
+        protected virtual void OnItemSelected (EventArgs<TreeViewItem> e) => ItemSelected?.Invoke (this, e);
 
         protected override void OnPaint (SKPaintEventArgs e)
         {
@@ -35,51 +63,26 @@ namespace Modern.Forms
             LayoutItems ();
 
             foreach (var item in Items)
-                item.DrawItem (e.Canvas);
+                item.OnPaint (e.Canvas);
         }
 
         protected override void OnMouseClick (MouseEventArgs e)
         {
             base.OnMouseClick (e);
 
-            var clicked_item = Items.FirstOrDefault (tp => tp.Bounds.Contains (e.Location));
-
-            SetSelectedItem (clicked_item);
-
-            if (clicked_item != null)
-                ItemSelected?.Invoke (this, new EventArgs<TreeViewItem> (clicked_item));
-        }
-
-        public void SetSelectedItem (TreeViewItem item)
-        {
-            if (item == null)
+            if (!Enabled || !e.Button.HasFlag (MouseButtons.Left))
                 return;
 
-            var old = Items.FirstOrDefault (i => i.Selected);
-
-            if (old == item)
-                return;
-
-            if (old != null)
-                old.Selected = false;
-
-            if (item != null)
-                item.Selected = true;
-
-            Invalidate ();
+            SelectedItem = GetItemAtLocation (e.Location);
         }
 
         private void LayoutItems ()
         {
-            var x = 0;
-            var y = 0;
-            var item_width = Width - 1;
-            var item_height = 30;
+            var item_bounds = ClientRectangle;
 
-            foreach (var item in Items) {
-                item.SetBounds (x, y, item_width, item_height);
-                y += item_height;
-            }
+            item_bounds.Width -= 1;
+
+            layout_engine.Layout (item_bounds, Items.Cast<ILayoutable> ());
         }
     }
 }

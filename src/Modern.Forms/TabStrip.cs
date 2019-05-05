@@ -93,7 +93,7 @@ namespace Modern.Forms
 
         protected virtual void OnSelectedTabChanged (EventArgs e) => SelectedTabChanged?.Invoke (this, e);
 
-        private TabStripItem GetTabAtLocation (Point point) => Tabs.FirstOrDefault (tp => tp.Bounds.Contains (point));
+        private TabStripItem GetTabAtLocation (Point location) => Tabs.FirstOrDefault (tp => tp.Bounds.Contains (location));
 
         private void LayoutTabs ()
         {

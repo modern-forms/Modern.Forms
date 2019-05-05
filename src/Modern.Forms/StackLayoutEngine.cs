@@ -19,6 +19,14 @@ namespace Modern.Forms
 
         public void Layout (Rectangle bounds, IEnumerable<ILayoutable> items)
         {
+            if (orientation == Orientation.Horizontal)
+                LayoutHorizontal (bounds, items);
+            else
+                LayoutVertical (bounds, items);
+        }
+
+        private void LayoutHorizontal (Rectangle bounds, IEnumerable<ILayoutable> items)
+        {
             var x = bounds.Left;
             var y = bounds.Top;
 
@@ -32,6 +40,24 @@ namespace Modern.Forms
                 item.SetBounds (local_x, local_y, size.Width, height);
 
                 x += size.Width + item.Margin.Horizontal;
+            }
+        }
+
+        private void LayoutVertical (Rectangle bounds, IEnumerable<ILayoutable> items)
+        {
+            var x = bounds.Left;
+            var y = bounds.Top;
+
+            foreach (var item in items) {
+                var local_x = x + item.Margin.Left;
+                var local_y = y + item.Margin.Top;
+                var width = bounds.Width - item.Margin.Horizontal;
+
+                var size = item.GetPreferredSize (Size.Empty);
+
+                item.SetBounds (local_x, local_y, width, size.Height);
+
+                y += size.Height + item.Margin.Vertical;
             }
         }
     }

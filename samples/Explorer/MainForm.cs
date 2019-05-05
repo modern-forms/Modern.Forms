@@ -16,7 +16,7 @@ namespace Explorer
 
             // Populate the drive list
             foreach (var drive in DriveInfo.GetDrives ().Where (d => d.IsReady))
-                tree.Items.Add (new TreeViewItem { Text = $"{drive.Name.Trim ('\\')} - {drive.VolumeLabel}", Image = ImageLoader.Get ("drive.png"), Tag = drive });
+                tree.Items.Add ($"{drive.Name.Trim ('\\')} - {drive.VolumeLabel}", ImageLoader.Get ("drive.png")).Tag = drive;
 
             tree.Items.First ().Selected = true;
 
@@ -36,7 +36,8 @@ namespace Explorer
         {
             var drive = (DriveInfo)e.Value.Tag;
 
-            SetSelectedDirectory (drive.Name);
+            if (drive != null)
+                SetSelectedDirectory (drive.Name);
         }
 
         private void SetSelectedDirectory (string directory)

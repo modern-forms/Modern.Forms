@@ -180,7 +180,7 @@ namespace Modern.Forms
         {
             base.OnMouseDown (e);
 
-            if (Enabled == false || (e.Button & MouseButtons.Left) == 0)
+            if (!Enabled || !e.Button.HasFlag (MouseButtons.Left))
                 return;
 
             switch (GetElementAtLocation (e.Location)) {

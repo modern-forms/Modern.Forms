@@ -2358,7 +2358,19 @@ namespace System.Windows.Forms
 			}
 		}
 
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+        private Rectangle client_bounds = Rectangle.Empty;
+
+        public Rectangle ClientBounds {
+            get {
+                client_bounds.X = Style.Border.Left.GetWidth ();
+                client_bounds.Y = Style.Border.Top.GetWidth ();
+                client_bounds.Width = bounds.Width - Style.Border.Right.GetWidth () - client_bounds.X;
+                client_bounds.Height = bounds.Height - Style.Border.Bottom.GetWidth () - client_bounds.Y;
+                return client_bounds;
+            }
+        }
+
+        [EditorBrowsable (EditorBrowsableState.Advanced)]
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Rectangle ClientRectangle {
