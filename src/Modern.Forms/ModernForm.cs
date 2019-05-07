@@ -21,7 +21,7 @@ namespace Modern.Forms
             SetStyle (ControlStyles.ResizeRedraw, true);
 
             StartPosition = FormStartPosition.CenterScreen;
-            FormBorderStyle = FormBorderStyle.None;
+            //FormBorderStyle = FormBorderStyle.None;
             Padding = new Padding (1);
         }
 

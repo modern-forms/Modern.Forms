@@ -9,7 +9,7 @@ namespace Modern.Forms
     public interface ILayoutable
     {
         Size GetPreferredSize (Size proposedSize);
-        void SetBounds (int x, int y, int width, int height);
+        void SetBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All);
         Padding Margin { get; }
     }
 }

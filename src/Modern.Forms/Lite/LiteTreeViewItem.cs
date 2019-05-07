@@ -6,13 +6,13 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class TreeViewItem : ILayoutable
+    public class LiteTreeViewItem : ILayoutable
     {
         public string Text { get; set; }
         public SKBitmap Image { get; set; }
         public bool Selected { get; set; }
         public object Tag { get; set; }
-        public TreeView Parent { get; internal set; }
+        public LiteTreeView Parent { get; internal set; }
 
         public Rectangle Bounds { get; private set; }
 

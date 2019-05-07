@@ -137,5 +137,11 @@ namespace Explorer
         {
             new MessageBoxForm ("Demo", "Functionality not available in demo").ShowDialog (this);
         }
+
+        private void ShowButtonForm_Clicked (object sender, EventArgs e)
+        {
+            //tree.Items.Add (DateTime.Now.ToString ());
+            new ButtonForm ().Show ();
+        }
     }
 }
