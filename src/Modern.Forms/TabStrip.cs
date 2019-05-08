@@ -14,7 +14,7 @@ namespace Modern.Forms
     // Overflow?
     // Measuring
     // OnSelectedTabChanging?
-    public class TabStrip : Control
+    public class TabStrip : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
@@ -69,9 +69,9 @@ namespace Modern.Forms
             SetHover (null);
         }
 
-        protected override void OnMouseClick (MouseEventArgs e)
+        protected override void OnClick (MouseEventArgs e)
         {
-            base.OnMouseClick (e);
+            base.OnClick (e);
 
             var clicked_tab = GetTabAtLocation (e.Location);
 
@@ -87,8 +87,6 @@ namespace Modern.Forms
 
             foreach (var item in Tabs)
                 item.OnPaint (e.Canvas);
-
-            e.Canvas.DrawCenteredText (Text, Width / 2, 20, CurrentStyle);
         }
 
         protected virtual void OnSelectedTabChanged (EventArgs e) => SelectedTabChanged?.Invoke (this, e);
@@ -97,7 +95,7 @@ namespace Modern.Forms
 
         private void LayoutTabs ()
         {
-            layout_engine.Layout (ClientRectangle, Tabs.Cast<ILayoutable> ());
+            layout_engine.Layout (ClientBounds, Tabs.Cast<ILayoutable> ());
         }
 
         private void SetHover (TabStripItem item)

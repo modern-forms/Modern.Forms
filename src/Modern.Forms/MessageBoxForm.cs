@@ -27,7 +27,8 @@ namespace Modern.Forms
 
             label = new Label {
                 Width = 398,
-                Location = new Point (1, 50)
+                Left = 1,
+                Top = 50
             };
 
             label.Style.BackgroundColor = SKColors.White;
@@ -37,10 +38,11 @@ namespace Modern.Forms
 
             var button = new Button {
                 Text = "OK",
-                Location = new Point (150, 150)
+                Left = 150,
+                Top = 150
             };
 
-            button.Click += (o, e) => Close ();
+            //button.Click += (o, e) => Close ();
 
             Controls.Add (button);
         }

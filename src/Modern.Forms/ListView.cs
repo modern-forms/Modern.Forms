@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class ListView : Control
+    public class ListView : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
             (style) => style.BackgroundColor = ModernTheme.FormBackgroundColor);
@@ -29,18 +29,18 @@ namespace Modern.Forms
                 item.DrawItem (e.Canvas);
         }
 
-        protected override void OnMouseClick (MouseEventArgs e)
+        protected override void OnClick (MouseEventArgs e)
         {
-            base.OnMouseClick (e);
+            base.OnClick (e);
 
             var clicked_item = Items.FirstOrDefault (tp => tp.Bounds.Contains (e.Location));
 
             SetSelectedItem (clicked_item);
         }
 
-        protected override void OnMouseDoubleClick (MouseEventArgs e)
+        protected override void OnDoubleClick (MouseEventArgs e)
         {
-            base.OnMouseDoubleClick (e);
+            base.OnDoubleClick (e);
 
             var clicked_item = Items.FirstOrDefault (tp => tp.Bounds.Contains (e.Location));
 

@@ -8,11 +8,11 @@ namespace Modern.Forms
     public class LiteControlCollection : IList<LiteControl>
     {
         private readonly List<LiteControl> items = new List<LiteControl> ();
-        private readonly object owner;
+        private readonly LiteControl parent;
 
-        internal LiteControlCollection (object owner)
+        internal LiteControlCollection (LiteControl parent)
         {
-            this.owner = owner;
+            this.parent = parent;
         }
 
         public LiteControl this[int index] {
@@ -23,6 +23,7 @@ namespace Modern.Forms
 
                 items[index] = value;
                 SetUpItem (value);
+                parent.DoLayout ();
             }
         }
 
@@ -34,17 +35,7 @@ namespace Modern.Forms
         {
             items.Add (item);
             SetUpItem (item);
-        }
-
-        public LiteControl Add (string text)
-        {
-            var item = new LiteControl {
-                Text = text
-            };
-
-            Add (item);
-
-            return item;
+            parent.DoLayout ();
         }
 
         public void Clear ()
@@ -65,6 +56,7 @@ namespace Modern.Forms
         {
             items.Insert (index, item);
             SetUpItem (item);
+            parent.DoLayout ();
         }
 
         public bool Remove (LiteControl item)
@@ -77,29 +69,26 @@ namespace Modern.Forms
             if (index != -1)
                 RemoveAt (index);
 
+            parent.DoLayout ();
+
             return index != -1;
         }
 
         public void RemoveAt (int index)
         {
             var item = items[index];
-            var parent = item.ParentForm;
 
-            item.ParentForm = null;
+            item.Parent = null;
             items.RemoveAt (index);
 
-            if (parent != null)
-                parent.Invalidate ();
+            parent.DoLayout ();
         }
 
         IEnumerator IEnumerable.GetEnumerator () => items.GetEnumerator ();
 
         private void SetUpItem (LiteControl item)
         {
-            if (owner is LiteForm form) {
-                item.ParentForm = form;
-                form.DoLayout ();
-            }
+            item.Parent = parent;
         }
     }
 }

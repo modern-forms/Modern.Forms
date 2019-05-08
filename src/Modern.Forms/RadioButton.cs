@@ -12,7 +12,7 @@ namespace Modern.Forms
     // Hover style?
     // Pressed style?
     // GroupKey?
-    public class RadioButton : Control
+    public class RadioButton : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => style.BackgroundColor = ModernTheme.LightNeutralGray);
@@ -47,7 +47,7 @@ namespace Modern.Forms
 
         protected virtual void OnCheckedChanged (EventArgs e) => CheckedChanged?.Invoke (this, e);
 
-        protected override void OnClick (EventArgs e)
+        protected override void OnClick (MouseEventArgs e)
         {
             if (!Checked)
                 Checked = true;

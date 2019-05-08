@@ -7,17 +7,17 @@ using System.Windows.Forms;
 using Modern.Forms;
 using SkiaSharp;
 
-namespace Explorer
+namespace Explore
 {
-    public class LiteFormTest : LiteForm
+    public class LiteFormTest : ModernForm
     {
         private string current_directory;
 
-        private LiteRibbon ribbon;
-        private LiteTreeView tree;
-        private LiteListView view;
-        private LiteStatusBar statusbar;
-        private LiteModernFormTitleBar titlebar;
+        private Ribbon ribbon;
+        private TreeView tree;
+        private ListView view;
+        private StatusBar statusbar;
+        private ModernFormTitleBar titlebar;
 
         public LiteFormTest ()
         {
@@ -25,71 +25,72 @@ namespace Explorer
             Height = 720;
 
             // ListView
-            view = new LiteListView {
+            view = new ListView {
                 Dock = DockStyle.Fill
             };
 
             view.ItemDoubleClicked += View_ItemDoubleClicked;
-            LiteControls.Add (view);
+            Controls.Add (view);
 
             // TreeControl
-            tree = new LiteTreeView {
+            tree = new TreeView {
                 Dock = DockStyle.Left
             };
 
             tree.ItemSelected += Tree_ItemSelected;
-            LiteControls.Add (tree);
+            Controls.Add (tree);
 
             // RibbonControl
-            ribbon = new LiteRibbon ();
+            ribbon = new Ribbon ();
 
             var home_tab = ribbon.AddTabPage ("Home");
 
-            var group1 = new LiteRibbonItemGroup { Text = "Home" };
+            var group1 = new RibbonItemGroup { Text = "Home" };
 
-            group1.Items.Add (new LiteRibbonItem ("Parent Folder", ImageLoader.Get ("folder-up.png"), new EventHandler (ParentFolder_Clicked)));
+            group1.Items.Add (new RibbonItem ("Parent Folder", ImageLoader.Get ("folder-up.png"), new EventHandler (ParentFolder_Clicked)));
 
-            var group2 = new LiteRibbonItemGroup { Text = "Actions" };
+            var group2 = new RibbonItemGroup { Text = "Actions" };
 
-            group2.Items.Add (new LiteRibbonItem ("New Folder", ImageLoader.Get ("folder-add.png"), new EventHandler (NotImplemented_Clicked)));
-            group2.Items.Add (new LiteRibbonItem ("Search", ImageLoader.Get ("search.png"), new EventHandler (NotImplemented_Clicked)));
-            group2.Items.Add (new LiteRibbonItem ("Delete", ImageLoader.Get ("delete-red.png"), new EventHandler (ShowButtonForm_Clicked)));
+            group2.Items.Add (new RibbonItem ("New Folder", ImageLoader.Get ("folder-add.png"), new EventHandler (NotImplemented_Clicked)));
+            group2.Items.Add (new RibbonItem ("Search", ImageLoader.Get ("search.png"), new EventHandler (NotImplemented_Clicked)));
+            group2.Items.Add (new RibbonItem ("Delete", ImageLoader.Get ("delete-red.png"), new EventHandler (ShowButtonForm_Clicked)));
 
             home_tab.Groups.Add (group1);
             home_tab.Groups.Add (group2);
 
             var share_tab = ribbon.AddTabPage ("Share");
-            var share_group = new LiteRibbonItemGroup { Text = "Send" };
+            var share_group = new RibbonItemGroup { Text = "Send" };
 
-            share_group.Items.Add (new LiteRibbonItem ("Email", ImageLoader.Get ("mail.png"), new EventHandler (NotImplemented_Clicked)));
-            share_group.Items.Add (new LiteRibbonItem ("Zip", ImageLoader.Get ("compress.png"), new EventHandler (NotImplemented_Clicked)));
-            share_group.Items.Add (new LiteRibbonItem ("Burn DVD", ImageLoader.Get ("cd-burn.png"), new EventHandler (NotImplemented_Clicked)));
-            share_group.Items.Add (new LiteRibbonItem ("Print", ImageLoader.Get ("print.png"), new EventHandler (NotImplemented_Clicked)));
+            share_group.Items.Add (new RibbonItem ("Email", ImageLoader.Get ("mail.png"), new EventHandler (NotImplemented_Clicked)));
+            share_group.Items.Add (new RibbonItem ("Zip", ImageLoader.Get ("compress.png"), new EventHandler (NotImplemented_Clicked)));
+            share_group.Items.Add (new RibbonItem ("Burn DVD", ImageLoader.Get ("cd-burn.png"), new EventHandler (NotImplemented_Clicked)));
+            share_group.Items.Add (new RibbonItem ("Print", ImageLoader.Get ("print.png"), new EventHandler (NotImplemented_Clicked)));
 
             share_tab.Groups.Add (share_group);
 
             var view_tab = ribbon.AddTabPage ("View");
-            var group3 = new LiteRibbonItemGroup { Text = "Themes" };
-            group3.Items.Add (new LiteRibbonItem ("Default", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
-            group3.Items.Add (new LiteRibbonItem ("Green", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
-            group3.Items.Add (new LiteRibbonItem ("Orange", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
-            group3.Items.Add (new LiteRibbonItem ("Purple", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
-            group3.Items.Add (new LiteRibbonItem ("Hotdog Stand", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
+            var group3 = new RibbonItemGroup { Text = "Themes" };
+            group3.Items.Add (new RibbonItem ("Default", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
+            group3.Items.Add (new RibbonItem ("Green", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
+            group3.Items.Add (new RibbonItem ("Orange", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
+            group3.Items.Add (new RibbonItem ("Purple", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
+            group3.Items.Add (new RibbonItem ("Hotdog Stand", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
 
             view_tab.Groups.Add (group3);
 
-            LiteControls.Add (ribbon);
+            Controls.Add (ribbon);
 
             // StatusBar
-            statusbar = new LiteStatusBar ();
+            statusbar = new StatusBar ();
 
-            LiteControls.Add (statusbar);
+            Controls.Add (statusbar);
 
-            titlebar = new LiteModernFormTitleBar {
-                Text = "Button Style Sample"
+            titlebar = new ModernFormTitleBar {
+                Text = "Button Style Sample",
+                Image = ImageLoader.Get ("layout-folder-pane.png")
             };
 
-            LiteControls.Add (titlebar);
+            Controls.Add (titlebar);
 
             // Populate the drive list
             foreach (var drive in DriveInfo.GetDrives ().Where (d => d.IsReady))
@@ -103,7 +104,7 @@ namespace Explorer
             DoLayout ();
         }
 
-        private void Tree_ItemSelected (object sender, EventArgs<LiteTreeViewItem> e)
+        private void Tree_ItemSelected (object sender, EventArgs<TreeViewItem> e)
         {
             var drive = (DriveInfo)e.Value.Tag;
 
@@ -111,7 +112,7 @@ namespace Explorer
                 SetSelectedDirectory (drive.Name);
         }
 
-        private void View_ItemDoubleClicked (object sender, EventArgs<LiteListViewItem> e)
+        private void View_ItemDoubleClicked (object sender, EventArgs<ListViewItem> e)
         {
             var item = e.Value;
 
@@ -125,19 +126,16 @@ namespace Explorer
 
             view.Items.Clear ();
 
-            var directories = 0;
-            var files = 0;
-
             try {
                 foreach (var d in Directory.EnumerateDirectories (directory).Take (30))
-                    view.Items.Add (new LiteListViewItem { Text = Path.GetFileName (d), Image = ImageLoader.Get ("folder-closed.png"), Tag = "Directory" });
+                    view.Items.Add (new ListViewItem { Text = Path.GetFileName (d), Image = ImageLoader.Get ("folder-closed.png"), Tag = "Directory" });
 
-                directories = view.Items.Count;
+                var directories = view.Items.Count;
 
                 foreach (var f in Directory.EnumerateFiles (directory).Take (50))
-                    view.Items.Add (new LiteListViewItem { Text = Path.GetFileName (f), Image = ImageLoader.Get ("new.png") });
+                    view.Items.Add (new ListViewItem { Text = Path.GetFileName (f), Image = ImageLoader.Get ("new.png") });
 
-                files = view.Items.Count - directories;
+                var files = view.Items.Count - directories;
 
                 statusbar.Text = $"{directories} directories, {files} files";
                 statusbar.Invalidate ();
@@ -150,8 +148,8 @@ namespace Explorer
 
             view.Invalidate ();
 
-            Text = "Explorer Sample - " + directory;
-            titlebar.Text = "Explorer Sample - " + directory;
+            Text = "Explore Sample - " + directory;
+            titlebar.Text = "Explore Sample - " + directory;
             titlebar.Invalidate ();
         }
 

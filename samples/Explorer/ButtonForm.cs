@@ -4,7 +4,7 @@ using System.Text;
 using Modern.Forms;
 using SkiaSharp;
 
-namespace Explorer
+namespace Explore
 {
     public class ButtonForm : ModernForm
     {

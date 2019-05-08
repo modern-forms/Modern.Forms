@@ -10,7 +10,7 @@ namespace Modern.Forms
     // Image
     // IsDefault?
     // TextAlign/ImageAlign
-    public class Button : Control
+    public class Button : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
             (style) => style.Border.Width = 1);
@@ -29,9 +29,9 @@ namespace Modern.Forms
 
         public Button ()
         {
-            SetControlBehavior (ControlBehaviors.Hoverable);
+            //SetControlBehavior (ControlBehaviors.Hoverable);
 
-            Cursor = Cursors.Hand;
+            //Cursor = Cursors.Hand;
         }
 
         protected override void OnPaint (SKPaintEventArgs e)
@@ -43,8 +43,7 @@ namespace Modern.Forms
 
         public void PerformClick ()
         {
-            if (CanSelect)
-                OnClick (EventArgs.Empty);
+            OnClick (new MouseEventArgs (MouseButtons.Left, 1, 0, 0 ,0));
         }
 
         // TODO: Button.NotifyDefault

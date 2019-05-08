@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using Modern.Forms;
 
-namespace Explorer
+namespace Explore
 {
     public partial class MainForm : ModernForm
     {
@@ -14,7 +14,7 @@ namespace Explorer
 
         private void InitializeComponent ()
         {
-            SuspendLayout ();
+            //SuspendLayout ();
 
             // ListView
             view = new ListView {
@@ -79,13 +79,13 @@ namespace Explorer
 
             // TitleBar
             titlebar = new ModernFormTitleBar {
-                Text = "Explorer Sample",
+                Text = "Explore Sample",
                 Image = ImageLoader.Get ("layout-folder-pane.png")
             };
 
             Controls.Add (titlebar);
 
-            ResumeLayout ();
+            //ResumeLayout ();
         }
     }
 }

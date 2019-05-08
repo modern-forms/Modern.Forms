@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class ListBox : Control
+    public class ListBox : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {

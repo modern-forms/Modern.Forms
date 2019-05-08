@@ -10,7 +10,7 @@ namespace Modern.Forms
     // TextAlign/CheckAlign
     // Hover style?
     // Pressed style?
-    public class CheckBox : Control
+    public class CheckBox : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => style.BackgroundColor = ModernTheme.LightNeutralGray);
@@ -23,7 +23,7 @@ namespace Modern.Forms
 
         public CheckBox ()
         {
-            Cursor = Cursors.Hand;
+            //Cursor = Cursors.Hand;
         }
 
         protected override Size DefaultSize => new Size (104, 24);
@@ -41,7 +41,7 @@ namespace Modern.Forms
 
         protected virtual void OnCheckedChanged (EventArgs e) => CheckedChanged?.Invoke (this, e);
 
-        protected override void OnClick (EventArgs e)
+        protected override void OnClick (MouseEventArgs e)
         {
             Checked = !Checked;
 

@@ -72,6 +72,9 @@ namespace Modern.Forms
 
         public static void DrawCenteredText (this SKCanvas canvas, string text, SKTypeface font, int fontsize, int x, int y, SKColor color)
         {
+            if (string.IsNullOrWhiteSpace (text))
+                return;
+
             using (var paint = CreateTextPaint (font, fontsize, color))
                 canvas.DrawText (text, x, y, paint);
         }

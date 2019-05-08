@@ -7,7 +7,7 @@ using System.Windows.Forms;
 namespace Modern.Forms
 {
     // TODO: Base class should be ScrollableControl
-    public class Panel : Control
+    public class Panel : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 
@@ -17,7 +17,7 @@ namespace Modern.Forms
         {
             TabStop = false;
 
-            SetStyle (ControlStyles.Selectable, false);
+            //SetStyle (ControlStyles.Selectable, false);
         }
 
         protected override Size DefaultSize => new Size (200, 100);
@@ -26,7 +26,7 @@ namespace Modern.Forms
         {
             var size = Size.Empty;
 
-            foreach (Control child in Controls) {
+            foreach (var child in Controls) {
                 if (child.Dock == DockStyle.Fill) {
                     if (child.Bounds.Right > size.Width)
                         size.Width = child.Bounds.Right;

@@ -8,7 +8,7 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class ModernFormTitleBar : Control
+    public class ModernFormTitleBar : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
            (style) => style.BackgroundColor = ModernTheme.RibbonColor);
@@ -34,9 +34,9 @@ namespace Modern.Forms
             Dock = DockStyle.Top;
         }
 
-        protected override void OnMouseClick (MouseEventArgs e)
+        protected override void OnClick (MouseEventArgs e)
         {
-            base.OnMouseClick (e);
+            base.OnClick (e);
 
             if (close_button_bounds.Contains (e.Location))
                 FindForm ().Close ();
@@ -52,7 +52,7 @@ namespace Modern.Forms
                 // Start drag-moving the window
                 is_dragging = true;
                 drag_start_location = FindForm ().Location;
-                drag_start_mouse_location = PointToScreen (e.Location);
+                drag_start_mouse_location = FindForm ().PointToScreen (e.Location);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Modern.Forms
             SetMinimizeHover (minimize_button_bounds.Contains (e.Location));
 
             if (is_dragging) {
-                var screen = PointToScreen (e.Location);
+                var screen = FindForm ().PointToScreen (e.Location);
                 var delta_x = screen.X - drag_start_mouse_location.X;
                 var delta_y = screen.Y - drag_start_mouse_location.Y;
 

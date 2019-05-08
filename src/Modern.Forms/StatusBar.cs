@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class StatusBar : Control
+    public class StatusBar : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
@@ -20,7 +20,7 @@ namespace Modern.Forms
 
         public StatusBar ()
         {
-            Dock = System.Windows.Forms.DockStyle.Bottom;
+            Dock = DockStyle.Bottom;
         }
 
         protected override void OnPaint (SKPaintEventArgs e)

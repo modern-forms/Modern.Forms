@@ -9,7 +9,7 @@ namespace Modern.Forms
     // Fix bug where you can't scroll to maximum
     // Timer based repeat
     // Mouse wheel
-    public abstract class ScrollBarControl : Control
+    public abstract class ScrollBarControl : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => style.BackgroundColor = ModernTheme.NeutralGray);
@@ -127,13 +127,13 @@ namespace Modern.Forms
 
                     OnValueChanged (EventArgs.Empty);
 
-                    if (IsHandleCreated) {
+                    //if (IsHandleCreated) {
                         var thumb_rect = thumb_pos;
 
                         UpdateThumbPos ((vertical ? thumb_area.Y : thumb_area.X) + (int)(((float)(position - minimum)) * pixel_per_pos), false, false);
 
                         MoveThumb (thumb_rect, vertical ? thumb_pos.Y : thumb_pos.X);
-                    }
+                    //}
                 }
             }
         }
@@ -167,14 +167,14 @@ namespace Modern.Forms
             return ScrollBarElement.None;
         }
 
-        protected override void OnHandleCreated (System.EventArgs e)
-        {
-            base.OnHandleCreated (e);
+        //protected override void OnHandleCreated (System.EventArgs e)
+        //{
+        //    base.OnHandleCreated (e);
 
-            CalcButtonSizes ();
-            CalcThumbArea ();
-            UpdateThumbPos (thumb_area.Y + (int)(((float)(position - minimum)) * pixel_per_pos), true, false);
-        }
+        //    CalcButtonSizes ();
+        //    CalcThumbArea ();
+        //    UpdateThumbPos (thumb_area.Y + (int)(((float)(position - minimum)) * pixel_per_pos), true, false);
+        //}
 
         protected override void OnMouseDown (MouseEventArgs e)
         {
@@ -304,7 +304,7 @@ namespace Modern.Forms
         {
             Invalidate ();
             //Invalidate (dirty);
-            Update ();
+            //Update ();
             dirty = Rectangle.Empty;
         }
 
@@ -387,7 +387,7 @@ namespace Modern.Forms
                 //XplatUI.ScrollWindow (Handle, original_thumbpos, delta, 0, false);
             }
 
-            Update ();
+            //Update ();
         }
 
         private void UpdatePos (int newPos, bool update_thumbpos)

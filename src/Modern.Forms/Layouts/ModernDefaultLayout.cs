@@ -38,8 +38,8 @@ namespace System.Windows.Forms.Layout
 	{
         public override bool Layout (object container, LayoutEventArgs args)
         {
-            var parent = container as LiteForm;
-            var controls = parent.LiteControls.ToArray ();
+            var parent = container as LiteControl;
+            var controls = parent.Controls.ToArray ();
 
             LayoutDockedChildren (parent, controls);
            // LayoutAnchoredChildren (parent, controls);
@@ -51,9 +51,9 @@ namespace System.Windows.Forms.Layout
             return false;
         }
 
-        void LayoutDockedChildren (Control parent, LiteControl[] controls)
+        void LayoutDockedChildren (LiteControl parent, LiteControl[] controls)
 		{
-			var space = parent.DisplayRectangle;
+			var space = parent.ClientBounds;
 			
 			// Deal with docking; go through in reverse, MS docs say that lowest Z-order is closest to edge
 			for (var i = controls.Length - 1; i >= 0; i--) {

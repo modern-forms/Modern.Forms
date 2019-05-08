@@ -18,11 +18,11 @@ namespace Modern.Forms
 
         protected override Rectangle DecrementArrowBounds => new Rectangle (0, 0, Width, scrollbutton_height);
 
-        protected override Rectangle IncrementArrowBounds => new Rectangle (0, ClientRectangle.Height - scrollbutton_height, Width, scrollbutton_height);
+        protected override Rectangle IncrementArrowBounds => new Rectangle (0, ClientBounds.Height - scrollbutton_height, Width, scrollbutton_height);
 
         protected override Rectangle DecrementTrackBounds => new Rectangle (0, scrollbutton_height + 1, Width, ThumbBounds.Top - 1);
 
-        protected override Rectangle IncrementTrackBounds => new Rectangle (0, ThumbBounds.Bottom + 1, Width, ClientRectangle.Height - scrollbutton_height - ThumbBounds.Bottom);
+        protected override Rectangle IncrementTrackBounds => new Rectangle (0, ThumbBounds.Bottom + 1, Width, ClientBounds.Height - scrollbutton_height - ThumbBounds.Bottom);
 
         protected override ArrowDirection DecrementArrowDirection => ArrowDirection.Up;
 

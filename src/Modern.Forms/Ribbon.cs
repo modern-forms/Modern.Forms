@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class Ribbon : Control
+    public class Ribbon : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
             (style) => {
@@ -69,12 +69,12 @@ namespace Modern.Forms
         {
             base.OnMouseLeave (e);
 
-            SetHighlight ((RibbonItem)null);
+            SetHighlight (null);
         }
 
-        protected override void OnMouseClick (MouseEventArgs e)
+        protected override void OnClick (MouseEventArgs e)
         {
-            base.OnMouseClick (e);
+            base.OnClick (e);
 
             var clicked_item = GetItemAtPosition (e.Location);
 

@@ -9,7 +9,7 @@ namespace Modern.Forms
     // AutoEllipsis
     // Image
     // TextAlign/ImageAlign
-    public class Label : Control
+    public class Label : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 

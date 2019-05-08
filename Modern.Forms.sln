@@ -7,12 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "System.CoreFX.Forms", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modern.Forms", "src\Modern.Forms\Modern.Forms.csproj", "{384E4147-2CA3-46DB-A4F9-2A6EB118B527}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Explorer", "samples\Explorer\Explorer.csproj", "{0E141F62-EC4C-4DBD-9258-FAD4421DB8B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Explore", "samples\Explorer\Explore.csproj", "{0E141F62-EC4C-4DBD-9258-FAD4421DB8B1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{307D56E2-8989-4C52-BFD7-E7A62E262280}"
 	ProjectSection(SolutionItems) = preProject
 		controls.txt = controls.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlGallery", "samples\ControlGallery\ControlGallery.csproj", "{CCA86CCB-49D3-43C7-8A5D-346953F2375D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{0E141F62-EC4C-4DBD-9258-FAD4421DB8B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E141F62-EC4C-4DBD-9258-FAD4421DB8B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E141F62-EC4C-4DBD-9258-FAD4421DB8B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA86CCB-49D3-43C7-8A5D-346953F2375D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA86CCB-49D3-43C7-8A5D-346953F2375D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA86CCB-49D3-43C7-8A5D-346953F2375D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA86CCB-49D3-43C7-8A5D-346953F2375D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class TreeView : Control
+    public class TreeView : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
@@ -66,9 +66,9 @@ namespace Modern.Forms
                 item.OnPaint (e.Canvas);
         }
 
-        protected override void OnMouseClick (MouseEventArgs e)
+        protected override void OnClick (MouseEventArgs e)
         {
-            base.OnMouseClick (e);
+            base.OnClick (e);
 
             if (!Enabled || !e.Button.HasFlag (MouseButtons.Left))
                 return;
@@ -78,7 +78,7 @@ namespace Modern.Forms
 
         private void LayoutItems ()
         {
-            var item_bounds = ClientRectangle;
+            var item_bounds = ClientBounds;
 
             item_bounds.Width -= 1;
 

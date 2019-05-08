@@ -4,7 +4,7 @@ using System.Linq;
 using Modern.Forms;
 using SkiaSharp;
 
-namespace Explorer
+namespace Explore
 {
     public partial class MainForm : ModernForm
     {
@@ -71,8 +71,8 @@ namespace Explorer
 
             view.Invalidate ();
 
-            Text = "Explorer Sample - " + directory;
-            titlebar.Text = "Explorer Sample - " + directory;
+            Text = "Explore Sample - " + directory;
+            titlebar.Text = "Explore Sample - " + directory;
             titlebar.Invalidate ();
         }
 

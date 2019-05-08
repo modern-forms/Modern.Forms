@@ -2272,14 +2272,14 @@ namespace System.Windows.Forms {
 					IntPtr window = XplatUI.GetFocus ();
 					Control c = Control.FromHandle (window);
 					if (c is Button && c.FindForm () == this) {
-						((Button)c).PerformClick ();
+						//((Button)c).PerformClick ();
 						return true;
 					}
 					else if (accept_button != null) {
 						// Set ActiveControl to force any Validation to take place.
-						ActiveControl = (accept_button as Control);
-						if (ActiveControl == accept_button) // else Validation failed
-							accept_button.PerformClick();
+						//ActiveControl = (accept_button as Control);
+						//if (ActiveControl == accept_button) // else Validation failed
+						//	accept_button.PerformClick();
 						return true;
 					}
 				} else if (keyData == Keys.Escape && cancel_button != null) {
@@ -2921,8 +2921,8 @@ namespace System.Windows.Forms {
 			if (accept_button != null) {
 				Button a_button = accept_button as Button;
 
-				if (ActiveControl == a_button)
-					return;
+				//if (ActiveControl == a_button)
+				//	return;
 				
 				// If the accept_button isn't a Button, we don't need to do
 				// the rest of this.
