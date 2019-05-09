@@ -26,6 +26,8 @@ namespace Modern.Forms
         private SKBitmap back_buffer;
         private ControlBehaviors behaviors;
         private LiteControl current_mouse_in;
+        private bool is_captured;
+        private Rectangle bounds;
 
         public virtual ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
@@ -43,16 +45,22 @@ namespace Modern.Forms
             Height = DefaultSize.Height;
         }
 
+        public event EventHandler LocationChanged;
+        public event EventHandler SizeChanged;
+
         public virtual AnchorStyles Anchor { get; set; } = AnchorStyles.Left | AnchorStyles.Top;
 
-        public Rectangle Bounds => new Rectangle (Left, Top, Width, Height);
+        public Rectangle Bounds {
+            get => bounds;
+            set => SetBounds (value.Left, value.Top, value.Width, value.Height);
+        }
 
         public Rectangle ClientBounds {
             get {
-                var x = Style.Border.Left.GetWidth ();
-                var y = Style.Border.Top.GetWidth ();
-                var w = Width - Style.Border.Right.GetWidth () - x;
-                var h = Height - Style.Border.Bottom.GetWidth () - y;
+                var x = CurrentStyle.Border.Left.GetWidth ();
+                var y = CurrentStyle.Border.Top.GetWidth ();
+                var w = Width - CurrentStyle.Border.Right.GetWidth () - x;
+                var h = Height - CurrentStyle.Border.Bottom.GetWidth () - y;
                 return new Rectangle (x, y, w, h);
             }
         }
@@ -69,7 +77,10 @@ namespace Modern.Forms
 
         public bool Enabled { get; set; } = true;
 
-        public int Height { get; set; }
+        public int Height {
+            get => bounds.Height;
+            set => SetBounds (bounds.X, bounds.Y, bounds.Width, value, BoundsSpecified.Height);
+        }
 
         public void Invalidate ()
         {
@@ -93,19 +104,35 @@ namespace Modern.Forms
             return Parent?.FindForm ();
         }
 
-        public int Left { get; set; }
+        public int Left {
+            get => bounds.Left;
+            set => SetBounds (value, bounds.Y, bounds.Width, bounds.Height, BoundsSpecified.X);
+        }
+        public Point Location {
+            get => bounds.Location;
+            set => SetBounds (value.X, value.Y, bounds.Width, bounds.Height, BoundsSpecified.Location);
+        }
 
         public LiteControl Parent { get; set; }
 
-        public Size Size => new Size (Width, Height);
+        public Size Size {
+            get => bounds.Size;
+            set => SetBounds (bounds.X, bounds.Y, value.Width, value.Height, BoundsSpecified.Size);
+        }
 
         public bool TabStop { get; set; } = true;
 
-        public int Top { get; set; }
+        public int Top {
+            get => bounds.Top;
+            set => SetBounds (bounds.X, value, bounds.Width, bounds.Height, BoundsSpecified.Y);
+        }
 
         public string Text { get; set; }
 
-        public int Width { get; set; }
+        public int Width {
+            get => bounds.Width;
+            set => SetBounds (bounds.X, bounds.Y, value, bounds.Height, BoundsSpecified.Width);
+        }
 
         protected virtual Size DefaultSize => Size.Empty;
 
@@ -149,18 +176,40 @@ namespace Modern.Forms
         {
         }
 
+        protected virtual void OnLocationChanged (EventArgs e) => LocationChanged?.Invoke (this, e);
+
         internal void RaiseMouseDown (MouseEventArgs e)
         {
             var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseDown (MouseEventsForControl (e, child));
-            else
+            else {
+                Capture = true;
                 OnMouseDown (e);
+            }
         }
 
         protected virtual void OnMouseDown (MouseEventArgs e)
         {
+        }
+
+        internal void RaiseMouseEnter (MouseEventArgs e)
+        {
+            var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
+
+            if (child != null)
+                child.RaiseMouseEnter (MouseEventsForControl (e, child));
+            else
+                OnMouseEnter (e);
+        }
+
+        protected virtual void OnMouseEnter (MouseEventArgs e)
+        {
+            if (behaviors.HasFlag (ControlBehaviors.Hoverable)) {
+                IsHovering = true;
+                Invalidate ();
+            }
         }
 
         internal void RaiseMouseLeave (EventArgs e)
@@ -175,14 +224,31 @@ namespace Modern.Forms
 
         protected virtual void OnMouseLeave (EventArgs e)
         {
+            if (behaviors.HasFlag (ControlBehaviors.Hoverable)) {
+                IsHovering = false;
+                Invalidate ();
+            }
         }
 
         internal void RaiseMouseMove (MouseEventArgs e)
         {
+            // If something has the mouse captured, they get all the events
+            var captured = Controls.FirstOrDefault (c => c.is_captured);
+
+            if (captured != null) {
+                captured.RaiseMouseMove (MouseEventsForControl (e, captured));
+                return;
+            }
+
             var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
 
-            if (current_mouse_in != null && current_mouse_in != child)
+            if (current_mouse_in != null && current_mouse_in != child) {
                 current_mouse_in.RaiseMouseLeave (e);
+                current_mouse_in = null;
+            }
+
+            if (current_mouse_in == null && child != null)
+                child.RaiseMouseEnter (MouseEventsForControl (e, child));
 
             current_mouse_in = child;
 
@@ -198,12 +264,22 @@ namespace Modern.Forms
 
         internal void RaiseMouseUp (MouseEventArgs e)
         {
+            // If something has the mouse captured, they get all the events
+            var captured = Controls.FirstOrDefault (c => c.is_captured);
+
+            if (captured != null) {
+                captured.RaiseMouseUp (MouseEventsForControl (e, captured));
+                return;
+            }
+
             var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseUp (MouseEventsForControl (e, child));
-            else
+            else {
+                Capture = false;
                 OnMouseUp (e);
+            }
         }
 
         protected virtual void OnMouseUp (MouseEventArgs e)
@@ -231,6 +307,8 @@ namespace Modern.Forms
                 e.Canvas.DrawBitmap (buffer, control.Left, control.Top);
             }
         }
+
+        protected virtual void OnSizeChanged (EventArgs e) => SizeChanged?.Invoke (this, e);
 
         protected void SetControlBehavior (ControlBehaviors behavior, bool value = true)
         {
@@ -270,10 +348,29 @@ namespace Modern.Forms
 
         public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
         {
-            Left = x;
-            Top = y;
-            Width = width;
-            Height = height;
+            var moved = bounds.X != x || bounds.Y != y;
+            var resized = bounds.Width != width || bounds.Height != height;
+
+            bounds.X = x;
+            bounds.Y = y;
+            bounds.Width = width;
+            bounds.Height = height;
+
+            if (moved)
+                OnLocationChanged (EventArgs.Empty);
+
+            if (resized)
+                OnSizeChanged (EventArgs.Empty);
+        }
+
+        public bool Capture {
+            get => is_captured;
+            set {
+                is_captured = value;
+
+                if (Parent != null)
+                    Parent.Capture = value;
+            }
         }
 
         #region IDisposable Support

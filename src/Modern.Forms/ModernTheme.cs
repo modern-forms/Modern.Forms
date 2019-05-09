@@ -20,11 +20,12 @@ namespace Modern.Forms
             values["RibbonColor"] = new SKColor (16, 110, 190);
             values["DarkTextColor"] = SKColors.Black;
             values["LightTextColor"] = SKColors.White;
-            values["FormBackgroundColor"] = new SKColor (251, 251, 251);
+            values["FormBackgroundColor"] = new SKColor (240, 240, 240);
             values["FormCloseHighlightColor"] = new SKColor (232, 17, 35);
             values["RibbonTabHighlightColor"] = new SKColor (42, 138, 208);
             values["RibbonItemHighlightColor"] = new SKColor (198, 198, 198);
             values["RibbonItemSelectedColor"] = new SKColor (176, 176, 176);
+            values["DarkNeutralGray"] = new SKColor (225, 225, 225);
             values["NeutralGray"] = new SKColor (240, 240, 240);
             values["LightNeutralGray"] = new SKColor (251, 251, 251);
             values["BorderGray"] = new SKColor (171, 171, 171);
@@ -71,6 +72,11 @@ namespace Modern.Forms
         public static SKColor RibbonItemSelectedColor {
             get => GetValue<SKColor> ("RibbonItemSelectedColor");
             set => SetValue ("RibbonItemSelectedColor", value);
+        }
+
+        public static SKColor DarkNeutralGray {
+            get => GetValue<SKColor> ("DarkNeutralGray");
+            set => SetValue ("DarkNeutralGray", value);
         }
 
         public static SKColor NeutralGray {

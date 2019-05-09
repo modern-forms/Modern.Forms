@@ -12,7 +12,7 @@ namespace Modern.Forms
     public abstract class ScrollBarControl : LiteControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => style.BackgroundColor = ModernTheme.NeutralGray);
+            (style) => style.BackgroundColor = ModernTheme.DarkNeutralGray);
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
@@ -42,6 +42,9 @@ namespace Modern.Forms
 
         public ScrollBarControl ()
         {
+            CalcButtonSizes ();
+            CalcThumbArea ();
+            UpdateThumbPos (thumb_area.Y + (int)(((float)(position - minimum)) * pixel_per_pos), true, false);
         }
 
         public event ScrollEventHandler Scroll;
@@ -167,14 +170,14 @@ namespace Modern.Forms
             return ScrollBarElement.None;
         }
 
-        //protected override void OnHandleCreated (System.EventArgs e)
-        //{
-        //    base.OnHandleCreated (e);
+        protected override void OnSizeChanged (EventArgs e)
+        {
+            base.OnSizeChanged (e);
 
-        //    CalcButtonSizes ();
-        //    CalcThumbArea ();
-        //    UpdateThumbPos (thumb_area.Y + (int)(((float)(position - minimum)) * pixel_per_pos), true, false);
-        //}
+            CalcButtonSizes ();
+            CalcThumbArea ();
+            UpdateThumbPos (thumb_area.Y + (int)(((float)(position - minimum)) * pixel_per_pos), true, false);
+        }
 
         protected override void OnMouseDown (MouseEventArgs e)
         {

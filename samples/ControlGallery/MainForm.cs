@@ -68,10 +68,32 @@ namespace ControlGallery
         private Panel CreatePanel (string text)
         {
             switch (text) {
+                case "Button":
+                    return new ButtonPanel ();
                 case "CheckBox":
                     return new CheckBoxPanel ();
+                case "Label":
+                    return new LabelPanel ();
+                case "ListBox":
+                    return new ListBoxPanel ();
+                case "ListView":
+                    return new ListViewPanel ();
+                case "Panel":
+                    return new PanelPanel ();
                 case "RadioButton":
                     return new RadioButtonPanel ();
+                case "Ribbon":
+                    return new RibbonPanel ();
+                case "ScrollBar":
+                    return new ScrollBarPanel ();
+                case "StatusBar":
+                    return new StatusBarPanel ();
+                case "TabStrip":
+                    return new TabStripPanel ();
+                case "TitleBar":
+                    return new TitleBarPanel ();
+                case "TreeView":
+                    return new TreeViewPanel ();
             }
 
             return null;

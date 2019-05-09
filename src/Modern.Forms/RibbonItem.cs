@@ -22,7 +22,7 @@ namespace Modern.Forms
         {
         }
 
-        public RibbonItem (string text, SKBitmap image, EventHandler onClick)
+        public RibbonItem (string text, SKBitmap image = null, EventHandler onClick = null)
         {
             Text = text;
             Image = image;

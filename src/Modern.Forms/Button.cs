@@ -29,9 +29,9 @@ namespace Modern.Forms
 
         public Button ()
         {
-            //SetControlBehavior (ControlBehaviors.Hoverable);
+            SetControlBehavior (ControlBehaviors.Hoverable);
 
-            //Cursor = Cursors.Hand;
+            Cursor = Cursors.Hand;
         }
 
         protected override void OnPaint (SKPaintEventArgs e)

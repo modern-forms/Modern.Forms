@@ -23,9 +23,8 @@ namespace Modern.Forms
 
         internal void DrawItem (SKCanvas canvas)
         {
-            var background_color = Selected ? ModernTheme.RibbonItemHighlightColor : ModernTheme.FormBackgroundColor;
-
-            canvas.FillRectangle (Bounds, background_color);
+            if (Selected)
+                canvas.FillRectangle (Bounds, ModernTheme.RibbonItemHighlightColor);
 
             if (Image != null)
                 canvas.DrawBitmap (Image, Bounds.Left + (Bounds.Width - 32) / 2, Bounds.Top + 3);

@@ -11,7 +11,7 @@ namespace Modern.Forms
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
                 style.BackgroundColor = ModernTheme.LightNeutralGray;
-                style.Border.Right.Width = 1;
+                style.Border.Width = 1;
             });
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
@@ -78,11 +78,7 @@ namespace Modern.Forms
 
         private void LayoutItems ()
         {
-            var item_bounds = ClientBounds;
-
-            item_bounds.Width -= 1;
-
-            layout_engine.Layout (item_bounds, Items.Cast<ILayoutable> ());
+            layout_engine.Layout (ClientBounds, Items.Cast<ILayoutable> ());
         }
     }
 }

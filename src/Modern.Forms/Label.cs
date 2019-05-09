@@ -15,6 +15,8 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
+        private ContentAlignment text_align;
+
         protected override Size DefaultSize => new Size (100, 23);
 
         public Label ()
@@ -22,11 +24,24 @@ namespace Modern.Forms
             SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
         }
 
+        public ContentAlignment TextAlign {
+            get => text_align;
+            set {
+                if (text_align == value)
+                    return;
+
+                text_align = value;
+
+                Invalidate ();
+            }
+        }
+
         protected override void OnPaint (SKPaintEventArgs e)
         {
             base.OnPaint (e);
 
-            e.Canvas.DrawCenteredText (Text, Width / 2, 15, CurrentStyle);
+            if (!string.IsNullOrWhiteSpace (Text))
+                e.Canvas.DrawText (Text, ClientBounds, CurrentStyle, TextAlign);
         }
     }
 }
