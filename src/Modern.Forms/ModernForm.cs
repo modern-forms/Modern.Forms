@@ -51,6 +51,20 @@ namespace Modern.Forms
             }
         }
 
+        protected override void OnKeyDown (KeyEventArgs e)
+        {
+            base.OnKeyDown (e);
+
+            adapter.RaiseKeyDown (e);
+        }
+
+        protected override void OnKeyPress (KeyPressEventArgs e)
+        {
+            base.OnKeyPress (e);
+
+            adapter.RaiseKeyPress (e);
+        }
+
         protected override void OnPaint (SKPaintEventArgs e)
         {
             base.OnPaint (e);

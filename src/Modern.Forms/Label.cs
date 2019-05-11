@@ -22,6 +22,7 @@ namespace Modern.Forms
         public Label ()
         {
             SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
+            SetControlBehavior (ControlBehaviors.Selectable, false);
         }
 
         public ContentAlignment TextAlign {

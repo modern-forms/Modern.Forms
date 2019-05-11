@@ -19,6 +19,7 @@ namespace Modern.Forms
         {
             values["RibbonColor"] = new SKColor (16, 110, 190);
             values["DarkTextColor"] = SKColors.Black;
+            values["DisabledTextColor"] = new SKColor (190, 190, 190);
             values["LightTextColor"] = SKColors.White;
             values["FormBackgroundColor"] = new SKColor (240, 240, 240);
             values["FormCloseHighlightColor"] = new SKColor (232, 17, 35);
@@ -30,7 +31,7 @@ namespace Modern.Forms
             values["LightNeutralGray"] = new SKColor (251, 251, 251);
             values["BorderGray"] = new SKColor (171, 171, 171);
 
-            values["UIFont"] = SKTypeface.FromFamilyName ("Segoe UI", SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
+            values["UIFont"] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
             values["FontSize"] = 14;
         }
 
@@ -42,6 +43,11 @@ namespace Modern.Forms
         public static SKColor DarkTextColor {
             get => GetValue<SKColor> ("DarkTextColor");
             set => SetValue ("DarkTextColor", value);
+        }
+
+        public static SKColor DisabledTextColor {
+            get => GetValue<SKColor> ("DisabledTextColor");
+            set => SetValue ("DisabledTextColor", value);
         }
 
         public static SKColor LightTextColor {

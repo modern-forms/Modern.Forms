@@ -27,7 +27,9 @@ namespace Modern.Forms
         private ControlBehaviors behaviors;
         private LiteControl current_mouse_in;
         private bool is_captured;
+        private bool is_selected;
         private Rectangle bounds;
+        private string text;
 
         public virtual ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
@@ -43,8 +45,12 @@ namespace Modern.Forms
 
             Width = DefaultSize.Width;
             Height = DefaultSize.Height;
+
+            behaviors = ControlBehaviors.Selectable;
         }
 
+        public event EventHandler<KeyEventArgs> KeyDown;
+        public event EventHandler<KeyPressEventArgs> KeyPress;
         public event EventHandler LocationChanged;
         public event EventHandler SizeChanged;
 
@@ -53,6 +59,24 @@ namespace Modern.Forms
         public Rectangle Bounds {
             get => bounds;
             set => SetBounds (value.Left, value.Top, value.Width, value.Height);
+        }
+
+        public bool CanSelect {
+            get {
+                if (!behaviors.HasFlag (ControlBehaviors.Selectable))
+                    return false;
+
+                var parent = this;
+
+                while (parent != null) {
+                    if (!parent.Visible || !parent.Enabled)
+                        return false;
+
+                    parent = parent.Parent;
+                }
+
+                return true;
+            }
         }
 
         public Rectangle ClientBounds {
@@ -92,9 +116,30 @@ namespace Modern.Forms
             Invalidate ();
         }
 
+        public bool Contains (LiteControl control)
+        {
+            // Is control one of our children or grandchildren
+            while (control != null) {
+                control = control.Parent;
+
+                if (control == this)
+                    return true;
+            }
+
+            return false;
+        }
+
         public LiteControlCollection Controls { get; }
 
         public Cursor Cursor { get; set; }
+
+        public LiteControlAdapter FindAdapter ()
+        {
+            if (this is LiteControlAdapter adapter)
+                return adapter;
+
+            return Parent?.FindAdapter ();
+        }
 
         public ModernForm FindForm ()
         {
@@ -102,6 +147,20 @@ namespace Modern.Forms
                 return adapter.ParentForm;
 
             return Parent?.FindForm ();
+        }
+
+        public IContainerControl GetContainerControl ()
+        {
+            var current = this;
+
+            while (current != null) {
+                if (current is IContainerControl container)
+                    return container;
+
+                current = current.Parent;
+            }
+
+            return null;
         }
 
         public int Left {
@@ -120,6 +179,8 @@ namespace Modern.Forms
             set => SetBounds (bounds.X, bounds.Y, value.Width, value.Height, BoundsSpecified.Size);
         }
 
+        public int TabIndex { get; set; } = -1;
+
         public bool TabStop { get; set; } = true;
 
         public int Top {
@@ -127,7 +188,18 @@ namespace Modern.Forms
             set => SetBounds (bounds.X, value, bounds.Width, bounds.Height, BoundsSpecified.Y);
         }
 
-        public string Text { get; set; }
+        public string Text {
+            get => text;
+            set {
+                if (text == value)
+                    return;
+
+                text = value;
+
+                if (behaviors.HasFlag (ControlBehaviors.InvalidateOnTextChanged))
+                    Invalidate ();
+            }
+        }
 
         public int Width {
             get => bounds.Width;
@@ -144,6 +216,109 @@ namespace Modern.Forms
                 return e;
 
             return new MouseEventArgs (e.Button, e.Clicks, e.Location.X - control.Left, e.Location.Y - control.Top, e.Delta);
+        }
+
+        public bool Selected => is_selected;
+
+        public void Select ()
+        {
+            if (is_selected)
+                return;
+
+            is_selected = true;
+
+            var adapter = FindAdapter ();
+
+            if (adapter != null)
+                adapter.SelectedControl = this;
+
+            Invalidate ();
+        }
+
+        public bool SelectNextControl (LiteControl start, bool forward, bool tabStopOnly, bool nested, bool wrap)
+        {
+            LiteControl c;
+
+            if (!Contains (start) || (!nested && (start.Parent != this)))
+                start = null;
+
+            c = start;
+
+            do {
+                c = GetNextControl (c, forward);
+
+                if (c is null) {
+                    if (wrap) {
+                        wrap = false;
+                        continue;
+                    }
+
+                    break;
+                }
+
+                if (c.CanSelect && ((c.Parent == this) || nested) && (c.TabStop || !tabStopOnly)) {
+                    c.Select ();
+                    return true;
+                }
+
+            } while (c != start);
+
+            return false;
+        }
+
+        public LiteControl GetNextControl (LiteControl start, bool forward = true)
+        {
+            if (Controls.Count == 0)
+                return null;
+
+            // Ignore start control if it isn't our child/grandchild
+            if (!Contains (start))
+                start = null;
+
+            // If the start control is the only control, return null
+            if (start != null && Controls.Count == 1)
+                return null;
+
+            // See if we need recurse into the start control
+            var child_control = start?.GetNextControl (start, forward);
+
+            if (child_control != null)
+                return child_control;
+
+            // If this is a grandchild, we need to give the parent a chance to move next
+            while (start?.Parent != null && start?.Parent != this) {
+                var old_start = start;
+                start = start.Parent;
+
+                var child_control2 = start?.GetNextControl (old_start, forward);
+
+                if (child_control2 != null)
+                    return child_control2;
+            }
+
+            // Build an array sorted by TabIndex then element order (OrderBy is stable)
+            var array = Controls.OrderBy (c => c.TabIndex).ToList ();
+
+            // If we don't have a start control, just return the first or last control
+            if (start == null)
+                return forward ? array[0] : array[array.Count - 1];
+
+            var start_index = array.IndexOf (start);
+
+            // Find the "next" control in the array
+            if (forward && start_index + 1 < array.Count)
+                return array[start_index + 1];
+
+            if (!forward && start_index > 0)
+                return array[start_index - 1];
+
+            return null;
+        }
+
+        internal void Deselect ()
+        {
+            is_selected = false;
+            Invalidate ();
         }
 
         public bool Visible { get; set; } = true;
@@ -178,6 +353,37 @@ namespace Modern.Forms
 
         protected virtual void OnLocationChanged (EventArgs e) => LocationChanged?.Invoke (this, e);
 
+        internal void RaiseKeyDown (KeyEventArgs e)
+        {
+            if (this is LiteControlAdapter adapter) {
+                adapter.SelectedControl?.RaiseKeyDown (e);
+                return;
+            }
+
+            OnKeyDown (e);
+        }
+
+        protected virtual void OnKeyDown (KeyEventArgs e) => KeyDown?.Invoke (this, e);
+
+        internal void RaiseKeyPress (KeyPressEventArgs e)
+        {
+            if (this is LiteControlAdapter adapter) {
+                // Tab
+                if (e.KeyChar == 9) {
+                    SelectNextControl (adapter.SelectedControl, !XplatUI.State.ModifierKeys.HasFlag (Keys.Shift), true, true, true);
+                    e.Handled = true;
+                    return;
+                }
+
+                adapter.SelectedControl?.RaiseKeyPress (e);
+                return;
+            }
+
+            OnKeyPress (e);
+        }
+
+        protected virtual void OnKeyPress (KeyPressEventArgs e) => KeyPress?.Invoke (this, e);
+
         internal void RaiseMouseDown (MouseEventArgs e)
         {
             var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
@@ -185,6 +391,7 @@ namespace Modern.Forms
             if (child != null)
                 child.RaiseMouseDown (MouseEventsForControl (e, child));
             else {
+                Select ();
                 Capture = true;
                 OnMouseDown (e);
             }

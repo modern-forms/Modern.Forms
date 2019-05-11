@@ -6,6 +6,7 @@ namespace Modern.Forms
     public enum ControlBehaviors
     {
         Hoverable = 1,
-        InvalidateOnTextChanged = 2
+        InvalidateOnTextChanged = 2,
+        Selectable = 4
     }
 }

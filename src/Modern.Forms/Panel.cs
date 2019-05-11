@@ -17,7 +17,7 @@ namespace Modern.Forms
         {
             TabStop = false;
 
-            //SetStyle (ControlStyles.Selectable, false);
+            SetControlBehavior (ControlBehaviors.Selectable, false);
         }
 
         protected override Size DefaultSize => new Size (200, 100);

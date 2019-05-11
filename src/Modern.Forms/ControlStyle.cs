@@ -39,7 +39,7 @@ namespace Modern.Forms
 
         public SKTypeface Font { get; set; }
 
-        public SKTypeface GetFont () => Font ?? _parent.Font;
+        public SKTypeface GetFont () => Font ?? _parent.GetFont ();
 
         public int? FontSize { get; set; }
 

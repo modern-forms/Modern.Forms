@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using SkiaSharp;
+using SkiaSharp.HarfBuzz;
 
 namespace Modern.Forms
 {
@@ -23,6 +24,22 @@ namespace Modern.Forms
             })
                 canvas.DrawText (text, x, y, paint);
         }
+
+        //public static void DrawCharacters (this SKCanvas canvas, string text, SKTypeface font, int fontsize, int x, int y, SKColor color)
+        //{
+        //    var emoji = StringUtilities.GetUnicodeCharacterCode ("🚀", SKTextEncoding.Utf32);
+        //    font = SKFontManager.Default.MatchCharacter ('c');
+        //    font.
+        //    using (var paint = CreateTextPaint (font, fontsize, color)) {
+        //        var ranges = TextMeasurer.MeasureCharacters (text, font, fontsize, x, y);
+        //        var x_float = (float)x;
+        //       // if (SKTypeface.Default.)
+        //            canvas.DrawText (text, x_float, y, paint);
+        //        //for (var i = 0; i < text.Length - 1; i++) {
+        //        //    x_float = ranges[i].X;
+        //        //}
+        //    }
+        //}
 
         public static void DrawText (this SKCanvas canvas, string text, SKTypeface font, int fontsize, Rectangle bounds, SKColor color, ContentAlignment alignment)
         {
@@ -108,7 +125,9 @@ namespace Modern.Forms
                 FilterQuality = SKFilterQuality.High,
                 HintingLevel = SKPaintHinting.Full,
                 IsAutohinted = true,
-                TextAlign = align
+                TextAlign = align,
+                TextEncoding = SKTextEncoding.Utf32,
+                IsLinearText = true
             };
         }
 

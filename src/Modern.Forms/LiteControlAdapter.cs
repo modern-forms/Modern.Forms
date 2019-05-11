@@ -9,6 +9,8 @@ namespace Modern.Forms
 {
     public class LiteControlAdapter : LiteControl
     {
+        private LiteControl selected_control;
+
         public LiteControlAdapter (ModernForm parent)
         {
             ParentForm = parent;
@@ -35,6 +37,20 @@ namespace Modern.Forms
                 }
 
                 e.Canvas.DrawBitmap (buffer, control.Left + 1, control.Top + 1);
+            }
+        }
+
+        internal LiteControl SelectedControl {
+            get => selected_control;
+            set {
+                if (selected_control == value)
+                    return;
+
+                selected_control?.Deselect ();
+
+                // Note they could be setting this to null
+                selected_control = value;
+                selected_control?.Select ();
             }
         }
     }
