@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using SkiaSharp;
 
 namespace Modern.Forms
 {
@@ -10,6 +11,7 @@ namespace Modern.Forms
     {
         private ModernFormTitleBar titlebar;
         private string text;
+        private Label label;
 
         public MessageBoxForm ()
         {
@@ -23,12 +25,24 @@ namespace Modern.Forms
 
             Controls.Add (titlebar);
 
-            var button = new ButtonControl {
-                Text = "OK",
-                Location = new System.Drawing.Point (150, 150)
+            label = new Label {
+                Width = 398,
+                Left = 1,
+                Top = 50
             };
 
-            button.Click += (o, e) => Close ();
+            label.Style.BackgroundColor = SKColors.White;
+            label.Style.FontSize = 16;
+
+            Controls.Add (label);
+
+            var button = new Button {
+                Text = "OK",
+                Left = 150,
+                Top = 150
+            };
+
+            //button.Click += (o, e) => Close ();
 
             Controls.Add (button);
         }
@@ -40,13 +54,8 @@ namespace Modern.Forms
             Text = title;
             titlebar.Text = title;
             this.text = text;
-        }
 
-        protected override void OnPaintSurface (SKPaintEventArgs e)
-        {
-            base.OnPaintSurface (e);
-
-            e.Canvas.DrawCenteredText (text, Theme.UIFont, 16, 200, 75, Theme.DarkTextColor);
+            label.Text = text;
         }
 
         protected override CreateParams CreateParams {

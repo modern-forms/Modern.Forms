@@ -18,7 +18,7 @@ namespace Modern.Forms
             _setDefaults = setDefaults;
             _setDefaults (this);
 
-            Theme.ThemeChanged += (o, e) => _setDefaults (this);
+            ModernTheme.ThemeChanged += (o, e) => _setDefaults (this);
         }
 
         // This is used by instances of Controls
@@ -39,7 +39,7 @@ namespace Modern.Forms
 
         public SKTypeface Font { get; set; }
 
-        public SKTypeface GetFont () => Font ?? _parent.Font;
+        public SKTypeface GetFont () => Font ?? _parent.GetFont ();
 
         public int? FontSize { get; set; }
 

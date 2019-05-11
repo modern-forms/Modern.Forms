@@ -2,22 +2,22 @@
 using System.Windows.Forms;
 using Modern.Forms;
 
-namespace Explorer
+namespace Explore
 {
     public partial class MainForm : ModernForm
     {
-        private RibbonControl ribbon;
-        private TreeControl tree;
-        private ListViewControl view;
-        private StatusBarControl statusbar;
+        private Ribbon ribbon;
+        private TreeView tree;
+        private ListView view;
+        private StatusBar statusbar;
         private ModernFormTitleBar titlebar;
 
         private void InitializeComponent ()
         {
-            SuspendLayout ();
+            //SuspendLayout ();
 
             // ListView
-            view = new ListViewControl {
+            view = new ListView {
                 Dock = DockStyle.Fill
             };
 
@@ -25,7 +25,7 @@ namespace Explorer
             Controls.Add (view);
 
             // TreeControl
-            tree = new TreeControl {
+            tree = new TreeView {
                 Dock = DockStyle.Left
             };
 
@@ -33,9 +33,9 @@ namespace Explorer
             Controls.Add (tree);
 
             // RibbonControl
-            ribbon = new RibbonControl ();
+            ribbon = new Ribbon ();
 
-            var home_tab = new RibbonTabPage { Text = "Home", Selected = true };
+            var home_tab = ribbon.AddTabPage ("Home");
 
             var group1 = new RibbonItemGroup { Text = "Home" };
 
@@ -45,14 +45,12 @@ namespace Explorer
 
             group2.Items.Add (new RibbonItem ("New Folder", ImageLoader.Get ("folder-add.png"), new EventHandler (NotImplemented_Clicked)));
             group2.Items.Add (new RibbonItem ("Search", ImageLoader.Get ("search.png"), new EventHandler (NotImplemented_Clicked)));
-            group2.Items.Add (new RibbonItem ("Delete", ImageLoader.Get ("delete-red.png"), new EventHandler (NotImplemented_Clicked)));
+            group2.Items.Add (new RibbonItem ("Delete", ImageLoader.Get ("delete-red.png"), new EventHandler (ShowButtonForm_Clicked)));
 
             home_tab.Groups.Add (group1);
             home_tab.Groups.Add (group2);
 
-            ribbon.TabPages.Add (home_tab);
-
-            var share_tab = new RibbonTabPage { Text = "Share" };
+            var share_tab = ribbon.AddTabPage ("Share");
             var share_group = new RibbonItemGroup { Text = "Send" };
 
             share_group.Items.Add (new RibbonItem ("Email", ImageLoader.Get ("mail.png"), new EventHandler (NotImplemented_Clicked)));
@@ -61,9 +59,8 @@ namespace Explorer
             share_group.Items.Add (new RibbonItem ("Print", ImageLoader.Get ("print.png"), new EventHandler (NotImplemented_Clicked)));
 
             share_tab.Groups.Add (share_group);
-            ribbon.TabPages.Add (share_tab);
 
-            var view_tab = new RibbonTabPage { Text = "View" };
+            var view_tab = ribbon.AddTabPage ("View");
             var group3 = new RibbonItemGroup { Text = "Themes" };
             group3.Items.Add (new RibbonItem ("Default", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
             group3.Items.Add (new RibbonItem ("Green", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
@@ -72,24 +69,23 @@ namespace Explorer
             group3.Items.Add (new RibbonItem ("Hotdog Stand", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
 
             view_tab.Groups.Add (group3);
-            ribbon.TabPages.Add (view_tab);
 
             Controls.Add (ribbon);
 
             // StatusBar
-            statusbar = new StatusBarControl ();
+            statusbar = new StatusBar ();
 
             Controls.Add (statusbar);
 
             // TitleBar
             titlebar = new ModernFormTitleBar {
-                Text = "Explorer Sample",
+                Text = "Explore Sample",
                 Image = ImageLoader.Get ("layout-folder-pane.png")
             };
 
             Controls.Add (titlebar);
 
-            ResumeLayout ();
+            //ResumeLayout ();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Modern.Forms
         {
         }
 
-        public RibbonItem (string text, SKBitmap image, EventHandler onClick)
+        public RibbonItem (string text, SKBitmap image = null, EventHandler onClick = null)
         {
             Text = text;
             Image = image;
@@ -37,7 +37,7 @@ namespace Modern.Forms
 
         public void DrawItem (SKCanvas canvas)
         {
-            var background_color = Selected ? Theme.RibbonItemSelectedColor : Highlighted ? Theme.RibbonItemHighlightColor : Theme.NeutralGray;
+            var background_color = Selected ? ModernTheme.RibbonItemSelectedColor : Highlighted ? ModernTheme.RibbonItemHighlightColor : ModernTheme.NeutralGray;
 
             canvas.FillRectangle (Bounds, background_color);
 
@@ -49,10 +49,10 @@ namespace Modern.Forms
 
             var lines = Text.Split (' ');
 
-            canvas.DrawCenteredText (lines[0].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 50, Theme.DarkTextColor);
+            canvas.DrawCenteredText (lines[0].Trim (), ModernTheme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 50, ModernTheme.DarkTextColor);
 
             if (lines.Length > 1)
-                canvas.DrawCenteredText (lines[1].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 66, Theme.DarkTextColor);
+                canvas.DrawCenteredText (lines[1].Trim (), ModernTheme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 66, ModernTheme.DarkTextColor);
 
             canvas.Restore ();
         }

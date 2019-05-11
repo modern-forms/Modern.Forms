@@ -1,100 +1,125 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
-using SkiaSharp;
 
 namespace Modern.Forms
 {
-    [DefaultEvent ("PaintSurface")]
-    [DefaultProperty ("Name")]
     public class ModernForm : Form
     {
-        private readonly bool designMode;
+        private LiteControlAdapter adapter;
 
-        private Bitmap bitmap;
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+         (style) => {
+             style.BackgroundColor = ModernTheme.FormBackgroundColor;
+             style.Border.Color = ModernTheme.RibbonColor;
+             style.Border.Width = 1;
+         });
+
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
         public ModernForm ()
         {
             DoubleBuffered = true;
             SetStyle (ControlStyles.ResizeRedraw, true);
-            BackColor = Color.White;
 
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.None;
             Padding = new Padding (1);
 
-            designMode = DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime;
+            adapter = new LiteControlAdapter (this);
+            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, DisplayRectangle.Width, DisplayRectangle.Height);
         }
 
         protected override Size DefaultSize => new Size (1080, 720);
 
-        [Bindable (false)]
-        [Browsable (false)]
-        [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-        [EditorBrowsable (EditorBrowsableState.Never)]
-        public SKSize CanvasSize => bitmap == null ? SKSize.Empty : new SKSize (bitmap.Width, bitmap.Height);
+        public new LiteControlCollection Controls => adapter.Controls;
 
-        [Category ("Appearance")]
-        public event EventHandler<SKPaintEventArgs> PaintSurface;
-
-        protected override void OnPaint (PaintEventArgs e)
+        public void DoLayout ()
         {
-            if (designMode)
-                return;
+            adapter.DoLayout ();
+        }
 
+        public override Rectangle DisplayRectangle => new Rectangle (1, 1, Width - 2, Height - 2);
+
+        protected override CreateParams CreateParams {
+            get {
+                var cp = base.CreateParams;
+
+                cp.ClassStyle |= (int)XplatUIWin32.ClassStyle.CS_DBLCLKS;
+
+                return cp;
+            }
+        }
+
+        protected override void OnKeyDown (KeyEventArgs e)
+        {
+            base.OnKeyDown (e);
+
+            adapter.RaiseKeyDown (e);
+        }
+
+        protected override void OnKeyPress (KeyPressEventArgs e)
+        {
+            base.OnKeyPress (e);
+
+            adapter.RaiseKeyPress (e);
+        }
+
+        protected override void OnPaint (SKPaintEventArgs e)
+        {
             base.OnPaint (e);
 
-            // get the bitmap
-            CreateBitmap ();
-            var data = bitmap.LockBits (new Rectangle (0, 0, Width, Height), ImageLockMode.WriteOnly, bitmap.PixelFormat);
-
-            // create the surface
-            var info = new SKImageInfo (Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-            using (var surface = SKSurface.Create (info, data.Scan0, data.Stride)) {
-
-                surface.Canvas.DrawRectangle (0, 0, Width - 1, Height - 1, Theme.RibbonColor);
-
-                // start drawing
-                OnPaintSurface (new SKPaintEventArgs (surface, info));
-
-                surface.Canvas.Flush ();
-            }
-
-            // write the bitmap to the graphics
-            bitmap.UnlockBits (data);
-            e.Graphics.DrawImage (bitmap, 0, 0);
+            adapter.RaisePaint (e);
         }
 
-        protected virtual void OnPaintSurface (SKPaintEventArgs e)
+        public MouseEventArgs MouseEventsForControl (MouseEventArgs e, LiteControl control)
         {
-            // invoke the event
-            PaintSurface?.Invoke (this, e);
+            if (control == null)
+                return e;
+
+            return new MouseEventArgs (e.Button, e.Clicks, e.Location.X - control.Left, e.Location.Y - control.Top, e.Delta);
         }
 
-        protected override void Dispose (bool disposing)
+        protected override void OnMouseClick (MouseEventArgs e)
         {
-            base.Dispose (disposing);
+            base.OnMouseClick (e);
 
-            FreeBitmap ();
+            adapter?.RaiseClick (MouseEventsForControl (e, adapter));
         }
 
-        private void CreateBitmap ()
+        protected override void OnMouseDoubleClick (MouseEventArgs e)
         {
-            if (bitmap == null || bitmap.Width != Width || bitmap.Height != Height) {
-                FreeBitmap ();
+            base.OnMouseDoubleClick (e);
 
-                bitmap = new Bitmap (Width, Height, PixelFormat.Format32bppPArgb);
-            }
+            adapter?.RaiseDoubleClick (MouseEventsForControl (e, adapter));
         }
 
-        private void FreeBitmap ()
+        protected override void OnMouseDown (MouseEventArgs e)
         {
-            if (bitmap != null) {
-                bitmap.Dispose ();
-                bitmap = null;
-            }
+            base.OnMouseDown (e);
+
+            adapter?.RaiseMouseDown (MouseEventsForControl (e, adapter));
+        }
+
+        protected override void OnMouseLeave (EventArgs e)
+        {
+            base.OnMouseLeave (e);
+
+            adapter?.RaiseMouseLeave (e);
+        }
+
+        protected override void OnMouseMove (MouseEventArgs e)
+        {
+            base.OnMouseMove (e);
+
+            adapter?.RaiseMouseMove (MouseEventsForControl (e, adapter));
+        }
+
+        protected override void OnMouseUp (MouseEventArgs e)
+        {
+            base.OnMouseUp (e);
+
+            adapter?.RaiseMouseUp (MouseEventsForControl (e, adapter));
         }
     }
 }

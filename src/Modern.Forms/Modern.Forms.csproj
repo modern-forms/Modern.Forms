@@ -4,12 +4,87 @@
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="SkiaSharp" Version="1.68.0" />
+    <EmbeddedResource Include="Resources\1-up.png" />
+    <EmbeddedResource Include="Resources\16_computer.png" />
+    <EmbeddedResource Include="Resources\16_dialog-error.png" />
+    <EmbeddedResource Include="Resources\16_dialog-information.png" />
+    <EmbeddedResource Include="Resources\16_dialog-warning.png" />
+    <EmbeddedResource Include="Resources\16_document-open.png" />
+    <EmbeddedResource Include="Resources\16_folder-remote.png" />
+    <EmbeddedResource Include="Resources\16_folder.png" />
+    <EmbeddedResource Include="Resources\16_printer.png" />
+    <EmbeddedResource Include="Resources\16_user-desktop.png" />
+    <EmbeddedResource Include="Resources\16_user-home.png" />
+    <EmbeddedResource Include="Resources\22_page-magnifier.png" />
+    <EmbeddedResource Include="Resources\32_computer.png" />
+    <EmbeddedResource Include="Resources\32_document-open.png" />
+    <EmbeddedResource Include="Resources\32_folder-remote.png" />
+    <EmbeddedResource Include="Resources\32_printer.png" />
+    <EmbeddedResource Include="Resources\32_user-desktop.png" />
+    <EmbeddedResource Include="Resources\32_user-home.png" />
+    <EmbeddedResource Include="Resources\computer.png" />
+    <EmbeddedResource Include="Resources\DnDCopy.cur">
+      <LogicalName>System.Windows.Forms.DnDCopy.cur</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DnDLink.cur">
+      <LogicalName>System.Windows.Forms.DnDLink.cur</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DnDMove.cur">
+      <LogicalName>System.Windows.Forms.DnDMove.cur</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DnDNo.cur">
+      <LogicalName>System.Windows.Forms.DnDNo.cur</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\document-open.png" />
+    <EmbeddedResource Include="Resources\errorProvider.ico" />
+    <EmbeddedResource Include="Resources\EventsTab.bmp" />
+    <EmbeddedResource Include="Resources\folder-new.png" />
+    <EmbeddedResource Include="Resources\folder-remote.png" />
+    <EmbeddedResource Include="Resources\folder.png" />
+    <EmbeddedResource Include="Resources\go-previous.png" />
+    <EmbeddedResource Include="Resources\go-top.png" />
+    <EmbeddedResource Include="Resources\image-missing.png" />
+    <EmbeddedResource Include="Resources\image-x-generic.png" />
+    <EmbeddedResource Include="Resources\keyboards.resources.prebuilt" />
+    <EmbeddedResource Include="Resources\mono.ico" />
+    <EmbeddedResource Include="Resources\nav_delete.png" />
+    <EmbeddedResource Include="Resources\nav_end.png" />
+    <EmbeddedResource Include="Resources\nav_first.png" />
+    <EmbeddedResource Include="Resources\nav_next.png" />
+    <EmbeddedResource Include="Resources\nav_plus.png" />
+    <EmbeddedResource Include="Resources\nav_previous.png" />
+    <EmbeddedResource Include="Resources\NESW.cur">
+      <LogicalName>System.Windows.Forms.NESW.cur</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\NWSE.cur">
+      <LogicalName>System.Windows.Forms.NWSE.cur</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\preferences-system-windows.png" />
+    <EmbeddedResource Include="Resources\PropertiesTab.bmp" />
+    <EmbeddedResource Include="Resources\propertygrid-alphabetical.png" />
+    <EmbeddedResource Include="Resources\propertygrid-categorized.png" />
+    <EmbeddedResource Include="Resources\propertygrid-propertypages.png" />
+    <EmbeddedResource Include="Resources\SplitterNS.cur">
+      <LogicalName>System.Windows.Forms.SplitterNS.cur</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\SplitterWE.cur">
+      <LogicalName>System.Windows.Forms.SplitterWE.cur</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\System.Windows.Forms.resources.prebuilt" />
+    <EmbeddedResource Include="Resources\text-x-generic.png" />
+    <EmbeddedResource Include="Resources\user-desktop.png" />
+    <EmbeddedResource Include="Resources\user-home.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\System.CoreFX.Forms\System.CoreFX.Forms.csproj" />
+    <PackageReference Include="SkiaSharp" Version="1.68.0" />
+    <PackageReference Include="SkiaSharp.HarfBuzz" Version="1.68.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
   </ItemGroup>
 
 </Project>

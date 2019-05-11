@@ -37,7 +37,7 @@ namespace Modern.Forms
                 item.DrawItem (canvas);
 
             // Right border (group separator)
-            canvas.DrawLine (Bounds.Right - 1, Bounds.Top, Bounds.Right - 1, Bounds.Bottom, Theme.BorderGray);
+            canvas.DrawLine (Bounds.Right - 1, Bounds.Top, Bounds.Right - 1, Bounds.Bottom, ModernTheme.BorderGray);
         }
     }
 }
