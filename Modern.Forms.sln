@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlGallery", "samples\C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1482AD09-D57B-4CE9-91C8-B186B005B802}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modern.Forms.Tests", "tests\Modern.Forms.Tests\Modern.Forms.Tests.csproj", "{988C5E0E-0EC4-4F0F-8BB6-4AD3DE96A41C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modern.Forms.Tests", "tests\Modern.Forms.Tests\Modern.Forms.Tests.csproj", "{988C5E0E-0EC4-4F0F-8BB6-4AD3DE96A41C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{8A6441CB-3BFB-429B-B282-EC30F637589E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{0E141F62-EC4C-4DBD-9258-FAD4421DB8B1} = {8A6441CB-3BFB-429B-B282-EC30F637589E}
+		{CCA86CCB-49D3-43C7-8A5D-346953F2375D} = {8A6441CB-3BFB-429B-B282-EC30F637589E}
 		{988C5E0E-0EC4-4F0F-8BB6-4AD3DE96A41C} = {1482AD09-D57B-4CE9-91C8-B186B005B802}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
