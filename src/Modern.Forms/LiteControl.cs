@@ -49,6 +49,7 @@ namespace Modern.Forms
             behaviors = ControlBehaviors.Selectable;
         }
 
+        public event EventHandler<MouseEventArgs> Click;
         public event EventHandler<KeyEventArgs> KeyDown;
         public event EventHandler<KeyPressEventArgs> KeyPress;
         public event EventHandler LocationChanged;
@@ -333,9 +334,7 @@ namespace Modern.Forms
                 OnClick (e);
         }
 
-        protected virtual void OnClick (MouseEventArgs e)
-        {
-        }
+        protected virtual void OnClick (MouseEventArgs e) => Click?.Invoke (this, e);
 
         internal void RaiseDoubleClick (MouseEventArgs e)
         {

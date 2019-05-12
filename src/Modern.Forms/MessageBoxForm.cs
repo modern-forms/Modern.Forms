@@ -26,7 +26,7 @@ namespace Modern.Forms
             Controls.Add (titlebar);
 
             label = new Label {
-                Width = 398,
+                Width = 397,
                 Left = 1,
                 Top = 50
             };
@@ -42,7 +42,7 @@ namespace Modern.Forms
                 Top = 150
             };
 
-            //button.Click += (o, e) => Close ();
+            button.Click += (o, e) => Close ();
 
             Controls.Add (button);
         }
