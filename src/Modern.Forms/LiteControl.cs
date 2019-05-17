@@ -223,7 +223,7 @@ namespace Modern.Forms
 
         public void Select ()
         {
-            if (is_selected)
+            if (is_selected || !CanSelect)
                 return;
 
             is_selected = true;
@@ -446,7 +446,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.FirstOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
 
             if (current_mouse_in != null && current_mouse_in != child) {
                 current_mouse_in.RaiseMouseLeave (e);

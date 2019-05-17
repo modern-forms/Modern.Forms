@@ -19,12 +19,31 @@ namespace Modern.Forms
         private bool close_button_hover;
         private Rectangle minimize_button_bounds;
         private bool minimize_button_hover;
+        private SKBitmap form_icon;
+        private SKBitmap sized_icon;
 
         private Point drag_start_location;
         private Point drag_start_mouse_location;
         private bool is_dragging;
 
-        public SKBitmap Image { get; set; }
+        public SKBitmap Image {
+            get => form_icon;
+            set {
+                if (form_icon == value)
+                    return;
+
+                form_icon = value;
+
+                if (form_icon.Height > 16) {
+                    sized_icon?.Dispose ();
+                    sized_icon = new SKBitmap (16, 16);
+                    form_icon.ScalePixels (sized_icon, SKFilterQuality.High);
+                } else {
+                    sized_icon = value;
+                }
+            }
+        }
+
         public bool AllowMinimize { get; set; } = true;
 
         protected override Size DefaultSize => new Size (600, 34);
@@ -97,8 +116,8 @@ namespace Modern.Forms
             if (!string.IsNullOrWhiteSpace (Text))
                 e.Canvas.DrawCenteredText (Text.Trim (), ModernTheme.UIFont, 14, Left + Width / 2, Top + 21, ModernTheme.LightTextColor);
 
-            if (Image != null)
-                e.Canvas.DrawBitmap (Image, Bounds.Left + 7, Bounds.Top + 7);
+            if (sized_icon != null)
+                e.Canvas.DrawBitmap (sized_icon, Bounds.Left + 7, Bounds.Top + 7);
 
             if (close_button_hover)
                 e.Canvas.FillRectangle (close_button_bounds, ModernTheme.FormCloseHighlightColor);

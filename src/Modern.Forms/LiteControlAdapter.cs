@@ -14,6 +14,7 @@ namespace Modern.Forms
         public LiteControlAdapter (ModernForm parent)
         {
             ParentForm = parent;
+            SetControlBehavior (ControlBehaviors.Selectable, false);
         }
 
         public ModernForm ParentForm { get; }
@@ -47,6 +48,9 @@ namespace Modern.Forms
                     return;
 
                 selected_control?.Deselect ();
+
+                if (value is LiteControlAdapter)
+                    return;
 
                 // Note they could be setting this to null
                 selected_control = value;

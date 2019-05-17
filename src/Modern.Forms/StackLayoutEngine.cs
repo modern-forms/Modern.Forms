@@ -8,6 +8,11 @@ namespace Modern.Forms
 {
     public class StackLayoutEngine
     {
+        public static StackLayoutEngine Horizontal = new StackLayoutEngine (Orientation.Horizontal);
+        public static StackLayoutEngine HorizontalExpand = new StackLayoutEngine (Orientation.Horizontal, true);
+        public static StackLayoutEngine Vertical = new StackLayoutEngine (Orientation.Vertical);
+        public static StackLayoutEngine VerticalExpand = new StackLayoutEngine (Orientation.Vertical, true);
+
         private Orientation orientation;
         private bool expand;
 

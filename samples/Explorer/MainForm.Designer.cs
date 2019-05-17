@@ -29,13 +29,17 @@ namespace Explore
                 Dock = DockStyle.Left
             };
 
+            tree.Style.Border.Top.Width = 0;
+            tree.Style.Border.Left.Width = 0;
+            tree.Style.Border.Bottom.Width = 0;
+
             tree.ItemSelected += Tree_ItemSelected;
             Controls.Add (tree);
 
             // RibbonControl
             ribbon = new Ribbon ();
 
-            var home_tab = ribbon.AddTabPage ("Home");
+            var home_tab = ribbon.TabPages.Add ("Home");
 
             var group1 = new RibbonItemGroup { Text = "Home" };
 
@@ -50,7 +54,7 @@ namespace Explore
             home_tab.Groups.Add (group1);
             home_tab.Groups.Add (group2);
 
-            var share_tab = ribbon.AddTabPage ("Share");
+            var share_tab = ribbon.TabPages.Add ("Share");
             var share_group = new RibbonItemGroup { Text = "Send" };
 
             share_group.Items.Add (new RibbonItem ("Email", ImageLoader.Get ("mail.png"), new EventHandler (NotImplemented_Clicked)));
@@ -60,7 +64,7 @@ namespace Explore
 
             share_tab.Groups.Add (share_group);
 
-            var view_tab = ribbon.AddTabPage ("View");
+            var view_tab = ribbon.TabPages.Add ("View");
             var group3 = new RibbonItemGroup { Text = "Themes" };
             group3.Items.Add (new RibbonItem ("Default", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));
             group3.Items.Add (new RibbonItem ("Green", ImageLoader.Get ("swatches.png"), new EventHandler (ThemeButton_Clicked)));

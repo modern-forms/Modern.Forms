@@ -18,8 +18,6 @@ namespace Modern.Forms
 
         public TreeViewItemCollection Items { get; }
 
-        private StackLayoutEngine layout_engine = new StackLayoutEngine (Orientation.Vertical, true);
-
         public TreeView ()
         {
             Items = new TreeViewItemCollection (this);
@@ -78,7 +76,7 @@ namespace Modern.Forms
 
         private void LayoutItems ()
         {
-            layout_engine.Layout (ClientBounds, Items.Cast<ILayoutable> ());
+            StackLayoutEngine.VerticalExpand.Layout (ClientBounds, Items.Cast<ILayoutable> ());
         }
     }
 }

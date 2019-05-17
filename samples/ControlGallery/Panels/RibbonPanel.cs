@@ -11,7 +11,7 @@ namespace ControlGallery.Panels
         {
             var ribbon = new Ribbon ();
 
-            var home_tab = ribbon.AddTabPage ("Home");
+            var home_tab = ribbon.TabPages.Add ("Home");
 
             var group1 = new RibbonItemGroup { Text = "Home" };
 
@@ -26,7 +26,7 @@ namespace ControlGallery.Panels
             home_tab.Groups.Add (group1);
             home_tab.Groups.Add (group2);
 
-            var share_tab = ribbon.AddTabPage ("Share");
+            var share_tab = ribbon.TabPages.Add ("Share");
             var share_group = new RibbonItemGroup { Text = "Send" };
 
             share_group.Items.Add (new RibbonItem ("Email", ImageLoader.Get ("mail.png")));
@@ -36,7 +36,7 @@ namespace ControlGallery.Panels
 
             share_tab.Groups.Add (share_group);
 
-            var view_tab = ribbon.AddTabPage ("View");
+            var view_tab = ribbon.TabPages.Add ("View");
             var group3 = new RibbonItemGroup { Text = "Themes" };
             group3.Items.Add (new RibbonItem ("Default", ImageLoader.Get ("swatches.png")));
             group3.Items.Add (new RibbonItem ("Green", ImageLoader.Get ("swatches.png")));

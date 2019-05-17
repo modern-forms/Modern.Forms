@@ -8,6 +8,14 @@ namespace Modern.Forms
 {
     public static class SkiaExtensions
     {
+        private static SKColorFilter disabled_matrix = SKColorFilter.CreateColorMatrix (new float[]
+                {
+                    0.21f, 0.72f, 0.07f, 0, 0,
+                    0.21f, 0.72f, 0.07f, 0, 0,
+                    0.21f, 0.72f, 0.07f, 0, 0,
+                    0,     0,     0,     1, 0
+                });
+
         public static void DrawText (this SKCanvas canvas, string text, SKTypeface font, int fontsize, int x, int y, SKColor color)
         {
             using (var paint = new SKPaint {
@@ -286,6 +294,12 @@ namespace Modern.Forms
                         break;
                     }
             }
+        }
+
+        public static void DrawDisabledBitmap (this SKCanvas canvas, SKBitmap bitmap, float x, float y)
+        {
+            using (var paint = new SKPaint { ColorFilter = disabled_matrix })
+                canvas.DrawBitmap (bitmap, x, y, paint);
         }
     }
 }
