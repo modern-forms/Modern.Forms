@@ -76,7 +76,7 @@ namespace Modern.Forms
 
         private void LayoutItems ()
         {
-            StackLayoutEngine.VerticalExpand.Layout (ClientBounds, Items.Cast<ILayoutable> ());
+            StackLayoutEngine.VerticalExpand.Layout (ClientRectangle, Items.Cast<ILayoutable> ());
         }
     }
 }

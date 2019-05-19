@@ -100,7 +100,7 @@ namespace Modern.Forms
 
         protected virtual void OnBoundsChanged ()
         {
-            OnLayout (new LayoutEventArgs (null, string.Empty));
+            OnLayout (new LayoutEventArgs ((LiteControl)null, string.Empty));
         }
 
         protected virtual void OnClick (MouseEventArgs e) => Click?.Invoke (this, e);

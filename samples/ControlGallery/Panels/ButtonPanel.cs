@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using Modern.Forms;
 using SkiaSharp;
@@ -80,6 +81,8 @@ namespace ControlGallery.Panels
             b5.Style.Border.Width = 1;
             b5.Style.BackgroundColor = new SKColor (243, 246, 248);
             b5.Style.ForegroundColor = new SKColor (36, 41, 46);
+            b5.TextAlign = ContentAlignment.MiddleLeft;
+            b5.Padding = new System.Windows.Forms.Padding (15, 0, 0, 0);
 
             Controls.Add (b5);
 
@@ -92,6 +95,7 @@ namespace ControlGallery.Panels
             b6.Style.Border.Width = 2;
             b6.Style.BackgroundColor = new SKColor (243, 246, 248);
             b6.Style.ForegroundColor = new SKColor (36, 41, 46);
+            b6.TextAlign = ContentAlignment.TopLeft;
 
             Controls.Add (b6);
 
@@ -104,6 +108,7 @@ namespace ControlGallery.Panels
             b7.Style.Border.Width = 3;
             b7.Style.BackgroundColor = new SKColor (243, 246, 248);
             b7.Style.ForegroundColor = new SKColor (36, 41, 46);
+            b7.TextAlign = ContentAlignment.TopRight;
 
             Controls.Add (b7);
 
@@ -116,6 +121,7 @@ namespace ControlGallery.Panels
             b8.Style.Border.Width = 4;
             b8.Style.BackgroundColor = new SKColor (243, 246, 248);
             b8.Style.ForegroundColor = new SKColor (36, 41, 46);
+            b8.TextAlign = ContentAlignment.BottomLeft;
 
             Controls.Add (b8);
 
@@ -128,6 +134,7 @@ namespace ControlGallery.Panels
             b9.Style.Border.Width = 5;
             b9.Style.BackgroundColor = new SKColor (243, 246, 248);
             b9.Style.ForegroundColor = new SKColor (36, 41, 46);
+            b9.TextAlign = ContentAlignment.BottomRight;
 
             Controls.Add (b9);
 
@@ -140,6 +147,7 @@ namespace ControlGallery.Panels
             b10.Style.Border.Width = 6;
             b10.Style.BackgroundColor = new SKColor (243, 246, 248);
             b10.Style.ForegroundColor = new SKColor (36, 41, 46);
+            b10.TextAlign = ContentAlignment.BottomCenter;
 
             Controls.Add (b10);
 

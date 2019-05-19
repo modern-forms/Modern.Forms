@@ -42,7 +42,7 @@ namespace Modern.Forms
             if (CurrentText.Length == 0)
                 return 0;
 
-            var widths = TextMeasurer.MeasureCharacters (CurrentText + " ", CurrentStyle.GetFont (), CurrentStyle.GetFontSize (), ClientBounds.Left, ClientBounds.Top);
+            var widths = TextMeasurer.MeasureCharacters (CurrentText + " ", CurrentStyle.GetFont (), CurrentStyle.GetFontSize (), ClientRectangle.Left, ClientRectangle.Top);
 
             for (var i = 0; i < widths.Length; i++)
                 if (widths[i].X > location.X)
@@ -141,18 +141,18 @@ namespace Modern.Forms
         {
             base.OnPaint (e);
 
-            var y = (int)(ClientBounds.Top + ((ClientBounds.Height - (14)) / 2) + 14) - 1;
+            var y = (int)(ClientRectangle.Top + ((ClientRectangle.Height - (14)) / 2) + 14) - 1;
             if (!string.IsNullOrEmpty (Text))
-                e.Canvas.DrawText (Text, ClientBounds, CurrentStyle, ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (Text, ClientRectangle, CurrentStyle, ContentAlignment.MiddleLeft);
             else if (!string.IsNullOrEmpty (placeholder))
-                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentStyle.GetFontSize (), ClientBounds, ModernTheme.DisabledTextColor, ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentStyle.GetFontSize (), ClientRectangle, ModernTheme.DisabledTextColor, ContentAlignment.MiddleLeft);
 
             var cursor_loc =
                     cursor_index == 0 ? 0f
                                       : TextMeasurer.MeasureText (Text.Substring (0, cursor_index), CurrentStyle.GetFont (), CurrentStyle.GetFontSize ());
 
             if (Selected)
-                e.Canvas.DrawLine (ClientBounds.Left + cursor_loc, ClientBounds.Top + 4, ClientBounds.Left + cursor_loc, ClientBounds.Bottom - 4, ModernTheme.DarkTextColor);
+                e.Canvas.DrawLine (ClientRectangle.Left + cursor_loc, ClientRectangle.Top + 4, ClientRectangle.Left + cursor_loc, ClientRectangle.Bottom - 4, ModernTheme.DarkTextColor);
         }
 
         private string CurrentText => Text ?? string.Empty;

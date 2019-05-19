@@ -42,7 +42,7 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             if (!string.IsNullOrWhiteSpace (Text))
-                e.Canvas.DrawText (Text, ClientBounds, CurrentStyle, TextAlign);
+                e.Canvas.DrawText (Text, ClientRectangle, CurrentStyle, TextAlign);
         }
     }
 }

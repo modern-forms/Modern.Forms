@@ -28,6 +28,7 @@
 // COMPLETE
 
 using System.ComponentModel;
+using Modern.Forms;
 
 namespace System.Windows.Forms {
 	public sealed class LayoutEventArgs : EventArgs {
@@ -41,7 +42,13 @@ namespace System.Windows.Forms {
 			this.affected_property = affectedProperty;
 		}
 
-		public LayoutEventArgs (IComponent affectedComponent, string affectedProperty)
+        public LayoutEventArgs (LiteControl affectedControl, string affectedProperty)
+        {
+            AffectedLiteControl = affectedControl;
+            affected_property = affectedProperty;
+        }
+
+        public LayoutEventArgs (IComponent affectedComponent, string affectedProperty)
 		{
 			this.affected_component = affectedComponent;
 			this.affected_property = affectedProperty;
@@ -58,6 +65,8 @@ namespace System.Windows.Forms {
 				return this.affected_control;
 			}
 		}
+
+        public LiteControl AffectedLiteControl { get; }
 
 		public string AffectedProperty {
 			get {

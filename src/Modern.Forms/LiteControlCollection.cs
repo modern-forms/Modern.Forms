@@ -78,7 +78,7 @@ namespace Modern.Forms
         {
             var item = items[index];
 
-            item.Parent = null;
+            item.SetParentInternal (null);
             items.RemoveAt (index);
 
             parent.DoLayout ();
@@ -88,7 +88,7 @@ namespace Modern.Forms
 
         private void SetUpItem (LiteControl item)
         {
-            item.Parent = parent;
+            item.SetParentInternal (parent);
         }
     }
 }

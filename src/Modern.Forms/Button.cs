@@ -25,6 +25,8 @@ namespace Modern.Forms
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
         public override ControlStyle StyleHover { get; } = new ControlStyle (DefaultStyleHover);
 
+        private ContentAlignment text_align = ContentAlignment.MiddleCenter;
+
         protected override Size DefaultSize => new Size (100, 30);
 
         public Button ()
@@ -34,11 +36,21 @@ namespace Modern.Forms
             Cursor = Cursors.Hand;
         }
 
+        public ContentAlignment TextAlign {
+            get => text_align;
+            set {
+                if (text_align != value) {
+                    text_align = value;
+                    Invalidate ();
+                }
+            }
+        }
+
         protected override void OnPaint (SKPaintEventArgs e)
         {
             base.OnPaint (e);
 
-            e.Canvas.DrawCenteredText (Text, Width / 2, 20, CurrentStyle);
+            e.Canvas.DrawText (Text, PaddedClientRectangle, CurrentStyle, text_align);
         }
 
         public void PerformClick ()

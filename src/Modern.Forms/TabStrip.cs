@@ -95,7 +95,7 @@ namespace Modern.Forms
 
         private void LayoutTabs ()
         {
-            layout_engine.Layout (ClientBounds, Tabs.Cast<ILayoutable> ());
+            layout_engine.Layout (ClientRectangle, Tabs.Cast<ILayoutable> ());
         }
 
         private void SetHover (TabStripItem item)

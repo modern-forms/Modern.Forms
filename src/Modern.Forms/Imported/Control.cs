@@ -99,7 +99,7 @@ namespace System.Windows.Forms
         protected virtual void OnPaintBackground (SKPaintEventArgs e)
         {
             e.Canvas.DrawBackground (Bounds, CurrentStyle);
-            e.Canvas.DrawBorder (Bounds, CurrentStyle);
+            e.Canvas.DrawBorder (ClientRectangle, CurrentStyle);
         }
 
         protected virtual void OnPaint (SKPaintEventArgs e)

@@ -24,7 +24,10 @@ namespace Modern.Forms
             // We have this special version for now because it needs
             // to take the Form border into account
             foreach (var control in Controls.Where (c => c.Visible)) {
-                var info = new SKImageInfo (Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                if (control.Width <= 0 || control.Height <= 0)
+                    continue;
+
+                var info = new SKImageInfo (control.Width, control.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
                 var buffer = control.GetBackBuffer ();
 
                 using (var canvas = new SKCanvas (buffer)) {

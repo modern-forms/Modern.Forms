@@ -27,7 +27,6 @@ namespace Modern.Forms
             Padding = new Padding (1);
 
             adapter = new LiteControlAdapter (this);
-            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, DisplayRectangle.Width, DisplayRectangle.Height);
         }
 
         protected override Size DefaultSize => new Size (1080, 720);
@@ -39,7 +38,7 @@ namespace Modern.Forms
             adapter.DoLayout ();
         }
 
-        public override Rectangle DisplayRectangle => new Rectangle (1, 1, Width - 2, Height - 2);
+        public override Rectangle DisplayRectangle => new Rectangle (Style.Border.Left.GetWidth (), Style.Border.Top.GetWidth (), ClientRectangle.Width -Style.Border.Right.GetWidth () - Style.Border.Left.GetWidth (), ClientRectangle.Height - Style.Border.Top.GetWidth () - Style.Border.Bottom.GetWidth ());
 
         protected override CreateParams CreateParams {
             get {
@@ -70,6 +69,13 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             adapter.RaisePaint (e);
+        }
+
+        protected override void OnResize (EventArgs e)
+        {
+            base.OnResize (e);
+
+            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, DisplayRectangle.Width, DisplayRectangle.Height);
         }
 
         public MouseEventArgs MouseEventsForControl (MouseEventArgs e, LiteControl control)
@@ -120,6 +126,13 @@ namespace Modern.Forms
             base.OnMouseUp (e);
 
             adapter?.RaiseMouseUp (MouseEventsForControl (e, adapter));
+        }
+
+        protected override void OnVisibleChanged (EventArgs e)
+        {
+            base.OnVisibleChanged (e);
+
+            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, DisplayRectangle.Width, DisplayRectangle.Height);
         }
     }
 }

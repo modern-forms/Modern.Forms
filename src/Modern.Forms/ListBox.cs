@@ -35,7 +35,7 @@ namespace Modern.Forms
             if (index < 0 || index >= Items.Count)
                 throw new ArgumentOutOfRangeException ("Index out of range.");
 
-            var client = ClientBounds;
+            var client = ClientRectangle;
 
             return new Rectangle (client.Left, index * ItemHeight + client.Top, client.Width, ItemHeight);
         }

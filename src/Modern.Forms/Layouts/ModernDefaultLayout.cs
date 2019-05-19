@@ -30,19 +30,22 @@
 using System;
 using System.Drawing;
 using System.Linq;
-using Modern.Forms;
+using System.Windows.Forms;
+using System.Windows.Forms.Layout;
 
-namespace System.Windows.Forms.Layout
+namespace Modern.Forms
 {
 	class ModernDefaultLayout : LayoutEngine
 	{
+        public static ModernDefaultLayout Instance = new ModernDefaultLayout ();
+
         public override bool Layout (object container, LayoutEventArgs args)
         {
             var parent = container as LiteControl;
             var controls = parent.Controls.ToArray ();
 
             LayoutDockedChildren (parent, controls);
-           // LayoutAnchoredChildren (parent, controls);
+            LayoutAnchoredChildren (parent, controls);
             //LayoutAutoSizedChildren (parent, controls);
 
             //if (parent is LiteForm)
@@ -53,7 +56,7 @@ namespace System.Windows.Forms.Layout
 
         void LayoutDockedChildren (LiteControl parent, LiteControl[] controls)
 		{
-			var space = parent.ClientBounds;
+			var space = parent.ClientRectangle;
 			
 			// Deal with docking; go through in reverse, MS docs say that lowest Z-order is closest to edge
 			for (var i = controls.Length - 1; i >= 0; i--) {
@@ -63,16 +66,8 @@ namespace System.Windows.Forms.Layout
 				//if (child.AutoSize)
 				//	child_size = GetPreferredControlSize (child);
 
-				if (!child.Visible)
-				    //|| child.ControlLayoutType == Control.LayoutType.Anchor)
+				if (!child.Visible || child.UseAnchorLayoutInternal)
 					continue;
-
-				// MdiClient never fills the whole area like other controls, have to do it later
-                // TODO: MDI
-				//if (child is MdiClient) {
-				//	mdi = (MdiClient)child;
-				//	continue;
-				//}
 				
 				switch (child.Dock) {
 				case DockStyle.None:
@@ -106,145 +101,137 @@ namespace System.Windows.Forms.Layout
 					break;
 				}
 			}
-
-            // MdiClient gets whatever space is left
-            // TODO: MDI
-    //        if (mdi != null)
-				//mdi.SetBoundsInternal (space.Left, space.Top, space.Width, space.Height, BoundsSpecified.None);
 		}
 
-		//void LayoutAnchoredChildren (Control parent, LiteControl[] controls)
-		//{
-		//	var space = parent.ClientRectangle;
+        void LayoutAnchoredChildren (LiteControl parent, LiteControl[] controls)
+        {
+            var space = parent.ClientRectangle;
 
-		//	for (var i = 0; i < controls.Length; i++) {
-		//		int left;
-		//		int top;
-		//		int width;
-		//		int height;
+            for (var i = 0; i < controls.Length; i++) {
+                int left;
+                int top;
+                int width;
+                int height;
 
-		//		var child = controls[i];
+                var child = controls[i];
 
-		//		if (!child.Visible)
-		//		    || child.ControlLayoutType == Control.LayoutType.Dock)
-		//			continue;
+                if (!child.Visible|| !child.UseAnchorLayoutInternal)
+					continue;
 
-		//		AnchorStyles anchor = child.Anchor;
+            var anchor = child.Anchor;
 
-		//		left = child.Left;
-		//		top = child.Top;
-				
-		//		width = child.Width;
-		//		height = child.Height;
+            left = child.Left;
+            top = child.Top;
 
-		//		if ((anchor & AnchorStyles.Right) != 0) {
-		//			if ((anchor & AnchorStyles.Left) != 0)
-		//				width = space.Width - child.dist_right - left;
-		//			else
-		//				left = space.Width - child.dist_right - width;
-		//		}
-		//		else if ((anchor & AnchorStyles.Left) == 0) {
-		//			// left+=diff_width/2 will introduce rounding errors (diff_width removed from svn after r51780)
-		//			// This calculates from scratch every time:
-		//			left = left + (space.Width - (left + width + child.dist_right)) / 2;
-		//			child.dist_right = space.Width - (left + width);
-		//		}
+            width = child.Width;
+            height = child.Height;
 
-		//		if ((anchor & AnchorStyles.Bottom) != 0) {
-		//			if ((anchor & AnchorStyles.Top) != 0)
-		//				height = space.Height - child.dist_bottom - top;
-		//			else
-		//				top = space.Height - child.dist_bottom - height;
-		//		}
-		//		else if ((anchor & AnchorStyles.Top) == 0) {
-		//			// top += diff_height/2 will introduce rounding errors (diff_height removed from after r51780)
-		//			// This calculates from scratch every time:
-		//			top = top + (space.Height - (top + height + child.dist_bottom)) / 2;
-		//			child.dist_bottom = space.Height - (top + height);
-		//		}
+            if ((anchor & AnchorStyles.Right) != 0) {
+                if ((anchor & AnchorStyles.Left) != 0)
+                    width = space.Width - child.dist_right - left;
+                else
+                    left = space.Width - child.dist_right - width;
+            } else if ((anchor & AnchorStyles.Left) == 0) {
+                // left+=diff_width/2 will introduce rounding errors (diff_width removed from svn after r51780)
+                // This calculates from scratch every time:
+                left = left + (space.Width - (left + width + child.dist_right)) / 2;
+                child.dist_right = space.Width - (left + width);
+            }
 
-		//		// Sanity
-		//		if (width < 0)
-		//			width = 0;
+            if ((anchor & AnchorStyles.Bottom) != 0) {
+                if ((anchor & AnchorStyles.Top) != 0)
+                    height = space.Height - child.dist_bottom - top;
+                else
+                    top = space.Height - child.dist_bottom - height;
+            } else if ((anchor & AnchorStyles.Top) == 0) {
+                // top += diff_height/2 will introduce rounding errors (diff_height removed from after r51780)
+                // This calculates from scratch every time:
+                top = top + (space.Height - (top + height + child.dist_bottom)) / 2;
+                child.dist_bottom = space.Height - (top + height);
+            }
 
-		//		if (height < 0)
-		//			height = 0;
+            // Sanity
+            if (width < 0)
+                width = 0;
 
-		//		child.SetBoundsInternal (left, top, width, height, BoundsSpecified.None);
-		//	}
-		//}
-		
-		//void LayoutAutoSizedChildren (Control parent, LiteControl[] controls)
-		//{
-		//	for (var i = 0; i < controls.Length; i++) {
-		//		int left;
-		//		int top;
+            if (height < 0)
+                height = 0;
 
-		//		Control child = controls[i];
-		//		if (!child.VisibleInternal
-		//		    || child.ControlLayoutType == Control.LayoutType.Dock
-		//		    || !child.AutoSize)
-		//			continue;
+            child.SetBounds (left, top, width, height, BoundsSpecified.None);
+        }
+    }
 
-		//		AnchorStyles anchor = child.Anchor;
-		//		left = child.Left;
-		//		top = child.Top;
-				
-		//		Size preferredsize = GetPreferredControlSize (child);
+    //void LayoutAutoSizedChildren (Control parent, LiteControl[] controls)
+    //{
+    //	for (var i = 0; i < controls.Length; i++) {
+    //		int left;
+    //		int top;
 
-		//		if (((anchor & AnchorStyles.Left) != 0) || ((anchor & AnchorStyles.Right) == 0))
-		//			child.dist_right += child.Width - preferredsize.Width;
-		//		if (((anchor & AnchorStyles.Top) != 0) || ((anchor & AnchorStyles.Bottom) == 0))
-		//			child.dist_bottom += child.Height - preferredsize.Height;
+    //		Control child = controls[i];
+    //		if (!child.VisibleInternal
+    //		    || child.ControlLayoutType == Control.LayoutType.Dock
+    //		    || !child.AutoSize)
+    //			continue;
 
-		//		child.SetBoundsInternal (left, top, preferredsize.Width, preferredsize.Height, BoundsSpecified.None);
-		//	}
-		//}
+    //		AnchorStyles anchor = child.Anchor;
+    //		left = child.Left;
+    //		top = child.Top;
 
-		//void LayoutAutoSizeContainer (Control container)
-		//{
-		//	int left;
-		//	int top;
-		//	int width;
-		//	int height;
+    //		Size preferredsize = GetPreferredControlSize (child);
 
-		//	if (!container.VisibleInternal || container.ControlLayoutType == Control.LayoutType.Dock || !container.AutoSize)
-		//		return;
+    //		if (((anchor & AnchorStyles.Left) != 0) || ((anchor & AnchorStyles.Right) == 0))
+    //			child.dist_right += child.Width - preferredsize.Width;
+    //		if (((anchor & AnchorStyles.Top) != 0) || ((anchor & AnchorStyles.Bottom) == 0))
+    //			child.dist_bottom += child.Height - preferredsize.Height;
 
-		//	left = container.Left;
-		//	top = container.Top;
+    //		child.SetBoundsInternal (left, top, preferredsize.Width, preferredsize.Height, BoundsSpecified.None);
+    //	}
+    //}
 
-		//	Size preferredsize = container.PreferredSize;
+    //void LayoutAutoSizeContainer (Control container)
+    //{
+    //	int left;
+    //	int top;
+    //	int width;
+    //	int height;
 
-		//	if (container.GetAutoSizeMode () == AutoSizeMode.GrowAndShrink) {
-		//		width = preferredsize.Width;
-		//		height = preferredsize.Height;
-		//	} else {
-		//		width = container.ExplicitBounds.Width;
-		//		height = container.ExplicitBounds.Height;
-		//		if (preferredsize.Width > width)
-		//			width = preferredsize.Width;
-		//		if (preferredsize.Height > height)
-		//			height = preferredsize.Height;
-		//	}
+    //	if (!container.VisibleInternal || container.ControlLayoutType == Control.LayoutType.Dock || !container.AutoSize)
+    //		return;
 
-		//	// Sanity
-		//	if (width < container.MinimumSize.Width)
-		//		width = container.MinimumSize.Width;
+    //	left = container.Left;
+    //	top = container.Top;
 
-		//	if (height < container.MinimumSize.Height)
-		//		height = container.MinimumSize.Height;
+    //	Size preferredsize = container.PreferredSize;
 
-		//	if (container.MaximumSize.Width != 0 && width > container.MaximumSize.Width)
-		//		width = container.MaximumSize.Width;
+    //	if (container.GetAutoSizeMode () == AutoSizeMode.GrowAndShrink) {
+    //		width = preferredsize.Width;
+    //		height = preferredsize.Height;
+    //	} else {
+    //		width = container.ExplicitBounds.Width;
+    //		height = container.ExplicitBounds.Height;
+    //		if (preferredsize.Width > width)
+    //			width = preferredsize.Width;
+    //		if (preferredsize.Height > height)
+    //			height = preferredsize.Height;
+    //	}
 
-		//	if (container.MaximumSize.Height != 0 && height > container.MaximumSize.Height)
-		//		height = container.MaximumSize.Height;
+    //	// Sanity
+    //	if (width < container.MinimumSize.Width)
+    //		width = container.MinimumSize.Width;
 
-		//	container.SetBoundsInternal (left, top, width, height, BoundsSpecified.None);
-		//}
+    //	if (height < container.MinimumSize.Height)
+    //		height = container.MinimumSize.Height;
 
-		private Size GetPreferredControlSize (LiteControl child)
+    //	if (container.MaximumSize.Width != 0 && width > container.MaximumSize.Width)
+    //		width = container.MaximumSize.Width;
+
+    //	if (container.MaximumSize.Height != 0 && height > container.MaximumSize.Height)
+    //		height = container.MaximumSize.Height;
+
+    //	container.SetBoundsInternal (left, top, width, height, BoundsSpecified.None);
+    //}
+
+    private Size GetPreferredControlSize (LiteControl child)
 		{
 			int width;
 			int height;

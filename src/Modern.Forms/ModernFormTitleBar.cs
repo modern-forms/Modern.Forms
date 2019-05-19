@@ -15,9 +15,8 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        private Rectangle close_button_bounds;
         private bool close_button_hover;
-        private Rectangle minimize_button_bounds;
+        private bool maximize_button_hover;
         private bool minimize_button_hover;
         private SKBitmap form_icon;
         private SKBitmap sized_icon;
@@ -41,9 +40,12 @@ namespace Modern.Forms
                 } else {
                     sized_icon = value;
                 }
+
+                Invalidate ();
             }
         }
 
+        public bool AllowMaximize { get; set; } = true;
         public bool AllowMinimize { get; set; } = true;
 
         protected override Size DefaultSize => new Size (600, 34);
@@ -57,17 +59,21 @@ namespace Modern.Forms
         {
             base.OnClick (e);
 
-            if (close_button_bounds.Contains (e.Location))
+            if (CloseButtonBounds.Contains (e.Location))
                 FindForm ().Close ();
-            if (AllowMinimize && minimize_button_bounds.Contains (e.Location))
+            else if (AllowMinimize && MinimizeButtonBounds.Contains (e.Location))
                 FindForm ().WindowState = FormWindowState.Minimized;
+            else if (AllowMaximize && MaximizeButtonBounds.Contains (e.Location)) {
+                var form = FindForm ();
+                form.WindowState = form.WindowState == FormWindowState.Maximized ? FormWindowState.Normal : FormWindowState.Maximized;
+            }
         }
 
         protected override void OnMouseDown (MouseEventArgs e)
         {
             base.OnMouseDown (e);
 
-            if (!close_button_bounds.Contains (e.Location) && !(AllowMinimize && minimize_button_bounds.Contains (e.Location))) {
+            if (!CloseButtonBounds.Contains (e.Location) && !(AllowMaximize && MaximizeButtonBounds.Contains (e.Location)) && !(AllowMinimize && MinimizeButtonBounds.Contains (e.Location))) {
                 // Start drag-moving the window
                 is_dragging = true;
                 drag_start_location = FindForm ().Location;
@@ -79,8 +85,9 @@ namespace Modern.Forms
         {
             base.OnMouseMove (e);
 
-            SetCloseHover (close_button_bounds.Contains (e.Location));
-            SetMinimizeHover (minimize_button_bounds.Contains (e.Location));
+            SetCloseHover (CloseButtonBounds.Contains (e.Location));
+            SetMaximizeHover (MaximizeButtonBounds.Contains (e.Location));
+            SetMinimizeHover (MinimizeButtonBounds.Contains (e.Location));
 
             if (is_dragging) {
                 var screen = FindForm ().PointToScreen (e.Location);
@@ -103,6 +110,7 @@ namespace Modern.Forms
             base.OnMouseLeave (e);
 
             SetCloseHover (false);
+            SetMaximizeHover (false);
             SetMinimizeHover (false);
         }
 
@@ -110,28 +118,57 @@ namespace Modern.Forms
         {
             base.OnPaint (e);
 
-            close_button_bounds = new Rectangle (Width - 46, 0, 46, Height);
-            minimize_button_bounds = new Rectangle (Width - 92, 0, 46, Height);
+            // Form icon
+            if (sized_icon != null)
+                e.Canvas.DrawBitmap (sized_icon, Bounds.Left + 7, Bounds.Top + 7);
 
+            // Form text
             if (!string.IsNullOrWhiteSpace (Text))
                 e.Canvas.DrawCenteredText (Text.Trim (), ModernTheme.UIFont, 14, Left + Width / 2, Top + 21, ModernTheme.LightTextColor);
 
-            if (sized_icon != null)
-                e.Canvas.DrawBitmap (sized_icon, Bounds.Left + 7, Bounds.Top + 7);
+            // Minimize button
+            if (AllowMinimize) {
+                var minimize_button_bounds = MinimizeButtonBounds;
+
+                if (minimize_button_hover)
+                    e.Canvas.FillRectangle (minimize_button_bounds, ModernTheme.RibbonTabHighlightColor);
+
+                e.Canvas.DrawLine (minimize_button_bounds.X + 18, minimize_button_bounds.Y + 17, minimize_button_bounds.X + 28, minimize_button_bounds.Y + 17, ModernTheme.LightTextColor);
+            }
+
+            // Maximize button
+            if (AllowMaximize) {
+                var maximize_button_bounds = MaximizeButtonBounds;
+
+                if (maximize_button_hover)
+                    e.Canvas.FillRectangle (maximize_button_bounds, ModernTheme.RibbonTabHighlightColor);
+
+                e.Canvas.DrawRectangle (maximize_button_bounds.X + 18, maximize_button_bounds.Y + 11, 10, 10, ModernTheme.LightTextColor);
+            }
+
+            // Close button
+            var close_button_bounds = CloseButtonBounds;
 
             if (close_button_hover)
                 e.Canvas.FillRectangle (close_button_bounds, ModernTheme.FormCloseHighlightColor);
 
-            if (AllowMinimize && minimize_button_hover)
-                e.Canvas.FillRectangle (minimize_button_bounds, ModernTheme.RibbonTabHighlightColor);
-
-            // Draw the close X
             e.Canvas.DrawLine (close_button_bounds.X + 18, close_button_bounds.Y + 12, close_button_bounds.X + 28, close_button_bounds.Y + 22, ModernTheme.LightTextColor);
             e.Canvas.DrawLine (close_button_bounds.X + 18, close_button_bounds.Y + 22, close_button_bounds.X + 28, close_button_bounds.Y + 12, ModernTheme.LightTextColor);
+        }
 
-            // Draw the minimize -
-            if (AllowMinimize)
-                e.Canvas.DrawLine (minimize_button_bounds.X + 18, minimize_button_bounds.Y + 17, minimize_button_bounds.X + 28, minimize_button_bounds.Y + 17, ModernTheme.LightTextColor);
+        private Rectangle CloseButtonBounds => new Rectangle (Width - 46, 0, 46, Height);
+        private Rectangle MaximizeButtonBounds => AllowMaximize ? new Rectangle (Width - 92, 0, 46, Height) : Rectangle.Empty;
+
+        private Rectangle MinimizeButtonBounds {
+            get {
+                if (AllowMinimize && AllowMaximize)
+                    return new Rectangle (Width - 138, 0, 46, Height);
+
+                if (AllowMinimize)
+                    return new Rectangle (Width - 92, 0, 46, Height);
+
+                return Rectangle.Empty;
+            }
         }
 
         private void SetCloseHover (bool hover)
@@ -140,7 +177,16 @@ namespace Modern.Forms
                 return;
 
             close_button_hover = hover;
-            Invalidate (close_button_bounds);
+            Invalidate (CloseButtonBounds);
+        }
+
+        private void SetMaximizeHover (bool hover)
+        {
+            if (!AllowMaximize || maximize_button_hover == hover)
+                return;
+
+            maximize_button_hover = hover;
+            Invalidate (MaximizeButtonBounds);
         }
 
         private void SetMinimizeHover (bool hover)
@@ -149,7 +195,7 @@ namespace Modern.Forms
                 return;
 
             minimize_button_hover = hover;
-            Invalidate (minimize_button_bounds);
+            Invalidate (MinimizeButtonBounds);
         }
     }
 }
