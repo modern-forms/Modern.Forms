@@ -236,7 +236,7 @@ namespace Modern.Forms
             return Parent?.FindAdapter ();
         }
 
-        public ModernForm FindForm ()
+        public IForm FindForm ()
         {
             if (this is LiteControlAdapter adapter)
                 return adapter.ParentForm;

@@ -8,7 +8,7 @@ using Panel = Modern.Forms.Panel;
 
 namespace ControlGallery
 {
-    public class MainForm : ModernForm
+    public class MainForm : AvaloniaForm
     {
         private Panel current_panel;
 
@@ -44,8 +44,6 @@ namespace ControlGallery
             };
 
             Controls.Add (titlebar);
-
-            DoLayout ();
         }
 
         private void Tree_ItemSelected (object sender, EventArgs<TreeViewItem> e)
@@ -62,7 +60,6 @@ namespace ControlGallery
                 current_panel = new_panel;
                 new_panel.Dock = DockStyle.Fill;
                 Controls.Insert (0, new_panel);
-                DoLayout ();
             }
         }
 

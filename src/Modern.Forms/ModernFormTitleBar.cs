@@ -21,10 +21,6 @@ namespace Modern.Forms
         private SKBitmap form_icon;
         private SKBitmap sized_icon;
 
-        private Point drag_start_location;
-        private Point drag_start_mouse_location;
-        private bool is_dragging;
-
         public SKBitmap Image {
             get => form_icon;
             set {
@@ -74,10 +70,9 @@ namespace Modern.Forms
             base.OnMouseDown (e);
 
             if (!CloseButtonBounds.Contains (e.Location) && !(AllowMaximize && MaximizeButtonBounds.Contains (e.Location)) && !(AllowMinimize && MinimizeButtonBounds.Contains (e.Location))) {
-                // Start drag-moving the window
-                is_dragging = true;
-                drag_start_location = FindForm ().Location;
-                drag_start_mouse_location = FindForm ().PointToScreen (e.Location);
+                // We won't get a MouseUp from the system for this, so don't capture the mouse
+                Capture = false;
+                FindForm ().BeginMoveDrag ();
             }
         }
 
@@ -88,21 +83,6 @@ namespace Modern.Forms
             SetCloseHover (CloseButtonBounds.Contains (e.Location));
             SetMaximizeHover (MaximizeButtonBounds.Contains (e.Location));
             SetMinimizeHover (MinimizeButtonBounds.Contains (e.Location));
-
-            if (is_dragging) {
-                var screen = FindForm ().PointToScreen (e.Location);
-                var delta_x = screen.X - drag_start_mouse_location.X;
-                var delta_y = screen.Y - drag_start_mouse_location.Y;
-
-                FindForm ().Location = new Point (drag_start_location.X + delta_x, drag_start_location.Y + delta_y);
-            }
-        }
-
-        protected override void OnMouseUp (MouseEventArgs e)
-        {
-            base.OnMouseUp (e);
-
-            is_dragging = false;
         }
 
         protected override void OnMouseLeave (EventArgs e)

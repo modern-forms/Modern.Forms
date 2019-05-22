@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class ModernForm : Form
+    public class ModernForm : Form, IForm
     {
         private LiteControlAdapter adapter;
 
@@ -38,7 +38,7 @@ namespace Modern.Forms
             adapter.DoLayout ();
         }
 
-        public override Rectangle DisplayRectangle => new Rectangle (Style.Border.Left.GetWidth (), Style.Border.Top.GetWidth (), ClientRectangle.Width -Style.Border.Right.GetWidth () - Style.Border.Left.GetWidth (), ClientRectangle.Height - Style.Border.Top.GetWidth () - Style.Border.Bottom.GetWidth ());
+        public override Rectangle DisplayRectangle => new Rectangle (Style.Border.Left.GetWidth (), Style.Border.Top.GetWidth (), ClientRectangle.Width - Style.Border.Right.GetWidth () - Style.Border.Left.GetWidth (), ClientRectangle.Height - Style.Border.Top.GetWidth () - Style.Border.Bottom.GetWidth ());
 
         protected override CreateParams CreateParams {
             get {
@@ -134,5 +134,7 @@ namespace Modern.Forms
 
             adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, DisplayRectangle.Width, DisplayRectangle.Height);
         }
+
+        public void BeginMoveDrag () { }
     }
 }
