@@ -25,6 +25,7 @@ namespace Avalonia
                 Win32Platform.Initialize ();
                 PlatformThreadingInterface = Win32Platform.Instance;
                 WindowingInterface = Win32Platform.Instance;
+                StandardCursorFactory = CursorFactory.Instance;
             } else if (runtime.OperatingSystem == OperatingSystemType.Linux) {
                 var x11 = new AvaloniaX11Platform ();
                 x11.Initialize (new X11PlatformOptions ());
@@ -32,6 +33,8 @@ namespace Avalonia
                 WindowingInterface = x11;
                 PlatformThreadingInterface = new X11PlatformThreading (x11);
                 StandardCursorFactory = new X11CursorFactory (x11.Display);
+            } else {
+                throw new InvalidOperationException ("Unrecognized Operating System");
             }
         }
     }

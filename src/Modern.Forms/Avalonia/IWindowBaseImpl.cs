@@ -80,6 +80,6 @@ namespace Avalonia.Platform
         /// <summary>
         /// Gets platform specific display information
         /// </summary>
-        //IScreenImpl Screen { get; }
+        IScreenImpl Screen { get; }
     }
 }

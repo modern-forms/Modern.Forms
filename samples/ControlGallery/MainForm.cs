@@ -8,7 +8,7 @@ using Panel = Modern.Forms.Panel;
 
 namespace ControlGallery
 {
-    public class MainForm : AvaloniaForm
+    public class MainForm : ModernForm
     {
         private Panel current_panel;
 

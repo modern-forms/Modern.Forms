@@ -137,10 +137,9 @@ namespace Avalonia.Win32
             _maxSize = maxSize;
         }
 
-        //public IScreenImpl Screen
-        //{
-        //    get;
-        //} = new ScreenImpl();
+        public IScreenImpl Screen {
+            get;
+        } = new ScreenImpl ();
 
 
         //public IRenderer CreateRenderer(IRenderRoot root)

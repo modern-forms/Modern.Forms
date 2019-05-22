@@ -11,13 +11,13 @@ namespace Modern.Forms
     {
         private LiteControl selected_control;
 
-        public LiteControlAdapter (IForm parent)
+        public LiteControlAdapter (ModernForm parent)
         {
             ParentForm = parent;
             SetControlBehavior (ControlBehaviors.Selectable, false);
         }
 
-        public IForm ParentForm { get; }
+        public ModernForm ParentForm { get; }
 
         protected override void OnPaint (SKPaintEventArgs e)
         {

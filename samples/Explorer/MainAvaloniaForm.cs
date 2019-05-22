@@ -6,7 +6,7 @@ using SkiaSharp;
 
 namespace Explore
 {
-    public partial class MainAvaloniaForm : AvaloniaForm
+    public partial class MainAvaloniaForm : ModernForm
     {
         private string current_directory;
 
@@ -135,7 +135,7 @@ namespace Explore
 
         private void NotImplemented_Clicked (object sender, EventArgs args)
         {
-            //new MessageBoxForm ("Demo", "Functionality not available in demo").ShowDialog (this);
+            new MessageBoxForm ("Demo", "Functionality not available in demo").ShowDialog (this);
         }
 
         private void ShowButtonForm_Clicked (object sender, EventArgs e)

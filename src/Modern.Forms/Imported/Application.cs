@@ -42,6 +42,7 @@ using System.Threading;
 using System.Text;
 using Avalonia.Input;
 using Avalonia.Threading;
+using Modern.Forms;
 //using System.Windows.Forms.VisualStyles;
 
 namespace System.Windows.Forms
@@ -176,6 +177,12 @@ namespace System.Windows.Forms
         ///   <c>true</c> if this instance is existing; otherwise, <c>false</c>.
         /// </value>
         internal static bool IsExiting { get; set; }
+
+        public static void Run (ModernForm form)
+        {
+            form.Show ();
+            Run ((ICloseable)form);
+        }
 
         /// <summary>
         /// Runs the application's main loop until the <see cref="ICloseable"/> is closed.

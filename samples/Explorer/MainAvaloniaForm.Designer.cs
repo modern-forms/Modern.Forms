@@ -4,7 +4,7 @@ using Modern.Forms;
 
 namespace Explore
 {
-    public partial class MainAvaloniaForm : AvaloniaForm
+    public partial class MainAvaloniaForm : ModernForm
     {
         private Ribbon ribbon;
         private TreeView tree;

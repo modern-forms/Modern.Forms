@@ -122,7 +122,7 @@ namespace Explore
                     break;
             }
 
-            Refresh ();
+            Invalidate ();
         }
 
         private void ParentFolder_Clicked (object sender, EventArgs args)

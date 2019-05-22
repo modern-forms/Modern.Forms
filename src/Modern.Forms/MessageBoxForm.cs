@@ -20,7 +20,8 @@ namespace Modern.Forms
 
             titlebar = new ModernFormTitleBar {
                 Text = "Demo",
-                AllowMinimize = false
+                AllowMinimize = false,
+                AllowMaximize = false
             };
 
             Controls.Add (titlebar);
@@ -56,17 +57,6 @@ namespace Modern.Forms
             this.text = text;
 
             label.Text = text;
-        }
-
-        protected override CreateParams CreateParams {
-            get {
-                var cp = base.CreateParams;
-
-                // Can't decide if I like the drop shadow or not
-                //cp.ClassStyle |= 0x00020000;
-
-                return cp;
-            }
         }
     }
 }
