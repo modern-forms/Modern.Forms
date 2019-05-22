@@ -21,7 +21,7 @@ namespace ControlGallery.Panels
             listbox1.Items.Add (new TestBlah { Text = "D Option" });
             listbox1.Items.Add (new TestBlah { Text = "C Option" });
 
-            listbox1.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            listbox1.SelectionMode = SelectionMode.None;
 
             Controls.Add (listbox1);
 
@@ -38,7 +38,7 @@ namespace ControlGallery.Panels
             listbox3.Items.Add ("C Option");
 
             listbox3.SelectedIndex = 1;
-            listbox3.SelectionMode = System.Windows.Forms.SelectionMode.One;
+            listbox3.SelectionMode = SelectionMode.One;
 
             Controls.Add (listbox3);
 
@@ -54,7 +54,7 @@ namespace ControlGallery.Panels
             listbox2.Items.Add ("D Option");
             listbox2.Items.Add ("C Option");
 
-            listbox2.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            listbox2.SelectionMode = SelectionMode.MultiSimple;
 
             Controls.Add (listbox2);
 
@@ -71,7 +71,7 @@ namespace ControlGallery.Panels
             listbox4.Items.Add (new TestBlah { Text = "C Option" });
 
             listbox4.SelectedIndex = 2;
-            listbox4.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            listbox4.SelectionMode = SelectionMode.MultiExtended;
 
             Controls.Add (listbox4);
         }

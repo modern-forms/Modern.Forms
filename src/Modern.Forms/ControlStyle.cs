@@ -18,7 +18,7 @@ namespace Modern.Forms
             _setDefaults = setDefaults;
             _setDefaults (this);
 
-            ModernTheme.ThemeChanged += (o, e) => _setDefaults (this);
+            Theme.ThemeChanged += (o, e) => _setDefaults (this);
         }
 
         // This is used by instances of Controls

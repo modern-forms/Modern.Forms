@@ -9,7 +9,7 @@ namespace ControlGallery.Panels
     {
         public TitleBarPanel ()
         {
-            var titlebar = new ModernFormTitleBar {
+            var titlebar = new FormTitleBar {
                 Text = "Test Text!"
             };
 

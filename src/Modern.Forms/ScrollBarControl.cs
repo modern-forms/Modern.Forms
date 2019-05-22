@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace Modern.Forms
 {
@@ -9,10 +8,10 @@ namespace Modern.Forms
     // Fix bug where you can't scroll to maximum
     // Timer based repeat
     // Mouse wheel
-    public abstract class ScrollBarControl : LiteControl
+    public abstract class ScrollBarControl : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => style.BackgroundColor = ModernTheme.DarkNeutralGray);
+            (style) => style.BackgroundColor = Theme.DarkNeutralGray);
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 

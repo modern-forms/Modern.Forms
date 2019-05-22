@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -25,14 +24,14 @@ namespace Modern.Forms
 
         public virtual void OnPaint (SKCanvas canvas)
         {
-            var background_color = Selected ? ModernTheme.NeutralGray : Hovered ? ModernTheme.RibbonTabHighlightColor : ModernTheme.RibbonColor;
+            var background_color = Selected ? Theme.NeutralGray : Hovered ? Theme.RibbonTabHighlightColor : Theme.RibbonColor;
             canvas.FillRectangle (Bounds, background_color);
 
-            var font_color = Selected ? ModernTheme.RibbonColor : ModernTheme.LightTextColor;
-            canvas.DrawCenteredText (Text, ModernTheme.UIFont, 14, Bounds, font_color);
+            var font_color = Selected ? Theme.RibbonColor : Theme.LightTextColor;
+            canvas.DrawCenteredText (Text, Theme.UIFont, 14, Bounds, font_color);
         }
 
         public Size GetPreferredSize (Size proposedSize)
-            => new Size ((int)Math.Round (TextMeasurer.MeasureText (Text, ModernTheme.UIFont, 14) + Padding.Horizontal, 0), 28);
+            => new Size ((int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, 14) + Padding.Horizontal, 0), 28);
     }
 }

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Windows.Forms;
 using ControlGallery.Panels;
 using Modern.Forms;
-using Panel = Modern.Forms.Panel;
 
 namespace ControlGallery
 {
-    public class MainForm : ModernForm
+    public class MainForm : Form
     {
         private Panel current_panel;
 
@@ -38,14 +36,12 @@ namespace ControlGallery
 
 
             // TitleBar
-            var titlebar = new ModernFormTitleBar {
+            var titlebar = new FormTitleBar {
                 Text = "Control Gallery",
                 Image = ImageLoader.Get ("button.png")
             };
 
             Controls.Add (titlebar);
-
-            DoLayout ();
         }
 
         private void Tree_ItemSelected (object sender, EventArgs<TreeViewItem> e)
@@ -62,7 +58,6 @@ namespace ControlGallery
                 current_panel = new_panel;
                 new_panel.Dock = DockStyle.Fill;
                 Controls.Insert (0, new_panel);
-                DoLayout ();
             }
         }
 

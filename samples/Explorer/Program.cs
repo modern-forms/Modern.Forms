@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 using Modern.Forms;
 
 namespace Explore
@@ -10,7 +9,7 @@ namespace Explore
         [STAThread]
         public static void Main (string[] args)
         {
-            Application.Run (new MainForm ());
+            Application.Run (new MainAvaloniaForm ());
         }
     }
 }

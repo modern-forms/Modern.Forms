@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
 using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class MessageBoxForm : ModernForm
+    public class MessageBoxForm : Form
     {
-        private ModernFormTitleBar titlebar;
-        private string text;
+        private FormTitleBar titlebar;
         private Label label;
 
         public MessageBoxForm ()
@@ -18,9 +16,10 @@ namespace Modern.Forms
             Text = "Demo";
             StartPosition = FormStartPosition.CenterParent;
 
-            titlebar = new ModernFormTitleBar {
+            titlebar = new FormTitleBar {
                 Text = "Demo",
-                AllowMinimize = false
+                AllowMinimize = false,
+                AllowMaximize = false
             };
 
             Controls.Add (titlebar);
@@ -53,20 +52,8 @@ namespace Modern.Forms
         {
             Text = title;
             titlebar.Text = title;
-            this.text = text;
 
             label.Text = text;
-        }
-
-        protected override CreateParams CreateParams {
-            get {
-                var cp = base.CreateParams;
-
-                // Can't decide if I like the drop shadow or not
-                //cp.ClassStyle |= 0x00020000;
-
-                return cp;
-            }
         }
     }
 }

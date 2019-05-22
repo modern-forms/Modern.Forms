@@ -24,7 +24,7 @@ namespace Modern.Forms
         internal void DrawItem (SKCanvas canvas)
         {
             if (Selected)
-                canvas.FillRectangle (Bounds, ModernTheme.RibbonItemHighlightColor);
+                canvas.FillRectangle (Bounds, Theme.RibbonItemHighlightColor);
 
             if (Image != null)
                 canvas.DrawBitmap (Image, Bounds.Left + (Bounds.Width - 32) / 2, Bounds.Top + 3);
@@ -34,10 +34,10 @@ namespace Modern.Forms
 
             var lines = Text.Split (' ');
 
-            canvas.DrawCenteredText (lines[0].Trim (), ModernTheme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 50, ModernTheme.DarkTextColor);
+            canvas.DrawCenteredText (lines[0].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 50, Theme.DarkTextColor);
 
             if (lines.Length > 1)
-                canvas.DrawCenteredText (lines[1].Trim (), ModernTheme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 66, ModernTheme.DarkTextColor);
+                canvas.DrawCenteredText (lines[1].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 66, Theme.DarkTextColor);
 
             canvas.Restore ();
         }

@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Windows.Forms;
 using Modern.Forms;
 
 namespace Explore
 {
-    public partial class MainForm : ModernForm
+    public partial class MainForm : Form
     {
         private Ribbon ribbon;
         private TreeView tree;
         private ListView view;
         private StatusBar statusbar;
-        private ModernFormTitleBar titlebar;
+        private FormTitleBar titlebar;
 
         private void InitializeComponent ()
         {
@@ -82,7 +81,7 @@ namespace Explore
             Controls.Add (statusbar);
 
             // TitleBar
-            titlebar = new ModernFormTitleBar {
+            titlebar = new FormTitleBar {
                 Text = "Explore Sample",
                 Image = ImageLoader.Get ("layout-folder-pane.png")
             };

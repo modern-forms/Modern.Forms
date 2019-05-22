@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;
+using Modern.Forms;
 
 namespace ControlGallery
 {

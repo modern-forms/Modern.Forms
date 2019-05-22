@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class StatusBar : LiteControl
+    public class StatusBar : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
