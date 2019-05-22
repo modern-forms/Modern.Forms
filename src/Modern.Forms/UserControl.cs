@@ -5,7 +5,7 @@ using System.Text;
 namespace Modern.Forms
 {
     // TODO: Should be ContainerControl
-    public class UserControl : LiteControl
+    public class UserControl : Control
     {
     }
 }

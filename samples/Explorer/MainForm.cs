@@ -6,7 +6,7 @@ using SkiaSharp;
 
 namespace Explore
 {
-    public partial class MainForm : ModernForm
+    public partial class MainForm : Form
     {
         private string current_directory;
 
@@ -80,45 +80,45 @@ namespace Explore
         {
             var item = sender as RibbonItem;
 
-            ModernTheme.FormBackgroundColor = SKColors.White;
-            ModernTheme.NeutralGray = new SKColor (240, 240, 240);
-            ModernTheme.LightNeutralGray = new SKColor (251, 251, 251);
-            ModernTheme.RibbonItemHighlightColor = new SKColor (198, 198, 198);
+            Theme.FormBackgroundColor = SKColors.White;
+            Theme.NeutralGray = new SKColor (240, 240, 240);
+            Theme.LightNeutralGray = new SKColor (251, 251, 251);
+            Theme.RibbonItemHighlightColor = new SKColor (198, 198, 198);
 
             switch (item.Text) {
                 case "Default":
-                    ModernTheme.BeginUpdate ();
-                    ModernTheme.RibbonTabHighlightColor = new SKColor (42, 138, 208);
-                    ModernTheme.RibbonColor = new SKColor (16, 110, 190);
-                    ModernTheme.EndUpdate ();
+                    Theme.BeginUpdate ();
+                    Theme.RibbonTabHighlightColor = new SKColor (42, 138, 208);
+                    Theme.RibbonColor = new SKColor (16, 110, 190);
+                    Theme.EndUpdate ();
                     break;
                 case "Green":
-                    ModernTheme.BeginUpdate ();
-                    ModernTheme.RibbonTabHighlightColor = new SKColor (67, 148, 103);
-                    ModernTheme.RibbonColor = new SKColor (33, 115, 70);
-                    ModernTheme.EndUpdate ();
+                    Theme.BeginUpdate ();
+                    Theme.RibbonTabHighlightColor = new SKColor (67, 148, 103);
+                    Theme.RibbonColor = new SKColor (33, 115, 70);
+                    Theme.EndUpdate ();
                     break;
                 case "Orange":
-                    ModernTheme.BeginUpdate ();
-                    ModernTheme.RibbonTabHighlightColor = new SKColor (220, 89, 57);
-                    ModernTheme.RibbonColor = new SKColor (183, 71, 42);
-                    ModernTheme.EndUpdate ();
+                    Theme.BeginUpdate ();
+                    Theme.RibbonTabHighlightColor = new SKColor (220, 89, 57);
+                    Theme.RibbonColor = new SKColor (183, 71, 42);
+                    Theme.EndUpdate ();
                     break;
                 case "Purple":
-                    ModernTheme.BeginUpdate ();
-                    ModernTheme.RibbonTabHighlightColor = new SKColor (163, 86, 158);
-                    ModernTheme.RibbonColor = new SKColor (128, 57, 123);
-                    ModernTheme.EndUpdate ();
+                    Theme.BeginUpdate ();
+                    Theme.RibbonTabHighlightColor = new SKColor (163, 86, 158);
+                    Theme.RibbonColor = new SKColor (128, 57, 123);
+                    Theme.EndUpdate ();
                     break;
                 case "Hotdog Stand":
-                    ModernTheme.BeginUpdate ();
-                    ModernTheme.RibbonTabHighlightColor = new SKColor (255, 128, 128);
-                    ModernTheme.FormBackgroundColor = SKColors.Yellow;
-                    ModernTheme.NeutralGray = SKColors.White;
-                    ModernTheme.LightNeutralGray = new SKColor (255, 0, 0);
-                    ModernTheme.RibbonItemHighlightColor = new SKColor (255, 255, 255);
-                    ModernTheme.RibbonColor = new SKColor (255, 0, 0);
-                    ModernTheme.EndUpdate ();
+                    Theme.BeginUpdate ();
+                    Theme.RibbonTabHighlightColor = new SKColor (255, 128, 128);
+                    Theme.FormBackgroundColor = SKColors.Yellow;
+                    Theme.NeutralGray = SKColors.White;
+                    Theme.LightNeutralGray = new SKColor (255, 0, 0);
+                    Theme.RibbonItemHighlightColor = new SKColor (255, 255, 255);
+                    Theme.RibbonColor = new SKColor (255, 0, 0);
+                    Theme.EndUpdate ();
                     break;
             }
 

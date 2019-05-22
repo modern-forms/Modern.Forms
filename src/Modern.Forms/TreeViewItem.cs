@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -27,14 +26,14 @@ namespace Modern.Forms
 
         internal void OnPaint (SKCanvas canvas)
         {
-            var background_color = Selected ? ModernTheme.RibbonItemHighlightColor : ModernTheme.LightNeutralGray;
+            var background_color = Selected ? Theme.RibbonItemHighlightColor : Theme.LightNeutralGray;
 
             canvas.FillRectangle (Bounds, background_color);
 
             if (Image != null)
                 canvas.DrawBitmap (Image, Bounds.Left + 7, Bounds.Top + 7);
 
-            canvas.DrawText (Text.Trim (), ModernTheme.UIFont, 14, Bounds.Left + 31, Bounds.Top + 20, ModernTheme.DarkTextColor);
+            canvas.DrawText (Text.Trim (), Theme.UIFont, 14, Bounds.Left + 31, Bounds.Top + 20, Theme.DarkTextColor);
         }
     }
 }

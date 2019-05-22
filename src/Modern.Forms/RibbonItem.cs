@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
-using System.Windows.Forms;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -92,7 +91,7 @@ namespace Modern.Forms
 
         public Size GetPreferredSize (Size proposedSize)
         {
-            var text_width = TextMeasurer.MeasureText (Text ?? string.Empty, ModernTheme.UIFont, 12, new SKSize (40, 30)).Width;
+            var text_width = TextMeasurer.MeasureText (Text ?? string.Empty, Theme.UIFont, 12, new SKSize (40, 30)).Width;
             var measured_width = (int)Math.Ceiling (text_width) + Padding.Horizontal;
 
             return new Size (Math.Max (measured_width, 40), 0);
@@ -100,7 +99,7 @@ namespace Modern.Forms
 
         protected virtual void OnBoundsChanged ()
         {
-            OnLayout (new LayoutEventArgs ((LiteControl)null, string.Empty));
+            OnLayout (new LayoutEventArgs ((Control)null, string.Empty));
         }
 
         protected virtual void OnClick (MouseEventArgs e) => Click?.Invoke (this, e);
@@ -144,7 +143,7 @@ namespace Modern.Forms
         protected virtual void OnPaint (SKPaintEventArgs e)
         {
             var canvas = e.Canvas;
-            var background_color = Selected ? ModernTheme.RibbonItemSelectedColor : Highlighted ? ModernTheme.RibbonItemHighlightColor : ModernTheme.NeutralGray;
+            var background_color = Selected ? Theme.RibbonItemSelectedColor : Highlighted ? Theme.RibbonItemHighlightColor : Theme.NeutralGray;
 
             canvas.FillRectangle (Bounds, background_color);
 
@@ -160,10 +159,10 @@ namespace Modern.Forms
 
             var lines = Text.Split (' ');
 
-            canvas.DrawCenteredText (lines[0].Trim (), ModernTheme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 50, Enabled ? ModernTheme.DarkTextColor : ModernTheme.DisabledTextColor);
+            canvas.DrawCenteredText (lines[0].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 50, Enabled ? Theme.DarkTextColor : Theme.DisabledTextColor);
 
             if (lines.Length > 1)
-                canvas.DrawCenteredText (lines[1].Trim (), ModernTheme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 66, Enabled ? ModernTheme.DarkTextColor : ModernTheme.DisabledTextColor);
+                canvas.DrawCenteredText (lines[1].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 66, Enabled ? Theme.DarkTextColor : Theme.DisabledTextColor);
 
             canvas.Restore ();
         }

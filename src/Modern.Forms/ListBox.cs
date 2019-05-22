@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class ListBox : LiteControl
+    public class ListBox : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
-                style.BackgroundColor = ModernTheme.LightNeutralGray;
+                style.BackgroundColor = Theme.LightNeutralGray;
                 style.Border.Width = 1;
             });
 
@@ -146,7 +145,7 @@ namespace Modern.Forms
                     // TODO: Shift
 
                     // When Control is held we treat this like MultiSimple
-                    if (XplatUI.State.ModifierKeys.HasFlag (Keys.Control)) {
+                    if (ModifierKeys.HasFlag (Keys.Control)) {
                         if (selected_items.Contains (index))
                             selected_items.Remove (index);
                         else
@@ -172,7 +171,7 @@ namespace Modern.Forms
                 var bounds = GetItemRectangle (i);
 
                 if (selected_items.Contains (i))
-                    e.Canvas.FillRectangle (bounds, ModernTheme.NeutralGray);
+                    e.Canvas.FillRectangle (bounds, Theme.NeutralGray);
 
                 bounds.Inflate (-4, 0);
                 e.Canvas.DrawText (item.ToString (), bounds, Style, ContentAlignment.MiddleLeft);

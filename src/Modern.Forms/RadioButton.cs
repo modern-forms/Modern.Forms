@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Modern.Forms
 {
@@ -12,10 +11,10 @@ namespace Modern.Forms
     // Hover style?
     // Pressed style?
     // GroupKey?
-    public class RadioButton : LiteControl
+    public class RadioButton : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => style.BackgroundColor = ModernTheme.LightNeutralGray);
+            (style) => style.BackgroundColor = Theme.LightNeutralGray);
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
@@ -25,7 +24,7 @@ namespace Modern.Forms
 
         public RadioButton ()
         {
-            Cursor = Cursors.Hand;
+            //Cursor = Cursors.Hand;
         }
 
         protected override Size DefaultSize => new Size (104, 24);
@@ -62,10 +61,10 @@ namespace Modern.Forms
             var y = Height / 2;
 
             if (Checked) {
-                e.Canvas.DrawCircle (11, y, 8, ModernTheme.RibbonColor);
-                e.Canvas.FillCircle (11, y, 5, ModernTheme.RibbonColor);
+                e.Canvas.DrawCircle (11, y, 8, Theme.RibbonColor);
+                e.Canvas.FillCircle (11, y, 5, Theme.RibbonColor);
             } else {
-                e.Canvas.DrawCircle (11, y, 8, ModernTheme.BorderGray);
+                e.Canvas.DrawCircle (11, y, 8, Theme.BorderGray);
             }
 
             e.Canvas.DrawText (Text, new Rectangle (24, 0, Width - 24, Height), CurrentStyle, ContentAlignment.MiddleLeft);

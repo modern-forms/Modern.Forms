@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Modern.Forms
 {
-    public class Ribbon : LiteControl
+    public class Ribbon : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
             (style) => {
-                style.BackgroundColor = ModernTheme.RibbonColor;
+                style.BackgroundColor = Theme.RibbonColor;
                 style.Border.Bottom.Width = 1;
             });
 
@@ -66,7 +65,7 @@ namespace Modern.Forms
 
             if (SelectedPage != null) {
                 var item = GetItemAtPosition (e.Location);
-                item.FireEvent (e, ToolStripItemEventType.MouseDown);
+                item?.FireEvent (e, ToolStripItemEventType.MouseDown);
             }
         }
 
@@ -108,7 +107,7 @@ namespace Modern.Forms
 
             if (SelectedPage != null) {
                 var item = GetItemAtPosition (e.Location);
-                item.FireEvent (e, ToolStripItemEventType.MouseUp);
+                item?.FireEvent (e, ToolStripItemEventType.MouseUp);
             }
         }
 
@@ -117,9 +116,7 @@ namespace Modern.Forms
             base.OnClick (e);
 
             var clicked_item = GetItemAtPosition (e.Location);
-
-            if (clicked_item != null)
-                clicked_item.FireEvent (e, ToolStripItemEventType.Click);
+            clicked_item?.FireEvent (e, ToolStripItemEventType.Click);
         }
 
         public RibbonTabPage SelectedPage {

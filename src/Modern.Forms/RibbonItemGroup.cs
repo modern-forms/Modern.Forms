@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -42,7 +41,7 @@ namespace Modern.Forms
                 item.FireEvent (new SKPaintEventArgs (null, SKImageInfo.Empty, canvas), ToolStripItemEventType.Paint);
 
             // Right border (group separator)
-            canvas.DrawLine (Bounds.Right - 1, Bounds.Top + 4, Bounds.Right - 1, Bounds.Bottom - 4, ModernTheme.BorderGray);
+            canvas.DrawLine (Bounds.Right - 1, Bounds.Top + 4, Bounds.Right - 1, Bounds.Bottom - 4, Theme.BorderGray);
         }
 
         public Size GetPreferredSize (Size proposedSize)

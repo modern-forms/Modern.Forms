@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
 using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class MessageBoxForm : ModernForm
+    public class MessageBoxForm : Form
     {
-        private ModernFormTitleBar titlebar;
-        private string text;
+        private FormTitleBar titlebar;
         private Label label;
 
         public MessageBoxForm ()
@@ -18,7 +16,7 @@ namespace Modern.Forms
             Text = "Demo";
             StartPosition = FormStartPosition.CenterParent;
 
-            titlebar = new ModernFormTitleBar {
+            titlebar = new FormTitleBar {
                 Text = "Demo",
                 AllowMinimize = false,
                 AllowMaximize = false
@@ -54,7 +52,6 @@ namespace Modern.Forms
         {
             Text = title;
             titlebar.Text = title;
-            this.text = text;
 
             label.Text = text;
         }

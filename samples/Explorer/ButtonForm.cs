@@ -7,7 +7,7 @@ using SkiaSharp;
 
 namespace Explore
 {
-    public class ButtonForm : ModernForm
+    public class ButtonForm : Form
     {
         public ButtonForm ()
         {
@@ -28,7 +28,7 @@ namespace Explore
             };
 
             b2.Style.BackgroundColor = SKColors.White;
-            b2.Style.ForegroundColor = ModernTheme.RibbonColor;
+            b2.Style.ForegroundColor = Theme.RibbonColor;
             b2.Style.Border.Width = 3;
             b2.Style.Border.Color = SKColors.Red;
 
@@ -261,11 +261,11 @@ namespace Explore
             listbox.Items.Add (new TestBlah { Text = "C Option" });
 
             listbox.SelectedIndex = 2;
-            listbox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            listbox.SelectionMode = SelectionMode.MultiExtended;
 
             Controls.Add (listbox);
 
-            var titlebar = new ModernFormTitleBar {
+            var titlebar = new FormTitleBar {
                 Text = "Button Style Sample"
             };
 

@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class ListView : LiteControl
+    public class ListView : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
-            (style) => style.BackgroundColor = ModernTheme.LightNeutralGray);
+            (style) => style.BackgroundColor = Theme.LightNeutralGray);
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 

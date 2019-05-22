@@ -28,7 +28,7 @@ namespace ControlGallery.Panels
             };
 
             b2.Style.BackgroundColor = SKColors.White;
-            b2.Style.ForegroundColor = ModernTheme.RibbonColor;
+            b2.Style.ForegroundColor = Theme.RibbonColor;
             b2.Style.Border.Width = 3;
             b2.Style.Border.Color = SKColors.Red;
 
@@ -82,7 +82,7 @@ namespace ControlGallery.Panels
             b5.Style.BackgroundColor = new SKColor (243, 246, 248);
             b5.Style.ForegroundColor = new SKColor (36, 41, 46);
             b5.TextAlign = ContentAlignment.MiddleLeft;
-            b5.Padding = new System.Windows.Forms.Padding (15, 0, 0, 0);
+            b5.Padding = new Padding (15, 0, 0, 0);
 
             Controls.Add (b5);
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Modern.Forms
 {
@@ -14,11 +13,11 @@ namespace Modern.Forms
     // Overflow?
     // Measuring
     // OnSelectedTabChanging?
-    public class TabStrip : LiteControl
+    public class TabStrip : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
-                style.BackgroundColor = ModernTheme.RibbonColor;
+                style.BackgroundColor = Theme.RibbonColor;
             });
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);

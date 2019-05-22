@@ -8,11 +8,11 @@ namespace Modern.Forms.Tests
         [Fact]
         public void GetNextControl_BasicTabIndex ()
         {
-            var container = new LiteControl ();
-            var controls = new LiteControl[5];
+            var container = new Control ();
+            var controls = new Control[5];
 
             for (var i = 0; i < 5; i++) {
-                controls[i] = new LiteControl {
+                controls[i] = new Control {
                     TabIndex = i,
                     Text = "ctrl " + i
                 };
@@ -44,11 +44,11 @@ namespace Modern.Forms.Tests
         [Fact]
         public void GetNextControl_ReverseTabIndex ()
         {
-            var container = new LiteControl ();
-            var controls = new LiteControl[5];
+            var container = new Control ();
+            var controls = new Control[5];
 
             for (var i = 0; i < 5; i++) {
-                controls[i] = new LiteControl {
+                controls[i] = new Control {
                     TabIndex = 5 - i,
                     Text = "ctrl " + i
                 };
@@ -60,8 +60,8 @@ namespace Modern.Forms.Tests
             Assert.Equal ("ctrl 0", container.GetNextControl (null, false).Text);
 
             // Ignores passed in controls that are not child controls
-            Assert.Equal ("ctrl 4", container.GetNextControl (new LiteControl (), true).Text);
-            Assert.Equal ("ctrl 0", container.GetNextControl (new LiteControl (), false).Text);
+            Assert.Equal ("ctrl 4", container.GetNextControl (new Control (), true).Text);
+            Assert.Equal ("ctrl 0", container.GetNextControl (new Control (), false).Text);
 
             Assert.Null (container.GetNextControl (controls[0], true));
             Assert.Equal ("ctrl 1", container.GetNextControl (controls[0], false).Text);
@@ -84,11 +84,11 @@ namespace Modern.Forms.Tests
         [Fact]
         public void GetNextControl_DuplicateTabIndex ()
         {
-            var container = new LiteControl ();
-            var controls = new LiteControl[5];
+            var container = new Control ();
+            var controls = new Control[5];
 
             for (var i = 0; i < 5; i++) {
-                controls[i] = new LiteControl {
+                controls[i] = new Control {
                     TabIndex = i,
                     Text = "ctrl " + i
                 };
@@ -129,8 +129,8 @@ namespace Modern.Forms.Tests
             //     - Button 3
             //   - Button 4
 
-            var form = new ModernForm ();
-            var f = new LiteControlAdapter (form);
+            var form = new Form ();
+            var f = new ControlAdapter (form);
 
             var b1 = new Button { Text = "Button 1" };
             var b2 = new Button { Text = "Button 2" };

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace Modern.Forms
 {
@@ -10,16 +9,16 @@ namespace Modern.Forms
     // Image
     // IsDefault?
     // TextAlign/ImageAlign
-    public class Button : LiteControl
+    public class Button : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
             (style) => style.Border.Width = 1);
 
         public new static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle, 
             (style) => {
-                style.BackgroundColor = ModernTheme.RibbonTabHighlightColor;
-                style.Border.Color = ModernTheme.RibbonColor;
-                style.ForegroundColor = ModernTheme.LightTextColor;
+                style.BackgroundColor = Theme.RibbonTabHighlightColor;
+                style.Border.Color = Theme.RibbonColor;
+                style.ForegroundColor = Theme.LightTextColor;
             });
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
@@ -33,7 +32,7 @@ namespace Modern.Forms
         {
             SetControlBehavior (ControlBehaviors.Hoverable);
 
-            Cursor = Cursors.Hand;
+            //Cursor = Cursors.Hand;
         }
 
         public ContentAlignment TextAlign {

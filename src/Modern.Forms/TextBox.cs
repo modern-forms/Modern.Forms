@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Modern.Forms
 {
     // TODO:
-    public class TextBox : LiteControl
+    public class TextBox : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
                 style.Border.Width = 1;
-                style.BackgroundColor = ModernTheme.LightNeutralGray;
+                style.BackgroundColor = Theme.LightNeutralGray;
             });
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
@@ -145,14 +144,14 @@ namespace Modern.Forms
             if (!string.IsNullOrEmpty (Text))
                 e.Canvas.DrawText (Text, ClientRectangle, CurrentStyle, ContentAlignment.MiddleLeft);
             else if (!string.IsNullOrEmpty (placeholder))
-                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentStyle.GetFontSize (), ClientRectangle, ModernTheme.DisabledTextColor, ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentStyle.GetFontSize (), ClientRectangle, Theme.DisabledTextColor, ContentAlignment.MiddleLeft);
 
             var cursor_loc =
                     cursor_index == 0 ? 0f
                                       : TextMeasurer.MeasureText (Text.Substring (0, cursor_index), CurrentStyle.GetFont (), CurrentStyle.GetFontSize ());
 
             if (Selected)
-                e.Canvas.DrawLine (ClientRectangle.Left + cursor_loc, ClientRectangle.Top + 4, ClientRectangle.Left + cursor_loc, ClientRectangle.Bottom - 4, ModernTheme.DarkTextColor);
+                e.Canvas.DrawLine (ClientRectangle.Left + cursor_loc, ClientRectangle.Top + 4, ClientRectangle.Left + cursor_loc, ClientRectangle.Bottom - 4, Theme.DarkTextColor);
         }
 
         private string CurrentText => Text ?? string.Empty;

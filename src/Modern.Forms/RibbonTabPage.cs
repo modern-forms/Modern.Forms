@@ -31,7 +31,7 @@ namespace Modern.Forms
 
         public void DrawTabPage (SKCanvas canvas)
         {
-            canvas.FillRectangle (Bounds, ModernTheme.NeutralGray);
+            canvas.FillRectangle (Bounds, Theme.NeutralGray);
 
             LayoutItems ();
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace Modern.Forms
 {
@@ -10,10 +9,10 @@ namespace Modern.Forms
     // TextAlign/CheckAlign
     // Hover style?
     // Pressed style?
-    public class CheckBox : LiteControl
+    public class CheckBox : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => style.BackgroundColor = ModernTheme.LightNeutralGray);
+            (style) => style.BackgroundColor = Theme.LightNeutralGray);
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
@@ -55,10 +54,10 @@ namespace Modern.Forms
             var y = (Height - 16) / 2;
 
             if (Checked) {
-                e.Canvas.DrawRectangle (3, y, 15, 15, ModernTheme.RibbonColor);
-                e.Canvas.FillRectangle (6, y + 3, 10, 10, ModernTheme.RibbonColor);
+                e.Canvas.DrawRectangle (3, y, 15, 15, Theme.RibbonColor);
+                e.Canvas.FillRectangle (6, y + 3, 10, 10, Theme.RibbonColor);
             } else {
-                e.Canvas.DrawRectangle (3, y, 15, 15, ModernTheme.BorderGray);
+                e.Canvas.DrawRectangle (3, y, 15, 15, Theme.BorderGray);
             }
 
             e.Canvas.DrawText (Text, new Rectangle (24, 0, Width - 24, Height), CurrentStyle, ContentAlignment.MiddleLeft);

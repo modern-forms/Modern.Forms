@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
 
 namespace Modern.Forms
 {
     // TODO: Base class should be ScrollableControl
-    public class Panel : LiteControl
+    public class Panel : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 

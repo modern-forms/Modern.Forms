@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -9,7 +8,7 @@ namespace Modern.Forms
     // AutoEllipsis
     // Image
     // TextAlign/ImageAlign
-    public class Label : LiteControl
+    public class Label : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 

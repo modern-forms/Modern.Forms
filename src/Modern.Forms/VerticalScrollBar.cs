@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -67,18 +66,18 @@ namespace Modern.Forms
 
             // Top Arrow
             e.Canvas.FillRectangle (top_arrow_area, SKColors.White);
-            e.Canvas.DrawRectangle (top_arrow_area, ModernTheme.BorderGray);
-            e.Canvas.DrawArrow (top_arrow_area, ModernTheme.BorderGray, DecrementArrowDirection);
+            e.Canvas.DrawRectangle (top_arrow_area, Theme.BorderGray);
+            e.Canvas.DrawArrow (top_arrow_area, Theme.BorderGray, DecrementArrowDirection);
 
             // Bottom Arrow
             e.Canvas.FillRectangle (bottom_arrow_area, SKColors.White);
-            e.Canvas.DrawRectangle (bottom_arrow_area, ModernTheme.BorderGray);
-            e.Canvas.DrawArrow (bottom_arrow_area, ModernTheme.BorderGray, IncrementArrowDirection);
+            e.Canvas.DrawRectangle (bottom_arrow_area, Theme.BorderGray);
+            e.Canvas.DrawArrow (bottom_arrow_area, Theme.BorderGray, IncrementArrowDirection);
 
             // Grip
             thumb_pos.Width -= 1;
             e.Canvas.FillRectangle (thumb_pos, SKColors.White);
-            e.Canvas.DrawRectangle (thumb_pos, ModernTheme.BorderGray);
+            e.Canvas.DrawRectangle (thumb_pos, Theme.BorderGray);
         }
     }
 }
