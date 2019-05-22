@@ -7,8 +7,8 @@ Modern.Forms is a cross-platform spiritual successor to Winforms for .NET Core 3
 **This is accomplished with:**
 
 * .NET Core 3.0 Preview
-* A port of Mono's Winforms that runs on .NET Core
-  * https://github.com/yzrmn/System.CoreFX.Forms
+* A port of Avalonia's native backends
+  * https://github.com/AvaloniaUI/Avalonia
   * Only the base infrastructure is used, basically this gives us a blank Form
 * SkiaSharp
   * All new controls are drawn with SkiaSharp
@@ -32,7 +32,7 @@ The goal of this proof of concept is to create a spiritual successor to Winforms
 * Install .NET Core 3.0 Preview 4+
   * https://dotnet.microsoft.com/download/dotnet-core/3.0
 * Open `Modern.Forms.sln` in Visual Studio 2019
-* Ensure `Explorer` is set as the Startup project
+* Ensure `Explore` is set as the Startup project
 * Hit F5
 
 ![Windows Screenshot](https://github.com/jpobst/Modern.Forms/blob/master/docs/explorer-windows.png "Windows Screenshot")
@@ -42,13 +42,10 @@ The goal of this proof of concept is to create a spiritual successor to Winforms
 * Clone this repository
 * Install .NET Core 3.0 Preview 4+
   * https://dotnet.microsoft.com/download/dotnet-core/3.0
-* Install `libgdiplus.so`
-  * `apt install libgidplus`
-* Install `libSkiaSharp.so`
+* Install `libSkiaSharp.so` and `libHarfBuzzSharp.so`
   * https://github.com/mono/SkiaSharp/releases/download/v1.68.0/libSkiaSharp.so
-  * This can go in `bin/Debug/netcoreapp3.0` or anywhere it can be found
-* Install `libMonoPosixHelper` (Bundled in Mono)
-  * `apt install mono-runtime-common`
+  * https://github.com/mono/SkiaSharp/releases/download/v1.68.0/libHarfBuzzSharp.so
+  * These can go in `bin/Debug/netcoreapp3.0` or anywhere they can be found
 * Navigate to `samples/Explorer`
 * Run `dotnet run`
 
@@ -56,6 +53,5 @@ The goal of this proof of concept is to create a spiritual successor to Winforms
 
 ### OSX
 
-I don't have a Mac and it appears neither did the guy who ported `System.CoreFX.Forms`, so it is likely
-there will need to be additional porting work to get it functional.  Once `System.CoreFX.Forms` is
-successfully running, there should not be any additional changes needed for `Modern.Forms`.
+The OSX backend from Avalonia has not been ported because I do not have a Mac.  Given the
+work done to get the other backends running, it would probably only take a few hours.
