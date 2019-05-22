@@ -7,6 +7,8 @@ Modern.Forms is a cross-platform spiritual successor to Winforms for .NET Core 3
 **This is accomplished with:**
 
 * .NET Core 3.0 Preview
+* Some infrastructure code from Mono's Winforms (like layouts):
+  * https://github.com/mono/mono/tree/master/mcs/class/System.Windows.Forms
 * A port of Avalonia's native backends
   * https://github.com/AvaloniaUI/Avalonia
   * Only the base infrastructure is used, basically this gives us a blank Form
