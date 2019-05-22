@@ -35,7 +35,7 @@ namespace Modern.Forms
         {
             adapter = new LiteControlAdapter (this);
             
-            window = new WindowImpl ();
+            window = AvaloniaGlobals.WindowingInterface.CreateWindow ();
             window.SetSystemDecorations (false);
             window.Resize (new Size (1080, 720));
             window.Input = OnInput;

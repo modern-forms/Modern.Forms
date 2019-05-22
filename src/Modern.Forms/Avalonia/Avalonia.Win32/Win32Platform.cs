@@ -45,7 +45,7 @@ namespace Avalonia
 
 namespace Avalonia.Win32
 {
-    class Win32Platform : IPlatformThreadingInterface//, IPlatformSettings, IWindowingPlatform, IPlatformIconLoader
+    class Win32Platform : IPlatformThreadingInterface, IWindowingPlatform//, IPlatformSettings, IPlatformIconLoader
     {
         private static readonly Win32Platform s_instance = new Win32Platform();
         private static Thread _uiThread;
@@ -58,6 +58,8 @@ namespace Avalonia.Win32
             SetDpiAwareness();
             CreateMessageWindow();
         }
+
+        public static Win32Platform Instance => s_instance;
 
         public static bool UseDeferredRendering { get; set; }
 

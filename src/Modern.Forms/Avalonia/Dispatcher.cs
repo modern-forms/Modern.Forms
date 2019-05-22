@@ -17,7 +17,7 @@ namespace Avalonia.Threading
     /// </remarks>
     public class Dispatcher : IDispatcher
     {
-        //private readonly JobRunner _jobRunner;
+        private readonly JobRunner _jobRunner;
         private IPlatformThreadingInterface _platform;
 
         public static Dispatcher UIThread { get; } =
@@ -26,12 +26,11 @@ namespace Avalonia.Threading
         public Dispatcher(IPlatformThreadingInterface platform)
         {
             _platform = platform;
-            //_jobRunner = new JobRunner(platform);
+            _jobRunner = new JobRunner(platform);
 
-            //if (_platform != null)
-            //{
-            //    _platform.Signaled += _jobRunner.RunJobs;
-            //}
+            if (_platform != null) {
+                _platform.Signaled += _jobRunner.RunJobs;
+            }
         }
 
         /// <summary>
@@ -67,82 +66,80 @@ namespace Avalonia.Threading
         /// <summary>
         /// Runs continuations pushed on the loop.
         /// </summary>
-        //public void RunJobs()
-        //{
-        //    _jobRunner.RunJobs(null);
-        //}
+        public void RunJobs ()
+        {
+            _jobRunner.RunJobs (null);
+        }
 
         /// <summary>
         /// Use this method to ensure that more prioritized tasks are executed
         /// </summary>
         /// <param name="minimumPriority"></param>
-        //public void RunJobs(DispatcherPriority minimumPriority) => _jobRunner.RunJobs(minimumPriority);
+        public void RunJobs(DispatcherPriority minimumPriority) => _jobRunner.RunJobs(minimumPriority);
 
         /// <inheritdoc/>
-        //public Task InvokeAsync(Action action, DispatcherPriority priority = DispatcherPriority.Normal)
-        //{
-        //    Contract.Requires<ArgumentNullException>(action != null);
-        //    return _jobRunner.InvokeAsync(action, priority);
-        //}
-        
-        ///// <inheritdoc/>
-        //public Task<TResult> InvokeAsync<TResult>(Func<TResult> function, DispatcherPriority priority = DispatcherPriority.Normal)
-        //{
-        //    Contract.Requires<ArgumentNullException>(function != null);
-        //    return _jobRunner.InvokeAsync(function, priority);
-        //}
+        public Task InvokeAsync (Action action, DispatcherPriority priority = DispatcherPriority.Normal)
+        {
+            //Contract.Requires<ArgumentNullException> (action != null);
+            return _jobRunner.InvokeAsync (action, priority);
+        }
 
         ///// <inheritdoc/>
-        //public Task InvokeAsync(Func<Task> function, DispatcherPriority priority = DispatcherPriority.Normal)
-        //{
-        //    Contract.Requires<ArgumentNullException>(function != null);
-        //    return _jobRunner.InvokeAsync(function, priority).Unwrap();
-        //}
+        public Task<TResult> InvokeAsync<TResult> (Func<TResult> function, DispatcherPriority priority = DispatcherPriority.Normal)
+        {
+            //Contract.Requires<ArgumentNullException> (function != null);
+            return _jobRunner.InvokeAsync (function, priority);
+        }
 
         ///// <inheritdoc/>
-        //public Task<TResult> InvokeAsync<TResult>(Func<Task<TResult>> function, DispatcherPriority priority = DispatcherPriority.Normal)
-        //{
-        //    Contract.Requires<ArgumentNullException>(function != null);
-        //    return _jobRunner.InvokeAsync(function, priority).Unwrap();
-        //}
+        public Task InvokeAsync (Func<Task> function, DispatcherPriority priority = DispatcherPriority.Normal)
+        {
+            //Contract.Requires<ArgumentNullException> (function != null);
+            return _jobRunner.InvokeAsync (function, priority).Unwrap ();
+        }
 
         ///// <inheritdoc/>
-        //public void Post(Action action, DispatcherPriority priority = DispatcherPriority.Normal)
-        //{
-        //    Contract.Requires<ArgumentNullException>(action != null);
-        //    _jobRunner.Post(action, priority);
-        //}
+        public Task<TResult> InvokeAsync<TResult> (Func<Task<TResult>> function, DispatcherPriority priority = DispatcherPriority.Normal)
+        {
+            //Contract.Requires<ArgumentNullException> (function != null);
+            return _jobRunner.InvokeAsync (function, priority).Unwrap ();
+        }
+
+        ///// <inheritdoc/>
+        public void Post (Action action, DispatcherPriority priority = DispatcherPriority.Normal)
+        {
+            //Contract.Requires<ArgumentNullException> (action != null);
+            _jobRunner.Post (action, priority);
+        }
 
         ///// <summary>
         ///// This is needed for platform backends that don't have internal priority system (e. g. win32)
         ///// To ensure that there are no jobs with higher priority
         ///// </summary>
         ///// <param name="currentPriority"></param>
-        //internal void EnsurePriority(DispatcherPriority currentPriority)
-        //{
-        //    if (currentPriority == DispatcherPriority.MaxValue)
-        //        return;
-        //    currentPriority += 1;
-        //    _jobRunner.RunJobs(currentPriority);
-        //}
+        internal void EnsurePriority (DispatcherPriority currentPriority)
+        {
+            if (currentPriority == DispatcherPriority.MaxValue)
+                return;
+            currentPriority += 1;
+            _jobRunner.RunJobs (currentPriority);
+        }
 
         ///// <summary>
         ///// Allows unit tests to change the platform threading interface.
         ///// </summary>
-        //internal void UpdateServices()
-        //{
-        //    if (_platform != null)
-        //    {
-        //        _platform.Signaled -= _jobRunner.RunJobs;
-        //    }
+        internal void UpdateServices ()
+        {
+            if (_platform != null) {
+                _platform.Signaled -= _jobRunner.RunJobs;
+            }
 
-        //    _platform = AvaloniaLocator.Current.GetService<IPlatformThreadingInterface>();
-        //    _jobRunner.UpdateServices();
+            _platform = AvaloniaGlobals.PlatformThreadingInterface;
+            _jobRunner.UpdateServices ();
 
-        //    if (_platform != null)
-        //    {
-        //        _platform.Signaled += _jobRunner.RunJobs;
-        //    }
-        //}
+            if (_platform != null) {
+                _platform.Signaled += _jobRunner.RunJobs;
+            }
+        }
     }
 }
