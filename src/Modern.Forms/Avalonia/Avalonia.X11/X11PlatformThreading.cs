@@ -191,7 +191,7 @@ namespace Avalonia.X11
                 }
             }
 
-            //Dispatcher.UIThread.RunJobs();
+            Dispatcher.UIThread.RunJobs();
         }
         
         public void RunLoop(CancellationToken cancellationToken)
