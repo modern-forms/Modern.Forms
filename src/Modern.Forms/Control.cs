@@ -30,7 +30,7 @@ namespace Modern.Forms
         internal int dist_right;
         internal int dist_bottom;
         private DockStyle dock_style;
-        private Rectangle explicit_bounds;
+        //private Rectangle explicit_bounds;
         private bool is_captured;
         private bool is_enabled = true;
         private bool is_visible = true;
@@ -189,7 +189,7 @@ namespace Modern.Forms
                 anchor_style = AnchorStyles.Top | AnchorStyles.Left;
 
                 if (dock_style == DockStyle.None) {
-                    bounds = explicit_bounds;
+                    //bounds = explicit_bounds;
                     UseAnchorLayoutInternal = true;
                 }
 

@@ -16,11 +16,11 @@ namespace Avalonia.Input
     /// </summary>
     public class MouseDevice : IMouseDevice
     {
-        private int _clickCount;
-        private Rect _lastClickRect;
-        private ulong _lastClickTime;
+        //private int _clickCount;
+        //private Rect _lastClickRect;
+        //private ulong _lastClickTime;
         //private IInputElement _captured;
-        private IDisposable _capturedSubscription;
+        //private IDisposable _capturedSubscription;
        
         /// <summary>
         /// Gets the control that is currently capturing by the mouse, if any.

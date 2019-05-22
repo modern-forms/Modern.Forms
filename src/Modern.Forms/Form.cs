@@ -63,7 +63,7 @@ namespace Modern.Forms
 
         public FormWindowState WindowState {
             get => (FormWindowState)window.WindowState;
-            set => window.WindowState = (Avalonia.Controls.WindowState)value;
+            set => window.WindowState = (WindowState)value;
         }
 
         public event EventHandler Closed;

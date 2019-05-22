@@ -23,8 +23,8 @@ namespace Modern.Forms
         private int small_change = 1;
         protected bool vertical;
 
-        private bool use_manual_thumb_size;
-        private int manual_thumb_size;
+        private bool use_manual_thumb_size = false;
+        private int manual_thumb_size = 0;
         protected int scrollbutton_height;
         protected int scrollbutton_width;
         protected int thumb_size = 40;
