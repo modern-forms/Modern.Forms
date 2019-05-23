@@ -46,7 +46,7 @@ namespace Modern.Forms
             UpdateThumbPos (thumb_area.Y + (int)(((float)(position - minimum)) * pixel_per_pos), true, false);
         }
 
-        public event ScrollEventHandler Scroll;
+        public event EventHandler<ScrollEventArgs> Scroll;
         public event EventHandler ValueChanged;
 
         public int LargeChange {

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using Avalonia.Input;
 using Avalonia.Threading;
@@ -10,14 +8,12 @@ namespace Modern.Forms
     public static class Application
     {
         private static CancellationTokenSource _mainLoopCancellationTokenSource;
+        private static bool is_exiting;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance is existing.
+        /// Sent when the application is exiting.
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is existing; otherwise, <c>false</c>.
-        /// </value>
-        internal static bool IsExiting { get; set; }
+        public static event EventHandler OnExit;
 
         public static void Run (Form form)
         {
@@ -31,38 +27,30 @@ namespace Modern.Forms
         /// <param name="closable">The closable to track</param>
         public static void Run (ICloseable closable)
         {
-            if (_mainLoopCancellationTokenSource != null) {
+            if (_mainLoopCancellationTokenSource != null)
                 throw new Exception ("Run should only called once");
-            }
 
-            closable.Closed += (s, e) => AvaloniaExit ();
+            closable.Closed += (s, e) => Exit ();
 
             _mainLoopCancellationTokenSource = new CancellationTokenSource ();
 
             Dispatcher.UIThread.MainLoop (_mainLoopCancellationTokenSource.Token);
 
             // Make sure we call OnExit in case an error happened and Exit() wasn't called explicitly
-            if (!IsExiting) {
+            if (!is_exiting)
                 OnExit?.Invoke (null, EventArgs.Empty);
-            }
         }
+
         /// <summary>
         /// Exits the application
         /// </summary>
-        public static void AvaloniaExit ()
+        public static void Exit ()
         {
-            IsExiting = true;
-
-            //Windows.Clear ();
+            is_exiting = true;
 
             OnExit?.Invoke (null, EventArgs.Empty);
 
             _mainLoopCancellationTokenSource?.Cancel ();
         }
-
-        /// <summary>
-        /// Sent when the application is exiting.
-        /// </summary>
-        public static event EventHandler OnExit;
     }
 }
