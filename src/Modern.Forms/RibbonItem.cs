@@ -140,7 +140,7 @@ namespace Modern.Forms
             MouseUp?.Invoke (this, e);
         }
 
-        protected virtual void OnPaint (SKPaintEventArgs e)
+        protected virtual void OnPaint (PaintEventArgs e)
         {
             var canvas = e.Canvas;
             var background_color = Selected ? Theme.RibbonItemSelectedColor : Highlighted ? Theme.RibbonItemHighlightColor : Theme.NeutralGray;
@@ -169,31 +169,31 @@ namespace Modern.Forms
 
         protected virtual void OnTextChanged (EventArgs e) => TextChanged?.Invoke (this, e);
 
-        internal void FireEvent (EventArgs e, ToolStripItemEventType type)
+        internal void FireEvent (EventArgs e, ItemEventType type)
         {
-            if (!Enabled && type != ToolStripItemEventType.Paint)
+            if (!Enabled && type != ItemEventType.Paint)
                 return;
 
             switch (type) {
-                case ToolStripItemEventType.MouseDown:
+                case ItemEventType.MouseDown:
                     OnMouseDown ((MouseEventArgs)e);
                     break;
-                case ToolStripItemEventType.MouseEnter:
+                case ItemEventType.MouseEnter:
                     OnMouseEnter ((MouseEventArgs)e);
                     break;
-                case ToolStripItemEventType.MouseLeave:
+                case ItemEventType.MouseLeave:
                     OnMouseLeave ((EventArgs)e);
                     break;
-                case ToolStripItemEventType.MouseMove:
+                case ItemEventType.MouseMove:
                     OnMouseMove ((MouseEventArgs)e);
                     break;
-                case ToolStripItemEventType.MouseUp:
+                case ItemEventType.MouseUp:
                     OnMouseUp ((MouseEventArgs)e);
                     break;
-                case ToolStripItemEventType.Paint:
-                    OnPaint ((SKPaintEventArgs)e);
+                case ItemEventType.Paint:
+                    OnPaint ((PaintEventArgs)e);
                     break;
-                case ToolStripItemEventType.Click:
+                case ItemEventType.Click:
                     OnClick ((MouseEventArgs)e);
                     break;
             }

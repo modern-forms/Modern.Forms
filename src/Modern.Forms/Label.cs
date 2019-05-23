@@ -36,7 +36,7 @@ namespace Modern.Forms
             }
         }
 
-        protected override void OnPaint (SKPaintEventArgs e)
+        protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 

@@ -3,16 +3,16 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class SKPaintEventArgs : EventArgs
+    public class PaintEventArgs : EventArgs
     {
-        public SKPaintEventArgs (SKSurface surface, SKImageInfo info)
+        public PaintEventArgs (SKSurface surface, SKImageInfo info)
         {
             Surface = surface;
             Info = info;
             Canvas = surface?.Canvas;
         }
 
-        public SKPaintEventArgs (SKSurface surface, SKImageInfo info, SKCanvas canvas)
+        public PaintEventArgs (SKSurface surface, SKImageInfo info, SKCanvas canvas)
         {
             Surface = surface;
             Info = info;

@@ -72,6 +72,7 @@ namespace Modern.Forms
         public void Close () => window.Dispose ();
         public System.Drawing.Rectangle DisplayRectangle => new System.Drawing.Rectangle (Style.Border.Left.GetWidth (), Style.Border.Top.GetWidth (), (int)window.ClientSize.Width - Style.Border.Right.GetWidth () - Style.Border.Left.GetWidth (), (int)window.ClientSize.Height - Style.Border.Top.GetWidth () - Style.Border.Bottom.GetWidth ());
         public void Invalidate () => window.Invalidate (new Rect (window.ClientSize));
+        public void Invalidate (System.Drawing.Rectangle rect) => window.Invalidate (new Rect (rect.X, rect.Y, rect.Width, rect.Height));
         public PixelPoint Location {
             get => window.Position;
             set {
@@ -91,14 +92,14 @@ namespace Modern.Forms
 
         private DateTime last_click_time;
 
-        private MouseEventArgs BuildMouseClickArgs (MouseButtons buttons, Point point)
+        private MouseEventArgs BuildMouseClickArgs (MouseButtons buttons, Point point, Keys keyData)
         {
             var click_count = 1;
 
             if (DateTime.Now.Subtract (last_click_time).TotalMilliseconds < 500)
                 click_count = 2;
 
-            var e = new MouseEventArgs (buttons, click_count, (int)point.X, (int)point.Y, 0);
+            var e = new MouseEventArgs (buttons, click_count, (int)point.X, (int)point.Y, 0, keyData);
 
             last_click_time = click_count > 1 ? DateTime.MinValue : DateTime.Now;
 
@@ -110,11 +111,11 @@ namespace Modern.Forms
             if (e is RawMouseEventArgs me) {
                 switch (me.Type) {
                     case RawMouseEventType.LeftButtonDown:
-                        var lbd_e = new MouseEventArgs (MouseButtons.Left, 1, (int)me.Position.X, (int)me.Position.Y, 0);
+                        var lbd_e = new MouseEventArgs (MouseButtons.Left, 1, (int)me.Position.X, (int)me.Position.Y, 0, KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (lbd_e);
                         break;
                     case RawMouseEventType.LeftButtonUp:
-                        var lbu_e = BuildMouseClickArgs (MouseButtons.Left, me.Position);
+                        var lbu_e = BuildMouseClickArgs (MouseButtons.Left, me.Position, KeyEventArgs.FromInputModifiers (me.InputModifiers));
 
                         if (lbu_e.Clicks > 1)
                             adapter.RaiseDoubleClick (lbu_e);
@@ -123,11 +124,11 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (lbu_e);
                         break;
                     case RawMouseEventType.MiddleButtonDown:
-                        var mbd_e = new MouseEventArgs (MouseButtons.Middle, 1, (int)me.Position.X, (int)me.Position.Y, 0);
+                        var mbd_e = new MouseEventArgs (MouseButtons.Middle, 1, (int)me.Position.X, (int)me.Position.Y, 0, KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (mbd_e);
                         break;
                     case RawMouseEventType.MiddleButtonUp:
-                        var mbu_e = BuildMouseClickArgs (MouseButtons.Middle, me.Position);
+                        var mbu_e = BuildMouseClickArgs (MouseButtons.Middle, me.Position, KeyEventArgs.FromInputModifiers (me.InputModifiers));
 
                         if (mbu_e.Clicks > 1)
                             adapter.RaiseDoubleClick (mbu_e);
@@ -136,11 +137,11 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (mbu_e);
                         break;
                     case RawMouseEventType.RightButtonDown:
-                        var rbd_e = new MouseEventArgs (MouseButtons.Right, 1, (int)me.Position.X, (int)me.Position.Y, 0);
+                        var rbd_e = new MouseEventArgs (MouseButtons.Right, 1, (int)me.Position.X, (int)me.Position.Y, 0, KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (rbd_e);
                         break;
                     case RawMouseEventType.RightButtonUp:
-                        var rbu_e = BuildMouseClickArgs (MouseButtons.Right, me.Position);
+                        var rbu_e = BuildMouseClickArgs (MouseButtons.Right, me.Position, KeyEventArgs.FromInputModifiers (me.InputModifiers));
 
                         if (rbu_e.Clicks > 1)
                             adapter.RaiseDoubleClick (rbu_e);
@@ -149,11 +150,11 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (rbu_e);
                         break;
                     case RawMouseEventType.LeaveWindow:
-                        var lw_e = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, 0);
+                        var lw_e = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, 0, KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseLeave (lw_e);
                         break;
                     case RawMouseEventType.Move:
-                        var mea = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, 0);
+                        var mea = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, 0, KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseMove (mea);
                         break;
                 }
@@ -169,7 +170,7 @@ namespace Modern.Forms
                     //    break;
                 }
             } else if (e is RawTextInputEventArgs te) {
-                var kp_e = new KeyPressEventArgs (te.Text[0]);
+                var kp_e = new KeyPressEventArgs (te.Text[0], KeyEventArgs.FromInputModifiers (te.Modifiers));
                 adapter.RaiseKeyPress (kp_e);
             }
         }
@@ -183,7 +184,7 @@ namespace Modern.Forms
                 framebuffer.Format == PixelFormat.Rgb565 ? SKAlphaType.Opaque : SKAlphaType.Premul);
 
             using (var surface = SKSurface.Create (framebufferImageInfo, framebuffer.Address, framebuffer.RowBytes)) {
-                var e = new SKPaintEventArgs (surface, framebufferImageInfo, surface.Canvas);
+                var e = new PaintEventArgs (surface, framebufferImageInfo, surface.Canvas);
                 e.Canvas.DrawBackground (new System.Drawing.Rectangle (0, 0, (int)window.ClientSize.Width, (int)window.ClientSize.Height), DefaultStyle);
                 e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, (int)window.ClientSize.Width, (int)window.ClientSize.Height), DefaultStyle);
 

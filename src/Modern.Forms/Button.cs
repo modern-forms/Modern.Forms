@@ -11,10 +11,10 @@ namespace Modern.Forms
     // TextAlign/ImageAlign
     public class Button : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => style.Border.Width = 1);
 
-        public new static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle, 
+        public new static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle,
             (style) => {
                 style.BackgroundColor = Theme.RibbonTabHighlightColor;
                 style.Border.Color = Theme.RibbonColor;
@@ -45,7 +45,7 @@ namespace Modern.Forms
             }
         }
 
-        protected override void OnPaint (SKPaintEventArgs e)
+        protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 
@@ -54,7 +54,7 @@ namespace Modern.Forms
 
         public void PerformClick ()
         {
-            OnClick (new MouseEventArgs (MouseButtons.Left, 1, 0, 0 ,0));
+            OnClick (new MouseEventArgs (MouseButtons.Left, 1, 0, 0, 0));
         }
 
         // TODO: Button.NotifyDefault

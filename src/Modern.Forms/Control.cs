@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using SkiaSharp;
@@ -306,7 +305,7 @@ namespace Modern.Forms
 
         public void Invalidate (Rectangle rectangle)
         {
-            Invalidate ();
+            FindForm ()?.Invalidate (rectangle);
         }
 
         public bool IsHovering { get; private set; }
@@ -331,8 +330,6 @@ namespace Modern.Forms
                 }
             }
         }
-
-        public Keys ModifierKeys { get; }
 
         public string Name { get; set; }
 
@@ -585,7 +582,7 @@ namespace Modern.Forms
             if (control == null)
                 return e;
 
-            return new MouseEventArgs (e.Button, e.Clicks, e.Location.X - control.Left, e.Location.Y - control.Top, e.Delta);
+            return new MouseEventArgs (e.Button, e.Clicks, e.Location.X - control.Left, e.Location.Y - control.Top, e.Delta, e.Modifiers);
         }
 
         internal void Deselect ()
@@ -656,7 +653,7 @@ namespace Modern.Forms
             if (this is ControlAdapter adapter) {
                 // Tab
                 if (e.KeyChar == 9) {
-                    SelectNextControl (adapter.SelectedControl, !ModifierKeys.HasFlag (Keys.Shift), true, true, true);
+                    SelectNextControl (adapter.SelectedControl, !e.Shift, true, true, true);
                     e.Handled = true;
                     return;
                 }
@@ -779,9 +776,9 @@ namespace Modern.Forms
         {
         }
 
-        internal void RaisePaint (SKPaintEventArgs e) => OnPaint (e);
+        internal void RaisePaint (PaintEventArgs e) => OnPaint (e);
 
-        protected virtual void OnPaint (SKPaintEventArgs e)
+        protected virtual void OnPaint (PaintEventArgs e)
         {
             foreach (var control in Controls.Where (c => c.Visible)) {
                 var info = new SKImageInfo (Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
@@ -789,7 +786,7 @@ namespace Modern.Forms
 
                 using (var canvas = new SKCanvas (buffer)) {
                     // start drawing
-                    var args = new SKPaintEventArgs (null, info, canvas);
+                    var args = new PaintEventArgs (null, info, canvas);
 
                     control.RaisePaintBackground (args);
                     control.RaisePaint (args);
@@ -819,9 +816,9 @@ namespace Modern.Forms
                 behaviors &= behavior;
         }
 
-        internal void RaisePaintBackground (SKPaintEventArgs e) => OnPaintBackground (e);
+        internal void RaisePaintBackground (PaintEventArgs e) => OnPaintBackground (e);
 
-        protected virtual void OnPaintBackground (SKPaintEventArgs e)
+        protected virtual void OnPaintBackground (PaintEventArgs e)
         {
             e.Canvas.DrawBackground (Bounds, CurrentStyle);
             e.Canvas.DrawBorder (Bounds, CurrentStyle);

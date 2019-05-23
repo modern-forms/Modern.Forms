@@ -19,7 +19,7 @@ namespace Modern.Forms
 
         protected override Size DefaultSize => new Size (450, 450);
 
-        protected override void OnPaint (SKPaintEventArgs e)
+        protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 

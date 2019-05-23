@@ -25,6 +25,7 @@
 //
 
 using System;
+using Avalonia.Input;
 
 namespace Modern.Forms
 {
@@ -60,6 +61,20 @@ namespace Modern.Forms
                 supress_key_press = value;
                 Handled = value;
             }
+        }
+
+        internal static Keys FromInputModifiers (InputModifiers modifiers)
+        {
+            var keys = Keys.None;
+
+            if (modifiers.HasFlag (InputModifiers.Alt))
+                keys |= Keys.Alt;
+            if (modifiers.HasFlag (InputModifiers.Control))
+                keys |= Keys.Control;
+            if (modifiers.HasFlag (InputModifiers.Shift))
+                keys |= Keys.Shift;
+
+            return keys;
         }
     }
 }

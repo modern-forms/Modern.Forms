@@ -9,7 +9,7 @@ namespace Explore
         [STAThread]
         public static void Main (string[] args)
         {
-            Application.Run (new MainAvaloniaForm ());
+            Application.Run (new MainForm ());
         }
     }
 }

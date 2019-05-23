@@ -436,7 +436,7 @@ namespace Avalonia.X11
                             if (text[0] < ' ' || text[0] == 0x7f) //Control codes or DEL
                                 return;
                         }
-                        ScheduleInput(new RawTextInputEventArgs(_keyboard, (ulong)ev.KeyEvent.time.ToInt64(), text),
+                        ScheduleInput(new RawTextInputEventArgs(_keyboard, (ulong)ev.KeyEvent.time.ToInt64(), text, TranslateModifiers (ev.KeyEvent.state)),
                             ref ev);
                     }
                 }

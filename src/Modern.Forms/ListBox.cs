@@ -145,7 +145,7 @@ namespace Modern.Forms
                     // TODO: Shift
 
                     // When Control is held we treat this like MultiSimple
-                    if (ModifierKeys.HasFlag (Keys.Control)) {
+                    if (e.Control) {
                         if (selected_items.Contains (index))
                             selected_items.Remove (index);
                         else
@@ -162,7 +162,7 @@ namespace Modern.Forms
             }
         }
 
-        protected override void OnPaint (SKPaintEventArgs e)
+        protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 

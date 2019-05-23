@@ -30,13 +30,16 @@ namespace Modern.Forms
 {
     public class MouseEventArgs : EventArgs
     {
-        public MouseEventArgs (MouseButtons button, int clicks, int x, int y, int delta)
+        private readonly Keys key_data;
+
+        public MouseEventArgs (MouseButtons button, int clicks, int x, int y, int delta, Keys keyData = Keys.None)
         {
             Button = button;
             Clicks = clicks;
             Delta = delta;
             X = x;
             Y = y;
+            key_data = keyData;
         }
 
         public MouseButtons Button { get; }
@@ -50,5 +53,13 @@ namespace Modern.Forms
         public int Y { get; }
 
         public Point Location => new Point (X, Y);
+
+        public bool Alt => key_data.HasFlag (Keys.Alt);
+
+        public bool Control => key_data.HasFlag (Keys.Control);
+
+        public Keys Modifiers => key_data & Keys.Modifiers;
+
+        public bool Shift => key_data.HasFlag (Keys.Shift);
     }
 }

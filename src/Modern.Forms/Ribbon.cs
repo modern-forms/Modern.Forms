@@ -48,7 +48,7 @@ namespace Modern.Forms
             }
         }
 
-        protected override void OnPaint (SKPaintEventArgs e)
+        protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 
@@ -65,7 +65,7 @@ namespace Modern.Forms
 
             if (SelectedPage != null) {
                 var item = GetItemAtPosition (e.Location);
-                item?.FireEvent (e, ToolStripItemEventType.MouseDown);
+                item?.FireEvent (e, ItemEventType.MouseDown);
             }
         }
 
@@ -80,13 +80,13 @@ namespace Modern.Forms
                     return;
 
                 // Clear out the old item
-                mouse_in_item?.FireEvent (e, ToolStripItemEventType.MouseLeave);
+                mouse_in_item?.FireEvent (e, ItemEventType.MouseLeave);
 
                 mouse_in_item = new_mouse_in;
 
                 // Fire events on new item
-                mouse_in_item?.FireEvent (e, ToolStripItemEventType.MouseEnter);
-                mouse_in_item?.FireEvent (e, ToolStripItemEventType.MouseMove);
+                mouse_in_item?.FireEvent (e, ItemEventType.MouseEnter);
+                mouse_in_item?.FireEvent (e, ItemEventType.MouseMove);
             }
         }
 
@@ -96,7 +96,7 @@ namespace Modern.Forms
 
             if (SelectedPage != null) {
                 // Clear out the old item
-                mouse_in_item?.FireEvent (e, ToolStripItemEventType.MouseLeave);
+                mouse_in_item?.FireEvent (e, ItemEventType.MouseLeave);
                 mouse_in_item = null;
             }
         }
@@ -107,7 +107,7 @@ namespace Modern.Forms
 
             if (SelectedPage != null) {
                 var item = GetItemAtPosition (e.Location);
-                item?.FireEvent (e, ToolStripItemEventType.MouseUp);
+                item?.FireEvent (e, ItemEventType.MouseUp);
             }
         }
 
@@ -116,7 +116,7 @@ namespace Modern.Forms
             base.OnClick (e);
 
             var clicked_item = GetItemAtPosition (e.Location);
-            clicked_item?.FireEvent (e, ToolStripItemEventType.Click);
+            clicked_item?.FireEvent (e, ItemEventType.Click);
         }
 
         public RibbonTabPage SelectedPage {

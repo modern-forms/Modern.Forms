@@ -78,7 +78,7 @@ namespace Modern.Forms
                 SelectedTab = clicked_tab;
         }
 
-        protected override void OnPaint (SKPaintEventArgs e)
+        protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 

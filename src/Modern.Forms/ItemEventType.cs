@@ -1,5 +1,5 @@
 //
-// ToolStripItemEventType.cs
+// ItemEventType.cs
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -28,7 +28,7 @@
 
 namespace Modern.Forms
 {
-    internal enum ToolStripItemEventType
+    internal enum ItemEventType
     {
         MouseDown = 1,
         MouseEnter = 2,

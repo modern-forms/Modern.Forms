@@ -38,7 +38,7 @@ namespace Modern.Forms
         {
             // Draw each ribbon item
             foreach (var item in Items)
-                item.FireEvent (new SKPaintEventArgs (null, SKImageInfo.Empty, canvas), ToolStripItemEventType.Paint);
+                item.FireEvent (new PaintEventArgs (null, SKImageInfo.Empty, canvas), ItemEventType.Paint);
 
             // Right border (group separator)
             canvas.DrawLine (Bounds.Right - 1, Bounds.Top + 4, Bounds.Right - 1, Bounds.Bottom - 4, Theme.BorderGray);

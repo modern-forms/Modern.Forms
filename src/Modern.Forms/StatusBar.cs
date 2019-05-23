@@ -22,7 +22,7 @@ namespace Modern.Forms
             Dock = DockStyle.Bottom;
         }
 
-        protected override void OnPaint (SKPaintEventArgs e)
+        protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 

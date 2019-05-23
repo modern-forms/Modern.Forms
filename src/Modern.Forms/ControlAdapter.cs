@@ -18,7 +18,7 @@ namespace Modern.Forms
 
         public Form ParentForm { get; }
 
-        protected override void OnPaint (SKPaintEventArgs e)
+        protected override void OnPaint (PaintEventArgs e)
         {
             // We have this special version for now because it needs
             // to take the Form border into account
@@ -31,7 +31,7 @@ namespace Modern.Forms
 
                 using (var canvas = new SKCanvas (buffer)) {
                     // start drawing
-                    var args = new SKPaintEventArgs (null, info, canvas);
+                    var args = new PaintEventArgs (null, info, canvas);
 
                     control.RaisePaintBackground (args);
                     control.RaisePaint (args);

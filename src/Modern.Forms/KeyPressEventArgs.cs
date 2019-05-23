@@ -30,14 +30,25 @@ namespace Modern.Forms
 {
     public class KeyPressEventArgs : EventArgs
     {
-        public KeyPressEventArgs (char keyChar)
+        private readonly Keys key_data;
+
+        public KeyPressEventArgs (char keyChar, Keys keyData = Keys.None)
         {
             KeyChar = keyChar;
             Handled = false;
+            key_data = keyData;
         }
 
         public bool Handled { get; set; }
 
         public char KeyChar { get; set; }
+
+        public bool Alt => key_data.HasFlag (Keys.Alt);
+
+        public bool Control => key_data.HasFlag (Keys.Control);
+
+        public Keys Modifiers => key_data & Keys.Modifiers;
+
+        public bool Shift => key_data.HasFlag (Keys.Shift);
     }
 }

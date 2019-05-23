@@ -7,9 +7,12 @@ namespace Avalonia.Input.Raw
     {
         public string Text { get; set; }
 
-        public RawTextInputEventArgs(IKeyboardDevice device, ulong timestamp, string text) : base(device, timestamp)
+        public InputModifiers Modifiers { get; set; }
+
+        public RawTextInputEventArgs(IKeyboardDevice device, ulong timestamp, string text, InputModifiers modifiers) : base(device, timestamp)
         {
             Text = text;
+            Modifiers = modifiers;
         }
     }
 }

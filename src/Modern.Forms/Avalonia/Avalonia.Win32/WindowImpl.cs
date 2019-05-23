@@ -512,7 +512,7 @@ namespace Avalonia.Win32
                     // Ignore control chars
                     //if (ToInt32 (wParam) >= 32) {
                         e = new RawTextInputEventArgs (WindowsKeyboardDevice.Instance, timestamp,
-                            new string ((char)ToInt32 (wParam), 1));
+                            new string ((char)ToInt32 (wParam), 1), WindowsKeyboardDevice.Instance.Modifiers);
                     //}
 
                     break;
