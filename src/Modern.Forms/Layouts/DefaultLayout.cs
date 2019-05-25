@@ -40,7 +40,7 @@ namespace Modern.Forms
         public override bool Layout (object container, LayoutEventArgs args)
         {
             var parent = container as Control;
-            var controls = parent.Controls.ToArray ();
+            var controls = parent.Controls.GetAllControls ().OrderBy (c => c.ImplicitControl).ToArray ();
 
             LayoutDockedChildren (parent, controls);
             LayoutAnchoredChildren (parent, controls);

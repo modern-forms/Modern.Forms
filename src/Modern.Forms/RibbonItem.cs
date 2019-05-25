@@ -86,7 +86,7 @@ namespace Modern.Forms
 
         public void PerformClick ()
         {
-            OnClick (new MouseEventArgs (MouseButtons.Left, 1, 0, 0, 0));
+            OnClick (new MouseEventArgs (MouseButtons.Left, 1, 0, 0, Point.Empty));
         }
 
         public Size GetPreferredSize (Size proposedSize)

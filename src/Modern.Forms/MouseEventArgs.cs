@@ -32,7 +32,7 @@ namespace Modern.Forms
     {
         private readonly Keys key_data;
 
-        public MouseEventArgs (MouseButtons button, int clicks, int x, int y, int delta, Keys keyData = Keys.None)
+        public MouseEventArgs (MouseButtons button, int clicks, int x, int y, Point delta, Keys keyData = Keys.None)
         {
             Button = button;
             Clicks = clicks;
@@ -46,7 +46,7 @@ namespace Modern.Forms
 
         public int Clicks { get; }
 
-        public int Delta { get; }
+        public Point Delta { get; }
 
         public int X { get; }
 

@@ -72,7 +72,7 @@ namespace Modern.Forms
         public void Close () => window.Dispose ();
         public System.Drawing.Rectangle DisplayRectangle => new System.Drawing.Rectangle (Style.Border.Left.GetWidth (), Style.Border.Top.GetWidth (), (int)window.ClientSize.Width - Style.Border.Right.GetWidth () - Style.Border.Left.GetWidth (), (int)window.ClientSize.Height - Style.Border.Top.GetWidth () - Style.Border.Bottom.GetWidth ());
         public void Invalidate () => window.Invalidate (new Rect (window.ClientSize));
-        public void Invalidate (System.Drawing.Rectangle rect) => window.Invalidate (new Rect (rect.X, rect.Y, rect.Width, rect.Height));
+        public void Invalidate (System.Drawing.Rectangle rect) => window.Invalidate (new Rect (rect.X, rect.Y, rect.Width + 1, rect.Height + 1));
         public PixelPoint Location {
             get => window.Position;
             set {
@@ -99,7 +99,7 @@ namespace Modern.Forms
             if (DateTime.Now.Subtract (last_click_time).TotalMilliseconds < 500)
                 click_count = 2;
 
-            var e = new MouseEventArgs (buttons, click_count, (int)point.X, (int)point.Y, 0, keyData);
+            var e = new MouseEventArgs (buttons, click_count, (int)point.X, (int)point.Y, System.Drawing.Point.Empty, keyData);
 
             last_click_time = click_count > 1 ? DateTime.MinValue : DateTime.Now;
 
@@ -111,7 +111,7 @@ namespace Modern.Forms
             if (e is RawMouseEventArgs me) {
                 switch (me.Type) {
                     case RawMouseEventType.LeftButtonDown:
-                        var lbd_e = new MouseEventArgs (MouseButtons.Left, 1, (int)me.Position.X, (int)me.Position.Y, 0, KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var lbd_e = new MouseEventArgs (MouseButtons.Left, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (lbd_e);
                         break;
                     case RawMouseEventType.LeftButtonUp:
@@ -124,7 +124,7 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (lbu_e);
                         break;
                     case RawMouseEventType.MiddleButtonDown:
-                        var mbd_e = new MouseEventArgs (MouseButtons.Middle, 1, (int)me.Position.X, (int)me.Position.Y, 0, KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var mbd_e = new MouseEventArgs (MouseButtons.Middle, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (mbd_e);
                         break;
                     case RawMouseEventType.MiddleButtonUp:
@@ -137,7 +137,7 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (mbu_e);
                         break;
                     case RawMouseEventType.RightButtonDown:
-                        var rbd_e = new MouseEventArgs (MouseButtons.Right, 1, (int)me.Position.X, (int)me.Position.Y, 0, KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var rbd_e = new MouseEventArgs (MouseButtons.Right, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (rbd_e);
                         break;
                     case RawMouseEventType.RightButtonUp:
@@ -150,12 +150,19 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (rbu_e);
                         break;
                     case RawMouseEventType.LeaveWindow:
-                        var lw_e = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, 0, KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var lw_e = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseLeave (lw_e);
                         break;
                     case RawMouseEventType.Move:
-                        var mea = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, 0, KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var mea = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseMove (mea);
+                        break;
+                    case RawMouseEventType.Wheel:
+                        if (me is RawMouseWheelEventArgs raw) {
+                            var we = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, new System.Drawing.Point ((int)raw.Delta.X, (int)raw.Delta.Y), KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                            adapter.RaiseMouseWheel (we);
+                        }
+
                         break;
                 }
             } else if (e is RawKeyEventArgs ke) {

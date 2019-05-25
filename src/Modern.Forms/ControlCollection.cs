@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Modern.Forms
@@ -38,6 +39,18 @@ namespace Modern.Forms
             parent.DoLayout ();
         }
 
+        public void AddRange (params Control[] controls)
+        {
+            parent.SuspendLayout ();
+
+            foreach (var c in controls) {
+                items.Add (c);
+                SetUpItem (c);
+            }
+
+            parent.ResumeLayout (false);
+        }
+
         public void Clear ()
         {
             while (items.Count > 0)
@@ -48,7 +61,7 @@ namespace Modern.Forms
 
         public void CopyTo (Control[] array, int arrayIndex) => items.CopyTo (array, arrayIndex);
 
-        public IEnumerator<Control> GetEnumerator () => items.GetEnumerator ();
+        public IEnumerator<Control> GetEnumerator () => items.Where (c => !c.ImplicitControl).GetEnumerator ();
 
         public int IndexOf (Control item) => items.IndexOf (item);
 
@@ -84,7 +97,9 @@ namespace Modern.Forms
             parent.DoLayout ();
         }
 
-        IEnumerator IEnumerable.GetEnumerator () => items.GetEnumerator ();
+        IEnumerator IEnumerable.GetEnumerator () => items.Where(c => !c.ImplicitControl).GetEnumerator ();
+
+        internal IEnumerable<Control> GetAllControls () => items.OrderBy (c => c.ImplicitControl);
 
         private void SetUpItem (Control item)
         {

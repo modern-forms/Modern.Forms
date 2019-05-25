@@ -194,7 +194,7 @@ namespace Modern.Forms
 
                 if (Parent != null)
                     Parent.PerformLayout (this, "Dock");
-                else if (Controls.Count > 0)
+                else if (Controls.GetAllControls ().Count () > 0)
                     PerformLayout (this, "Dock");
 
                 OnDockChanged (EventArgs.Empty);
@@ -205,7 +205,7 @@ namespace Modern.Forms
         {
             DefaultLayout.Instance.Layout (this, null);
 
-            foreach (var child in Controls)
+            foreach (var child in Controls.GetAllControls ())
                 child.DoLayout ();
         }
 
@@ -384,7 +384,7 @@ namespace Modern.Forms
         {
             var levent = new LayoutEventArgs (affectedControl, affectedProperty);
 
-            foreach (var c in Controls)
+            foreach (var c in Controls.GetAllControls ())
                 if (c.recalculate_distances)
                     c.RecalculateDistances ();
 
@@ -419,7 +419,7 @@ namespace Modern.Forms
 
             if (layout_suspended == 0) {
                 if (!performLayout)
-                    foreach (var c in Controls)
+                    foreach (var c in Controls.GetAllControls ())
                         c.RecalculateDistances ();
 
                 if (performLayout && layout_pending)
@@ -593,7 +593,7 @@ namespace Modern.Forms
 
         internal void RaiseClick (MouseEventArgs e)
         {
-            var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseClick (MouseEventsForControl (e, child));
@@ -609,7 +609,7 @@ namespace Modern.Forms
 
         internal void RaiseDoubleClick (MouseEventArgs e)
         {
-            var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseDoubleClick (MouseEventsForControl (e, child));
@@ -669,7 +669,7 @@ namespace Modern.Forms
 
         internal void RaiseMouseDown (MouseEventArgs e)
         {
-            var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseDown (MouseEventsForControl (e, child));
@@ -686,7 +686,7 @@ namespace Modern.Forms
 
         internal void RaiseMouseEnter (MouseEventArgs e)
         {
-            var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseEnter (MouseEventsForControl (e, child));
@@ -723,14 +723,14 @@ namespace Modern.Forms
         internal void RaiseMouseMove (MouseEventArgs e)
         {
             // If something has the mouse captured, they get all the events
-            var captured = Controls.FirstOrDefault (c => c.is_captured);
+            var captured = Controls.GetAllControls ().LastOrDefault (c => c.is_captured);
 
             if (captured != null) {
                 captured.RaiseMouseMove (MouseEventsForControl (e, captured));
                 return;
             }
 
-            var child = Controls.FirstOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
 
             if (current_mouse_in != null && current_mouse_in != child) {
                 current_mouse_in.RaiseMouseLeave (e);
@@ -755,14 +755,14 @@ namespace Modern.Forms
         internal void RaiseMouseUp (MouseEventArgs e)
         {
             // If something has the mouse captured, they get all the events
-            var captured = Controls.FirstOrDefault (c => c.is_captured);
+            var captured = Controls.GetAllControls ().LastOrDefault (c => c.is_captured);
 
             if (captured != null) {
                 captured.RaiseMouseUp (MouseEventsForControl (e, captured));
                 return;
             }
 
-            var child = Controls.FirstOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseUp (MouseEventsForControl (e, child));
@@ -776,11 +776,25 @@ namespace Modern.Forms
         {
         }
 
+        internal void RaiseMouseWheel (MouseEventArgs e)
+        {
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
+
+            if (child != null)
+                child.RaiseMouseWheel (MouseEventsForControl (e, child));
+            else
+                OnMouseWheel (e);
+        }
+
+        protected virtual void OnMouseWheel (MouseEventArgs e)
+        {
+        }
+
         internal void RaisePaint (PaintEventArgs e) => OnPaint (e);
 
         protected virtual void OnPaint (PaintEventArgs e)
         {
-            foreach (var control in Controls.Where (c => c.Visible)) {
+            foreach (var control in Controls.GetAllControls ().Where (c => c.Visible)) {
                 var info = new SKImageInfo (Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
                 var buffer = control.GetBackBuffer ();
 
@@ -833,6 +847,10 @@ namespace Modern.Forms
 
             return back_buffer;
         }
+
+        // This is an internal control (like a scrollbar) that should
+        // not show up in Controls for a user
+        internal bool ImplicitControl { get; set; }
 
         private void FreeBitmap ()
         {

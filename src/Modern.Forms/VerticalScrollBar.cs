@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
-using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class VerticalScrollBar : ScrollBarControl
+    public class VerticalScrollBar : ScrollBar
     {
         public VerticalScrollBar ()
         {
@@ -15,69 +12,46 @@ namespace Modern.Forms
 
         protected override Size DefaultSize => new Size (15, 80);
 
-        protected override Rectangle DecrementArrowBounds => new Rectangle (0, 0, Width, scrollbutton_height);
+        protected override int ArrowButtonSize => Height < 15 * 2 ? Height / 2 : 15;
 
-        protected override Rectangle IncrementArrowBounds => new Rectangle (0, ClientRectangle.Height - scrollbutton_height, Width, scrollbutton_height);
+        protected override Rectangle DecrementArrowBounds => new Rectangle (0, 0, Width, ArrowButtonSize);
 
-        protected override Rectangle DecrementTrackBounds => new Rectangle (0, scrollbutton_height + 1, Width, ThumbBounds.Top - 1);
+        protected override Rectangle IncrementArrowBounds => new Rectangle (0, ClientRectangle.Height - ArrowButtonSize, Width, ArrowButtonSize);
 
-        protected override Rectangle IncrementTrackBounds => new Rectangle (0, ThumbBounds.Bottom + 1, Width, ClientRectangle.Height - scrollbutton_height - ThumbBounds.Bottom);
+        protected override Rectangle DecrementTrackBounds => new Rectangle (0, ArrowButtonSize + 1, Width, ThumbDragBounds.Top - 1);
+
+        protected override Rectangle IncrementTrackBounds => new Rectangle (0, ThumbDragBounds.Bottom + 1, Width, ClientRectangle.Height - ArrowButtonSize - ThumbDragBounds.Bottom);
 
         protected override ArrowDirection DecrementArrowDirection => ArrowDirection.Up;
 
         protected override ArrowDirection IncrementArrowDirection => ArrowDirection.Down;
 
-        protected override void OnMouseMove (MouseEventArgs e)
-        {
-            base.OnMouseMove (e);
+        protected override Rectangle TotalTrackBrounds => new Rectangle (0, ArrowButtonSize, Width, Height - (2 * ArrowButtonSize));
 
-            if (thumb_pressed == true) {
-                var thumb_edge = e.Y - thumbclick_offset;
+        protected override Rectangle EffectiveTrackBounds => new Rectangle (0, ArrowButtonSize + (int)(ThumbDragSize / 2f), Width, Height - (2 * ArrowButtonSize) - ThumbDragSize);
 
-                if (thumb_edge < thumb_area.Y)
-                    thumb_edge = thumb_area.Y;
-                else if (thumb_edge > thumb_area.Bottom - thumb_size)
-                    thumb_edge = thumb_area.Bottom - thumb_size;
+        protected override Rectangle ThumbDragBounds {
+            get {
+                var thumb_size = ThumbDragSize;
+                var half_thumb = thumb_size / 2;
 
-                if (thumb_edge != thumb_pos.Y) {
-                    var thumb_rect = thumb_pos;
-
-                    UpdateThumbPos (thumb_edge, false, true);
-                    MoveThumb (thumb_rect, thumb_pos.Y);
-
-                    OnScroll (new ScrollEventArgs (ScrollEventType.ThumbTrack, position));
-                }
+                return new Rectangle (0, thumb_drag_position - half_thumb, Width - 1, thumb_size - 1);
             }
         }
 
-        protected override void OnPaint (PaintEventArgs e)
-        {
-            base.OnPaint (e);
+        protected override int ThumbDragSize {
+            get {
+                if (Height < thumb_notshown_size)
+                    return 0;
 
-            var top_arrow_area = DecrementArrowBounds;
-            top_arrow_area.Width -= 1;
-            top_arrow_area.Height -= 1;
+                // Give the user something to drag if LargeChange is zero
+                if (LargeChange == 0)
+                    return 17;
 
-            var bottom_arrow_area = IncrementArrowBounds;
-            bottom_arrow_area.Width -= 1;
-            bottom_arrow_area.Height -= 1;
+                var size = 1 + (int)(((double)LargeChange / (PossibleValues + LargeChange)) * TotalTrackBrounds.Height);
 
-            thumb_pos.Width = Width;
-
-            // Top Arrow
-            e.Canvas.FillRectangle (top_arrow_area, SKColors.White);
-            e.Canvas.DrawRectangle (top_arrow_area, Theme.BorderGray);
-            e.Canvas.DrawArrow (top_arrow_area, Theme.BorderGray, DecrementArrowDirection);
-
-            // Bottom Arrow
-            e.Canvas.FillRectangle (bottom_arrow_area, SKColors.White);
-            e.Canvas.DrawRectangle (bottom_arrow_area, Theme.BorderGray);
-            e.Canvas.DrawArrow (bottom_arrow_area, Theme.BorderGray, IncrementArrowDirection);
-
-            // Grip
-            thumb_pos.Width -= 1;
-            e.Canvas.FillRectangle (thumb_pos, SKColors.White);
-            e.Canvas.DrawRectangle (thumb_pos, Theme.BorderGray);
+                return Math.Max (size, thumb_min_size);
+            }
         }
     }
 }
