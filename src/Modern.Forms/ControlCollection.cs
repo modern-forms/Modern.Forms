@@ -8,7 +8,9 @@ namespace Modern.Forms
 {
     public class ControlCollection : IList<Control>
     {
-        private readonly List<Control> items = new List<Control> ();
+        private readonly List<Control> controls = new List<Control> ();
+        private readonly List<Control> implicit_controls = new List<Control> ();
+
         private readonly Control parent;
 
         internal ControlCollection (Control parent)
@@ -17,59 +19,75 @@ namespace Modern.Forms
         }
 
         public Control this[int index] {
-            get => items[index];
+            get => controls[index];
             set {
                 if (index < 0 || index >= Count)
                     throw new ArgumentOutOfRangeException (nameof (index));
 
-                items[index] = value;
+                controls[index] = value;
                 SetUpItem (value);
-                parent.DoLayout ();
+                parent.PerformLayout ();
             }
         }
 
-        public int Count => items.Count;
+        public int Count => controls.Count;
 
         public bool IsReadOnly => false;
 
         public void Add (Control item)
         {
-            items.Add (item);
+            controls.Add (item);
             SetUpItem (item);
-            parent.DoLayout ();
+            parent.PerformLayout ();
+        }
+
+        internal void AddImplicitControl (Control item)
+        {
+            item.ImplicitControl = true;
+            implicit_controls.Add (item);
+            SetUpItem (item);
+            parent.PerformLayout ();
         }
 
         public void AddRange (params Control[] controls)
         {
             parent.SuspendLayout ();
 
-            foreach (var c in controls) {
-                items.Add (c);
-                SetUpItem (c);
-            }
+            foreach (var c in controls)
+                Add (c);
 
-            parent.ResumeLayout (false);
+            parent.ResumeLayout (true);
+        }
+
+        internal void AddImplicitControlRange (params Control[] controls)
+        {
+            parent.SuspendLayout ();
+
+            foreach (var c in controls)
+                AddImplicitControl (c);
+
+            parent.ResumeLayout (true);
         }
 
         public void Clear ()
         {
-            while (items.Count > 0)
+            while (controls.Count > 0)
                 RemoveAt (0);
         }
 
-        public bool Contains (Control item) => items.Contains (item);
+        public bool Contains (Control item) => controls.Contains (item);
 
-        public void CopyTo (Control[] array, int arrayIndex) => items.CopyTo (array, arrayIndex);
+        public void CopyTo (Control[] array, int arrayIndex) => controls.CopyTo (array, arrayIndex);
 
-        public IEnumerator<Control> GetEnumerator () => items.Where (c => !c.ImplicitControl).GetEnumerator ();
+        public IEnumerator<Control> GetEnumerator () => controls.GetEnumerator ();
 
-        public int IndexOf (Control item) => items.IndexOf (item);
+        public int IndexOf (Control item) => controls.IndexOf (item);
 
         public void Insert (int index, Control item)
         {
-            items.Insert (index, item);
+            controls.Insert (index, item);
             SetUpItem (item);
-            parent.DoLayout ();
+            parent.PerformLayout ();
         }
 
         public bool Remove (Control item)
@@ -82,24 +100,24 @@ namespace Modern.Forms
             if (index != -1)
                 RemoveAt (index);
 
-            parent.DoLayout ();
+            parent.PerformLayout ();
 
             return index != -1;
         }
 
         public void RemoveAt (int index)
         {
-            var item = items[index];
+            var item = controls[index];
 
             item.SetParentInternal (null);
-            items.RemoveAt (index);
+            controls.RemoveAt (index);
 
-            parent.DoLayout ();
+            parent.PerformLayout ();
         }
 
-        IEnumerator IEnumerable.GetEnumerator () => items.Where(c => !c.ImplicitControl).GetEnumerator ();
+        IEnumerator IEnumerable.GetEnumerator () => controls.GetEnumerator ();
 
-        internal IEnumerable<Control> GetAllControls () => items.OrderBy (c => c.ImplicitControl);
+        internal IEnumerable<Control> GetAllControls () => controls.Concat (implicit_controls);
 
         private void SetUpItem (Control item)
         {

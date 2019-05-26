@@ -7,7 +7,6 @@ namespace Modern.Forms
     // TODO:
     // Disabled styles
     // Timer based repeat
-    // Mouse wheel
     public abstract class ScrollBar : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,

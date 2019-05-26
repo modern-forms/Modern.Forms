@@ -5,8 +5,7 @@ using System.Text;
 
 namespace Modern.Forms
 {
-    // TODO: Base class should be ScrollableControl
-    public class Panel : Control
+    public class Panel : ScrollableControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 

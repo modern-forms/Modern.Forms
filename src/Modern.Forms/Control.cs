@@ -56,7 +56,7 @@ namespace Modern.Forms
             margin = DefaultMargin;
             padding = DefaultPadding;
 
-            SetBounds (0, 0, DefaultSize.Width, DefaultSize.Height, BoundsSpecified.Size);
+            bounds = new Rectangle (Point.Empty, DefaultSize);
 
             behaviors = ControlBehaviors.Selectable;
         }
@@ -67,6 +67,7 @@ namespace Modern.Forms
         public event EventHandler EnabledChanged;
         public event EventHandler<KeyEventArgs> KeyDown;
         public event EventHandler<KeyPressEventArgs> KeyPress;
+        public event EventHandler<KeyEventArgs> KeyUp;
         public event EventHandler<LayoutEventArgs> Layout;
         public event EventHandler LocationChanged;
         public event EventHandler MarginChanged;
@@ -90,7 +91,7 @@ namespace Modern.Forms
 
                 RecalculateDistances ();
 
-                parent?.PerformLayout (this, "Anchor");
+                parent?.PerformLayout (this, nameof (Anchor));
             }
         }
 
@@ -120,7 +121,7 @@ namespace Modern.Forms
         }
 
         public bool Capture {
-            get => is_captured;
+            get => is_captured || Controls.Any (c => c.Capture);
             set {
                 is_captured = value;
 
@@ -193,20 +194,12 @@ namespace Modern.Forms
                 }
 
                 if (Parent != null)
-                    Parent.PerformLayout (this, "Dock");
+                    Parent.PerformLayout (this, nameof (Dock));
                 else if (Controls.GetAllControls ().Count () > 0)
-                    PerformLayout (this, "Dock");
+                    PerformLayout (this, nameof (Dock));
 
                 OnDockChanged (EventArgs.Empty);
             }
-        }
-
-        public void DoLayout ()
-        {
-            DefaultLayout.Instance.Layout (this, null);
-
-            foreach (var child in Controls.GetAllControls ())
-                child.DoLayout ();
         }
 
         public bool Enabled {
@@ -407,7 +400,6 @@ namespace Modern.Forms
             finally {
                 layout_suspended--;
             }
-
         }
 
         public Size PreferredSize => GetPreferredSize (Size.Empty);
@@ -492,14 +484,14 @@ namespace Modern.Forms
 
             if (resized) {
                 OnSizeChanged (EventArgs.Empty);
-                PerformLayout (this, "Bounds");
+                PerformLayout (this, nameof (Bounds));
             }
 
             // If the user explicitly moved or resized us, recalculate our anchor distances
             if (specified != BoundsSpecified.None)
                 RecalculateDistances ();
 
-            parent?.PerformLayout (this, "Bounds");
+            parent?.PerformLayout (this, nameof (Bounds));
         }
 
         public Size Size {
@@ -593,6 +585,14 @@ namespace Modern.Forms
 
         internal void RaiseClick (MouseEventArgs e)
         {
+            // If something has the mouse captured, they get all the events
+            var captured = Controls.GetAllControls ().LastOrDefault (c => c.Capture);
+
+            if (captured != null) {
+                captured.RaiseClick (MouseEventsForControl (e, captured));
+                return;
+            }
+
             var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
 
             if (child != null)
@@ -609,6 +609,14 @@ namespace Modern.Forms
 
         internal void RaiseDoubleClick (MouseEventArgs e)
         {
+            // If something has the mouse captured, they get all the events
+            var captured = Controls.GetAllControls ().LastOrDefault (c => c.Capture);
+
+            if (captured != null) {
+                captured.RaiseDoubleClick (MouseEventsForControl (e, captured));
+                return;
+            }
+
             var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
 
             if (child != null)
@@ -680,6 +688,18 @@ namespace Modern.Forms
             }
         }
 
+        internal void RaiseKeyUp (KeyEventArgs e)
+        {
+            if (this is ControlAdapter adapter) {
+                adapter.SelectedControl?.RaiseKeyUp (e);
+                return;
+            }
+
+            OnKeyUp (e);
+        }
+
+        protected virtual void OnKeyUp (KeyEventArgs e) => KeyUp?.Invoke (this, e);
+
         protected virtual void OnMouseDown (MouseEventArgs e)
         {
         }
@@ -723,7 +743,7 @@ namespace Modern.Forms
         internal void RaiseMouseMove (MouseEventArgs e)
         {
             // If something has the mouse captured, they get all the events
-            var captured = Controls.GetAllControls ().LastOrDefault (c => c.is_captured);
+            var captured = Controls.GetAllControls ().LastOrDefault (c => c.Capture);
 
             if (captured != null) {
                 captured.RaiseMouseMove (MouseEventsForControl (e, captured));
@@ -755,7 +775,7 @@ namespace Modern.Forms
         internal void RaiseMouseUp (MouseEventArgs e)
         {
             // If something has the mouse captured, they get all the events
-            var captured = Controls.GetAllControls ().LastOrDefault (c => c.is_captured);
+            var captured = Controls.GetAllControls ().LastOrDefault (c => c.Capture);
 
             if (captured != null) {
                 captured.RaiseMouseUp (MouseEventsForControl (e, captured));

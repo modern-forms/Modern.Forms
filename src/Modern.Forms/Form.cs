@@ -72,7 +72,7 @@ namespace Modern.Forms
         public void Close () => window.Dispose ();
         public System.Drawing.Rectangle DisplayRectangle => new System.Drawing.Rectangle (Style.Border.Left.GetWidth (), Style.Border.Top.GetWidth (), (int)window.ClientSize.Width - Style.Border.Right.GetWidth () - Style.Border.Left.GetWidth (), (int)window.ClientSize.Height - Style.Border.Top.GetWidth () - Style.Border.Bottom.GetWidth ());
         public void Invalidate () => window.Invalidate (new Rect (window.ClientSize));
-        public void Invalidate (System.Drawing.Rectangle rect) => window.Invalidate (new Rect (rect.X, rect.Y, rect.Width + 1, rect.Height + 1));
+        public void Invalidate (System.Drawing.Rectangle rect) => Invalidate ();
         public PixelPoint Location {
             get => window.Position;
             set {
@@ -162,7 +162,6 @@ namespace Modern.Forms
                             var we = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, new System.Drawing.Point ((int)raw.Delta.X, (int)raw.Delta.Y), KeyEventArgs.FromInputModifiers (me.InputModifiers));
                             adapter.RaiseMouseWheel (we);
                         }
-
                         break;
                 }
             } else if (e is RawKeyEventArgs ke) {
@@ -171,10 +170,10 @@ namespace Modern.Forms
                         var kd_e = new KeyEventArgs ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key));
                         adapter.RaiseKeyDown (kd_e);
                         break;
-                    //case RawKeyEventType.KeyUp:
-                    //    var ku_e = new KeyEventArgs ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key));
-                    //    adapter.RaiseKeyUp (ku_e);
-                    //    break;
+                    case RawKeyEventType.KeyUp:
+                        var ku_e = new KeyEventArgs ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key));
+                        adapter.RaiseKeyUp (ku_e);
+                        break;
                 }
             } else if (e is RawTextInputEventArgs te) {
                 var kp_e = new KeyPressEventArgs (te.Text[0], KeyEventArgs.FromInputModifiers (te.Modifiers));

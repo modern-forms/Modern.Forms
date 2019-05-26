@@ -17,97 +17,97 @@ namespace Modern.Forms
 
         static Theme ()
         {
-            values["RibbonColor"] = new SKColor (16, 110, 190);
-            values["DarkTextColor"] = SKColors.Black;
-            values["DisabledTextColor"] = new SKColor (190, 190, 190);
-            values["LightTextColor"] = SKColors.White;
-            values["FormBackgroundColor"] = new SKColor (240, 240, 240);
-            values["FormCloseHighlightColor"] = new SKColor (232, 17, 35);
-            values["RibbonTabHighlightColor"] = new SKColor (42, 138, 208);
-            values["RibbonItemHighlightColor"] = new SKColor (198, 198, 198);
-            values["RibbonItemSelectedColor"] = new SKColor (176, 176, 176);
-            values["DarkNeutralGray"] = new SKColor (225, 225, 225);
-            values["NeutralGray"] = new SKColor (240, 240, 240);
-            values["LightNeutralGray"] = new SKColor (251, 251, 251);
-            values["BorderGray"] = new SKColor (171, 171, 171);
+            values[nameof (RibbonColor)] = new SKColor (16, 110, 190);
+            values[nameof (DarkTextColor)] = SKColors.Black;
+            values[nameof (DisabledTextColor)] = new SKColor (190, 190, 190);
+            values[nameof (LightTextColor)] = SKColors.White;
+            values[nameof (FormBackgroundColor)] = new SKColor (240, 240, 240);
+            values[nameof (FormCloseHighlightColor)] = new SKColor (232, 17, 35);
+            values[nameof (RibbonTabHighlightColor)] = new SKColor (42, 138, 208);
+            values[nameof (RibbonItemHighlightColor)] = new SKColor (198, 198, 198);
+            values[nameof (RibbonItemSelectedColor)] = new SKColor (176, 176, 176);
+            values[nameof (DarkNeutralGray)] = new SKColor (225, 225, 225);
+            values[nameof (NeutralGray)] = new SKColor (240, 240, 240);
+            values[nameof (LightNeutralGray)] = new SKColor (251, 251, 251);
+            values[nameof (BorderGray)] = new SKColor (171, 171, 171);
 
-            values["UIFont"] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
-            values["FontSize"] = 14;
+            values[nameof (UIFont)] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
+            values[nameof (FontSize)] = 14;
         }
 
         public static SKColor RibbonColor {
-            get => GetValue<SKColor> ("RibbonColor");
-            set => SetValue ("RibbonColor", value);
+            get => GetValue<SKColor> (nameof (RibbonColor));
+            set => SetValue (nameof (RibbonColor), value);
         }
 
         public static SKColor DarkTextColor {
-            get => GetValue<SKColor> ("DarkTextColor");
-            set => SetValue ("DarkTextColor", value);
+            get => GetValue<SKColor> (nameof (DarkTextColor));
+            set => SetValue (nameof (DarkTextColor), value);
         }
 
         public static SKColor DisabledTextColor {
-            get => GetValue<SKColor> ("DisabledTextColor");
-            set => SetValue ("DisabledTextColor", value);
+            get => GetValue<SKColor> (nameof (DisabledTextColor));
+            set => SetValue (nameof (DisabledTextColor), value);
         }
 
         public static SKColor LightTextColor {
-            get => GetValue<SKColor> ("LightTextColor");
-            set => SetValue ("LightTextColor", value);
+            get => GetValue<SKColor> (nameof (LightTextColor));
+            set => SetValue (nameof (LightTextColor), value);
         }
 
         public static SKColor FormBackgroundColor {
-            get => GetValue<SKColor> ("FormBackgroundColor");
-            set => SetValue ("FormBackgroundColor", value);
+            get => GetValue<SKColor> (nameof (FormBackgroundColor));
+            set => SetValue (nameof (FormBackgroundColor), value);
         }
 
         public static SKColor FormCloseHighlightColor {
-            get => GetValue<SKColor> ("FormCloseHighlightColor");
-            set => SetValue ("FormCloseHighlightColor", value);
+            get => GetValue<SKColor> (nameof (FormCloseHighlightColor));
+            set => SetValue (nameof (FormCloseHighlightColor), value);
         }
 
         public static SKColor RibbonTabHighlightColor {
-            get => GetValue<SKColor> ("RibbonTabHighlightColor");
-            set => SetValue ("RibbonTabHighlightColor", value);
+            get => GetValue<SKColor> (nameof (RibbonTabHighlightColor));
+            set => SetValue (nameof (RibbonTabHighlightColor), value);
         }
 
         public static SKColor RibbonItemHighlightColor {
-            get => GetValue<SKColor> ("RibbonItemHighlightColor");
-            set => SetValue ("RibbonItemHighlightColor", value);
+            get => GetValue<SKColor> (nameof (RibbonItemHighlightColor));
+            set => SetValue (nameof (RibbonItemHighlightColor), value);
         }
 
         public static SKColor RibbonItemSelectedColor {
-            get => GetValue<SKColor> ("RibbonItemSelectedColor");
-            set => SetValue ("RibbonItemSelectedColor", value);
+            get => GetValue<SKColor> (nameof (RibbonItemSelectedColor));
+            set => SetValue (nameof (RibbonItemSelectedColor), value);
         }
 
         public static SKColor DarkNeutralGray {
-            get => GetValue<SKColor> ("DarkNeutralGray");
-            set => SetValue ("DarkNeutralGray", value);
+            get => GetValue<SKColor> (nameof (DarkNeutralGray));
+            set => SetValue (nameof (DarkNeutralGray), value);
         }
 
         public static SKColor NeutralGray {
-            get => GetValue<SKColor> ("NeutralGray");
-            set => SetValue ("NeutralGray", value);
+            get => GetValue<SKColor> (nameof (NeutralGray));
+            set => SetValue (nameof (NeutralGray), value);
         }
 
         public static SKColor LightNeutralGray {
-            get => GetValue<SKColor> ("LightNeutralGray");
-            set => SetValue ("LightNeutralGray", value);
+            get => GetValue<SKColor> (nameof (LightNeutralGray));
+            set => SetValue (nameof (LightNeutralGray), value);
         }
 
         public static SKColor BorderGray {
-            get => GetValue<SKColor> ("BorderGray");
-            set => SetValue ("BorderGray", value);
+            get => GetValue<SKColor> (nameof (BorderGray));
+            set => SetValue (nameof (BorderGray), value);
         }
 
         public static SKTypeface UIFont {
-            get => GetValue<SKTypeface> ("UIFont");
-            set => SetValue ("UIFont", value);
+            get => GetValue<SKTypeface> (nameof (UIFont));
+            set => SetValue (nameof (UIFont), value);
         }
 
         public static int FontSize {
-            get => GetValue<int> ("FontSize");
-            set => SetValue ("FontSize", value);
+            get => GetValue<int> (nameof (FontSize));
+            set => SetValue (nameof (FontSize), value);
         }
 
         private static T GetValue<T> (string name) => (T)values[name];

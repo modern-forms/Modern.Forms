@@ -6,7 +6,7 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class ControlAdapter : Control
+    public class ControlAdapter : ScrollableControl
     {
         private Control selected_control;
 

@@ -24,6 +24,7 @@ namespace ControlGallery
             tree.Items.Add ("Panel", ImageLoader.Get ("button.png"));
             tree.Items.Add ("RadioButton", ImageLoader.Get ("button.png"));
             tree.Items.Add ("Ribbon", ImageLoader.Get ("button.png"));
+            tree.Items.Add ("ScrollableControl", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ScrollBar", ImageLoader.Get ("button.png"));
             tree.Items.Add ("StatusBar", ImageLoader.Get ("button.png"));
             tree.Items.Add ("TabStrip", ImageLoader.Get ("button.png"));
@@ -80,6 +81,8 @@ namespace ControlGallery
                     return new RadioButtonPanel ();
                 case "Ribbon":
                     return new RibbonPanel ();
+                case "ScrollableControl":
+                    return new ScrollableControlPanel ();
                 case "ScrollBar":
                     return new ScrollBarPanel ();
                 case "StatusBar":
