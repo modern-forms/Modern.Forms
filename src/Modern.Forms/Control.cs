@@ -21,6 +21,7 @@ namespace Modern.Forms
         public static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle);
 
         private AnchorStyles anchor_style = AnchorStyles.Top | AnchorStyles.Left;
+        private AutoSizeMode auto_size_mode;
         private SKBitmap back_buffer;
         private ControlBehaviors behaviors;
         private Rectangle bounds;
@@ -94,6 +95,8 @@ namespace Modern.Forms
                 parent?.PerformLayout (this, nameof (Anchor));
             }
         }
+
+        public bool AutoSize => false;
 
         public int Bottom => bounds.Bottom;
 
@@ -175,6 +178,8 @@ namespace Modern.Forms
         //        }
         //    }
         //}
+
+        public virtual Rectangle DisplayRectangle => ClientRectangle;
 
         public DockStyle Dock {
             get => dock_style;
@@ -841,6 +846,14 @@ namespace Modern.Forms
         protected virtual void OnTextChanged (EventArgs e) => TextChanged?.Invoke (this, e);
 
         protected virtual void OnVisibleChanged (EventArgs e) => VisibleChanged?.Invoke (this, e);
+
+        protected void SetAutoSizeMode (AutoSizeMode mode)
+        {
+            if (auto_size_mode != mode) {
+                auto_size_mode = mode;
+                PerformLayout (this, "AutoSizeMode");
+            }
+        }
 
         protected void SetControlBehavior (ControlBehaviors behavior, bool value = true)
         {

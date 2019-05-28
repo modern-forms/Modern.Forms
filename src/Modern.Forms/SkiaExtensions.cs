@@ -300,5 +300,7 @@ namespace Modern.Forms
             using (var paint = new SKPaint { ColorFilter = disabled_matrix })
                 canvas.DrawBitmap (bitmap, x, y, paint);
         }
+
+        public static SKRect ToSKRect (this Rectangle rect) => new SKRect (rect.X, rect.Y, rect.Right, rect.Bottom);
     }
 }
