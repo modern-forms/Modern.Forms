@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using SkiaSharp;
+using System.Linq;
 
 namespace Modern.Forms
 {
+    // TODO: Update selected indexes when adding/removing items
     public class ListBoxItemCollection : IList<object>
     {
         private readonly List<object> items = new List<object> ();
         private readonly ListBox owner;
+        private int suspend_update;
 
         internal ListBoxItemCollection (ListBox owner)
         {
@@ -23,7 +25,7 @@ namespace Modern.Forms
 
                 items[index] = value;
 
-                owner.CollectionChanged ();
+                OnCollectionChanged ();
             }
         }
 
@@ -33,22 +35,27 @@ namespace Modern.Forms
 
         public void Add (object item)
         {
-            items.Add (item);
-
-            owner.CollectionChanged ();
+            Insert (Count, item);
         }
 
-        public void AddRange (params object[] item)
+        public void AddRange (params object[] items)
         {
-            items.AddRange (item);
+            SuspendUpdate ();
 
-            owner.CollectionChanged ();
+            foreach (var item in items)
+                Insert (Count, item);
+
+            ResumeUpdate ();
         }
 
         public void Clear ()
         {
+            SuspendUpdate ();
+
             while (items.Count > 0)
                 RemoveAt (0);
+
+            ResumeUpdate ();
         }
 
         public bool Contains (object item) => items.Contains (item);
@@ -63,7 +70,7 @@ namespace Modern.Forms
         {
             items.Insert (index, item);
 
-            owner.CollectionChanged ();
+            OnCollectionChanged ();
         }
 
         public bool Remove (object item)
@@ -76,7 +83,7 @@ namespace Modern.Forms
             if (index != -1)
                 RemoveAt (index);
 
-            owner.CollectionChanged ();
+            OnCollectionChanged ();
 
             return index != -1;
         }
@@ -84,6 +91,43 @@ namespace Modern.Forms
         public void RemoveAt (int index)
         {
             items.RemoveAt (index);
+        }
+
+        internal int SelectedIndex {
+            get => SelectedIndexes.Count > 0 ? SelectedIndexes[0] : -1;
+            set {
+                SelectedIndexes.Clear ();
+
+                if (value != -1)
+                    SelectedIndexes.Add (value);
+            }
+        }
+
+        internal List<int> SelectedIndexes { get; } = new List<int> ();
+
+        internal object SelectedItem {
+            get => SelectedIndexes.Count > 0 ? items[SelectedIndexes[0]] : null;
+            set => SelectedIndex = value == null ? -1 : items.IndexOf (value);
+        }
+
+        internal IEnumerable<object> SelectedItems => SelectedIndexes.Select (i => items[i]);
+
+        private void OnCollectionChanged ()
+        {
+            if (suspend_update == 0)
+                owner.CollectionChanged ();
+        }
+
+        private void ResumeUpdate ()
+        {
+            suspend_update--;
+
+            OnCollectionChanged ();
+        }
+
+        private void SuspendUpdate ()
+        {
+            suspend_update++;
         }
 
         IEnumerator IEnumerable.GetEnumerator () => items.GetEnumerator ();

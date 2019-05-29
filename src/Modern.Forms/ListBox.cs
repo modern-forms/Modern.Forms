@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 
 namespace Modern.Forms
 {
@@ -17,10 +16,9 @@ namespace Modern.Forms
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
         private int item_height = -1;
-        private List<int> selected_items = new List<int> ();
         private SelectionMode selection_mode = SelectionMode.One;
         private int top_index = 0;
-        private VerticalScrollBar vscrollbar;
+        private readonly VerticalScrollBar vscrollbar;
 
         public ListBox ()
         {
@@ -81,7 +79,7 @@ namespace Modern.Forms
         }
 
         public int SelectedIndex {
-            get => selected_items.Count > 0 ? selected_items[0] : -1;
+            get => Items.SelectedIndex;
             set {
                 if (value < -1 || value >= Items.Count)
                     throw new ArgumentOutOfRangeException ("Index of out range");
@@ -89,26 +87,23 @@ namespace Modern.Forms
                 if (SelectionMode == SelectionMode.None)
                     throw new ArgumentException ("Cannot call this method if SelectionMode is SelectionMode.None");
 
-                selected_items.Clear ();
-
-                if (value != -1)
-                    selected_items.Add (value);
+                Items.SelectedIndex = value;
 
                 Invalidate ();
             }
         }
 
         public object SelectedItem {
-            get => selected_items.Count > 0 ? Items[selected_items[0]] : null;
+            get => Items.SelectedItem;
             set {
                 if (value != null && !Items.Contains (value))
                     throw new ArgumentException ("Item is not part of this list");
 
-                SelectedIndex = value == null ? -1 : Items.IndexOf (value);
+                Items.SelectedItem = value;
             }
         }
 
-        public IEnumerable<object> SelectedItems => selected_items.Select (i => Items[i]);
+        public IEnumerable<object> SelectedItems => Items.SelectedItems;
 
         public SelectionMode SelectionMode {
             get => selection_mode;
@@ -121,7 +116,10 @@ namespace Modern.Forms
 
                 selection_mode = value;
 
-                // TODO: May need to clear selections if now allowing fewer
+                if (selection_mode == SelectionMode.None)
+                    Items.SelectedIndex = -1;
+                else if (selection_mode == SelectionMode.One)
+                    Items.SelectedIndex = Items.SelectedIndex;  // Yes this does something  ;)
             }
         }
 
@@ -160,10 +158,10 @@ namespace Modern.Forms
                     break;
 
                 case SelectionMode.MultiSimple:
-                    if (selected_items.Contains (index))
-                        selected_items.Remove (index);
+                    if (Items.SelectedIndexes.Contains (index))
+                        Items.SelectedIndexes.Remove (index);
                     else
-                        selected_items.Add (index);
+                        Items.SelectedIndexes.Add (index);
 
                     Invalidate ();
 
@@ -173,10 +171,10 @@ namespace Modern.Forms
 
                     // When Control is held we treat this like MultiSimple
                     if (e.Control) {
-                        if (selected_items.Contains (index))
-                            selected_items.Remove (index);
+                        if (Items.SelectedIndexes.Contains (index))
+                            Items.SelectedIndexes.Remove (index);
                         else
-                            selected_items.Add (index);
+                            Items.SelectedIndexes.Add (index);
 
                         Invalidate ();
                         break;
@@ -204,7 +202,7 @@ namespace Modern.Forms
                 var item = Items[i];
                 var bounds = GetItemDisplayRectangle (i);
 
-                if (selected_items.Contains (i))
+                if (Items.SelectedIndexes.Contains (i))
                     e.Canvas.FillRectangle (bounds, Theme.NeutralGray);
 
                 // This fixes text positioning for partially shown items
