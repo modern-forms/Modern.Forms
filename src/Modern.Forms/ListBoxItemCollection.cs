@@ -22,6 +22,8 @@ namespace Modern.Forms
                     throw new ArgumentOutOfRangeException (nameof (index));
 
                 items[index] = value;
+
+                owner.CollectionChanged ();
             }
         }
 
@@ -32,18 +34,15 @@ namespace Modern.Forms
         public void Add (object item)
         {
             items.Add (item);
+
+            owner.CollectionChanged ();
         }
 
-        public TreeViewItem Add (string text, SKBitmap image)
+        public void AddRange (params object[] item)
         {
-            var item = new TreeViewItem {
-                Text = text,
-                Image = image
-            };
+            items.AddRange (item);
 
-            Add (item);
-
-            return item;
+            owner.CollectionChanged ();
         }
 
         public void Clear ()
@@ -63,6 +62,8 @@ namespace Modern.Forms
         public void Insert (int index, object item)
         {
             items.Insert (index, item);
+
+            owner.CollectionChanged ();
         }
 
         public bool Remove (object item)
@@ -74,6 +75,8 @@ namespace Modern.Forms
 
             if (index != -1)
                 RemoveAt (index);
+
+            owner.CollectionChanged ();
 
             return index != -1;
         }

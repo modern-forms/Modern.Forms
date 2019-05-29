@@ -50,6 +50,9 @@ namespace Modern.Forms
 
         public static void DrawText (this SKCanvas canvas, string text, SKTypeface font, int fontsize, Rectangle bounds, SKColor color, ContentAlignment alignment)
         {
+            if (string.IsNullOrWhiteSpace (text))
+                return;
+
             using (var paint = CreateTextPaint (font, fontsize, color)) {
                 var font_height = new SKRect ();
                 paint.MeasureText ("Bg", ref font_height);
@@ -86,7 +89,10 @@ namespace Modern.Forms
                         break;
                 }
 
+                canvas.Save ();
+                canvas.ClipRect (bounds.ToSKRect ());
                 canvas.DrawText (text, x, y, paint);
+                canvas.Restore ();
             }
         }
 

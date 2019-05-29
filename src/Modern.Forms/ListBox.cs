@@ -19,10 +19,25 @@ namespace Modern.Forms
         private int item_height = -1;
         private List<int> selected_items = new List<int> ();
         private SelectionMode selection_mode = SelectionMode.One;
+        private int top_index = 0;
+        private VerticalScrollBar vscrollbar;
 
         public ListBox ()
         {
             Items = new ListBoxItemCollection (this);
+
+            vscrollbar = new VerticalScrollBar {
+                Minimum = 0,
+                Maximum = 0,
+                SmallChange = 1,
+                LargeChange = 1,
+                Visible = false,
+                Dock = DockStyle.Right
+            };
+
+            vscrollbar.ValueChanged += VerticalScrollBar_ValueChanged;
+
+            Controls.AddImplicitControl (vscrollbar);
         }
 
         public event EventHandler<EventArgs<TreeViewItem>> ItemSelected;
@@ -36,14 +51,13 @@ namespace Modern.Forms
 
             var client = ClientRectangle;
 
-            return new Rectangle (client.Left, index * ItemHeight + client.Top, client.Width, ItemHeight);
+            return new Rectangle (client.Left, index * ItemHeight + client.Top, client.Width - (vscrollbar.Visible ? vscrollbar.Width : 0), ItemHeight);
         }
 
         public int GetIndexAtLocation (Point location)
         {
-            // Inefficient?
-            for (var i = 0; i < Items.Count; i++)
-                if (GetItemRectangle (i).Contains (location))
+            for (var i = top_index; i < Math.Min (Items.Count, top_index + VisibleItemCount + 1); i++)
+                if (GetItemDisplayRectangle (i).Contains (location))
                     return i;
 
             return -1;
@@ -73,7 +87,7 @@ namespace Modern.Forms
                     throw new ArgumentOutOfRangeException ("Index of out range");
 
                 if (SelectionMode == SelectionMode.None)
-                    throw new ArgumentException ("cannot call this method if SelectionMode is SelectionMode.None");
+                    throw new ArgumentException ("Cannot call this method if SelectionMode is SelectionMode.None");
 
                 selected_items.Clear ();
 
@@ -108,6 +122,19 @@ namespace Modern.Forms
                 selection_mode = value;
 
                 // TODO: May need to clear selections if now allowing fewer
+            }
+        }
+
+        public int FirstVisibleIndex {
+            get => top_index;
+            set {
+                if (top_index == value)
+                    return;
+
+                if (value < 0 || value >= Items.Count)
+                    return;
+
+                vscrollbar.Value = Math.Min (value, vscrollbar.Maximum);
             }
         }
 
@@ -162,20 +189,82 @@ namespace Modern.Forms
             }
         }
 
+        protected override void OnMouseWheel (MouseEventArgs e)
+        {
+            base.OnMouseWheel (e);
+
+            vscrollbar.RaiseMouseWheel (e);
+        }
+
         protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 
-            for (var i = 0; i < Items.Count; i++) {
+            for (var i = top_index; i < Math.Min (Items.Count, top_index + VisibleItemCount + 1); i++) {
                 var item = Items[i];
-                var bounds = GetItemRectangle (i);
+                var bounds = GetItemDisplayRectangle (i);
 
                 if (selected_items.Contains (i))
                     e.Canvas.FillRectangle (bounds, Theme.NeutralGray);
 
+                // This fixes text positioning for partially shown items
+                bounds.Height = ItemHeight;
+
                 bounds.Inflate (-4, 0);
+
                 e.Canvas.DrawText (item.ToString (), bounds, Style, ContentAlignment.MiddleLeft);
             }
         }
+
+        protected override void SetBoundsCore (int x, int y, int width, int height, BoundsSpecified specified)
+        {
+            base.SetBoundsCore (x, y, width, height, specified);
+
+            UpdateVerticalScrollBar ();
+        }
+
+        internal void CollectionChanged ()
+        {
+            UpdateVerticalScrollBar ();
+        }
+
+        private Rectangle GetItemDisplayRectangle (int index)
+        {
+            if (index < 0 || index >= Items.Count)
+                throw new ArgumentOutOfRangeException ("Index out of range.");
+
+            var client = ClientRectangle;
+
+            index -= top_index;
+
+            var top = index * ItemHeight + client.Top;
+            return new Rectangle (client.Left, top, client.Width - (vscrollbar.Visible ? vscrollbar.Width : 0), Math.Min (ItemHeight, client.Bottom - top));
+        }
+
+        private int NeededHeightForItems => ItemHeight * Items.Count;
+
+        private void UpdateVerticalScrollBar ()
+        {
+            if (Items.Count == 0) {
+                vscrollbar.Visible = false;
+            }
+
+            if (NeededHeightForItems > Bounds.Height) {
+                vscrollbar.Visible = true;
+                vscrollbar.Maximum = Items.Count - VisibleItemCount;
+                vscrollbar.LargeChange = VisibleItemCount;
+            } else {
+                vscrollbar.Visible = false;
+            }
+        }
+
+        private void VerticalScrollBar_ValueChanged (object sender, EventArgs e)
+        {
+            top_index = vscrollbar.Value;
+
+            Invalidate ();
+        }
+
+        private int VisibleItemCount => Bounds.Height / ItemHeight;
     }
 }

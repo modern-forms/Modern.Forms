@@ -382,7 +382,7 @@ namespace Modern.Forms
         {
             var levent = new LayoutEventArgs (affectedControl, affectedProperty);
 
-            foreach (var c in Controls.GetAllControls ())
+            foreach (var c in Controls.GetAllControls ().Where (c => c.Visible))
                 if (c.recalculate_distances)
                     c.RecalculateDistances ();
 
@@ -416,7 +416,7 @@ namespace Modern.Forms
 
             if (layout_suspended == 0) {
                 if (!performLayout)
-                    foreach (var c in Controls.GetAllControls ())
+                    foreach (var c in Controls.GetAllControls ().Where (c => c.Visible))
                         c.RecalculateDistances ();
 
                 if (performLayout && layout_pending)
@@ -598,7 +598,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseClick (MouseEventsForControl (e, child));
@@ -622,7 +622,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseDoubleClick (MouseEventsForControl (e, child));
@@ -682,7 +682,7 @@ namespace Modern.Forms
 
         internal void RaiseMouseDown (MouseEventArgs e)
         {
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseDown (MouseEventsForControl (e, child));
@@ -711,7 +711,7 @@ namespace Modern.Forms
 
         internal void RaiseMouseEnter (MouseEventArgs e)
         {
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseEnter (MouseEventsForControl (e, child));
@@ -787,7 +787,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseUp (MouseEventsForControl (e, child));
@@ -803,7 +803,7 @@ namespace Modern.Forms
 
         internal void RaiseMouseWheel (MouseEventArgs e)
         {
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseWheel (MouseEventsForControl (e, child));

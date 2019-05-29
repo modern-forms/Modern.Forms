@@ -74,6 +74,24 @@ namespace ControlGallery.Panels
             listbox4.SelectionMode = SelectionMode.MultiExtended;
 
             Controls.Add (listbox4);
+
+            var lb5 = new ListBox {
+                Left = 200,
+                Top = 30,
+                SelectionMode = SelectionMode.MultiExtended
+            };
+
+            lb5.Items.AddRange ("Apple", "Banana", "Carrot", "Donut", "Eggs", "Figs", "Grapes", "Hamburger and Cheeseburgers", "Ice Cream", "Jelly");
+
+            Controls.Add (lb5);
+
+            var b1 = new Button { Left = 350, Top = 30, Width = 120, Text = "Set Donut Top" };
+            b1.Click += (o, e) => lb5.FirstVisibleIndex = 3;
+            Controls.Add (b1);
+
+            var b2 = new Button { Left = 350, Top = 70, Width = 120, Text = "Set Ice Cream Top" };
+            b2.Click += (o, e) => lb5.FirstVisibleIndex = 8;
+            Controls.Add (b2);
         }
 
         public class TestBlah
