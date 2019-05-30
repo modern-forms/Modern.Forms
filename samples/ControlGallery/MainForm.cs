@@ -18,6 +18,7 @@ namespace ControlGallery
 
             tree.Items.Add ("Button", ImageLoader.Get ("button.png"));
             tree.Items.Add ("CheckBox", ImageLoader.Get ("button.png"));
+            tree.Items.Add ("ComboBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("Label", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ListBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ListView", ImageLoader.Get ("button.png"));
@@ -70,6 +71,8 @@ namespace ControlGallery
                     return new ButtonPanel ();
                 case "CheckBox":
                     return new CheckBoxPanel ();
+                case "ComboBox":
+                    return new ComboBoxPanel ();
                 case "Label":
                     return new LabelPanel ();
                 case "ListBox":

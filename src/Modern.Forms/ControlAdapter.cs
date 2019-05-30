@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Avalonia.Platform;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -10,19 +11,27 @@ namespace Modern.Forms
     {
         private Control selected_control;
 
-        public ControlAdapter (Form parent)
+        public ControlAdapter (Window parent)
         {
             ParentForm = parent;
             SetControlBehavior (ControlBehaviors.Selectable, false);
         }
 
-        public Form ParentForm { get; }
+        public Window ParentForm { get; }
 
         protected override void OnPaint (PaintEventArgs e)
         {
-            // We have this special version for now because it needs
-            // to take the Form border into account
-            foreach (var control in Controls.Where (c => c.Visible)) {
+            // We have this special version for the Adapter because it is
+            // given the Form's native surface including any managed Form
+            // borders, and it needs to not draw on top of those borders.
+            // That is, this often needs to start drawing at (1, 1) instead of (0, 0)
+            // This could probably eliminated in the future with Canvas.Translate.
+            var form_border = ParentForm.CurrentStyle.Border;
+
+            var form_x = form_border.Left.GetWidth ();
+            var form_y = form_border.Top.GetWidth ();
+
+            foreach (var control in Controls.GetAllControls ().Where (c => c.Visible)) {
                 if (control.Width <= 0 || control.Height <= 0)
                     continue;
 
@@ -39,7 +48,7 @@ namespace Modern.Forms
                     canvas.Flush ();
                 }
 
-                e.Canvas.DrawBitmap (buffer, control.Left + 1, control.Top + 1);
+                e.Canvas.DrawBitmap (buffer, form_x + control.Left, form_y + control.Top);
             }
         }
 

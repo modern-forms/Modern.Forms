@@ -234,8 +234,8 @@ namespace Modern.Forms
 
         public Form FindForm ()
         {
-            if (this is ControlAdapter adapter)
-                return adapter.ParentForm;
+            if (this is ControlAdapter adapter && adapter.ParentForm is Form f)
+                return f;
 
             return Parent?.FindForm ();
         }
@@ -298,12 +298,12 @@ namespace Modern.Forms
 
         public void Invalidate ()
         {
-            FindForm ()?.Invalidate ();
+            FindWindow ()?.Invalidate ();
         }
 
         public void Invalidate (Rectangle rectangle)
         {
-            FindForm ()?.Invalidate (rectangle);
+            FindWindow ()?.Invalidate (rectangle);
         }
 
         public bool IsHovering { get; private set; }
@@ -408,6 +408,18 @@ namespace Modern.Forms
         }
 
         public Size PreferredSize => GetPreferredSize (Size.Empty);
+
+        public Point PointToScreen (Point point)
+        {
+            if (this is ControlAdapter)
+                return FindWindow ().PointToScreen (point);
+
+            var pt = Parent.PointToScreen (Location);
+
+            pt.Offset (point);
+
+            return pt;
+        }
 
         public void ResumeLayout (bool performLayout)
         {
@@ -585,7 +597,17 @@ namespace Modern.Forms
         internal void Deselect ()
         {
             Selected = false;
+            OnDeselected (EventArgs.Empty);
+
             Invalidate ();
+        }
+
+        internal Window FindWindow ()
+        {
+            if (this is ControlAdapter adapter && adapter.ParentForm is Window w)
+                return w;
+
+            return Parent?.FindWindow ();
         }
 
         internal void RaiseClick (MouseEventArgs e)
@@ -609,6 +631,8 @@ namespace Modern.Forms
         protected virtual void OnClick (MouseEventArgs e) => Click?.Invoke (this, e);
 
         protected virtual void OnCursorChanged (EventArgs e) => CursorChanged?.Invoke (this, e);
+
+        protected virtual void OnDeselected (EventArgs e) { }
 
         protected virtual void OnDockChanged (EventArgs e) => DockChanged?.Invoke (this, e);
 
@@ -820,7 +844,10 @@ namespace Modern.Forms
         protected virtual void OnPaint (PaintEventArgs e)
         {
             foreach (var control in Controls.GetAllControls ().Where (c => c.Visible)) {
-                var info = new SKImageInfo (Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                if (control.Width <= 0 || control.Height <= 0)
+                    continue;
+
+                var info = new SKImageInfo (control.Width, control.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
                 var buffer = control.GetBackBuffer ();
 
                 using (var canvas = new SKCanvas (buffer)) {

@@ -81,10 +81,10 @@ namespace Avalonia.X11
         //    throw new NotSupportedException();
         //}
 
-        //public IPopupImpl CreatePopup()
-        //{
-        //    return new X11Window(this, true);
-        //}
+        public IPopupImpl CreatePopup ()
+        {
+            return new X11Window (this, true);
+        }
     }
 }
 

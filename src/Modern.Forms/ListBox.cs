@@ -38,7 +38,7 @@ namespace Modern.Forms
             Controls.AddImplicitControl (vscrollbar);
         }
 
-        public event EventHandler<EventArgs<TreeViewItem>> ItemSelected;
+        public event EventHandler SelectedIndexChanged;
 
         public ListBoxItemCollection Items { get; }
 
@@ -88,6 +88,7 @@ namespace Modern.Forms
                     throw new ArgumentException ("Cannot call this method if SelectionMode is SelectionMode.None");
 
                 Items.SelectedIndex = value;
+                OnSelectedIndexChanged (EventArgs.Empty);
 
                 Invalidate ();
             }
@@ -138,7 +139,7 @@ namespace Modern.Forms
 
         protected override Size DefaultSize => new Size (120, 96);
 
-        protected virtual void OnItemSelected (EventArgs<TreeViewItem> e) => ItemSelected?.Invoke (this, e);
+        protected virtual void OnSelectedIndexChanged (EventArgs e) => SelectedIndexChanged?.Invoke (this, e);
 
         protected override void OnMouseDown (MouseEventArgs e)
         {
