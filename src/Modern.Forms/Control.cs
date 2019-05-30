@@ -488,6 +488,11 @@ namespace Modern.Forms
 
         public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
         {
+            SetBoundsCore (x, y, width, height, specified);
+        }
+
+        protected virtual void SetBoundsCore (int x, int y, int width, int height, BoundsSpecified specified)
+        {
             var moved = bounds.X != x || bounds.Y != y;
             var resized = bounds.Width != width || bounds.Height != height;
 
