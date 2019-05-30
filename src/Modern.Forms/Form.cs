@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Platform;
-using SkiaSharp;
 
 namespace Modern.Forms
 {
@@ -11,8 +10,8 @@ namespace Modern.Forms
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
          (style) => {
-             style.BackgroundColor = SKColors.Red;
-             style.Border.Color = SKColors.Green;
+             style.BackgroundColor = Theme.FormBackgroundColor;
+             style.Border.Color = Theme.RibbonColor;
              style.Border.Width = 1;
          });
 
