@@ -29,6 +29,7 @@ namespace ControlGallery
             tree.Items.Add ("ScrollableControl", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ScrollBar", ImageLoader.Get ("button.png"));
             tree.Items.Add ("StatusBar", ImageLoader.Get ("button.png"));
+            tree.Items.Add ("TabControl", ImageLoader.Get ("button.png"));
             tree.Items.Add ("TabStrip", ImageLoader.Get ("button.png"));
             tree.Items.Add ("TextBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("TitleBar", ImageLoader.Get ("button.png"));
@@ -93,6 +94,8 @@ namespace ControlGallery
                     return new ScrollBarPanel ();
                 case "StatusBar":
                     return new StatusBarPanel ();
+                case "TabControl":
+                    return new TabControlPanel ();
                 case "TabStrip":
                     return new TabStripPanel ();
                 case "TextBox":

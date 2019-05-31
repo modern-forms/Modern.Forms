@@ -22,17 +22,12 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        private StackLayoutEngine layout_engine = new StackLayoutEngine (Orientation.Horizontal, true);
-
-        public event EventHandler SelectedTabChanged;
-
-        protected override Size DefaultSize => new Size (600, 28);
-
         public TabStrip ()
         {
+            Tabs = new TabStripItemCollection (this);
         }
 
-        public List<TabStripItem> Tabs { get; } = new List<TabStripItem> ();
+        public event EventHandler SelectedTabChanged;
 
         public TabStripItem SelectedTab {
             get => Tabs.FirstOrDefault (tp => tp.Selected);
@@ -54,19 +49,9 @@ namespace Modern.Forms
             }
         }
 
-        protected override void OnMouseMove (MouseEventArgs e)
-        {
-            base.OnMouseMove (e);
+        public TabStripItemCollection Tabs { get; }
 
-            SetHover (GetTabAtLocation (e.Location));
-        }
-
-        protected override void OnMouseLeave (EventArgs e)
-        {
-            base.OnMouseLeave (e);
-
-            SetHover (null);
-        }
+        protected override Size DefaultSize => new Size (600, 28);
 
         protected override void OnClick (MouseEventArgs e)
         {
@@ -76,6 +61,20 @@ namespace Modern.Forms
 
             if (clicked_tab != null)
                 SelectedTab = clicked_tab;
+        }
+
+        protected override void OnMouseLeave (EventArgs e)
+        {
+            base.OnMouseLeave (e);
+
+            SetHover (null);
+        }
+
+        protected override void OnMouseMove (MouseEventArgs e)
+        {
+            base.OnMouseMove (e);
+
+            SetHover (GetTabAtLocation (e.Location));
         }
 
         protected override void OnPaint (PaintEventArgs e)
@@ -94,7 +93,7 @@ namespace Modern.Forms
 
         private void LayoutTabs ()
         {
-            layout_engine.Layout (ClientRectangle, Tabs.Cast<ILayoutable> ());
+            StackLayoutEngine.HorizontalExpand.Layout (ClientRectangle, Tabs.Cast<ILayoutable> ());
         }
 
         private void SetHover (TabStripItem item)

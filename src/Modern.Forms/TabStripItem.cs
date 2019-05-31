@@ -11,6 +11,7 @@ namespace Modern.Forms
         public string Text { get; set; }
         public bool Selected { get; set; }
         public bool Hovered { get; set; }
+        public object Tag { get; set; }
 
         public Rectangle Bounds { get; private set; }
 
