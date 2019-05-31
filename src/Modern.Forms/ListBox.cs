@@ -24,6 +24,8 @@ namespace Modern.Forms
         {
             Items = new ListBoxItemCollection (this);
 
+            Items.CollectionChanged += (o, e) => UpdateVerticalScrollBar ();
+
             vscrollbar = new VerticalScrollBar {
                 Minimum = 0,
                 Maximum = 0,

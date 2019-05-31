@@ -17,13 +17,13 @@ namespace Modern.Forms
 
         private RibbonItem mouse_in_item;
 
-        public RibbonTagPageCollection TabPages { get; }
+        public RibbonTabPageCollection TabPages { get; }
 
         protected override Size DefaultSize => new Size (600, 111);
 
         public Ribbon ()
         {
-            TabPages = new RibbonTagPageCollection (this);
+            TabPages = new RibbonTabPageCollection (this);
 
             Dock = DockStyle.Top;
 
