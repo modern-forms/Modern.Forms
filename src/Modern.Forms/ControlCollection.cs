@@ -16,7 +16,7 @@ namespace Modern.Forms
             this.parent = parent;
         }
 
-        public new Control Add (Control item)
+        public T Add<T> (T item) where T : Control
         {
             base.Add (item);
             return item;
