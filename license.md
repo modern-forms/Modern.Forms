@@ -1,6 +1,19 @@
-MIT License
+`Modern.Forms` contains code from multiple MIT licensed sources:
 
-Copyright (c) 2019 Jonathan Pobst
+### Original code
+* Copyright (c) 2019 Jonathan Pobst
+
+### Avalonia
+* This code is found in `src/Modern.Forms/Avalonia`
+* Copyright (c) 2014 Steven Kirk
+* https://github.com/AvaloniaUI/Avalonia
+
+### Mono Winforms
+* This code is found throughout the codebase and retains license headers in individual files
+* Copyrights are specified at the file level
+* https://github.com/mono/mono/tree/master/mcs/class/System.Windows.Forms
+
+## MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
