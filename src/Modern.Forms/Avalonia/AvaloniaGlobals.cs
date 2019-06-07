@@ -33,6 +33,12 @@ namespace Avalonia
                 WindowingInterface = x11;
                 PlatformThreadingInterface = new X11PlatformThreading (x11);
                 StandardCursorFactory = new X11CursorFactory (x11.Display);
+            } else if (runtime.OperatingSystem == OperatingSystemType.OSX) {
+                var platform = Native.AvaloniaNativePlatform.Initialize ();
+
+                WindowingInterface = platform;
+                PlatformThreadingInterface = new Native.PlatformThreadingInterface (platform.Factory.CreatePlatformThreadingInterface ());
+                StandardCursorFactory = new Native.CursorFactory (platform.Factory.CreateCursorFactory ());
             } else {
                 throw new InvalidOperationException ("Unrecognized Operating System");
             }

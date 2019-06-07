@@ -1,0 +1,3 @@
+namespace Avalonia.Native.Interop
+{
+}
