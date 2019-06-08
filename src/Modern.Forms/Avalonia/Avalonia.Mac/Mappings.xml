@@ -3,7 +3,7 @@
     <assembly>Avalonia.Native</assembly>
     <namespace>Avalonia.Native.Interop</namespace>
     <depends>SharpGen.Runtime.COM</depends>
-    <include-dir>./inc</include-dir>
+    <include-dir>Avalonia\Avalonia.Mac\inc</include-dir>
     <include file="avalonia-native.h" 
              namespace="Avalonia.Native.Interop"
              attach="true"
