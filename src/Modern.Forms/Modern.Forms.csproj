@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="HarfBuzzSharp" Version="1.4.6.2" />
     <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="1.4.6.2" />
+    <SharpGenMapping Include="Avalonia\Avalonia.Mac\Mappings.xml" />
     <PackageReference Include="SharpGen.Runtime.COM" Version="1.2.0" />
     <PackageReference Include="SkiaSharp" Version="1.68.0" />
     <PackageReference Include="SkiaSharp.HarfBuzz" Version="1.68.0" />
