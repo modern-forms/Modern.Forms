@@ -31,7 +31,7 @@ namespace Modern.Forms
         {
             this.window = window;
             adapter = new ControlAdapter (this);
-
+            
             window.Input = OnInput;
             window.Paint = OnPaint;
             window.Resized = OnResize;
@@ -52,6 +52,8 @@ namespace Modern.Forms
         protected virtual System.Drawing.Size DefaultSize => new System.Drawing.Size (100, 100);
 
         public System.Drawing.Rectangle DisplayRectangle => new System.Drawing.Rectangle (CurrentStyle.Border.Left.GetWidth (), CurrentStyle.Border.Top.GetWidth (), (int)window.ClientSize.Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth (), (int)window.ClientSize.Height - CurrentStyle.Border.Top.GetWidth () - CurrentStyle.Border.Bottom.GetWidth ());
+
+        public System.Drawing.Rectangle ScaledDisplayRectangle => new System.Drawing.Rectangle (CurrentStyle.Border.Left.GetWidth (), CurrentStyle.Border.Top.GetWidth (), (int)window.ScaledClientSize.Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth (), (int)window.ScaledClientSize.Height - CurrentStyle.Border.Top.GetWidth () - CurrentStyle.Border.Bottom.GetWidth ());
 
         public void Hide ()
         {
@@ -78,9 +80,16 @@ namespace Modern.Forms
             return new System.Drawing.Point (pt.X, pt.Y);
         }
 
+        public double Scaling => window.Scaling;
+
         public System.Drawing.Size Size {
             get => new System.Drawing.Size ((int)window.ClientSize.Width, (int)window.ClientSize.Height);
             set => window.Resize (new Avalonia.Size (value.Width, value.Height));
+        }
+
+
+        public System.Drawing.Size ScaledSize {
+            get => new System.Drawing.Size ((int)window.ScaledClientSize.Width, (int)window.ScaledClientSize.Height);
         }
 
         public Screens Screens => new Screens (window.Screen);
@@ -89,6 +98,8 @@ namespace Modern.Forms
         {
             Visible = true;
             window.Show ();
+            //adapter.Scale (new System.Drawing.SizeF ((float)Scaling, (float)Scaling));
+            //OnResize (new Avalonia.Size (0, 0));
         }
 
         public bool Visible { get; private set; }
@@ -191,12 +202,15 @@ namespace Modern.Forms
                     framebuffer.Format.ToSkColorType (),
                     framebuffer.Format == PixelFormat.Rgb565 ? SKAlphaType.Opaque : SKAlphaType.Premul);
 
+                var scaled_client_size = window.ScaledClientSize;
+                var scaled_display_rect = ScaledDisplayRectangle;
+
                 using (var surface = SKSurface.Create (framebufferImageInfo, framebuffer.Address, framebuffer.RowBytes)) {
                     var e = new PaintEventArgs (surface, framebufferImageInfo, surface.Canvas);
-                    e.Canvas.DrawBackground (new System.Drawing.Rectangle (0, 0, (int)window.ClientSize.Width, (int)window.ClientSize.Height), CurrentStyle);
-                    e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, (int)window.ClientSize.Width, (int)window.ClientSize.Height), CurrentStyle);
+                    e.Canvas.DrawBackground (new System.Drawing.Rectangle (0, 0, (int)scaled_client_size.Width, (int)scaled_client_size.Height), CurrentStyle);
+                    e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, (int)scaled_client_size.Width, (int)scaled_client_size.Height), CurrentStyle);
 
-                    e.Canvas.ClipRect (new SKRect (DisplayRectangle.Left, DisplayRectangle.Top, DisplayRectangle.Width + 1, DisplayRectangle.Height + 1));
+                    e.Canvas.ClipRect (new SKRect (scaled_display_rect.Left, scaled_display_rect.Top, scaled_display_rect.Width + 1, scaled_display_rect.Height + 1));
 
                     adapter.RaisePaintBackground (e);
                     adapter.RaisePaint (e);
@@ -206,7 +220,7 @@ namespace Modern.Forms
 
         private void OnResize (Size size)
         {
-            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, DisplayRectangle.Width, DisplayRectangle.Height);
+            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, ScaledSize.Width, ScaledSize.Height);
         }
     }
 }

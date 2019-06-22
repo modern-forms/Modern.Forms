@@ -33,6 +33,7 @@ namespace Modern.Forms
 
             values[nameof (UIFont)] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
             values[nameof (FontSize)] = 14;
+            values[nameof (RibbonItemFontSize)] = 12;
         }
 
         public static SKColor RibbonColor {
@@ -108,6 +109,11 @@ namespace Modern.Forms
         public static int FontSize {
             get => GetValue<int> (nameof (FontSize));
             set => SetValue (nameof (FontSize), value);
+        }
+
+        public static int RibbonItemFontSize {
+            get => GetValue<int> (nameof (RibbonItemFontSize));
+            set => SetValue (nameof (RibbonItemFontSize), value);
         }
 
         private static T GetValue<T> (string name) => (T)values[name];

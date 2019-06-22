@@ -131,6 +131,14 @@ namespace Avalonia.Win32
             }
         }
 
+        public Size ScaledClientSize {
+            get {
+                UnmanagedMethods.RECT rect;
+                UnmanagedMethods.GetClientRect (_hwnd, out rect);
+                return new Size (rect.right, rect.bottom);
+            }
+        }
+
         public void SetMinMaxSize(Size minSize, Size maxSize)
         {
             _minSize = minSize;
@@ -781,7 +789,7 @@ namespace Avalonia.Win32
 
         private Point DipFromLParam(IntPtr lParam)
         {
-            return new Point((short)(ToInt32(lParam) & 0xffff), (short)(ToInt32(lParam) >> 16)) / Scaling;
+            return new Point((short)(ToInt32(lParam) & 0xffff), (short)(ToInt32(lParam) >> 16));
         }
 
         private PixelPoint PointFromLParam(IntPtr lParam)

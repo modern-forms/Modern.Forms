@@ -40,6 +40,7 @@ namespace Modern.Forms
         private Padding padding;
         private Control parent;
         private bool recalculate_distances = true;
+        private Rectangle scaled_bounds;
         private int tab_index = -1;
         private bool tab_stop = true;
         private string text;
@@ -146,6 +147,8 @@ namespace Modern.Forms
             }
         }
 
+        public Rectangle ScaledClientRectangle => GetScaledBounds (ClientRectangle, ScaleFactor, BoundsSpecified.All);
+
         public Size ClientSize {
             get {
                 var w = Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth ();
@@ -178,6 +181,8 @@ namespace Modern.Forms
         //        }
         //    }
         //}
+
+        public int DeviceDpi => (int)((FindWindow ()?.Scaling ?? 1) * 96);
 
         public virtual Rectangle DisplayRectangle => ClientRectangle;
 
@@ -318,6 +323,21 @@ namespace Modern.Forms
             set => SetBounds (value.X, value.Y, bounds.Width, bounds.Height, BoundsSpecified.Location);
         }
 
+        public int LogicalToDeviceUnits (int value)
+        {
+            return DpiHelper.LogicalToDeviceUnits (value, DeviceDpi);
+        }
+
+        public Padding LogicalToDeviceUnits (Padding value)
+        {
+            return DpiHelper.LogicalToDeviceUnits (value, DeviceDpi);
+        }
+
+        public Size LogicalToDeviceUnits (Size value)
+        {
+            return DpiHelper.LogicalToDeviceUnits (value, DeviceDpi);
+        }
+
         public virtual Padding Margin {
             get => margin;
             set {
@@ -421,7 +441,7 @@ namespace Modern.Forms
             return pt;
         }
 
-        public void ResumeLayout (bool performLayout)
+        public void ResumeLayout (bool performLayout = true)
         {
             if (layout_suspended > 0)
                 layout_suspended--;
@@ -437,6 +457,12 @@ namespace Modern.Forms
         }
 
         public int Right => bounds.Right;
+
+        public void Scale (SizeF factor) => ScaleCore (factor.Width, factor.Height);
+
+        public Rectangle ScaledBounds => GetScaledBounds (Bounds, ScaleFactor, BoundsSpecified.Size);
+
+        public SizeF ScaleFactor => new SizeF ((float)(DeviceDpi / DpiHelper.LogicalDpi), (float)(DeviceDpi / DpiHelper.LogicalDpi));
 
         public void Select ()
         {
@@ -515,6 +541,14 @@ namespace Modern.Forms
 
             parent?.PerformLayout (this, nameof (Bounds));
         }
+
+        public void SetScaledBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
+        {
+            var rect = GetScaledBounds (new Rectangle (x, y, width, height), new SizeF (1 / ScaleFactor.Width, 1 / ScaleFactor.Height), BoundsSpecified.Size);
+            SetBoundsCore (rect.X, rect.Y, rect.Width, rect.Height, specified);
+        }
+
+        public Size ScaledSize => ScaledBounds.Size;
 
         public Size Size {
             get => bounds.Size;
@@ -615,6 +649,32 @@ namespace Modern.Forms
             return Parent?.FindWindow ();
         }
 
+        protected virtual Rectangle GetScaledBounds (Rectangle bounds, SizeF factor, BoundsSpecified specified)
+        {
+            var dx = factor.Width;
+            var dy = factor.Height;
+
+            var sx = bounds.X;
+            var sy = bounds.Y;
+            var sw = bounds.Width;
+            var sh = bounds.Height;
+
+            // Scale the control location (unless this is the top level adapter)
+            if (FindAdapter () != this) {
+                if (specified.HasFlag (BoundsSpecified.X))
+                    sx = (int)Math.Round (bounds.X * dx);
+                if (specified.HasFlag (BoundsSpecified.Y))
+                    sy = (int)Math.Round (bounds.Y * dy);
+            }
+
+            if (specified.HasFlag (BoundsSpecified.Width))
+                sw = (int)Math.Round (bounds.Width * dx);
+            if (specified.HasFlag (BoundsSpecified.Height))
+                sh = (int)Math.Round (bounds.Height * dy);
+
+            return new Rectangle (sx, sy, sw, sh);
+        }
+
         internal void RaiseClick (MouseEventArgs e)
         {
             // If something has the mouse captured, they get all the events
@@ -625,7 +685,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseClick (MouseEventsForControl (e, child));
@@ -651,7 +711,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseDoubleClick (MouseEventsForControl (e, child));
@@ -711,7 +771,7 @@ namespace Modern.Forms
 
         internal void RaiseMouseDown (MouseEventArgs e)
         {
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseDown (MouseEventsForControl (e, child));
@@ -740,7 +800,7 @@ namespace Modern.Forms
 
         internal void RaiseMouseEnter (MouseEventArgs e)
         {
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseEnter (MouseEventsForControl (e, child));
@@ -784,7 +844,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
 
             if (current_mouse_in != null && current_mouse_in != child) {
                 current_mouse_in.RaiseMouseLeave (e);
@@ -816,7 +876,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseUp (MouseEventsForControl (e, child));
@@ -832,7 +892,7 @@ namespace Modern.Forms
 
         internal void RaiseMouseWheel (MouseEventArgs e)
         {
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.Bounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseWheel (MouseEventsForControl (e, child));
@@ -852,7 +912,7 @@ namespace Modern.Forms
                 if (control.Width <= 0 || control.Height <= 0)
                     continue;
 
-                var info = new SKImageInfo (control.Width, control.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                var info = new SKImageInfo (control.ScaledSize.Width, control.ScaledSize.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
                 var buffer = control.GetBackBuffer ();
 
                 using (var canvas = new SKCanvas (buffer)) {
@@ -903,16 +963,78 @@ namespace Modern.Forms
             e.Canvas.DrawBorder (Bounds, CurrentStyle);
         }
 
+        protected virtual void ScaleControl (SizeF factor, BoundsSpecified specified)
+        {
+            var raw_scaled = GetScaledBounds (Bounds, factor, specified);
+
+            var dx = factor.Width;
+            var dy = factor.Height;
+
+            var padding = Padding;
+            var margins = Margin;
+
+            // Clear off specified bits for 1.0 scaling factors
+            if (dx == 1.0F)
+                specified &= ~(BoundsSpecified.X | BoundsSpecified.Width);
+
+            if (dy == 1.0F)
+                specified &= ~(BoundsSpecified.Y | BoundsSpecified.Height);
+
+            if (dx != 1.0F) {
+                padding.Left = (int)Math.Round (padding.Left * dx);
+                padding.Right = (int)Math.Round (padding.Right * dx);
+                margins.Left = (int)Math.Round (margins.Left * dx);
+                margins.Right = (int)Math.Round (margins.Right * dx);
+            }
+
+            if (dy != 1.0F) {
+                padding.Top = (int)Math.Round (padding.Top * dy);
+                padding.Bottom = (int)Math.Round (padding.Bottom * dy);
+                margins.Top = (int)Math.Round (margins.Top * dy);
+                margins.Bottom = (int)Math.Round (margins.Bottom * dy);
+            }
+
+            // Apply padding and margins
+            Padding = padding;
+            Margin = margins;
+
+            // Set in the scaled bounds as constrained by the newly scaled min/max size.
+            SetBoundsCore (raw_scaled.X, raw_scaled.Y, raw_scaled.Width, raw_scaled.Height, BoundsSpecified.All);
+        }
+
+        protected virtual void ScaleCore (float dx, float dy)
+        {
+            SuspendLayout ();
+
+            try {
+                var sx = (int)Math.Round (Left * dx);
+                var sy = (int)Math.Round (Top * dy);
+
+                var sw = (int)(Math.Round ((Left + Width) * dx)) - sx;
+                var sh = (int)(Math.Round ((Top + Height) * dy)) - sy;
+
+                SetBounds (sx, sy, sw, sh, BoundsSpecified.All);
+
+                foreach (var c in Controls)
+                    c.ScaleCore (dx, dy);
+
+            } finally {
+                ResumeLayout ();
+            }
+        }
+
         internal SKBitmap GetBackBuffer ()
         {
-            if (back_buffer == null || back_buffer.Width != Width || back_buffer.Height != Height) {
+            if (back_buffer == null || back_buffer.Width != ScaledSize.Width || back_buffer.Height != ScaledSize.Height) {
                 FreeBitmap ();
-                back_buffer = new SKBitmap (Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                back_buffer = new SKBitmap (ScaledSize.Width, ScaledSize.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
             }
 
             return back_buffer;
         }
 
+        public int ScaledWidth => (int)(Width * ScaleFactor.Width);
+        public int ScaledHeight => (int)(Height * ScaleFactor.Height);
         // This is an internal control (like a scrollbar) that should
         // not show up in Controls for a user
         internal bool ImplicitControl { get; set; }
@@ -935,6 +1057,16 @@ namespace Modern.Forms
 
                 recalculate_distances = false;
             }
+        }
+
+        internal Size ScaleSize (Size startSize, float x, float y)
+        {
+            var size = startSize;
+
+            size.Width = (int)Math.Round ((float)size.Width * x);
+            size.Height = (int)Math.Round ((float)size.Height * y);
+
+            return size;
         }
 
         // Used to break a StackOverflow circular reference

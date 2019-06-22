@@ -55,11 +55,14 @@ namespace Modern.Forms
         void LayoutDockedChildren (Control parent, Control[] controls)
 		{
 			var space = parent.ClientRectangle;
-			
+
+            if (space.Width == 0 || space.Height == 0 || controls.Length == 0)
+                return;
+
 			// Deal with docking; go through in reverse, MS docs say that lowest Z-order is closest to edge
 			for (var i = controls.Length - 1; i >= 0; i--) {
 				var child = controls[i];
-				var child_size = child.Size;
+				var child_size = child.ScaledSize;
 
 				//if (child.AutoSize)
 				//	child_size = GetPreferredControlSize (child);
@@ -73,29 +76,29 @@ namespace Modern.Forms
 					break;
 
 				case DockStyle.Left:
-					child.SetBounds (space.Left, space.Y, child_size.Width, space.Height, BoundsSpecified.None);
-					space.X += child.Width;
-					space.Width -= child.Width;
+					child.SetScaledBounds (space.Left, space.Y, child_size.Width, space.Height, BoundsSpecified.None);
+					space.X += child.ScaledBounds.Width;
+					space.Width -= child.ScaledBounds.Width;
 					break;
 
 				case DockStyle.Top:
-					child.SetBounds (space.Left, space.Y, space.Width, child_size.Height, BoundsSpecified.None);
-					space.Y += child.Height;
-					space.Height -= child.Height;
+					child.SetScaledBounds (space.Left, space.Y, space.Width, child_size.Height, BoundsSpecified.None);
+					space.Y += child.ScaledBounds.Height;
+					space.Height -= child.ScaledBounds.Height;
 					break;
 
 				case DockStyle.Right:
-					child.SetBounds (space.Right - child_size.Width, space.Y, child_size.Width, space.Height, BoundsSpecified.None);
-					space.Width -= child.Width;
+					child.SetScaledBounds (space.Right - child_size.Width, space.Y, child_size.Width, space.Height, BoundsSpecified.None);
+					space.Width -= child.ScaledBounds.Width;
 					break;
 
 				case DockStyle.Bottom:
-					child.SetBounds (space.Left, space.Bottom - child_size.Height, space.Width, child_size.Height, BoundsSpecified.None);
-					space.Height -= child.Height;
+					child.SetScaledBounds (space.Left, space.Bottom - child_size.Height, space.Width, child_size.Height, BoundsSpecified.None);
+					space.Height -= child.ScaledBounds.Height;
 					break;
 					
 				case DockStyle.Fill:
-					child.SetBounds (space.Left, space.Top, space.Width, space.Height, BoundsSpecified.None);
+					child.SetScaledBounds (space.Left, space.Top, space.Width, space.Height, BoundsSpecified.None);
 					break;
 				}
 			}

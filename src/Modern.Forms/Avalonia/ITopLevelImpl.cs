@@ -24,6 +24,8 @@ namespace Avalonia.Platform
         /// </summary>
         Size ClientSize { get; }
 
+        Size ScaledClientSize { get; }
+
         /// <summary>
         /// Gets the scaling factor for the toplevel.
         /// </summary>
