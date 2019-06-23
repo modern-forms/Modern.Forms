@@ -19,6 +19,9 @@ namespace Modern.Forms
         public event EventHandler CheckedChanged;
 
         private bool is_checked;
+        private const int BOX_BORDER_SIZE = 15;
+        private const int BOX_FILL_SIZE = 11;
+        private const int GLYPH_TEXT_PADDING = 3;
 
         public CheckBox ()
         {
@@ -52,15 +55,22 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             var y = (Height - 16) / 2;
+            var box_size = LogicalToDeviceUnits (BOX_BORDER_SIZE);
+            var box_fill_size = LogicalToDeviceUnits (BOX_FILL_SIZE);
+
+            var box_bounds = new Rectangle (3, y, box_size, box_size);
+            var fill_size = new Rectangle (Point.Empty, new Size (box_fill_size, box_fill_size));
+            var fill_bounds = DrawingExtensions.CenterRectangle (box_bounds, fill_size);
 
             if (Checked) {
-                e.Canvas.DrawRectangle (3, y, 15, 15, Theme.RibbonColor);
-                e.Canvas.FillRectangle (6, y + 3, 10, 10, Theme.RibbonColor);
+                e.Canvas.DrawRectangle (box_bounds, Theme.RibbonColor, LogicalToDeviceUnits (1));
+                e.Canvas.FillRectangle (fill_bounds, Theme.RibbonColor);
             } else {
-                e.Canvas.DrawRectangle (3, y, 15, 15, Theme.BorderGray);
+                e.Canvas.DrawRectangle (box_bounds, Theme.BorderGray, LogicalToDeviceUnits (1));
             }
 
-            e.Canvas.DrawText (Text, new Rectangle (24, 0, Width - 24, Height), CurrentStyle, ContentAlignment.MiddleLeft);
+            var glyph_padding = LogicalToDeviceUnits (GLYPH_TEXT_PADDING);
+            e.Canvas.DrawText (Text, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Rectangle (box_bounds.Right + glyph_padding, 0, ScaledWidth - box_bounds.Right - glyph_padding, ScaledHeight), CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
         }
     }
 }

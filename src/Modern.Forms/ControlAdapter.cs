@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using Avalonia.Platform;
@@ -15,6 +16,17 @@ namespace Modern.Forms
         {
             ParentForm = parent;
             SetControlBehavior (ControlBehaviors.Selectable, false);
+        }
+
+        // We need to override this because the ControlAdapter doesn't need to be scaled
+        public override Rectangle ClientRectangle {
+            get {
+                var x = CurrentStyle.Border.Left.GetWidth ();
+                var y = CurrentStyle.Border.Top.GetWidth ();
+                var w = Width - CurrentStyle.Border.Right.GetWidth () - x;
+                var h = Height - CurrentStyle.Border.Bottom.GetWidth () - y;
+                return new Rectangle (x, y, w, h);
+            }
         }
 
         public Window ParentForm { get; }

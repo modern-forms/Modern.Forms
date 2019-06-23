@@ -137,17 +137,19 @@ namespace Modern.Forms
         /// <summary>
         /// The control canvas minus any borders
         /// </summary>
-        public Rectangle ClientRectangle {
+        public virtual Rectangle ClientRectangle {
             get {
+                // TODO: We should be scaling the Border as well
                 var x = CurrentStyle.Border.Left.GetWidth ();
                 var y = CurrentStyle.Border.Top.GetWidth ();
-                var w = Width - CurrentStyle.Border.Right.GetWidth () - x;
-                var h = Height - CurrentStyle.Border.Bottom.GetWidth () - y;
-                return new Rectangle (x, y, w, h);
+                var w = CurrentStyle.Border.Right.GetWidth () + x;
+                var h = CurrentStyle.Border.Bottom.GetWidth () + y;
+
+                var bounds = GetScaledBounds (Bounds, ScaleFactor, BoundsSpecified.Size); ;
+
+                return new Rectangle (x, y, bounds.Width - w, bounds.Height - h);
             }
         }
-
-        public Rectangle ScaledClientRectangle => GetScaledBounds (ClientRectangle, ScaleFactor, BoundsSpecified.All);
 
         public Size ClientSize {
             get {
@@ -542,10 +544,10 @@ namespace Modern.Forms
             parent?.PerformLayout (this, nameof (Bounds));
         }
 
-        public void SetScaledBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
+        public void SetScaledBounds (int x, int y, int width, int height, BoundsSpecified specified)
         {
-            var rect = GetScaledBounds (new Rectangle (x, y, width, height), new SizeF (1 / ScaleFactor.Width, 1 / ScaleFactor.Height), BoundsSpecified.Size);
-            SetBoundsCore (rect.X, rect.Y, rect.Width, rect.Height, specified);
+            var rect = GetScaledBounds (new Rectangle (x, y, width, height), new SizeF (1 / ScaleFactor.Width, 1 / ScaleFactor.Height), specified);
+            SetBoundsCore (rect.X, rect.Y, rect.Width, rect.Height, BoundsSpecified.None);
         }
 
         public Size ScaledSize => ScaledBounds.Size;
@@ -959,8 +961,8 @@ namespace Modern.Forms
 
         protected virtual void OnPaintBackground (PaintEventArgs e)
         {
-            e.Canvas.DrawBackground (Bounds, CurrentStyle);
-            e.Canvas.DrawBorder (Bounds, CurrentStyle);
+            e.Canvas.DrawBackground (ScaledBounds, CurrentStyle);
+            e.Canvas.DrawBorder (ScaledBounds, CurrentStyle);
         }
 
         protected virtual void ScaleControl (SizeF factor, BoundsSpecified specified)

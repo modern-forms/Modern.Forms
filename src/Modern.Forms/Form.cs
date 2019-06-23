@@ -52,7 +52,7 @@ namespace Modern.Forms
 
         private void SetWindowStartupLocation (IWindowBaseImpl owner = null)
         {
-            var scaling = owner?.Scaling ?? 1; // PlatformImpl?.Scaling ?? 1;
+            var scaling = Scaling;
 
             // TODO: We really need non-client size here.
             var rect = new PixelRect (

@@ -15,6 +15,8 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
+        protected override Padding DefaultPadding => new Padding (3);
+
         protected override Size DefaultSize => new Size (600, 25);
 
         public StatusBar ()
@@ -26,8 +28,11 @@ namespace Modern.Forms
         {
             base.OnPaint (e);
 
-            if (!string.IsNullOrWhiteSpace (Text))
-                e.Canvas.DrawText (Text, CurrentStyle.GetFont (), CurrentStyle.GetFontSize (), 6, 17, CurrentStyle.GetForegroundColor ());
+            if (!string.IsNullOrWhiteSpace (Text)) {
+                var padding = LogicalToDeviceUnits (Padding);
+                var text_bounds = new Rectangle (ClientRectangle.Left + padding.Left, ClientRectangle.Top, ClientRectangle.Width - padding.Horizontal, ClientRectangle.Height);
+                e.Canvas.DrawText (Text, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), text_bounds, CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
+            }
         }
     }
 }

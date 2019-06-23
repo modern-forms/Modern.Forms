@@ -93,7 +93,7 @@ namespace Modern.Forms
 
         private void LayoutTabs ()
         {
-            StackLayoutEngine.HorizontalExpand.Layout (ScaledClientRectangle, Tabs.Cast<ILayoutable> ());
+            StackLayoutEngine.HorizontalExpand.Layout (ClientRectangle, Tabs.Cast<ILayoutable> ());
         }
 
         private void SetHover (TabStripItem item)

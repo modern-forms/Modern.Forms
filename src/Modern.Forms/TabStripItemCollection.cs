@@ -43,5 +43,13 @@ namespace Modern.Forms
             else
                 tab_strip.Invalidate ();
         }
+
+        protected override void SetItem (int index, TabStripItem item)
+        {
+            this[index].Parent = null;
+            item.Parent = tab_strip;
+
+            base.SetItem (index, item);
+        }
     }
 }

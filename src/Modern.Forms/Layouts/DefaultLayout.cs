@@ -76,29 +76,29 @@ namespace Modern.Forms
 					break;
 
 				case DockStyle.Left:
-					child.SetScaledBounds (space.Left, space.Y, child_size.Width, space.Height, BoundsSpecified.None);
+					child.SetScaledBounds (space.Left, space.Y, child_size.Width, space.Height, BoundsSpecified.Size);
 					space.X += child.ScaledBounds.Width;
 					space.Width -= child.ScaledBounds.Width;
 					break;
 
 				case DockStyle.Top:
-					child.SetScaledBounds (space.Left, space.Y, space.Width, child_size.Height, BoundsSpecified.None);
+					child.SetScaledBounds (space.Left, space.Y, space.Width, child_size.Height, BoundsSpecified.Size);
 					space.Y += child.ScaledBounds.Height;
 					space.Height -= child.ScaledBounds.Height;
 					break;
 
 				case DockStyle.Right:
-					child.SetScaledBounds (space.Right - child_size.Width, space.Y, child_size.Width, space.Height, BoundsSpecified.None);
+					child.SetScaledBounds (space.Right - child_size.Width, space.Y, child_size.Width, space.Height, BoundsSpecified.Size);
 					space.Width -= child.ScaledBounds.Width;
 					break;
 
 				case DockStyle.Bottom:
-					child.SetScaledBounds (space.Left, space.Bottom - child_size.Height, space.Width, child_size.Height, BoundsSpecified.None);
+					child.SetScaledBounds (space.Left, space.Bottom - child_size.Height, space.Width, child_size.Height, BoundsSpecified.Size);
 					space.Height -= child.ScaledBounds.Height;
 					break;
 					
 				case DockStyle.Fill:
-					child.SetScaledBounds (space.Left, space.Top, space.Width, space.Height, BoundsSpecified.None);
+					child.SetScaledBounds (space.Left, space.Top, space.Width, space.Height, BoundsSpecified.Size);
 					break;
 				}
 			}
@@ -124,8 +124,8 @@ namespace Modern.Forms
             left = child.Left;
             top = child.Top;
 
-            width = child.Width;
-            height = child.Height;
+            width = child.ScaledWidth;
+            height = child.ScaledHeight;
 
             if ((anchor & AnchorStyles.Right) != 0) {
                 if ((anchor & AnchorStyles.Left) != 0)
@@ -158,7 +158,7 @@ namespace Modern.Forms
             if (height < 0)
                 height = 0;
 
-            child.SetBounds (left, top, width, height, BoundsSpecified.None);
+            child.SetScaledBounds (child.LogicalToDeviceUnits (left), child.LogicalToDeviceUnits (top), width, height, BoundsSpecified.Size);
         }
     }
 

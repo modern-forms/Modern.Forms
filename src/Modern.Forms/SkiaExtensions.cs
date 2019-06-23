@@ -55,7 +55,7 @@ namespace Modern.Forms
 
             using (var paint = CreateTextPaint (font, fontsize, color)) {
                 var font_height = new SKRect ();
-                paint.MeasureText ("Bg", ref font_height);
+                paint.MeasureText (text, ref font_height);
 
                 var x = bounds.Left + 1;
 
@@ -85,7 +85,10 @@ namespace Modern.Forms
                     case ContentAlignment.MiddleCenter:
                     case ContentAlignment.MiddleLeft:
                     case ContentAlignment.MiddleRight:
-                        y = (int)(bounds.Top + ((bounds.Height - (font_height.Height)) / 2) + font_height.Height) - 1;
+                        var center_bounds = bounds.Top + (bounds.Height / 2);
+                        var text_center = (font_height.Top + font_height.Bottom) / 2;
+
+                        y = (int)(center_bounds - text_center);
                         break;
                 }
 
