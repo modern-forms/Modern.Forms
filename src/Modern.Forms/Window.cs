@@ -97,6 +97,7 @@ namespace Modern.Forms
         public void Show ()
         {
             Visible = true;
+            adapter.PerformLayout ();
             window.Show ();
             //adapter.Scale (new System.Drawing.SizeF ((float)Scaling, (float)Scaling));
             //OnResize (new Avalonia.Size (0, 0));

@@ -145,7 +145,7 @@ namespace Modern.Forms
                 var w = CurrentStyle.Border.Right.GetWidth () + x;
                 var h = CurrentStyle.Border.Bottom.GetWidth () + y;
 
-                var bounds = GetScaledBounds (Bounds, ScaleFactor, BoundsSpecified.Size); ;
+                var bounds = GetScaledBounds (Bounds, ScaleFactor, BoundsSpecified.All);
 
                 return new Rectangle (x, y, bounds.Width - w, bounds.Height - h);
             }
@@ -462,7 +462,7 @@ namespace Modern.Forms
 
         public void Scale (SizeF factor) => ScaleCore (factor.Width, factor.Height);
 
-        public Rectangle ScaledBounds => GetScaledBounds (Bounds, ScaleFactor, BoundsSpecified.Size);
+        public Rectangle ScaledBounds => GetScaledBounds (Bounds, ScaleFactor, BoundsSpecified.All);
 
         public SizeF ScaleFactor => new SizeF ((float)(DeviceDpi / DpiHelper.LogicalDpi), (float)(DeviceDpi / DpiHelper.LogicalDpi));
 
@@ -546,7 +546,7 @@ namespace Modern.Forms
 
         public void SetScaledBounds (int x, int y, int width, int height, BoundsSpecified specified)
         {
-            var rect = GetScaledBounds (new Rectangle (x, y, width, height), new SizeF (1 / ScaleFactor.Width, 1 / ScaleFactor.Height), specified);
+            var rect = GetScaledBounds (new Rectangle (x, y, width, height), new SizeF (1 / ScaleFactor.Width, 1 / ScaleFactor.Height), BoundsSpecified.All);
             SetBoundsCore (rect.X, rect.Y, rect.Width, rect.Height, BoundsSpecified.None);
         }
 
@@ -601,12 +601,12 @@ namespace Modern.Forms
             set => SetBounds (bounds.X, value, bounds.Width, bounds.Height, BoundsSpecified.Y);
         }
 
-        public bool Visible {
+        public virtual bool Visible {
             get {
                 if (!is_visible)
                     return false;
 
-                return parent?.Visible ?? true;
+                return parent?.Visible ?? false;
             }
             set {
                 if (is_visible != value) {
@@ -632,7 +632,7 @@ namespace Modern.Forms
             if (control == null)
                 return e;
 
-            return new MouseEventArgs (e.Button, e.Clicks, e.Location.X - control.Left, e.Location.Y - control.Top, e.Delta, e.Modifiers);
+            return new MouseEventArgs (e.Button, e.Clicks, e.Location.X - control.ScaledLeft, e.Location.Y - control.ScaledTop, e.Delta, e.Modifiers);
         }
 
         internal void Deselect ()
@@ -927,7 +927,7 @@ namespace Modern.Forms
                     canvas.Flush ();
                 }
 
-                e.Canvas.DrawBitmap (buffer, control.Left, control.Top);
+                e.Canvas.DrawBitmap (buffer, control.ScaledLeft, control.ScaledTop);
             }
         }
 
@@ -1037,6 +1037,8 @@ namespace Modern.Forms
 
         public int ScaledWidth => (int)(Width * ScaleFactor.Width);
         public int ScaledHeight => (int)(Height * ScaleFactor.Height);
+        public int ScaledLeft => (int)(Left * ScaleFactor.Width);
+        public int ScaledTop => (int)(Top * ScaleFactor.Height);
         // This is an internal control (like a scrollbar) that should
         // not show up in Controls for a user
         internal bool ImplicitControl { get; set; }

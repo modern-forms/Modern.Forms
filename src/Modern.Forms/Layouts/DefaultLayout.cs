@@ -158,7 +158,7 @@ namespace Modern.Forms
             if (height < 0)
                 height = 0;
 
-            child.SetScaledBounds (child.LogicalToDeviceUnits (left), child.LogicalToDeviceUnits (top), width, height, BoundsSpecified.Size);
+            child.SetScaledBounds (child.LogicalToDeviceUnits (left), child.LogicalToDeviceUnits (top), width, height, BoundsSpecified.All);
         }
     }
 

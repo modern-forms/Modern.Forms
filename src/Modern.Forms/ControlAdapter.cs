@@ -60,8 +60,13 @@ namespace Modern.Forms
                     canvas.Flush ();
                 }
 
-                e.Canvas.DrawBitmap (buffer, form_x + control.Left, form_y + control.Top);
+                e.Canvas.DrawBitmap (buffer, form_x + control.ScaledLeft, form_y + control.ScaledTop);
             }
+        }
+
+        public override bool Visible {
+            get => ParentForm != null;
+            set { }
         }
 
         internal Control SelectedControl {
