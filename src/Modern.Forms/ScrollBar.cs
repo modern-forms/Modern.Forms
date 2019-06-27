@@ -247,6 +247,13 @@ namespace Modern.Forms
                 UpdateFromValue (Value);
         }
 
+        protected override void SetBoundsCore (int x, int y, int width, int height, BoundsSpecified specified)
+        {
+            base.SetBoundsCore (x, y, width, height, specified);
+
+            UpdateFromValue (Value);
+        }
+
         protected void UpdateFromValue (int value)
         {
             value = Math.Max (value, minimum);

@@ -31,7 +31,7 @@ namespace Modern.Forms
         {
             this.window = window;
             adapter = new ControlAdapter (this);
-
+            
             window.Input = OnInput;
             window.Paint = OnPaint;
             window.Resized = OnResize;
@@ -53,10 +53,13 @@ namespace Modern.Forms
 
         public System.Drawing.Rectangle DisplayRectangle => new System.Drawing.Rectangle (CurrentStyle.Border.Left.GetWidth (), CurrentStyle.Border.Top.GetWidth (), (int)window.ClientSize.Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth (), (int)window.ClientSize.Height - CurrentStyle.Border.Top.GetWidth () - CurrentStyle.Border.Bottom.GetWidth ());
 
+        public System.Drawing.Rectangle ScaledDisplayRectangle => new System.Drawing.Rectangle (CurrentStyle.Border.Left.GetWidth (), CurrentStyle.Border.Top.GetWidth (), (int)window.ScaledClientSize.Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth (), (int)window.ScaledClientSize.Height - CurrentStyle.Border.Top.GetWidth () - CurrentStyle.Border.Bottom.GetWidth ());
+
         public void Hide ()
         {
             Visible = false;
             window.Hide ();
+            OnVisibleChanged (EventArgs.Empty);
         }
 
         public void Invalidate () => window.Invalidate (new Rect (window.ClientSize));
@@ -78,9 +81,16 @@ namespace Modern.Forms
             return new System.Drawing.Point (pt.X, pt.Y);
         }
 
+        public double Scaling => window.Scaling;
+
         public System.Drawing.Size Size {
             get => new System.Drawing.Size ((int)window.ClientSize.Width, (int)window.ClientSize.Height);
             set => window.Resize (new Avalonia.Size (value.Width, value.Height));
+        }
+
+
+        public System.Drawing.Size ScaledSize {
+            get => new System.Drawing.Size ((int)window.ScaledClientSize.Width, (int)window.ScaledClientSize.Height);
         }
 
         public Screens Screens => new Screens (window.Screen);
@@ -88,6 +98,8 @@ namespace Modern.Forms
         public void Show ()
         {
             Visible = true;
+            OnVisibleChanged (EventArgs.Empty);
+
             window.Show ();
         }
 
@@ -100,7 +112,7 @@ namespace Modern.Forms
             if (DateTime.Now.Subtract (last_click_time).TotalMilliseconds < 500)
                 click_count = 2;
 
-            var e = new MouseEventArgs (buttons, click_count, (int)point.X, (int)point.Y, System.Drawing.Point.Empty, keyData);
+            var e = new MouseEventArgs(buttons, click_count, (int)point.X, (int)point.Y, System.Drawing.Point.Empty, keyData: keyData);
 
             last_click_time = click_count > 1 ? DateTime.MinValue : DateTime.Now;
 
@@ -112,7 +124,7 @@ namespace Modern.Forms
             if (e is RawMouseEventArgs me) {
                 switch (me.Type) {
                     case RawMouseEventType.LeftButtonDown:
-                        var lbd_e = new MouseEventArgs (MouseButtons.Left, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var lbd_e = new MouseEventArgs(MouseButtons.Left, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (lbd_e);
                         break;
                     case RawMouseEventType.LeftButtonUp:
@@ -125,7 +137,7 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (lbu_e);
                         break;
                     case RawMouseEventType.MiddleButtonDown:
-                        var mbd_e = new MouseEventArgs (MouseButtons.Middle, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var mbd_e = new MouseEventArgs(MouseButtons.Middle, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (mbd_e);
                         break;
                     case RawMouseEventType.MiddleButtonUp:
@@ -138,7 +150,7 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (mbu_e);
                         break;
                     case RawMouseEventType.RightButtonDown:
-                        var rbd_e = new MouseEventArgs (MouseButtons.Right, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var rbd_e = new MouseEventArgs(MouseButtons.Right, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (rbd_e);
                         break;
                     case RawMouseEventType.RightButtonUp:
@@ -151,16 +163,16 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (rbu_e);
                         break;
                     case RawMouseEventType.LeaveWindow:
-                        var lw_e = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var lw_e = new MouseEventArgs(MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseLeave (lw_e);
                         break;
                     case RawMouseEventType.Move:
-                        var mea = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var mea = new MouseEventArgs(MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseMove (mea);
                         break;
                     case RawMouseEventType.Wheel:
                         if (me is RawMouseWheelEventArgs raw) {
-                            var we = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, new System.Drawing.Point ((int)raw.Delta.X, (int)raw.Delta.Y), KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                            var we = new MouseEventArgs(MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, new System.Drawing.Point ((int)raw.Delta.X, (int)raw.Delta.Y), keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                             adapter.RaiseMouseWheel (we);
                         }
                         break;
@@ -191,12 +203,15 @@ namespace Modern.Forms
                     framebuffer.Format.ToSkColorType (),
                     framebuffer.Format == PixelFormat.Rgb565 ? SKAlphaType.Opaque : SKAlphaType.Premul);
 
+                var scaled_client_size = window.ScaledClientSize;
+                var scaled_display_rect = ScaledDisplayRectangle;
+
                 using (var surface = SKSurface.Create (framebufferImageInfo, framebuffer.Address, framebuffer.RowBytes)) {
                     var e = new PaintEventArgs (surface, framebufferImageInfo, surface.Canvas);
-                    e.Canvas.DrawBackground (new System.Drawing.Rectangle (0, 0, (int)window.ClientSize.Width, (int)window.ClientSize.Height), CurrentStyle);
-                    e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, (int)window.ClientSize.Width, (int)window.ClientSize.Height), CurrentStyle);
+                    e.Canvas.DrawBackground (new System.Drawing.Rectangle (0, 0, (int)scaled_client_size.Width, (int)scaled_client_size.Height), CurrentStyle);
+                    e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, (int)scaled_client_size.Width, (int)scaled_client_size.Height), CurrentStyle);
 
-                    e.Canvas.ClipRect (new SKRect (DisplayRectangle.Left, DisplayRectangle.Top, DisplayRectangle.Width + 1, DisplayRectangle.Height + 1));
+                    e.Canvas.ClipRect (new SKRect (scaled_display_rect.Left, scaled_display_rect.Top, scaled_display_rect.Width + 1, scaled_display_rect.Height + 1));
 
                     adapter.RaisePaintBackground (e);
                     adapter.RaisePaint (e);
@@ -206,7 +221,12 @@ namespace Modern.Forms
 
         private void OnResize (Size size)
         {
-            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, DisplayRectangle.Width, DisplayRectangle.Height);
+            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, ScaledSize.Width, ScaledSize.Height);
+        }
+
+        protected virtual void OnVisibleChanged (EventArgs e)
+        {
+            adapter.RaiseParentVisibleChanged (EventArgs.Empty);
         }
     }
 }

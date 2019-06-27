@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using Avalonia.Platform;
@@ -15,6 +16,17 @@ namespace Modern.Forms
         {
             ParentForm = parent;
             SetControlBehavior (ControlBehaviors.Selectable, false);
+        }
+
+        // We need to override this because the ControlAdapter doesn't need to be scaled
+        public override Rectangle ClientRectangle {
+            get {
+                var x = CurrentStyle.Border.Left.GetWidth ();
+                var y = CurrentStyle.Border.Top.GetWidth ();
+                var w = Width - CurrentStyle.Border.Right.GetWidth () - x;
+                var h = Height - CurrentStyle.Border.Bottom.GetWidth () - y;
+                return new Rectangle (x, y, w, h);
+            }
         }
 
         public Window ParentForm { get; }
@@ -48,8 +60,13 @@ namespace Modern.Forms
                     canvas.Flush ();
                 }
 
-                e.Canvas.DrawBitmap (buffer, form_x + control.Left, form_y + control.Top);
+                e.Canvas.DrawBitmap (buffer, form_x + control.ScaledLeft, form_y + control.ScaledTop);
             }
+        }
+
+        public override bool Visible {
+            get => ParentForm != null;
+            set { }
         }
 
         internal Control SelectedControl {
@@ -67,6 +84,11 @@ namespace Modern.Forms
                 selected_control = value;
                 selected_control?.Select ();
             }
+        }
+
+        internal void RaiseParentVisibleChanged (EventArgs e)
+        {
+            OnParentVisibleChanged (e);
         }
     }
 }

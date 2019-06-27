@@ -12,6 +12,9 @@ namespace Modern.Forms
         private bool enabled = true;
         private string text;
 
+        private const int IMAGE_SIZE = 32;
+        private const int MINIMUM_ITEM_SIZE = 40;
+
         public SKBitmap Image { get; set; }
         public bool Selected { get; set; }
         public bool Highlighted { get; set; }
@@ -86,15 +89,17 @@ namespace Modern.Forms
 
         public void PerformClick ()
         {
-            OnClick (new MouseEventArgs (MouseButtons.Left, 1, 0, 0, Point.Empty));
+            OnClick (new MouseEventArgs(MouseButtons.Left, 1, 0, 0, Point.Empty));
         }
 
         public Size GetPreferredSize (Size proposedSize)
         {
-            var text_width = TextMeasurer.MeasureText (Text ?? string.Empty, Theme.UIFont, 12, new SKSize (40, 30)).Width;
-            var measured_width = (int)Math.Ceiling (text_width) + Padding.Horizontal;
+            var padding = LogicalToDeviceUnits (Padding.Horizontal);
+            var font_size = LogicalToDeviceUnits (Theme.RibbonItemFontSize);
+            var proposed_size = LogicalToDeviceUnits (new Size (40, 30));
+            var text_size = (int)Math.Round (TextMeasurer.MeasureText (Text ?? string.Empty, Theme.UIFont, font_size, proposed_size.ToSKSize ()).Width);
 
-            return new Size (Math.Max (measured_width, 40), 0);
+            return new Size (Math.Max (text_size + padding, LogicalToDeviceUnits (MINIMUM_ITEM_SIZE)), 0);
         }
 
         protected virtual void OnBoundsChanged ()
@@ -143,28 +148,38 @@ namespace Modern.Forms
         protected virtual void OnPaint (PaintEventArgs e)
         {
             var canvas = e.Canvas;
+            var padding = LogicalToDeviceUnits (Padding);
             var background_color = Selected ? Theme.RibbonItemSelectedColor : Highlighted ? Theme.RibbonItemHighlightColor : Theme.NeutralGray;
 
             canvas.FillRectangle (Bounds, background_color);
 
             if (Image != null) {
+                var image_size = new Size (IMAGE_SIZE, IMAGE_SIZE);
+                var image_bounds = new Rectangle (Point.Empty, LogicalToDeviceUnits (image_size));
+                var image_area_bounds = new Rectangle (Bounds.Left + padding.Left, Bounds.Top + padding.Top, Bounds.Width - padding.Horizontal, LogicalToDeviceUnits (MINIMUM_ITEM_SIZE));
+                var final_image_bounds = DrawingExtensions.CenterRectangle (image_area_bounds, image_bounds);
+
                 if (Enabled)
-                    canvas.DrawBitmap (Image, Bounds.Left + ((Bounds.Width - Image.Width) / 2), Bounds.Top + 3);
+                    canvas.DrawBitmap (Image, final_image_bounds.ToSKRect ());
                 else
-                    canvas.DrawDisabledBitmap (Image, Bounds.Left + ((Bounds.Width - Image.Width) / 2), Bounds.Top + 3);
+                    canvas.DrawDisabledBitmap (Image, image_area_bounds);
             }
 
-            canvas.Save ();
-            canvas.ClipRect (new SKRect (Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Bottom));
+            if (!string.IsNullOrWhiteSpace (Text)) {
+                var font_size = LogicalToDeviceUnits (Theme.RibbonItemFontSize);
 
-            var lines = Text.Split (' ');
+                canvas.Save ();
+                canvas.ClipRect (new SKRect (Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Bottom));
 
-            canvas.DrawCenteredText (lines[0].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 50, Enabled ? Theme.DarkTextColor : Theme.DisabledTextColor);
+                var lines = Text.Split (' ');
 
-            if (lines.Length > 1)
-                canvas.DrawCenteredText (lines[1].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 66, Enabled ? Theme.DarkTextColor : Theme.DisabledTextColor);
+                canvas.DrawCenteredText (lines[0].Trim (), Theme.UIFont, font_size, Bounds.Left + Bounds.Width / 2, Bounds.Top + LogicalToDeviceUnits (50), Enabled ? Theme.DarkTextColor : Theme.DisabledTextColor);
 
-            canvas.Restore ();
+                if (lines.Length > 1)
+                    canvas.DrawCenteredText (lines[1].Trim (), Theme.UIFont, font_size, Bounds.Left + Bounds.Width / 2, Bounds.Top + LogicalToDeviceUnits (66), Enabled ? Theme.DarkTextColor : Theme.DisabledTextColor);
+
+                canvas.Restore ();
+            }
         }
 
         protected virtual void OnTextChanged (EventArgs e) => TextChanged?.Invoke (this, e);
@@ -198,5 +213,9 @@ namespace Modern.Forms
                     break;
             }
         }
+
+        private int LogicalToDeviceUnits (int value) => FindRibbon ()?.LogicalToDeviceUnits (value) ?? value;
+        private Size LogicalToDeviceUnits (Size value) => FindRibbon ()?.LogicalToDeviceUnits (value) ?? value;
+        private Padding LogicalToDeviceUnits (Padding value) => FindRibbon ()?.LogicalToDeviceUnits (value) ?? value;
     }
 }

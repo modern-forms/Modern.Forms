@@ -58,16 +58,23 @@ namespace Modern.Forms
         {
             base.OnPaint (e);
 
-            var y = Height / 2;
+            var x = LogicalToDeviceUnits (11);
+            var y = ScaledHeight / 2;
+            var outer_radius = LogicalToDeviceUnits (8);
+            var inner_radius = LogicalToDeviceUnits (5);
 
             if (Checked) {
-                e.Canvas.DrawCircle (11, y, 8, Theme.RibbonColor);
-                e.Canvas.FillCircle (11, y, 5, Theme.RibbonColor);
+                e.Canvas.DrawCircle (x, y, outer_radius, Theme.RibbonColor);
+                e.Canvas.FillCircle (x, y, inner_radius, Theme.RibbonColor);
             } else {
-                e.Canvas.DrawCircle (11, y, 8, Theme.BorderGray);
+                e.Canvas.DrawCircle (x, y, outer_radius, Theme.BorderGray);
             }
 
-            e.Canvas.DrawText (Text, new Rectangle (24, 0, Width - 24, Height), CurrentStyle, ContentAlignment.MiddleLeft);
+            var text_bounds = ClientRectangle;
+            text_bounds.X += LogicalToDeviceUnits (24);
+            text_bounds.Width -= LogicalToDeviceUnits (24);
+
+            e.Canvas.DrawText (Text, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), text_bounds, CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
         }
 
         // Uncheck any other RadioButtons on the Parent

@@ -32,13 +32,14 @@ namespace Modern.Forms
     {
         private readonly Keys key_data;
 
-        public MouseEventArgs (MouseButtons button, int clicks, int x, int y, Point delta, Keys keyData = Keys.None)
+        public MouseEventArgs(MouseButtons button, int clicks, int x, int y, Point delta, int? screenX = null, int? screenY = null, Keys keyData = Keys.None)
         {
             Button = button;
             Clicks = clicks;
             Delta = delta;
             X = x;
             Y = y;
+            ScreenLocation = new Point (screenX ?? x, screenY ?? y);
             key_data = keyData;
         }
 
@@ -53,6 +54,8 @@ namespace Modern.Forms
         public int Y { get; }
 
         public Point Location => new Point (X, Y);
+
+        public Point ScreenLocation { get; }
 
         public bool Alt => key_data.HasFlag (Keys.Alt);
 

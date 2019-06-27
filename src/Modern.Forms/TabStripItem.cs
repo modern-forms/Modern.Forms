@@ -12,6 +12,7 @@ namespace Modern.Forms
         public bool Selected { get; set; }
         public bool Hovered { get; set; }
         public object Tag { get; set; }
+        public TabStrip Parent { get; internal set; }
 
         public Rectangle Bounds { get; private set; }
 
@@ -29,10 +30,17 @@ namespace Modern.Forms
             canvas.FillRectangle (Bounds, background_color);
 
             var font_color = Selected ? Theme.RibbonColor : Theme.LightTextColor;
-            canvas.DrawCenteredText (Text, Theme.UIFont, 14, Bounds, font_color);
+            var font_size = Parent?.LogicalToDeviceUnits (Theme.FontSize) ?? Theme.FontSize;
+            canvas.DrawCenteredText (Text, Theme.UIFont, font_size, Bounds, font_color);
         }
 
         public Size GetPreferredSize (Size proposedSize)
-            => new Size ((int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, 14) + Padding.Horizontal, 0), 28);
+        {
+            var padding = Parent?.LogicalToDeviceUnits (Padding.Horizontal) ?? Padding.Horizontal;
+            var font_size = Parent?.LogicalToDeviceUnits (Theme.FontSize) ?? Theme.FontSize;
+            var text_size = (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size));
+
+            return new Size (text_size + padding, Bounds.Height);
+        }
     }
 }

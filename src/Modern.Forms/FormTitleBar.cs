@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Text;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -18,25 +15,18 @@ namespace Modern.Forms
         private bool maximize_button_hover;
         private bool minimize_button_hover;
         private SKBitmap form_icon;
-        private SKBitmap sized_icon;
+
+        private const int BUTTON_SIZE = 46;
+        private const int BUTTON_PADDING = 10;
+        private const int FORM_ICON_SIZE = 16;
 
         public SKBitmap Image {
             get => form_icon;
             set {
-                if (form_icon == value)
-                    return;
-
-                form_icon = value;
-
-                if (form_icon.Height > 16) {
-                    sized_icon?.Dispose ();
-                    sized_icon = new SKBitmap (16, 16);
-                    form_icon.ScalePixels (sized_icon, SKFilterQuality.High);
-                } else {
-                    sized_icon = value;
+                if (form_icon != value) {
+                    form_icon = value;
+                    Invalidate ();
                 }
-
-                Invalidate ();
             }
         }
 
@@ -98,12 +88,15 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             // Form icon
-            if (sized_icon != null)
-                e.Canvas.DrawBitmap (sized_icon, Bounds.Left + 7, Bounds.Top + 7);
+            if (form_icon != null) {
+                var icon_glyph_bounds = DrawingExtensions.CenterRectangle (IconBounds, new Rectangle (Point.Empty, LogicalToDeviceUnits (new Size (FORM_ICON_SIZE, FORM_ICON_SIZE))));
+
+                e.Canvas.DrawBitmap (form_icon, icon_glyph_bounds.ToSKRect ());
+            }
 
             // Form text
             if (!string.IsNullOrWhiteSpace (Text))
-                e.Canvas.DrawCenteredText (Text.Trim (), Theme.UIFont, 14, Left + Width / 2, Top + 21, Theme.LightTextColor);
+                e.Canvas.DrawText (Text.Trim (), Theme.UIFont, LogicalToDeviceUnits (Theme.FontSize), TitleBounds, Theme.LightTextColor, ContentAlignment.MiddleCenter);
 
             // Minimize button
             if (AllowMinimize) {
@@ -112,8 +105,11 @@ namespace Modern.Forms
                 if (minimize_button_hover)
                     e.Canvas.FillRectangle (minimize_button_bounds, Theme.RibbonTabHighlightColor);
 
-                e.Canvas.DrawLine (minimize_button_bounds.X + 18, minimize_button_bounds.Y + 17, minimize_button_bounds.X + 28, minimize_button_bounds.Y + 17, Theme.LightTextColor);
+                var min_glyph_bounds = DrawingExtensions.CenterRectangle (minimize_button_bounds, new Rectangle (Point.Empty, LogicalToDeviceUnits (new Size (BUTTON_PADDING, 1))));
+                e.Canvas.DrawLine (min_glyph_bounds.X, min_glyph_bounds.Y, min_glyph_bounds.Right, min_glyph_bounds.Y, Theme.LightTextColor);
             }
+
+            var button_padded_rect = new Rectangle (Point.Empty, LogicalToDeviceUnits (new Size (BUTTON_PADDING, BUTTON_PADDING)));
 
             // Maximize button
             if (AllowMaximize) {
@@ -122,7 +118,8 @@ namespace Modern.Forms
                 if (maximize_button_hover)
                     e.Canvas.FillRectangle (maximize_button_bounds, Theme.RibbonTabHighlightColor);
 
-                e.Canvas.DrawRectangle (maximize_button_bounds.X + 18, maximize_button_bounds.Y + 11, 10, 10, Theme.LightTextColor);
+                var max_glyph_bounds = DrawingExtensions.CenterRectangle (maximize_button_bounds, button_padded_rect);
+                e.Canvas.DrawRectangle (max_glyph_bounds, Theme.LightTextColor);
             }
 
             // Close button
@@ -131,22 +128,35 @@ namespace Modern.Forms
             if (close_button_hover)
                 e.Canvas.FillRectangle (close_button_bounds, Theme.FormCloseHighlightColor);
 
-            e.Canvas.DrawLine (close_button_bounds.X + 18, close_button_bounds.Y + 12, close_button_bounds.X + 28, close_button_bounds.Y + 22, Theme.LightTextColor);
-            e.Canvas.DrawLine (close_button_bounds.X + 18, close_button_bounds.Y + 22, close_button_bounds.X + 28, close_button_bounds.Y + 12, Theme.LightTextColor);
+            var close_glyph_bounds = DrawingExtensions.CenterRectangle (close_button_bounds, button_padded_rect);
+            e.Canvas.DrawLine (close_glyph_bounds.X, close_glyph_bounds.Y, close_glyph_bounds.Right, close_glyph_bounds.Bottom, Theme.LightTextColor);
+            e.Canvas.DrawLine (close_glyph_bounds.X, close_glyph_bounds.Bottom, close_glyph_bounds.Right, close_glyph_bounds.Y, Theme.LightTextColor);
         }
 
-        private Rectangle CloseButtonBounds => new Rectangle (Width - 46, 0, 46, Height);
-        private Rectangle MaximizeButtonBounds => AllowMaximize ? new Rectangle (Width - 92, 0, 46, Height) : Rectangle.Empty;
+        private int ScaledButtonWidth => LogicalToDeviceUnits (BUTTON_SIZE);
+
+        private Rectangle IconBounds => new Rectangle (0, 0, ScaledHeight, ScaledHeight);
+        private Rectangle CloseButtonBounds => new Rectangle (ScaledWidth - ScaledButtonWidth, 0, ScaledButtonWidth, ScaledHeight);
+        private Rectangle MaximizeButtonBounds => AllowMaximize ? new Rectangle (ScaledWidth - (ScaledButtonWidth * 2), 0, ScaledButtonWidth, ScaledHeight) : Rectangle.Empty;
 
         private Rectangle MinimizeButtonBounds {
             get {
                 if (AllowMinimize && AllowMaximize)
-                    return new Rectangle (Width - 138, 0, 46, Height);
+                    return new Rectangle (ScaledWidth - (ScaledButtonWidth * 3), 0, ScaledButtonWidth, ScaledHeight);
 
                 if (AllowMinimize)
-                    return new Rectangle (Width - 92, 0, 46, Height);
+                    return new Rectangle (ScaledWidth - (ScaledButtonWidth * 2), 0, ScaledButtonWidth, ScaledHeight);
 
                 return Rectangle.Empty;
+            }
+        }
+
+        private Rectangle TitleBounds {
+            get {
+                var x = form_icon == null ? 0 : IconBounds.Right;
+                var right = AllowMinimize ? MinimizeButtonBounds.Left : AllowMaximize ? MaximizeButtonBounds.Left : CloseButtonBounds.Left;
+
+                return Rectangle.FromLTRB (x, Top, right, ScaledBounds.Bottom);
             }
         }
 

@@ -55,7 +55,7 @@ namespace Modern.Forms
 
             using (var paint = CreateTextPaint (font, fontsize, color)) {
                 var font_height = new SKRect ();
-                paint.MeasureText ("Bg", ref font_height);
+                paint.MeasureText (text, ref font_height);
 
                 var x = bounds.Left + 1;
 
@@ -85,7 +85,10 @@ namespace Modern.Forms
                     case ContentAlignment.MiddleCenter:
                     case ContentAlignment.MiddleLeft:
                     case ContentAlignment.MiddleRight:
-                        y = (int)(bounds.Top + ((bounds.Height - (font_height.Height)) / 2) + font_height.Height) - 1;
+                        var center_bounds = bounds.Top + (bounds.Height / 2);
+                        var text_center = (font_height.Top + font_height.Bottom) / 2;
+
+                        y = (int)(center_bounds - text_center);
                         break;
                 }
 
@@ -307,6 +310,14 @@ namespace Modern.Forms
                 canvas.DrawBitmap (bitmap, x, y, paint);
         }
 
+        public static void DrawDisabledBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect)
+        {
+            using (var paint = new SKPaint { ColorFilter = disabled_matrix })
+                canvas.DrawBitmap (bitmap, rect.ToSKRect (), paint);
+        }
+
         public static SKRect ToSKRect (this Rectangle rect) => new SKRect (rect.X, rect.Y, rect.Right, rect.Bottom);
+
+        public static SKSize ToSKSize (this Size size) => new SKSize (size.Width, size.Height);
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using SkiaSharp;
 
 namespace Modern.Forms
 {
@@ -13,9 +11,16 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        public List<ListViewItem> Items { get; } = new List<ListViewItem> ();
+        public ListViewItemCollection Items { get; }
+
+        public ListView ()
+        {
+            Items = new ListViewItemCollection (this);
+        }
 
         public event EventHandler<EventArgs<ListViewItem>> ItemDoubleClicked;
+
+        protected override Padding DefaultPadding => new Padding (3);
 
         protected override Size DefaultSize => new Size (450, 450);
 
@@ -66,19 +71,20 @@ namespace Modern.Forms
 
         private void LayoutItems ()
         {
-            var x = 3;
-            var y = 3;
-            var item_width = 70;
-            var item_height = 70;
-            var item_padding = 6;
+            var bounds = PaddedClientRectangle;
+            var item_size = LogicalToDeviceUnits (70);
+            var item_margin = LogicalToDeviceUnits (6);
+
+            var x = bounds.Left;
+            var y = bounds.Top;
 
             foreach (var item in Items) {
-                item.SetBounds (x, y, item_width, item_height);
-                x += item_width + item_padding;
+                item.SetBounds (x, y, item_size, item_size);
+                x += item_size + item_margin;
 
-                if (x + item_width > Width) {
-                    x = 3;
-                    y += item_height + item_padding;
+                if (x + item_size > bounds.Width) {
+                    x = bounds.Left;
+                    y += item_size + item_margin;
                 }
             }
         }

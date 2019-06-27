@@ -44,7 +44,7 @@ namespace Modern.Forms
                     return;
 
                 TabStrip.Visible = value;
-                Height += value ? 28 : -28;
+                Height += value ? TabStrip.ScaledSize.Height : -TabStrip.ScaledSize.Height;
             }
         }
 
@@ -53,9 +53,9 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             // TabPages
-            var top = ShowTabs ? 28 : 0;
+            var top = ShowTabs ? TabStrip.ScaledSize.Height : 0;
             var selected_tab = TabPages.FirstOrDefault (tp => tp.Selected);
-            selected_tab?.SetBounds (0, top, Width, Height - top - 1);
+            selected_tab?.SetBounds (0, top, ScaledSize.Width, ScaledSize.Height - top - 1);
             selected_tab?.DrawTabPage (e.Canvas);
         }
 

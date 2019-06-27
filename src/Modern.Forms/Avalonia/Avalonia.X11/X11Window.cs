@@ -249,6 +249,8 @@ namespace Avalonia.X11
 
         public Size ClientSize => new Size(_realSize.Width / Scaling, _realSize.Height / Scaling);
 
+        public Size ScaledClientSize => new Size (_realSize.Width, _realSize.Height);
+
         public double Scaling
         {
             get

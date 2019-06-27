@@ -7,6 +7,8 @@ namespace Modern.Forms
 {
     public class TreeViewItem : ILayoutable
     {
+        private const int IMAGE_SIZE = 16;
+
         public string Text { get; set; }
         public SKBitmap Image { get; set; }
         public bool Selected { get; set; }
@@ -17,7 +19,13 @@ namespace Modern.Forms
 
         public Padding Margin => new Padding (0);
 
-        public Size GetPreferredSize (Size proposedSize) => new Size (0, 30);
+        public Size GetPreferredSize (Size proposedSize)
+        {
+            var font_size = LogicalToDeviceUnits (Theme.FontSize);
+            var padding = LogicalToDeviceUnits (16);
+
+            return new Size (0, font_size + padding);
+        }
 
         public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
         {
@@ -30,10 +38,23 @@ namespace Modern.Forms
 
             canvas.FillRectangle (Bounds, background_color);
 
-            if (Image != null)
-                canvas.DrawBitmap (Image, Bounds.Left + 7, Bounds.Top + 7);
+            var text_left = Bounds.Left + LogicalToDeviceUnits (7);
 
-            canvas.DrawText (Text.Trim (), Theme.UIFont, 14, Bounds.Left + 31, Bounds.Top + 20, Theme.DarkTextColor);
+            if (Image != null) {
+                var image_size = LogicalToDeviceUnits (new Size (IMAGE_SIZE, IMAGE_SIZE));
+                var image_area = new Rectangle (Bounds.Left, Bounds.Top, Bounds.Height, Bounds.Height);
+                var image_bounds = DrawingExtensions.CenterRectangle (image_area, new Rectangle (Point.Empty, image_size));
+
+                canvas.DrawBitmap (Image, image_bounds.ToSKRect ());
+
+                text_left += image_bounds.Width + LogicalToDeviceUnits (7);
+            }
+
+            var text_bounds = new Rectangle (text_left, Bounds.Top, Bounds.Width - text_left, Bounds.Height);
+            canvas.DrawText (Text.Trim (), Theme.UIFont, LogicalToDeviceUnits (Theme.FontSize), text_bounds, Theme.DarkTextColor, ContentAlignment.MiddleLeft);
         }
+
+        private int LogicalToDeviceUnits (int value) => Parent?.LogicalToDeviceUnits (value) ?? value;
+        private Size LogicalToDeviceUnits (Size value) => Parent?.LogicalToDeviceUnits (value) ?? value;
     }
 }

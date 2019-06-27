@@ -51,7 +51,7 @@ namespace Modern.Forms
 
             var client = ClientRectangle;
 
-            return new Rectangle (client.Left, index * ItemHeight + client.Top, client.Width - (vscrollbar.Visible ? vscrollbar.Width : 0), ItemHeight);
+            return new Rectangle (client.Left, index * ScaledItemHeight + client.Top, client.Width - (vscrollbar.Visible ? vscrollbar.ScaledWidth : 0), ScaledItemHeight);
         }
 
         public int GetIndexAtLocation (Point location)
@@ -209,11 +209,11 @@ namespace Modern.Forms
                     e.Canvas.FillRectangle (bounds, Theme.NeutralGray);
 
                 // This fixes text positioning for partially shown items
-                bounds.Height = ItemHeight;
+                bounds.Height = ScaledItemHeight;
 
                 bounds.Inflate (-4, 0);
 
-                e.Canvas.DrawText (item.ToString (), bounds, Style, ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (item.ToString (), CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), bounds, CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
             }
         }
 
@@ -238,11 +238,13 @@ namespace Modern.Forms
 
             index -= top_index;
 
-            var top = index * ItemHeight + client.Top;
-            return new Rectangle (client.Left, top, client.Width - (vscrollbar.Visible ? vscrollbar.Width : 0), Math.Min (ItemHeight, client.Bottom - top));
+            var top = index * ScaledItemHeight + client.Top;
+            return new Rectangle (client.Left, top, client.Width - (vscrollbar.Visible ? vscrollbar.ScaledWidth : 0), Math.Min (ScaledItemHeight, client.Bottom - top));
         }
 
-        private int NeededHeightForItems => ItemHeight * Items.Count;
+        private int NeededHeightForItems => ScaledItemHeight * Items.Count;
+
+        private int ScaledItemHeight => LogicalToDeviceUnits (ItemHeight);
 
         private void UpdateVerticalScrollBar ()
         {
@@ -266,6 +268,8 @@ namespace Modern.Forms
             Invalidate ();
         }
 
-        private int VisibleItemCount => Bounds.Height / ItemHeight;
+        private int VisibleItemCount => ClientRectangle.Height / ScaledItemHeight;
+
+        protected override void OnLayout (LayoutEventArgs e) => base.OnLayout (e);
     }
 }

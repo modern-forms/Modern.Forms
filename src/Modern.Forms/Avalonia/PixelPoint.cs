@@ -121,6 +121,8 @@ namespace Avalonia
         /// <returns>The new <see cref="PixelPoint"/>.</returns>
         public PixelPoint WithY(int y) => new PixelPoint(X, y);
 
+        public System.Drawing.Point ToDrawingPoint () => new System.Drawing.Point (X, Y);
+
         /// <summary>
         /// Converts the <see cref="PixelPoint"/> to a device-independent <see cref="Point"/> using the
         /// specified scaling factor.
