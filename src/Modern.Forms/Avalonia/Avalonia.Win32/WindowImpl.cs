@@ -583,7 +583,7 @@ namespace Avalonia.Win32
                         WindowsMouseDevice.Instance,
                         timestamp,
                         //_owner,
-                        PointToClient (PointFromLParam (lParam)),
+                        PointToClient (PointFromLParam (lParam)) * Scaling,
                         new Vector (0, (ToInt32 (wParam) >> 16) / wheelDelta), GetMouseModifiers (wParam));
                     break;
 
@@ -592,7 +592,7 @@ namespace Avalonia.Win32
                         WindowsMouseDevice.Instance,
                         timestamp,
                         //_owner,
-                        PointToClient (PointFromLParam (lParam)),
+                        PointToClient (PointFromLParam (lParam)) * Scaling,
                         new Vector (-(ToInt32 (wParam) >> 16) / wheelDelta, 0), GetMouseModifiers (wParam));
                     break;
 

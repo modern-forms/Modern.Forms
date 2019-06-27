@@ -51,10 +51,10 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             if (Items.SelectedItem != null)
-                e.Canvas.DrawText (Items.SelectedItem.ToString (), TextArea, CurrentStyle, ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (Items.SelectedItem.ToString (), CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), TextArea, CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
 
             var button_bounds = DropDownButtonArea;
-            button_bounds.Width = 12;
+            button_bounds.Width = LogicalToDeviceUnits (12);
 
             e.Canvas.DrawArrow (button_bounds, Theme.DarkTextColor, ArrowDirection.Down);
         }
@@ -64,7 +64,7 @@ namespace Modern.Forms
             popup?.Hide ();
         }
 
-        private Rectangle DropDownButtonArea => new Rectangle (Width - 15, 0, 15, Height);
+        private Rectangle DropDownButtonArea => new Rectangle (ScaledWidth - LogicalToDeviceUnits (15), 0, LogicalToDeviceUnits (15), ScaledHeight);
 
         private void ListBox_SelectedIndexChanged (object sender, EventArgs e)
         {
@@ -80,14 +80,21 @@ namespace Modern.Forms
                 Size = new Size (Width, 102)
             };
 
-            var pt = PointToScreen (new Point (1, Height - 1));
+            var pt = PointToScreen (new Point (1, ScaledHeight - 1));
             popup.Location = new Avalonia.PixelPoint (pt.X, pt.Y);
             popup.Controls.Add (popup_listbox);
 
             popup.Show ();
         }
 
-        private Rectangle TextArea => new Rectangle (Padding.Left, Padding.Top, Width - 15 - Padding.Horizontal, Height - Padding.Vertical);
+        private Rectangle TextArea {
+            get {
+                var area = ClientRectangle;
+
+                area.Width -= LogicalToDeviceUnits (15);
+                return area;
+            }
+        }
 
         protected override void Dispose (bool disposing)
         {

@@ -49,7 +49,7 @@ namespace Modern.Forms
             item.SetParentInternal (null);
             parent.PerformLayout ();
         }
-
+        
         protected override void SetItem (int index, Control item)
         {
             var old_item = this.ElementAtOrDefault (index);

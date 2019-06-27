@@ -74,9 +74,9 @@ namespace Modern.Forms
         private void Splitter_Drag (object sender, EventArgs<Point> e)
         {
             if (orientation == Orientation.Horizontal)
-                ResizePanels (Panel1.Width - e.Value.X);
+                ResizePanels (Panel1.Width - (int)(e.Value.X / ScaleFactor.Width));
             else
-                ResizePanels (Panel1.Height - e.Value.Y);
+                ResizePanels (Panel1.Height - (int)(e.Value.Y / ScaleFactor.Height));
 
             Invalidate ();
         }

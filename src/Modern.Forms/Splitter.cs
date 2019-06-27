@@ -50,7 +50,7 @@ namespace Modern.Forms
             base.OnMouseDown (e);
 
             is_dragging = true;
-            drag_start_point = PointToScreen (e.Location);
+            drag_start_point = e.ScreenLocation;
         }
 
         protected override void OnMouseMove (MouseEventArgs e)
@@ -60,7 +60,7 @@ namespace Modern.Forms
             if (is_dragging) {
                 last_drag_point ??= drag_start_point;
 
-                var current = PointToScreen (e.Location);
+                var current = e.ScreenLocation;
                 OnDrag (new EventArgs<Point> (new Point (last_drag_point.Value.X - current.X, last_drag_point.Value.Y - current.Y)));
 
                 last_drag_point = current;

@@ -41,7 +41,7 @@ namespace Modern.Forms
             if (CurrentText.Length == 0)
                 return 0;
 
-            var widths = TextMeasurer.MeasureCharacters (CurrentText + " ", CurrentStyle.GetFont (), CurrentStyle.GetFontSize (), ClientRectangle.Left, ClientRectangle.Top);
+            var widths = TextMeasurer.MeasureCharacters (CurrentText + " ", CurrentStyle.GetFont (), CurrentFontSize, ClientRectangle.Left, ClientRectangle.Top);
 
             for (var i = 0; i < widths.Length; i++)
                 if (widths[i].X > location.X)
@@ -141,19 +141,22 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             var y = (int)(ClientRectangle.Top + ((ClientRectangle.Height - (14)) / 2) + 14) - 1;
+
             if (!string.IsNullOrEmpty (Text))
-                e.Canvas.DrawText (Text, ClientRectangle, CurrentStyle, ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (Text, CurrentStyle.GetFont (), CurrentFontSize, ClientRectangle, CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
             else if (!string.IsNullOrEmpty (placeholder))
-                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentStyle.GetFontSize (), ClientRectangle, Theme.DisabledTextColor, ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentFontSize, ClientRectangle, Theme.DisabledTextColor, ContentAlignment.MiddleLeft);
 
             var cursor_loc =
                     cursor_index == 0 ? 0f
-                                      : TextMeasurer.MeasureText (Text.Substring (0, cursor_index), CurrentStyle.GetFont (), CurrentStyle.GetFontSize ());
+                                      : TextMeasurer.MeasureText (Text.Substring (0, cursor_index), CurrentStyle.GetFont (), CurrentFontSize);
 
             if (Selected)
                 e.Canvas.DrawLine (ClientRectangle.Left + cursor_loc, ClientRectangle.Top + 4, ClientRectangle.Left + cursor_loc, ClientRectangle.Bottom - 4, Theme.DarkTextColor);
         }
 
         private string CurrentText => Text ?? string.Empty;
+
+        private int CurrentFontSize => LogicalToDeviceUnits (CurrentStyle.GetFontSize ());
     }
 }

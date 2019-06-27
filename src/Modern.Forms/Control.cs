@@ -153,9 +153,7 @@ namespace Modern.Forms
 
         public Size ClientSize {
             get {
-                var w = Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth ();
-                var h = Height - CurrentStyle.Border.Bottom.GetWidth () - CurrentStyle.Border.Top.GetWidth ();
-                return new Size (w, h);
+                return ClientRectangle.Size;
             }
         }
 
@@ -433,14 +431,19 @@ namespace Modern.Forms
 
         public Point PointToScreen (Point point)
         {
-            if (this is ControlAdapter)
-                return FindWindow ().PointToScreen (point);
+            // If this is the top, add the point to our location
+            if (this is ControlAdapter) {
+                var window_location = FindWindow ().Location.ToDrawingPoint ();
+                window_location.Offset (point);
 
-            var pt = Parent.PointToScreen (Location);
+                return window_location;
+            }
 
-            pt.Offset (point);
+            // If this isn't the top, we need to add our location to the point
+            // and ask our parent to translate that
+            point.Offset (ScaledBounds.Location);
 
-            return pt;
+            return Parent.PointToScreen (point);
         }
 
         public void ResumeLayout (bool performLayout = true)
@@ -632,7 +635,7 @@ namespace Modern.Forms
             if (control == null)
                 return e;
 
-            return new MouseEventArgs (e.Button, e.Clicks, e.Location.X - control.ScaledLeft, e.Location.Y - control.ScaledTop, e.Delta, e.Modifiers);
+            return new MouseEventArgs(e.Button, e.Clicks, e.Location.X - control.ScaledLeft, e.Location.Y - control.ScaledTop, e.Delta, e.Location.X, e.Location.Y, e.Modifiers);
         }
 
         internal void Deselect ()
@@ -931,6 +934,12 @@ namespace Modern.Forms
             }
         }
 
+        protected virtual void OnParentVisibleChanged (EventArgs e)
+        {
+            if (Visible)
+                OnVisibleChanged (e);
+        }
+
         protected virtual void OnSizeChanged (EventArgs e) => SizeChanged?.Invoke (this, e);
 
         protected virtual void OnTabIndexChanged (EventArgs e) => TabIndexChanged?.Invoke (this, e);
@@ -939,7 +948,16 @@ namespace Modern.Forms
 
         protected virtual void OnTextChanged (EventArgs e) => TextChanged?.Invoke (this, e);
 
-        protected virtual void OnVisibleChanged (EventArgs e) => VisibleChanged?.Invoke (this, e);
+        protected virtual void OnVisibleChanged (EventArgs e)
+        {
+            VisibleChanged?.Invoke (this, e);
+
+            foreach (var c in Controls.GetAllControls ())
+                c.OnParentVisibleChanged (e);
+
+            if (Visible)
+                PerformLayout (this, nameof (Visible));
+        }
 
         protected void SetAutoSizeMode (AutoSizeMode mode)
         {
@@ -1076,7 +1094,12 @@ namespace Modern.Forms
         // Used to break a StackOverflow circular reference
         internal void SetParentInternal (Control control)
         {
+            var was_visible = Visible;
+
             parent = control;
+
+            if (Visible != was_visible)
+                OnVisibleChanged (EventArgs.Empty);
         }
 
         internal bool UseAnchorLayoutInternal { get; private set; } = true;

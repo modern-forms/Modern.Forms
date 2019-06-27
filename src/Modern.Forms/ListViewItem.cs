@@ -13,6 +13,7 @@ namespace Modern.Forms
         public SKBitmap Image { get; set; }
         public bool Selected { get; set; }
         public object Tag { get; set; }
+        public ListView Parent { get; internal set; }
 
         public Rectangle Bounds { get; private set; }
 
@@ -26,20 +27,31 @@ namespace Modern.Forms
             if (Selected)
                 canvas.FillRectangle (Bounds, Theme.RibbonItemHighlightColor);
 
+            var image_size = LogicalToDeviceUnits (32);
+            var image_area = new Rectangle (Bounds.Left, Bounds.Top, Bounds.Width, Bounds.Width);
+            var image_bounds = DrawingExtensions.CenterRectangle (image_area, new Rectangle (Point.Empty, new Size (image_size, image_size)));
+            image_bounds.Y = Bounds.Top + LogicalToDeviceUnits (3);
+
             if (Image != null)
-                canvas.DrawBitmap (Image, Bounds.Left + (Bounds.Width - 32) / 2, Bounds.Top + 3);
+                canvas.DrawBitmap (Image, image_bounds.ToSKRect ());
 
-            canvas.Save ();
-            canvas.ClipRect (new SKRect (Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Bottom));
+            if (!string.IsNullOrWhiteSpace (Text)) {
+                var font_size = LogicalToDeviceUnits (Theme.RibbonItemFontSize);
 
-            var lines = Text.Split (' ');
+                canvas.Save ();
+                canvas.ClipRect (new SKRect (Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Bottom));
 
-            canvas.DrawCenteredText (lines[0].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 50, Theme.DarkTextColor);
+                var lines = Text.Split (' ');
 
-            if (lines.Length > 1)
-                canvas.DrawCenteredText (lines[1].Trim (), Theme.UIFont, 12, Bounds.Left + Bounds.Width / 2, Bounds.Top + 66, Theme.DarkTextColor);
+                canvas.DrawCenteredText (lines[0].Trim (), Theme.UIFont, font_size, Bounds.Left + Bounds.Width / 2, Bounds.Top + LogicalToDeviceUnits (50), Theme.DarkTextColor);
 
-            canvas.Restore ();
+                if (lines.Length > 1)
+                    canvas.DrawCenteredText (lines[1].Trim (), Theme.UIFont, font_size, Bounds.Left + Bounds.Width / 2, Bounds.Top + LogicalToDeviceUnits (66), Theme.DarkTextColor);
+
+                canvas.Restore ();
+            }
         }
+
+        private int LogicalToDeviceUnits (int value) => Parent?.LogicalToDeviceUnits (value) ?? value;
     }
 }

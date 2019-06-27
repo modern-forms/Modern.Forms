@@ -85,5 +85,10 @@ namespace Modern.Forms
                 selected_control?.Select ();
             }
         }
+
+        internal void RaiseParentVisibleChanged (EventArgs e)
+        {
+            OnParentVisibleChanged (e);
+        }
     }
 }
