@@ -12,8 +12,8 @@ namespace Modern.Forms
         public static StackLayoutEngine Vertical = new StackLayoutEngine (Orientation.Vertical);
         public static StackLayoutEngine VerticalExpand = new StackLayoutEngine (Orientation.Vertical, true);
 
-        private Orientation orientation;
-        private bool expand;
+        private readonly Orientation orientation;
+        private readonly bool expand;
 
         public StackLayoutEngine (Orientation orientation = Orientation.Vertical, bool expand = false)
         {

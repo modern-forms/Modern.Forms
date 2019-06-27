@@ -13,50 +13,51 @@ namespace Modern.Forms
         {
             var bounds = SKRect.Empty;
 
-            using (var paint = new SKPaint { Typeface = style.GetFont (), TextSize = style.GetFontSize () }) {
-                paint.MeasureText (text, ref bounds);
-                return bounds.Size;
-            }
+            using var paint = new SKPaint { Typeface = style.GetFont (), TextSize = style.GetFontSize () };
+
+            paint.MeasureText (text, ref bounds);
+            return bounds.Size;
         }
 
         public static float MeasureText (string text, SKTypeface font, int fontSize)
         {
-            using (var paint = SkiaExtensions.CreateTextPaint (font, fontSize, SKColors.Black))
-                return paint.MeasureText (text);
+            using var paint = SkiaExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
+
+            return paint.MeasureText (text);
         }
 
         public static SKSize MeasureText (string text, SKTypeface font, int fontSize, SKSize proposedSize)
         {
             var text_bounds = SKRect.Empty;
 
-            using (var paint = SkiaExtensions.CreateTextPaint (font, fontSize, SKColors.Black)) {
-                paint.MeasureText (text, ref text_bounds);
+            using var paint = SkiaExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
 
-                // If we fit in the proposed size then just use that
-                if (text_bounds.Width <= proposedSize.Width && text_bounds.Height <= proposedSize.Height)
-                    return new SKSize (text_bounds.Width, proposedSize.Height);
+            paint.MeasureText (text, ref text_bounds);
 
-                // Figure out how many lines we have room for
-                var line_count = proposedSize.Height / text_bounds.Height;
+            // If we fit in the proposed size then just use that
+            if (text_bounds.Width <= proposedSize.Width && text_bounds.Height <= proposedSize.Height)
+                return new SKSize (text_bounds.Width, proposedSize.Height);
 
-                // If we only have room for one line there's not a lot we can do
-                if (line_count <= 1)
-                    return new SKSize (text_bounds.Width, proposedSize.Height);
+            // Figure out how many lines we have room for
+            var line_count = proposedSize.Height / text_bounds.Height;
 
-                var words = BreakDownIntoWords (text);
-                var max_word_width = Math.Max (words.Select (w => MeasureText (w, font, fontSize)).Max (), proposedSize.Width);
+            // If we only have room for one line there's not a lot we can do
+            if (line_count <= 1)
+                return new SKSize (text_bounds.Width, proposedSize.Height);
 
-                return new SKSize (max_word_width, proposedSize.Height);
-            }
+            var words = BreakDownIntoWords (text);
+            var max_word_width = Math.Max (words.Select (w => MeasureText (w, font, fontSize)).Max (), proposedSize.Width);
+
+            return new SKSize (max_word_width, proposedSize.Height);
         }
 
         public static SKPoint[] MeasureCharacters (string text, SKTypeface font, int fontSize, float xOffset = 0, float yOffset = 0)
         {
-            using (var paint = SkiaExtensions.CreateTextPaint (font, fontSize, SKColors.Black))
-            using (var shaper = new SKShaper (font)) {
-                var result = shaper.Shape (text, xOffset, yOffset, paint);
-                return result.Points;
-            }
+            using var paint = SkiaExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
+            using var shaper = new SKShaper (font);
+
+            var result = shaper.Shape (text, xOffset, yOffset, paint);
+            return result.Points;
         }
 
         public static bool IsWordSeparator (char c)

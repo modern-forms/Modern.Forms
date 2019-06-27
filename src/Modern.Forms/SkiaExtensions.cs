@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using SkiaSharp;
-using SkiaSharp.HarfBuzz;
 
 namespace Modern.Forms
 {
     public static class SkiaExtensions
     {
-        private static SKColorFilter disabled_matrix = SKColorFilter.CreateColorMatrix (new float[]
+        private static readonly SKColorFilter disabled_matrix = SKColorFilter.CreateColorMatrix (new float[]
                 {
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0.21f, 0.72f, 0.07f, 0, 0,
@@ -15,22 +14,7 @@ namespace Modern.Forms
                     0,     0,     0,     1, 0
                 });
 
-        public static void DrawText (this SKCanvas canvas, string text, SKTypeface font, int fontsize, int x, int y, SKColor color)
-        {
-            using (var paint = new SKPaint {
-                Color = color,
-                Typeface = font,
-                IsAntialias = true,
-                LcdRenderText = true,
-                TextSize = fontsize,
-                SubpixelText = true,
-                DeviceKerningEnabled = true,
-                FilterQuality = SKFilterQuality.High,
-                HintingLevel = SKPaintHinting.Full,
-                IsAutohinted = true
-            })
-                canvas.DrawText (text, x, y, paint);
-        }
+        public static void Clip (this SKCanvas canvas, Rectangle rectangle) => canvas.ClipRect (rectangle.ToSKRect ());
 
         //public static void DrawCharacters (this SKCanvas canvas, string text, SKTypeface font, int fontsize, int x, int y, SKColor color)
         //{
@@ -53,79 +37,63 @@ namespace Modern.Forms
             if (string.IsNullOrWhiteSpace (text))
                 return;
 
-            using (var paint = CreateTextPaint (font, fontsize, color)) {
-                var font_height = new SKRect ();
-                paint.MeasureText (text, ref font_height);
+            using var paint = CreateTextPaint (font, fontsize, color);
 
-                var x = bounds.Left + 1;
+            var font_height = new SKRect ();
+            paint.MeasureText (text, ref font_height);
 
-                switch (alignment) {
-                    case ContentAlignment.BottomCenter:
-                    case ContentAlignment.MiddleCenter:
-                    case ContentAlignment.TopCenter:
-                        x += bounds.Width / 2;
-                        paint.TextAlign = SKTextAlign.Center;
-                        break;
-                    case ContentAlignment.BottomRight:
-                    case ContentAlignment.MiddleRight:
-                    case ContentAlignment.TopRight:
-                        x = bounds.Right - 1;
-                        paint.TextAlign = SKTextAlign.Right;
-                        break;
-                }
+            var x = bounds.Left + 1;
 
-                var y = bounds.Top + (int)font_height.Height;
-
-                switch (alignment) {
-                    case ContentAlignment.BottomCenter:
-                    case ContentAlignment.BottomLeft:
-                    case ContentAlignment.BottomRight:
-                        y = bounds.Bottom - (int)font_height.Bottom - 1;
-                        break;
-                    case ContentAlignment.MiddleCenter:
-                    case ContentAlignment.MiddleLeft:
-                    case ContentAlignment.MiddleRight:
-                        var center_bounds = bounds.Top + (bounds.Height / 2);
-                        var text_center = (font_height.Top + font_height.Bottom) / 2;
-
-                        y = (int)(center_bounds - text_center);
-                        break;
-                }
-
-                canvas.Save ();
-                canvas.ClipRect (bounds.ToSKRect ());
-                canvas.DrawText (text, x, y, paint);
-                canvas.Restore ();
+            switch (alignment) {
+                case ContentAlignment.BottomCenter:
+                case ContentAlignment.MiddleCenter:
+                case ContentAlignment.TopCenter:
+                    x += bounds.Width / 2;
+                    paint.TextAlign = SKTextAlign.Center;
+                    break;
+                case ContentAlignment.BottomRight:
+                case ContentAlignment.MiddleRight:
+                case ContentAlignment.TopRight:
+                    x = bounds.Right - 1;
+                    paint.TextAlign = SKTextAlign.Right;
+                    break;
             }
+
+            var y = bounds.Top + (int)font_height.Height;
+
+            switch (alignment) {
+                case ContentAlignment.BottomCenter:
+                case ContentAlignment.BottomLeft:
+                case ContentAlignment.BottomRight:
+                    y = bounds.Bottom - (int)font_height.Bottom - 1;
+                    break;
+                case ContentAlignment.MiddleCenter:
+                case ContentAlignment.MiddleLeft:
+                case ContentAlignment.MiddleRight:
+                    var center_bounds = bounds.Top + (bounds.Height / 2);
+                    var text_center = (font_height.Top + font_height.Bottom) / 2;
+
+                    y = (int)(center_bounds - text_center);
+                    break;
+            }
+
+            canvas.Save ();
+            canvas.Clip (bounds);
+            canvas.DrawText (text, x, y, paint);
+            canvas.Restore ();
         }
 
-        public static void DrawText (this SKCanvas canvas, string text, Rectangle bounds, ControlStyle style, ContentAlignment alignment)
-            => canvas.DrawText (text, style.GetFont (), style.GetFontSize (), bounds, style.GetForegroundColor (), alignment);
-
-        public static void DrawText (this SKCanvas canvas, string text, int x, int y, ControlStyle style)
-            => canvas.DrawText (text, style.GetFont (), style.GetFontSize (), x, y, style.GetForegroundColor ());
+        public static void DrawText (this SKCanvas canvas, string text, Rectangle bounds, Control control, ContentAlignment alignment)
+            => canvas.DrawText (text, control.CurrentStyle.GetFont (), control.LogicalToDeviceUnits (control.CurrentStyle.GetFontSize ()), bounds, control.CurrentStyle.GetForegroundColor (), alignment);
 
         public static void DrawCenteredText (this SKCanvas canvas, string text, SKTypeface font, int fontsize, int x, int y, SKColor color)
         {
             if (string.IsNullOrWhiteSpace (text))
                 return;
 
-            using (var paint = CreateTextPaint (font, fontsize, color, SKTextAlign.Center))
-                canvas.DrawText (text, x, y, paint);
-        }
+            using var paint = CreateTextPaint (font, fontsize, color, SKTextAlign.Center);
 
-        public static void DrawCenteredText (this SKCanvas canvas, string text, int x, int y, ControlStyle style)
-            => canvas.DrawCenteredText (text, style.GetFont (), style.GetFontSize (), x, y, style.GetForegroundColor ());
-
-        public static void DrawCenteredText (this SKCanvas canvas, string text, SKTypeface font, int fontsize, Rectangle bounds, SKColor color)
-        {
-            using (var paint = CreateTextPaint (font, fontsize, color, SKTextAlign.Center)) {
-                var b = new SKRect ();
-                paint.MeasureText (text, ref b);
-
-                var y = (int)(bounds.Top + ((bounds.Height - (b.Height)) / 2) + b.Height) - 1;
-                DrawCenteredText (canvas, text, font, fontsize, bounds.Left + (bounds.Width / 2), y, color);
-            }
+            canvas.DrawText (text, x, y, paint);
         }
 
         public static SKPaint CreateTextPaint (SKTypeface font, int fontsize, SKColor color, SKTextAlign align = SKTextAlign.Left)
@@ -147,68 +115,69 @@ namespace Modern.Forms
             };
         }
 
-        public static SKPaint CreateTextPaint (ControlStyle style, SKTextAlign align = SKTextAlign.Left)
-            => CreateTextPaint (style.GetFont (), style.GetFontSize (), style.GetForegroundColor (), align);
-
         public static void DrawLine (this SKCanvas canvas, float x1, float y1, float x2, float y2, SKColor color, int thickness = 1)
         {
-            using (var paint = new SKPaint { Color = color, StrokeWidth = thickness })
-                canvas.DrawLine (x1, y1, x2, y2, paint);
+            using var paint = new SKPaint { Color = color, StrokeWidth = thickness };
+
+            canvas.DrawLine (x1, y1, x2, y2, paint);
         }
 
-        public static void FillRectangle (this SKCanvas canvas, System.Drawing.Rectangle rectangle, SKColor color)
+        public static void FillRectangle (this SKCanvas canvas, Rectangle rectangle, SKColor color)
         {
-            using (var paint = new SKPaint { Color = color })
-                canvas.DrawRect (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, paint);
+            using var paint = new SKPaint { Color = color };
+
+            canvas.DrawRect (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, paint);
         }
 
         public static void FillRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color)
         {
-            using (var paint = new SKPaint { Color = color })
-                canvas.DrawRect (x, y, width, height, paint);
+            using var paint = new SKPaint { Color = color };
+
+            canvas.DrawRect (x, y, width, height, paint);
         }
 
         public static void DrawRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int strokeWidth = 1)
         {
-            using (var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth })
-                canvas.DrawRect (x, y, width, height, paint);
+            using var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth };
+
+            canvas.DrawRect (x, y, width, height, paint);
         }
 
-        public static void DrawRectangle (this SKCanvas canvas, System.Drawing.Rectangle rectangle, SKColor color, int strokeWidth = 1)
-        {
-            using (var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth })
-                canvas.DrawRect (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, paint);
-        }
+        public static void DrawRectangle (this SKCanvas canvas, Rectangle rectangle, SKColor color, int strokeWidth = 1)
+            => DrawRectangle (canvas, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, color, strokeWidth);
 
         public static void DrawCircle (this SKCanvas canvas, int x, int y, int radius, SKColor color, int strokeWidth = 1)
         {
-            using (var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth, IsAntialias = true })
-                canvas.DrawCircle (x, y, radius, paint);
+            using var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth, IsAntialias = true };
+
+            canvas.DrawCircle (x, y, radius, paint);
         }
 
         public static void FillCircle (this SKCanvas canvas, int x, int y, int radius, SKColor color)
         {
-            using (var paint = new SKPaint { Color = color, IsAntialias = true })
-                canvas.DrawCircle (x, y, radius, paint);
+            using var paint = new SKPaint { Color = color, IsAntialias = true };
+
+            canvas.DrawCircle (x, y, radius, paint);
         }
 
-        public static void DrawRoundedRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int rx = 3, int ry = 3, float strokeWidth = 1)
-        {
-            using (var paint = new SKPaint {
-                Color = color,
-                IsStroke = true,
-                IsAntialias = true,
-                LcdRenderText = true,
-                StrokeWidth = 1f,
-                SubpixelText = true,
-                DeviceKerningEnabled = true,
-                FilterQuality = SKFilterQuality.High,
-                HintingLevel = SKPaintHinting.Full,
-                IsAutohinted = true,
-                TextAlign = SKTextAlign.Center
-            })
-                canvas.DrawRoundRect (x + .5f, y + .5f, width, height, rx, ry, paint);
-        }
+        //public static void DrawRoundedRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int rx = 3, int ry = 3, float strokeWidth = 1)
+        //{
+        //    using var paint = new SKPaint {
+        //        Color = color,
+        //        IsStroke = true,
+        //        IsAntialias = true,
+        //        LcdRenderText = true,
+        //        StrokeWidth = 1f,
+        //        SubpixelText = true,
+        //        DeviceKerningEnabled = true,
+        //        FilterQuality = SKFilterQuality.High,
+        //        HintingLevel = SKPaintHinting.Full,
+        //        IsAutohinted = true,
+        //        TextAlign = SKTextAlign.Center
+        //    };
+
+        //    canvas.DrawRoundRect (x + .5f, y + .5f, width, height, rx, ry, paint);
+        //}
 
         public static void DrawBorder (this SKCanvas canvas, Rectangle bounds, ControlStyle style)
         {
@@ -243,20 +212,8 @@ namespace Modern.Forms
             //}
         }
 
-        public static void DrawBackground (this SKCanvas canvas, Rectangle bounds, ControlStyle style)
-        {
-
-            //if (CurrentStyle.BorderRadius > 0) {
-            //    canvas.Clear (SKColors.Transparent);
-            //    canvas.Save ();
-            //    canvas.ClipRoundRect (new SKRoundRect (new SKRect (1.5f, 1.5f , Width - 1, Height - 1), CurrentStyle.BorderRadius, CurrentStyle.BorderRadius));
-            //    canvas.Clear (CurrentStyle.BackgroundColor);
-            //    canvas.Restore ();
-            //} else {
-            //    canvas.Clear (CurrentStyle.BackgroundColor);
-            //}
+        public static void DrawBackground(this SKCanvas canvas, ControlStyle style) =>
             canvas.Clear (style.GetBackgroundColor ());
-        }
 
         public static void DrawArrow (this SKCanvas canvas, Rectangle bounds, SKColor color, ArrowDirection direction)
         {
@@ -304,16 +261,16 @@ namespace Modern.Forms
             }
         }
 
-        public static void DrawDisabledBitmap (this SKCanvas canvas, SKBitmap bitmap, float x, float y)
+        public static void DrawBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect)
         {
-            using (var paint = new SKPaint { ColorFilter = disabled_matrix })
-                canvas.DrawBitmap (bitmap, x, y, paint);
+            canvas.DrawBitmap (bitmap, rect.ToSKRect ());
         }
 
         public static void DrawDisabledBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect)
         {
-            using (var paint = new SKPaint { ColorFilter = disabled_matrix })
-                canvas.DrawBitmap (bitmap, rect.ToSKRect (), paint);
+            using var paint = new SKPaint { ColorFilter = disabled_matrix };
+
+            canvas.DrawBitmap (bitmap, rect.ToSKRect (), paint);
         }
 
         public static SKRect ToSKRect (this Rectangle rect) => new SKRect (rect.X, rect.Y, rect.Right, rect.Bottom);

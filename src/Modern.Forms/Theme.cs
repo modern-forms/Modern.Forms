@@ -11,7 +11,7 @@ namespace Modern.Forms
         private static int suspend_count = 0;
         private static bool suspended_raise_waiting = false;
 
-        private static Dictionary<string, object> values = new Dictionary<string, object> ();
+        private static readonly Dictionary<string, object> values = new Dictionary<string, object> ();
 
         public static event EventHandler ThemeChanged;
 

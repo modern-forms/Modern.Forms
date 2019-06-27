@@ -154,13 +154,11 @@ namespace Modern.Forms
             canvas.FillRectangle (Bounds, background_color);
 
             if (Image != null) {
-                var image_size = new Size (IMAGE_SIZE, IMAGE_SIZE);
-                var image_bounds = new Rectangle (Point.Empty, LogicalToDeviceUnits (image_size));
                 var image_area_bounds = new Rectangle (Bounds.Left + padding.Left, Bounds.Top + padding.Top, Bounds.Width - padding.Horizontal, LogicalToDeviceUnits (MINIMUM_ITEM_SIZE));
-                var final_image_bounds = DrawingExtensions.CenterRectangle (image_area_bounds, image_bounds);
+                var final_image_bounds = DrawingExtensions.CenterSquare (image_area_bounds, LogicalToDeviceUnits (IMAGE_SIZE));
 
                 if (Enabled)
-                    canvas.DrawBitmap (Image, final_image_bounds.ToSKRect ());
+                    canvas.DrawBitmap (Image, final_image_bounds);
                 else
                     canvas.DrawDisabledBitmap (Image, image_area_bounds);
             }
@@ -169,7 +167,7 @@ namespace Modern.Forms
                 var font_size = LogicalToDeviceUnits (Theme.RibbonItemFontSize);
 
                 canvas.Save ();
-                canvas.ClipRect (new SKRect (Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Bottom));
+                canvas.Clip (Bounds);
 
                 var lines = Text.Split (' ');
 

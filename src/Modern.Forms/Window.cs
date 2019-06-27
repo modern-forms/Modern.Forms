@@ -198,25 +198,24 @@ namespace Modern.Forms
         {
             var skia_framebuffer = window.Surfaces.OfType<IFramebufferPlatformSurface> ().First ();
 
-            using (var framebuffer = skia_framebuffer.Lock ()) {
-                var framebufferImageInfo = new SKImageInfo (framebuffer.Size.Width, framebuffer.Size.Height,
-                    framebuffer.Format.ToSkColorType (),
-                    framebuffer.Format == PixelFormat.Rgb565 ? SKAlphaType.Opaque : SKAlphaType.Premul);
+            using var framebuffer = skia_framebuffer.Lock ();
 
-                var scaled_client_size = window.ScaledClientSize;
-                var scaled_display_rect = ScaledDisplayRectangle;
+            var framebufferImageInfo = new SKImageInfo (framebuffer.Size.Width, framebuffer.Size.Height,
+                framebuffer.Format.ToSkColorType (), framebuffer.Format == PixelFormat.Rgb565 ? SKAlphaType.Opaque : SKAlphaType.Premul);
 
-                using (var surface = SKSurface.Create (framebufferImageInfo, framebuffer.Address, framebuffer.RowBytes)) {
-                    var e = new PaintEventArgs (surface, framebufferImageInfo, surface.Canvas);
-                    e.Canvas.DrawBackground (new System.Drawing.Rectangle (0, 0, (int)scaled_client_size.Width, (int)scaled_client_size.Height), CurrentStyle);
-                    e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, (int)scaled_client_size.Width, (int)scaled_client_size.Height), CurrentStyle);
+            var scaled_client_size = window.ScaledClientSize;
+            var scaled_display_rect = ScaledDisplayRectangle;
 
-                    e.Canvas.ClipRect (new SKRect (scaled_display_rect.Left, scaled_display_rect.Top, scaled_display_rect.Width + 1, scaled_display_rect.Height + 1));
+            using var surface = SKSurface.Create (framebufferImageInfo, framebuffer.Address, framebuffer.RowBytes);
 
-                    adapter.RaisePaintBackground (e);
-                    adapter.RaisePaint (e);
-                }
-            }
+            var e = new PaintEventArgs (surface, framebufferImageInfo, surface.Canvas);
+            e.Canvas.DrawBackground (CurrentStyle);
+            e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, (int)scaled_client_size.Width, (int)scaled_client_size.Height), CurrentStyle);
+
+            e.Canvas.ClipRect (new SKRect (scaled_display_rect.Left, scaled_display_rect.Top, scaled_display_rect.Width + 1, scaled_display_rect.Height + 1));
+
+            adapter.RaisePaintBackground (e);
+            adapter.RaisePaint (e);
         }
 
         private void OnResize (Size size)

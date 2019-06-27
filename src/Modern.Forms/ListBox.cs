@@ -213,7 +213,7 @@ namespace Modern.Forms
 
                 bounds.Inflate (-4, 0);
 
-                e.Canvas.DrawText (item.ToString (), CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), bounds, CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (item.ToString (), bounds, this, ContentAlignment.MiddleLeft);
             }
         }
 

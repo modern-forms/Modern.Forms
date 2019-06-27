@@ -8,8 +8,8 @@ namespace Modern.Forms
 {
     public class MessageBoxForm : Form
     {
-        private FormTitleBar titlebar;
-        private Label label;
+        private readonly FormTitleBar titlebar;
+        private readonly Label label;
 
         public MessageBoxForm ()
         {

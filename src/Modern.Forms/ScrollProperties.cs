@@ -6,12 +6,12 @@ namespace Modern.Forms
 {
     public class ScrollProperties
     {
-        private ScrollBar scrollbar;
+        private readonly ScrollBar scrollbar;
 
         internal ScrollProperties (ScrollBar scrollbar)
         {
             this.scrollbar = scrollbar;
-            ParentContol = scrollbar.Parent as ScrollableControl;
+            ParentControl = scrollbar.Parent as ScrollableControl;
         }
 
         public bool Enabled {
@@ -39,6 +39,6 @@ namespace Modern.Forms
             set => scrollbar.Value = value;
         }
 
-        public ScrollableControl ParentContol { get; }
+        public ScrollableControl ParentControl { get; }
     }
 }

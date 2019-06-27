@@ -31,7 +31,8 @@ namespace Modern.Forms
 
             var font_color = Selected ? Theme.RibbonColor : Theme.LightTextColor;
             var font_size = Parent?.LogicalToDeviceUnits (Theme.FontSize) ?? Theme.FontSize;
-            canvas.DrawCenteredText (Text, Theme.UIFont, font_size, Bounds, font_color);
+
+            canvas.DrawText (Text, Theme.UIFont, font_size, Bounds, font_color, ContentAlignment.MiddleCenter);
         }
 
         public Size GetPreferredSize (Size proposedSize)

@@ -89,9 +89,9 @@ namespace Modern.Forms
 
             // Form icon
             if (form_icon != null) {
-                var icon_glyph_bounds = DrawingExtensions.CenterRectangle (IconBounds, new Rectangle (Point.Empty, LogicalToDeviceUnits (new Size (FORM_ICON_SIZE, FORM_ICON_SIZE))));
+                var icon_glyph_bounds = DrawingExtensions.CenterSquare (IconBounds, LogicalToDeviceUnits (FORM_ICON_SIZE));
 
-                e.Canvas.DrawBitmap (form_icon, icon_glyph_bounds.ToSKRect ());
+                e.Canvas.DrawBitmap (form_icon, icon_glyph_bounds);
             }
 
             // Form text
@@ -105,11 +105,9 @@ namespace Modern.Forms
                 if (minimize_button_hover)
                     e.Canvas.FillRectangle (minimize_button_bounds, Theme.RibbonTabHighlightColor);
 
-                var min_glyph_bounds = DrawingExtensions.CenterRectangle (minimize_button_bounds, new Rectangle (Point.Empty, LogicalToDeviceUnits (new Size (BUTTON_PADDING, 1))));
+                var min_glyph_bounds = DrawingExtensions.CenterRectangle (minimize_button_bounds, LogicalToDeviceUnits (new Size (BUTTON_PADDING, 1)));
                 e.Canvas.DrawLine (min_glyph_bounds.X, min_glyph_bounds.Y, min_glyph_bounds.Right, min_glyph_bounds.Y, Theme.LightTextColor);
             }
-
-            var button_padded_rect = new Rectangle (Point.Empty, LogicalToDeviceUnits (new Size (BUTTON_PADDING, BUTTON_PADDING)));
 
             // Maximize button
             if (AllowMaximize) {
@@ -118,7 +116,7 @@ namespace Modern.Forms
                 if (maximize_button_hover)
                     e.Canvas.FillRectangle (maximize_button_bounds, Theme.RibbonTabHighlightColor);
 
-                var max_glyph_bounds = DrawingExtensions.CenterRectangle (maximize_button_bounds, button_padded_rect);
+                var max_glyph_bounds = DrawingExtensions.CenterSquare (maximize_button_bounds, LogicalToDeviceUnits (BUTTON_PADDING));
                 e.Canvas.DrawRectangle (max_glyph_bounds, Theme.LightTextColor);
             }
 
@@ -128,7 +126,7 @@ namespace Modern.Forms
             if (close_button_hover)
                 e.Canvas.FillRectangle (close_button_bounds, Theme.FormCloseHighlightColor);
 
-            var close_glyph_bounds = DrawingExtensions.CenterRectangle (close_button_bounds, button_padded_rect);
+            var close_glyph_bounds = DrawingExtensions.CenterSquare (close_button_bounds, LogicalToDeviceUnits (BUTTON_PADDING));
             e.Canvas.DrawLine (close_glyph_bounds.X, close_glyph_bounds.Y, close_glyph_bounds.Right, close_glyph_bounds.Bottom, Theme.LightTextColor);
             e.Canvas.DrawLine (close_glyph_bounds.X, close_glyph_bounds.Bottom, close_glyph_bounds.Right, close_glyph_bounds.Y, Theme.LightTextColor);
         }

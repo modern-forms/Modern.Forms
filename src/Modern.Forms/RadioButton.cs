@@ -74,7 +74,7 @@ namespace Modern.Forms
             text_bounds.X += LogicalToDeviceUnits (24);
             text_bounds.Width -= LogicalToDeviceUnits (24);
 
-            e.Canvas.DrawText (Text, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), text_bounds, CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
+            e.Canvas.DrawText (Text, text_bounds, this, ContentAlignment.MiddleLeft);
         }
 
         // Uncheck any other RadioButtons on the Parent

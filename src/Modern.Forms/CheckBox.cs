@@ -59,8 +59,7 @@ namespace Modern.Forms
             var box_fill_size = LogicalToDeviceUnits (BOX_FILL_SIZE);
 
             var box_bounds = new Rectangle (3, y, box_size, box_size);
-            var fill_size = new Rectangle (Point.Empty, new Size (box_fill_size, box_fill_size));
-            var fill_bounds = DrawingExtensions.CenterRectangle (box_bounds, fill_size);
+            var fill_bounds = DrawingExtensions.CenterSquare (box_bounds, box_fill_size);
 
             if (Checked) {
                 e.Canvas.DrawRectangle (box_bounds, Theme.RibbonColor, LogicalToDeviceUnits (1));
@@ -70,7 +69,7 @@ namespace Modern.Forms
             }
 
             var glyph_padding = LogicalToDeviceUnits (GLYPH_TEXT_PADDING);
-            e.Canvas.DrawText (Text, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Rectangle (box_bounds.Right + glyph_padding, 0, ScaledWidth - box_bounds.Right - glyph_padding, ScaledHeight), CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
+            e.Canvas.DrawText (Text, new Rectangle (box_bounds.Right + glyph_padding, 0, ScaledWidth - box_bounds.Right - glyph_padding, ScaledHeight), this, ContentAlignment.MiddleLeft);
         }
     }
 }

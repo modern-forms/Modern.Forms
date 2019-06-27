@@ -41,7 +41,7 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             if (!string.IsNullOrWhiteSpace (Text))
-                e.Canvas.DrawText (Text, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), PaddedClientRectangle, CurrentStyle.GetForegroundColor (), text_align);
+                e.Canvas.DrawText (Text, PaddedClientRectangle, this, text_align);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Modern.Forms
 
     public class BorderSideStyle
     {
-        private BorderSideStyle _parent;
+        private readonly BorderSideStyle _parent;
 
         public BorderSideStyle (BorderSideStyle parent = null) => _parent = parent;
 

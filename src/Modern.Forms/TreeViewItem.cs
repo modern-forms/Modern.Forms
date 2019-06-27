@@ -41,11 +41,10 @@ namespace Modern.Forms
             var text_left = Bounds.Left + LogicalToDeviceUnits (7);
 
             if (Image != null) {
-                var image_size = LogicalToDeviceUnits (new Size (IMAGE_SIZE, IMAGE_SIZE));
                 var image_area = new Rectangle (Bounds.Left, Bounds.Top, Bounds.Height, Bounds.Height);
-                var image_bounds = DrawingExtensions.CenterRectangle (image_area, new Rectangle (Point.Empty, image_size));
+                var image_bounds = DrawingExtensions.CenterSquare (image_area, LogicalToDeviceUnits (IMAGE_SIZE));
 
-                canvas.DrawBitmap (Image, image_bounds.ToSKRect ());
+                canvas.DrawBitmap (Image, image_bounds);
 
                 text_left += image_bounds.Width + LogicalToDeviceUnits (7);
             }
@@ -55,6 +54,5 @@ namespace Modern.Forms
         }
 
         private int LogicalToDeviceUnits (int value) => Parent?.LogicalToDeviceUnits (value) ?? value;
-        private Size LogicalToDeviceUnits (Size value) => Parent?.LogicalToDeviceUnits (value) ?? value;
     }
 }

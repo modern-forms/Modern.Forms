@@ -31,7 +31,7 @@ namespace Modern.Forms
             if (!string.IsNullOrWhiteSpace (Text)) {
                 var padding = LogicalToDeviceUnits (Padding);
                 var text_bounds = new Rectangle (ClientRectangle.Left + padding.Left, ClientRectangle.Top, ClientRectangle.Width - padding.Horizontal, ClientRectangle.Height);
-                e.Canvas.DrawText (Text, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), text_bounds, CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (Text, text_bounds, this, ContentAlignment.MiddleLeft);
             }
         }
     }

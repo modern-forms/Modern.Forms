@@ -93,7 +93,7 @@ namespace Modern.Forms
                         e.Canvas.DrawBitmap (image, new SKRect (0, 0, image.Width, image.Height));
                         break;
                     case PictureBoxSizeMode.StretchImage:
-                        e.Canvas.DrawBitmap (image, client.ToSKRect ());
+                        e.Canvas.DrawBitmap (image, client);
                         break;
                     case PictureBoxSizeMode.CenterImage:
                         e.Canvas.DrawBitmap (image, (client.Width / 2) - (image.Width / 2), (client.Height / 2) - (image.Height / 2));

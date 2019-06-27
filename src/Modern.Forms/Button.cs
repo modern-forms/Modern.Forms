@@ -49,16 +49,13 @@ namespace Modern.Forms
         {
             base.OnPaint (e);
 
-            e.Canvas.DrawText (Text, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), PaddedClientRectangle, CurrentStyle.GetForegroundColor (), text_align);
+            e.Canvas.DrawText (Text,PaddedClientRectangle, this, text_align);
         }
 
         public void PerformClick ()
         {
             OnClick (new MouseEventArgs(MouseButtons.Left, 1, 0, 0, Point.Empty));
         }
-
-        // TODO: Button.NotifyDefault
-        public void NotifyDefault (bool def) { }
 
         public DialogResult DialogResult { get; set; }
     }

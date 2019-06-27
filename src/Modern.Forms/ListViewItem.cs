@@ -29,17 +29,17 @@ namespace Modern.Forms
 
             var image_size = LogicalToDeviceUnits (32);
             var image_area = new Rectangle (Bounds.Left, Bounds.Top, Bounds.Width, Bounds.Width);
-            var image_bounds = DrawingExtensions.CenterRectangle (image_area, new Rectangle (Point.Empty, new Size (image_size, image_size)));
+            var image_bounds = DrawingExtensions.CenterSquare (image_area, image_size);
             image_bounds.Y = Bounds.Top + LogicalToDeviceUnits (3);
 
             if (Image != null)
-                canvas.DrawBitmap (Image, image_bounds.ToSKRect ());
+                canvas.DrawBitmap (Image, image_bounds);
 
             if (!string.IsNullOrWhiteSpace (Text)) {
                 var font_size = LogicalToDeviceUnits (Theme.RibbonItemFontSize);
 
                 canvas.Save ();
-                canvas.ClipRect (new SKRect (Bounds.Left, Bounds.Top, Bounds.Right, Bounds.Bottom));
+                canvas.Clip (Bounds);
 
                 var lines = Text.Split (' ');
 

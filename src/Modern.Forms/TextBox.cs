@@ -36,6 +36,16 @@ namespace Modern.Forms
             }
         }
 
+        public bool ReadOnly {
+            get => read_only;
+            set {
+                if (read_only != value) {
+                    read_only = value;
+                    Invalidate ();
+                }
+            }
+        }
+
         public int GetCharIndexFromPosition (Point location)
         {
             if (CurrentText.Length == 0)
@@ -140,10 +150,8 @@ namespace Modern.Forms
         {
             base.OnPaint (e);
 
-            var y = (int)(ClientRectangle.Top + ((ClientRectangle.Height - (14)) / 2) + 14) - 1;
-
             if (!string.IsNullOrEmpty (Text))
-                e.Canvas.DrawText (Text, CurrentStyle.GetFont (), CurrentFontSize, ClientRectangle, CurrentStyle.GetForegroundColor (), ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (Text, ClientRectangle, this, ContentAlignment.MiddleLeft);
             else if (!string.IsNullOrEmpty (placeholder))
                 e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentFontSize, ClientRectangle, Theme.DisabledTextColor, ContentAlignment.MiddleLeft);
 
