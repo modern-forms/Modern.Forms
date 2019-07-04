@@ -20,7 +20,6 @@ namespace Modern.Forms
 
         private bool is_checked;
         private const int BOX_BORDER_SIZE = 15;
-        private const int BOX_FILL_SIZE = 11;
         private const int GLYPH_TEXT_PADDING = 3;
 
         public CheckBox ()
@@ -56,10 +55,9 @@ namespace Modern.Forms
 
             var y = (Height - 16) / 2;
             var box_size = LogicalToDeviceUnits (BOX_BORDER_SIZE);
-            var box_fill_size = LogicalToDeviceUnits (BOX_FILL_SIZE);
 
             var box_bounds = new Rectangle (3, y, box_size, box_size);
-            var fill_bounds = DrawingExtensions.CenterSquare (box_bounds, box_fill_size);
+            var fill_bounds = new Rectangle (box_bounds.Left + 1 + LogicalToDeviceUnits (2), box_bounds.Top + 1 + LogicalToDeviceUnits (2), box_size - LogicalToDeviceUnits (5), box_size - LogicalToDeviceUnits (5));
 
             if (Checked) {
                 e.Canvas.DrawRectangle (box_bounds, Theme.RibbonColor, LogicalToDeviceUnits (1));
