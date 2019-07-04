@@ -16,6 +16,9 @@ namespace ControlGallery
                 Dock = DockStyle.Left
             };
 
+            tree.Style.Border.Width = 0;
+            tree.Style.Border.Right.Width = 1;
+
             tree.Items.Add ("Button", ImageLoader.Get ("button.png"));
             tree.Items.Add ("CheckBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ComboBox", ImageLoader.Get ("button.png"));

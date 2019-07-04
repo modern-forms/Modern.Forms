@@ -41,12 +41,9 @@ namespace Modern.Forms
                 canvas.Save ();
                 canvas.Clip (Bounds);
 
-                var lines = Text.Split (' ');
+                var text_bounds = new Rectangle (Bounds.Left, image_bounds.Bottom + LogicalToDeviceUnits (3), Bounds.Width, Bounds.Bottom - image_bounds.Bottom - LogicalToDeviceUnits (3));
 
-                canvas.DrawCenteredText (lines[0].Trim (), Theme.UIFont, font_size, Bounds.Left + Bounds.Width / 2, Bounds.Top + LogicalToDeviceUnits (50), Theme.DarkTextColor);
-
-                if (lines.Length > 1)
-                    canvas.DrawCenteredText (lines[1].Trim (), Theme.UIFont, font_size, Bounds.Left + Bounds.Width / 2, Bounds.Top + LogicalToDeviceUnits (66), Theme.DarkTextColor);
+                canvas.DrawText (Text, Theme.UIFont, font_size, text_bounds, Theme.DarkTextColor);
 
                 canvas.Restore ();
             }

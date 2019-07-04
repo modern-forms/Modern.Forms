@@ -21,7 +21,7 @@ namespace Modern.Forms
 
         public static float MeasureText (string text, SKTypeface font, int fontSize)
         {
-            using var paint = SkiaExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
+            using var paint = SkiaTextExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
 
             return paint.MeasureText (text);
         }
@@ -30,7 +30,7 @@ namespace Modern.Forms
         {
             var text_bounds = SKRect.Empty;
 
-            using var paint = SkiaExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
+            using var paint = SkiaTextExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
 
             paint.MeasureText (text, ref text_bounds);
 
@@ -53,7 +53,7 @@ namespace Modern.Forms
 
         public static SKPoint[] MeasureCharacters (string text, SKTypeface font, int fontSize, float xOffset = 0, float yOffset = 0)
         {
-            using var paint = SkiaExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
+            using var paint = SkiaTextExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
             using var shaper = new SKShaper (font);
 
             var result = shaper.Shape (text, xOffset, yOffset, paint);

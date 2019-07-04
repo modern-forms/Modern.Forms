@@ -14,7 +14,7 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        private ContentAlignment text_align;
+        private ContentAlignment text_align = ContentAlignment.MiddleLeft;
 
         protected override Size DefaultSize => new Size (100, 23);
 
