@@ -23,11 +23,10 @@ public static class SkiaTextBox
     /// <param name="paint">Paint.</param>
     public static void Draw (string text, double x, double y, double width, double height, SKCanvas canvas, SKPaint paint, bool ellipsize)
     {
-        if (text == null) {
+        if (string.IsNullOrWhiteSpace (text))
             return;
-        }
 
-        double textY = 0, textX = 0;
+        double textX = 0;
 
         switch (paint.TextAlign) {
             case SKTextAlign.Center:
@@ -46,10 +45,11 @@ public static class SkiaTextBox
         var metrics = paint.FontMetrics;
         var lineHeight = metrics.Bottom - metrics.Top;
 
-        float textHeight = lines.Count * lineHeight - metrics.Leading;
+        // This code centers the block verically, it might be needed in the future
+        //var textHeight = lines.Count * lineHeight - metrics.Leading;
 
         //if (textHeight > height) {
-            textY = y - metrics.Top;
+        var textY = y - metrics.Top;
         //} else {
         //    textY = y - metrics.Top + (height - textHeight) / 2;
         //}
@@ -57,7 +57,7 @@ public static class SkiaTextBox
             var ellipsizedLine = $"{lines.FirstOrDefault ()}...";
             canvas.DrawText (ellipsizedLine, (float)textX, (float)textY, paint);
         } else {
-            for (int i = 0; i < lines.Count; i++) {
+            for (var i = 0; i < lines.Count; i++) {
                 canvas.DrawText (lines[i], (float)textX, (float)textY, paint);
                 textY += lineHeight;
                 if (textY + metrics.Descent > y + height) {
@@ -67,14 +67,14 @@ public static class SkiaTextBox
         }
     }
 
-    static List<string> BreakLines (string text, SKPaint paint, double width)
+    private static List<string> BreakLines (string text, SKPaint paint, double width)
     {
-        List<string> lines = new List<string> ();
+        var lines = new List<string> ();
 
-        string remainingText = text.Trim ();
+        var remainingText = text.Trim ();
 
         do {
-            int idx = LineBreak (remainingText, paint, width);
+            var idx = LineBreak (remainingText, paint, width);
             if (idx == 0) {
                 break;
             }
@@ -85,13 +85,13 @@ public static class SkiaTextBox
         return lines;
     }
 
-    static int LineBreak (string text, SKPaint paint, double width)
+    private static int LineBreak (string text, SKPaint paint, double width)
     {
         int idx = 0, last = 0;
-        int lengthBreak = (int)paint.BreakText (text, (float)width);
+        var lengthBreak = (int)paint.BreakText (text, (float)width);
 
         while (idx < text.Length) {
-            int next = text.IndexOfAny (new char[] { ' ', '\n' }, idx);
+            var next = text.IndexOfAny (new char[] { ' ', '\n' }, idx);
             if (next == -1) {
                 if (idx == 0) {
                     // Word is too long, we will have to break it
