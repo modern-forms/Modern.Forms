@@ -59,6 +59,13 @@ namespace Avalonia.Native
             }
         }
 
+        public Size ScaledClientSize {
+            get {
+                var s = _native.GetClientSize ();
+                return new Size (s.Width, s.Height);
+            }
+        }
+
         public IEnumerable<object> Surfaces => new[] { null,
             //(_gpu ? _glSurface : (object)null),
             this 
