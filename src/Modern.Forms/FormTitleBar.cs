@@ -38,6 +38,7 @@ namespace Modern.Forms
         public FormTitleBar ()
         {
             Dock = DockStyle.Top;
+            SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
         }
 
         protected override void OnClick (MouseEventArgs e)

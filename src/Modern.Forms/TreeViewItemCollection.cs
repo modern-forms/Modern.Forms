@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using SkiaSharp;
@@ -7,9 +8,9 @@ namespace Modern.Forms
 {
     public class TreeViewItemCollection : Collection<TreeViewItem>
     {
-        private readonly TreeView owner;
+        private readonly TreeViewItem owner;
 
-        internal TreeViewItemCollection (TreeView owner)
+        internal TreeViewItemCollection (TreeViewItem owner)
         {
             this.owner = owner;
         }
@@ -35,6 +36,12 @@ namespace Modern.Forms
             Add (item);
 
             return item;
+        }
+
+        public void AddRange (IEnumerable<TreeViewItem> children)
+        {
+            foreach (var item in children)
+                Add (item);
         }
 
         protected override void InsertItem (int index, TreeViewItem item)

@@ -224,11 +224,6 @@ namespace Modern.Forms
             UpdateVerticalScrollBar ();
         }
 
-        internal void CollectionChanged ()
-        {
-            UpdateVerticalScrollBar ();
-        }
-
         private Rectangle GetItemDisplayRectangle (int index)
         {
             if (index < 0 || index >= Items.Count)
@@ -248,9 +243,8 @@ namespace Modern.Forms
 
         private void UpdateVerticalScrollBar ()
         {
-            if (Items.Count == 0) {
+            if (Items.Count == 0)
                 vscrollbar.Visible = false;
-            }
 
             if (NeededHeightForItems > Bounds.Height) {
                 vscrollbar.Visible = true;
@@ -269,7 +263,5 @@ namespace Modern.Forms
         }
 
         private int VisibleItemCount => ClientRectangle.Height / ScaledItemHeight;
-
-        protected override void OnLayout (LayoutEventArgs e) => base.OnLayout (e);
     }
 }

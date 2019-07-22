@@ -22,6 +22,7 @@ namespace Modern.Forms
         public StatusBar ()
         {
             Dock = DockStyle.Bottom;
+            SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
         }
 
         protected override void OnPaint (PaintEventArgs e)

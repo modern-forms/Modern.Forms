@@ -16,12 +16,12 @@ namespace Explore
 
             // Populate the drive list
             foreach (var drive in DriveInfo.GetDrives ().Where (d => d.IsReady))
-                tree.Items.Add ($"{drive.Name.Trim ('\\')} - {drive.VolumeLabel}", ImageLoader.Get ("drive.png")).Tag = drive;
+                tree.Items.Add ($"{drive.Name.Trim ('\\')} - {drive.VolumeLabel}", ImageLoader.Get ("drive.png")).Tag = drive.Name;
 
             tree.Items.First ().Selected = true;
 
             // Select the first available drive
-            SetSelectedDirectory (((DriveInfo)tree.Items.First().Tag).Name);
+            SetSelectedDirectory ((string)tree.Items.First ().Tag);
         }
 
         private void View_ItemDoubleClicked (object sender, EventArgs<ListViewItem> e)
@@ -34,10 +34,10 @@ namespace Explore
 
         private void Tree_ItemSelected (object sender, EventArgs<TreeViewItem> e)
         {
-            var drive = (DriveInfo)e.Value.Tag;
+            var drive = (string)e.Value.Tag;
 
             if (drive != null)
-                SetSelectedDirectory (drive.Name);
+                SetSelectedDirectory (drive);
         }
 
         private void SetSelectedDirectory (string directory)
@@ -48,6 +48,7 @@ namespace Explore
 
             var directories = 0;
             var files = 0;
+            var tree_item = tree.SelectedItem;
 
             try {
                 foreach (var d in Directory.EnumerateDirectories (directory).Take (30))
@@ -55,25 +56,23 @@ namespace Explore
 
                 directories = view.Items.Count;
 
+                if (!tree_item.HasChildren)
+                    tree_item.Items.AddRange (view.Items.Select (l => new TreeViewItem (l.Text) { Image = ImageLoader.Get ("folder.png"), Tag = Path.Combine (current_directory, l.Text) }));
+
                 foreach (var f in Directory.EnumerateFiles (directory).Take (50))
                     view.Items.Add (new ListViewItem { Text = Path.GetFileName (f), Image = ImageLoader.Get ("new.png") });
 
                 files = view.Items.Count - directories;
 
                 statusbar.Text = $"{directories} directories, {files} files";
-                statusbar.Invalidate ();
 
             } catch (UnauthorizedAccessException) {
                 // Ignore
                 statusbar.Text = "Unable to open directory due to permissions";
-                statusbar.Invalidate ();
             }
-
-            view.Invalidate ();
 
             Text = "Explore Sample - " + directory;
             titlebar.Text = "Explore Sample - " + directory;
-            titlebar.Invalidate ();
         }
 
         private void ThemeButton_Clicked (object sender, EventArgs args)
@@ -140,7 +139,6 @@ namespace Explore
 
         private void ShowButtonForm_Clicked (object sender, EventArgs e)
         {
-            //tree.Items.Add (DateTime.Now.ToString ());
             new ButtonForm ().Show ();
         }
     }

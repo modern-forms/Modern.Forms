@@ -13,7 +13,8 @@ namespace ControlGallery
         public MainForm ()
         {
             var tree = new TreeView {
-                Dock = DockStyle.Left
+                Dock = DockStyle.Left,
+                ShowDropdownGlyph = false
             };
 
             tree.Style.Border.Width = 0;
