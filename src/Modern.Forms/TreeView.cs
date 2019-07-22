@@ -164,7 +164,7 @@ namespace Modern.Forms
 
         private IEnumerable<TreeViewItem> GetAllItems () => root_item.GetAllItems ();
 
-        private int ItemHeight => root_item.GetPreferredSize (Size.Empty).Height;
+        private int ScaledItemHeight => root_item.GetPreferredSize (Size.Empty).Height;
 
         private List<TreeViewItem> LayoutItems ()
         {
@@ -174,7 +174,7 @@ namespace Modern.Forms
             var client_rect = ClientRectangle;
 
             if (vscrollbar.Visible)
-                client_rect.Width -= vscrollbar.Width;
+                client_rect.Width -= (client_rect.Width - vscrollbar.ScaledLeft);
 
             StackLayoutEngine.VerticalExpand.Layout (client_rect, visible_items.Cast<ILayoutable> ());
 
@@ -183,14 +183,12 @@ namespace Modern.Forms
 
         private int NeededHeightForItems => ScaledItemHeight * root_item.GetVisibleChildrenCount ();
 
-        private int ScaledItemHeight => LogicalToDeviceUnits (ItemHeight);
-
         private void UpdateVerticalScrollBar ()
         {
             if (Items.Count == 0)
                 vscrollbar.Visible = false;
 
-            if (NeededHeightForItems > Bounds.Height) {
+            if (NeededHeightForItems > ScaledHeight) {
                 if (!vscrollbar.Visible)
                     vscrollbar.Value = 0;
 
@@ -210,6 +208,6 @@ namespace Modern.Forms
             Invalidate ();
         }
 
-        private int VisibleItemCount => (int)(ClientRectangle.Height / ScaledItemHeight);
+        private int VisibleItemCount => ScaledHeight / ScaledItemHeight;
     }
 }

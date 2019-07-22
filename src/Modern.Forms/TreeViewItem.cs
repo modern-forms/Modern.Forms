@@ -176,11 +176,14 @@ namespace Modern.Forms
 
             left_index += LogicalToDeviceUnits (7);
 
+            if (string.IsNullOrWhiteSpace (Text))
+                return;
+
             var text_bounds = new Rectangle (left_index, Bounds.Top, Bounds.Width - left_index, Bounds.Height);
             canvas.DrawText (Text.Trim (), Theme.UIFont, LogicalToDeviceUnits (Theme.FontSize), text_bounds, Theme.DarkTextColor, ContentAlignment.MiddleLeft);
         }
 
-        private int LogicalToDeviceUnits (int value) => Parent?.LogicalToDeviceUnits (value) ?? value;
+        private int LogicalToDeviceUnits (int value) => TreeView?.LogicalToDeviceUnits (value) ?? value;
 
         protected internal enum TreeViewItemElement
         {
