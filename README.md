@@ -19,7 +19,7 @@ Modern.Forms is a cross-platform spiritual successor to Winforms for .NET Core 3
 
 The goal of this proof of concept is to create a spiritual successor to Winforms that is:
 * Cross platform (Windows / Mac / Linux)
-* Familiar for Winforms developers (ie: no XAML)
+* Familiar for Winforms developers (ie: not XAML)
   * Sample Form:
     * [MainForm.cs](https://github.com/jpobst/Modern.Forms/blob/master/samples/Explorer/MainForm.cs)
     * [MainForm.Designer.cs](https://github.com/jpobst/Modern.Forms/blob/master/samples/Explorer/MainForm.Designer.cs)
@@ -44,10 +44,6 @@ The goal of this proof of concept is to create a spiritual successor to Winforms
 * Clone this repository
 * Install .NET Core 3.0 Preview 4+
   * https://dotnet.microsoft.com/download/dotnet-core/3.0
-* Install `libSkiaSharp.so` and `libHarfBuzzSharp.so`
-  * https://github.com/mono/SkiaSharp/releases/download/v1.68.0/libSkiaSharp.so
-  * https://github.com/mono/SkiaSharp/releases/download/v1.68.0/libHarfBuzzSharp.so
-  * These can go in `bin/Debug/netcoreapp3.0` or anywhere they can be found
 * Navigate to `samples/Explorer`
 * Run `dotnet run`
 
