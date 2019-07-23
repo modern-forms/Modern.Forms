@@ -9,7 +9,6 @@ namespace Explore
         private TreeView tree;
         private ListView view;
         private StatusBar statusbar;
-        private FormTitleBar titlebar;
 
         private void InitializeComponent ()
         {
@@ -80,13 +79,8 @@ namespace Explore
 
             Controls.Add (statusbar);
 
-            // TitleBar
-            titlebar = new FormTitleBar {
-                Text = "Explore Sample",
-                Image = ImageLoader.Get ("layout-folder-pane.png")
-            };
-
-            Controls.Add (titlebar);
+            Text = "Explore Sample";
+            Image = ImageLoader.Get ("layout-folder-pane.png");
 
             //ResumeLayout ();
         }

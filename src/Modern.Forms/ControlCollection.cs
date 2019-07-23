@@ -61,12 +61,13 @@ namespace Modern.Forms
             parent.PerformLayout ();
         }
 
-        internal void AddImplicitControl (Control item)
+        internal T AddImplicitControl<T> (T item) where T : Control
         {
             item.ImplicitControl = true;
             implicit_controls.Add (item);
             item.SetParentInternal (parent);
             parent.PerformLayout ();
+            return item;
         }
 
         internal void AddImplicitControlRange (params Control[] controls)

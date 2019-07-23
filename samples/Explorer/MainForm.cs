@@ -72,7 +72,6 @@ namespace Explore
             }
 
             Text = "Explore Sample - " + directory;
-            titlebar.Text = "Explore Sample - " + directory;
         }
 
         private void ThemeButton_Clicked (object sender, EventArgs args)

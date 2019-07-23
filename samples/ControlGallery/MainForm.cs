@@ -44,14 +44,8 @@ namespace ControlGallery
             tree.ItemSelected += Tree_ItemSelected;
             Controls.Add (tree);
 
-
-            // TitleBar
-            var titlebar = new FormTitleBar {
-                Text = "Control Gallery",
-                Image = ImageLoader.Get ("button.png")
-            };
-
-            Controls.Add (titlebar);
+            Text = "Control Gallery";
+            Image = ImageLoader.Get ("button.png");
         }
 
         private void Tree_ItemSelected (object sender, EventArgs<TreeViewItem> e)

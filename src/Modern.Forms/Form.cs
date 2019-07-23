@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Platform;
+using SkiaSharp;
 
 namespace Modern.Forms
 {
@@ -21,12 +22,29 @@ namespace Modern.Forms
 
         public Form () : base (AvaloniaGlobals.WindowingInterface.CreateWindow ())
         {
+            TitleBar = Controls.AddImplicitControl (new FormTitleBar ());
+
             Window.SetSystemDecorations (false);
 
             SetWindowStartupLocation ();
         }
 
+        public bool AllowMaximize {
+            get => TitleBar.AllowMaximize;
+            set => TitleBar.AllowMaximize = value;
+        }
+
+        public bool AllowMinimize {
+            get => TitleBar.AllowMinimize;
+            set => TitleBar.AllowMinimize = value;
+        }
+
         protected override System.Drawing.Size DefaultSize => new System.Drawing.Size (1080, 720);
+
+        public SKBitmap Image {
+            get => TitleBar.Image;
+            set => TitleBar.Image = value;
+        }
 
         public void ShowDialog (Form parent) => Window.ShowDialog (parent.Window);
 
@@ -35,12 +53,15 @@ namespace Modern.Forms
         /// </summary>
         public FormStartPosition StartPosition { get; set; } = FormStartPosition.CenterScreen;
 
+        public FormTitleBar TitleBar { get; }
+
         public string Text {
             get => text;
             set {
                 if (text != value) {
                     text = value;
                     Window.SetTitle (text);
+                    TitleBar.Text = text;
                 }
             }
         }
