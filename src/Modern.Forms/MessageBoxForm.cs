@@ -30,7 +30,7 @@ namespace Modern.Forms
                 Top = 50
             };
 
-            label.Style.BackgroundColor = SKColors.White;
+            label.Style.BackgroundColor = Style.BackgroundColor;
             label.Style.FontSize = 16;
 
             Controls.Add (label);

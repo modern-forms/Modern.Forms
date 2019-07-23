@@ -48,7 +48,7 @@ namespace Explore
 
             group2.Items.Add (new RibbonItem ("New Folder", ImageLoader.Get ("folder-add.png"), new EventHandler (NotImplemented_Clicked)));
             group2.Items.Add (new RibbonItem ("Search", ImageLoader.Get ("search.png"), new EventHandler (NotImplemented_Clicked)));
-            group2.Items.Add (new RibbonItem ("Delete", ImageLoader.Get ("delete-red.png"), new EventHandler (ShowButtonForm_Clicked)));
+            group2.Items.Add (new RibbonItem ("Delete", ImageLoader.Get ("delete-red.png"), new EventHandler (NotImplemented_Clicked)));
 
             home_tab.Groups.Add (group1);
             home_tab.Groups.Add (group2);

@@ -30,8 +30,8 @@ namespace Modern.Forms
         internal int dist_right;
         internal int dist_bottom;
         private DockStyle dock_style;
-        //private Rectangle explicit_bounds;
         private bool is_captured;
+        private bool is_dirty = true;
         private bool is_enabled = true;
         private bool is_visible = true;
         private int layout_suspended;
@@ -40,7 +40,6 @@ namespace Modern.Forms
         private Padding padding;
         private Control parent;
         private bool recalculate_distances = true;
-        private Rectangle scaled_bounds;
         private int tab_index = -1;
         private bool tab_stop = true;
         private string text;
@@ -61,6 +60,8 @@ namespace Modern.Forms
             bounds = new Rectangle (Point.Empty, DefaultSize);
 
             behaviors = ControlBehaviors.Selectable;
+
+            Theme.ThemeChanged += (o, e) => is_dirty = true;
         }
 
         public event EventHandler<MouseEventArgs> Click;
@@ -301,13 +302,12 @@ namespace Modern.Forms
             set => SetBounds (bounds.X, bounds.Y, bounds.Width, value, BoundsSpecified.Height);
         }
 
-        public void Invalidate ()
-        {
-            FindWindow ()?.Invalidate ();
-        }
+        public void Invalidate () => Invalidate (Bounds);
 
         public void Invalidate (Rectangle rectangle)
         {
+            is_dirty = true;
+
             FindWindow ()?.Invalidate (rectangle);
         }
 
@@ -680,6 +680,8 @@ namespace Modern.Forms
             return new Rectangle (sx, sy, sw, sh);
         }
 
+        internal bool NeedsPaint => is_dirty || Controls.GetAllControls ().Any (c => c.is_dirty);
+
         internal void RaiseClick (MouseEventArgs e)
         {
             // If something has the mouse captured, they get all the events
@@ -909,7 +911,12 @@ namespace Modern.Forms
         {
         }
 
-        internal void RaisePaint (PaintEventArgs e) => OnPaint (e);
+        internal void RaisePaint (PaintEventArgs e)
+        {
+            OnPaint (e);
+
+            is_dirty = false;
+        }
 
         protected virtual void OnPaint (PaintEventArgs e)
         {
@@ -920,14 +927,16 @@ namespace Modern.Forms
                 var info = new SKImageInfo (control.ScaledSize.Width, control.ScaledSize.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
                 var buffer = control.GetBackBuffer ();
 
-                using (var canvas = new SKCanvas (buffer)) {
-                    // start drawing
-                    var args = new PaintEventArgs (null, info, canvas);
+                if (control.NeedsPaint) {
+                    using (var canvas = new SKCanvas (buffer)) {
+                        // start drawing
+                        var args = new PaintEventArgs (null, info, canvas);
 
-                    control.RaisePaintBackground (args);
-                    control.RaisePaint (args);
+                        control.RaisePaintBackground (args);
+                        control.RaisePaint (args);
 
-                    canvas.Flush ();
+                        canvas.Flush ();
+                    }
                 }
 
                 e.Canvas.DrawBitmap (buffer, control.ScaledLeft, control.ScaledTop);
@@ -1048,6 +1057,7 @@ namespace Modern.Forms
             if (back_buffer == null || back_buffer.Width != ScaledSize.Width || back_buffer.Height != ScaledSize.Height) {
                 FreeBitmap ();
                 back_buffer = new SKBitmap (ScaledSize.Width, ScaledSize.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                is_dirty = true;
             }
 
             return back_buffer;

@@ -136,10 +136,5 @@ namespace Explore
         {
             new MessageBoxForm ("Demo", "Functionality not available in demo").ShowDialog (this);
         }
-
-        private void ShowButtonForm_Clicked (object sender, EventArgs e)
-        {
-            new ButtonForm ().Show ();
-        }
     }
 }

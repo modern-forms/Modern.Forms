@@ -50,14 +50,16 @@ namespace Modern.Forms
                 var info = new SKImageInfo (control.Width, control.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
                 var buffer = control.GetBackBuffer ();
 
-                using (var canvas = new SKCanvas (buffer)) {
-                    // start drawing
-                    var args = new PaintEventArgs (null, info, canvas);
+                if (control.NeedsPaint) {
+                    using (var canvas = new SKCanvas (buffer)) {
+                        // start drawing
+                        var args = new PaintEventArgs (null, info, canvas);
 
-                    control.RaisePaintBackground (args);
-                    control.RaisePaint (args);
+                        control.RaisePaintBackground (args);
+                        control.RaisePaint (args);
 
-                    canvas.Flush ();
+                        canvas.Flush ();
+                    }
                 }
 
                 e.Canvas.DrawBitmap (buffer, form_x + control.ScaledLeft, form_y + control.ScaledTop);

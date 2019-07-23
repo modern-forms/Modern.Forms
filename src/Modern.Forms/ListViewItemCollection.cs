@@ -37,6 +37,16 @@ namespace Modern.Forms
             return item;
         }
 
+        protected override void ClearItems ()
+        {
+            foreach (var item in Items)
+                item.Parent = null;
+
+            base.ClearItems ();
+
+            owner.Invalidate ();
+        }
+
         protected override void InsertItem (int index, ListViewItem item)
         {
             base.InsertItem (index, item);
