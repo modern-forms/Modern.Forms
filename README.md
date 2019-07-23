@@ -29,7 +29,7 @@ The goal of this proof of concept is to create a spiritual successor to Winforms
 ## Build Status
 
 Windows | Mac - High Sierra | Ubuntu 16.04
--|
+-|-|-
 [![Build status](https://dev.azure.com/jonathan0207/Modern.Forms/_apis/build/status/Windows)](https://dev.azure.com/jonathan0207/Modern.Forms/_build/latest?definitionId=1) | [![Build status](https://dev.azure.com/jonathan0207/Modern.Forms/_apis/build/status/Mac%20OSX%20-%20High%20Sierra)](https://dev.azure.com/jonathan0207/Modern.Forms/_build/latest?definitionId=4) | [![Build status](https://dev.azure.com/jonathan0207/Modern.Forms/_apis/build/status/Ubuntu%2016.04)](https://dev.azure.com/jonathan0207/Modern.Forms/_build/latest?definitionId=2)
 
 ## How to Run
