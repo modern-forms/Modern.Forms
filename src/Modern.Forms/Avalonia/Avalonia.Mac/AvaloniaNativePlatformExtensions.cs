@@ -22,7 +22,7 @@ namespace Avalonia
 
     public class AvaloniaNativePlatformOptions
     {
-        public bool UseDeferredRendering { get; set; } = true;
+        public bool UseDeferredRendering { get; set; } = false;
         public bool UseGpu { get; set; } = true;
         public string AvaloniaNativeLibraryPath { get; set; }
     }

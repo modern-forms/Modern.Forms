@@ -62,7 +62,7 @@ namespace Avalonia.Native
         public Size ScaledClientSize {
             get {
                 var s = _native.GetClientSize ();
-                return new Size (s.Width, s.Height);
+                return new Size (s.Width * Scaling, s.Height * Scaling);
             }
         }
 
@@ -230,11 +230,11 @@ namespace Avalonia.Native
             switch (type)
             {
                 case AvnRawMouseEventType.Wheel:
-                    Input?.Invoke(new RawMouseWheelEventArgs(_mouse, timeStamp, point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (InputModifiers)modifiers));
+                    Input?.Invoke(new RawMouseWheelEventArgs(_mouse, timeStamp, point.ToAvaloniaPoint() * Scaling, new Vector(delta.X, delta.Y), (InputModifiers)modifiers));
                     break;
 
                 default:
-                    Input?.Invoke(new RawMouseEventArgs(_mouse, timeStamp, (RawMouseEventType)type, point.ToAvaloniaPoint(), (InputModifiers)modifiers));
+                    Input?.Invoke(new RawMouseEventArgs(_mouse, timeStamp, (RawMouseEventType)type, point.ToAvaloniaPoint() * Scaling, (InputModifiers)modifiers));
                     break;
             }
         }
