@@ -13,7 +13,7 @@ Modern.Forms is a cross-platform spiritual successor to Winforms for .NET Core 3
   * https://github.com/AvaloniaUI/Avalonia
   * Only the base infrastructure is used, basically this gives us a blank Form
 * SkiaSharp
-  * All new controls are drawn with SkiaSharp
+  * New controls drawn with SkiaSharp
 
 ### Motivation
 
@@ -49,7 +49,12 @@ The goal of this proof of concept is to create a spiritual successor to Winforms
 
 ![Ubuntu Screenshot](https://github.com/jpobst/Modern.Forms/blob/master/docs/explorer-ubuntu.png "Ubuntu Screenshot")
 
-### OSX
+### Mac OSX
 
-The OSX backend from Avalonia has not been ported because I do not have a Mac.  Given the
-work done to get the other backends running, it would probably only take a few hours.
+* Clone this repository
+* Install .NET Core 3.0 Preview 4+
+  * https://dotnet.microsoft.com/download/dotnet-core/3.0
+* Navigate to `samples/Explorer`
+* Run `dotnet run`
+
+![OSX Screenshot](https://github.com/jpobst/Modern.Forms/blob/master/docs/explorer-osx.png "Mac Screenshot")
