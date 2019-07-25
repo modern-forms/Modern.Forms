@@ -213,12 +213,12 @@ namespace Modern.Forms
             // Top Arrow
             e.Canvas.FillRectangle (top_arrow_area, SKColors.White);
             e.Canvas.DrawRectangle (top_arrow_area, Theme.BorderGray);
-            e.Canvas.DrawArrow (top_arrow_area, Theme.BorderGray, DecrementArrowDirection);
+            ControlPaint.DrawArrowGlyph (e, top_arrow_area, Theme.BorderGray, DecrementArrowDirection);
 
             // Bottom Arrow
             e.Canvas.FillRectangle (bottom_arrow_area, SKColors.White);
             e.Canvas.DrawRectangle (bottom_arrow_area, Theme.BorderGray);
-            e.Canvas.DrawArrow (bottom_arrow_area, Theme.BorderGray, IncrementArrowDirection);
+            ControlPaint.DrawArrowGlyph (e, bottom_arrow_area, Theme.BorderGray, IncrementArrowDirection);
 
             // Grip
             var thumb_bounds = ThumbDragBounds;

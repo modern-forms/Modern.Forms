@@ -147,11 +147,11 @@ namespace Modern.Forms
                         yield return child;
         }
 
-        internal void OnPaint (SKCanvas canvas)
+        internal void OnPaint (PaintEventArgs e)
         {
             var background_color = Selected ? Theme.RibbonItemHighlightColor : Theme.LightNeutralGray;
 
-            canvas.FillRectangle (Bounds, background_color);
+            e.Canvas.FillRectangle (Bounds, background_color);
 
             var left_index = Bounds.Left + (IndentLevel * LogicalToDeviceUnits (INDENT_SIZE));
             var tree_view = TreeView;
@@ -160,7 +160,7 @@ namespace Modern.Forms
                 var glyph_bounds = GetGlyphBounds ();
 
                 if (HasChildren)
-                    canvas.DrawArrow (glyph_bounds, Theme.DarkTextColor, Expanded ? ArrowDirection.Down : ArrowDirection.Right);
+                    ControlPaint.DrawArrowGlyph (e, glyph_bounds, Theme.DarkTextColor, Expanded ? ArrowDirection.Down : ArrowDirection.Right);
 
                 left_index = glyph_bounds.Right + LogicalToDeviceUnits (1);
             }
@@ -169,7 +169,7 @@ namespace Modern.Forms
                 var image_area = new Rectangle (left_index, Bounds.Top, Bounds.Height, Bounds.Height);
                 var image_bounds = DrawingExtensions.CenterSquare (image_area, LogicalToDeviceUnits (IMAGE_SIZE));
 
-                canvas.DrawBitmap (Image, image_bounds);
+                e.Canvas.DrawBitmap (Image, image_bounds);
 
                 left_index = image_bounds.Right;
             }
@@ -180,7 +180,7 @@ namespace Modern.Forms
                 return;
 
             var text_bounds = new Rectangle (left_index, Bounds.Top, Bounds.Width - left_index, Bounds.Height);
-            canvas.DrawText (Text.Trim (), Theme.UIFont, LogicalToDeviceUnits (Theme.FontSize), text_bounds, Theme.DarkTextColor, ContentAlignment.MiddleLeft);
+            e.Canvas.DrawText (Text.Trim (), Theme.UIFont, LogicalToDeviceUnits (Theme.FontSize), text_bounds, Theme.DarkTextColor, ContentAlignment.MiddleLeft);
         }
 
         private int LogicalToDeviceUnits (int value) => TreeView?.LogicalToDeviceUnits (value) ?? value;

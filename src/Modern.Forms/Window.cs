@@ -208,7 +208,7 @@ namespace Modern.Forms
 
             using var surface = SKSurface.Create (framebufferImageInfo, framebuffer.Address, framebuffer.RowBytes);
 
-            var e = new PaintEventArgs (surface, framebufferImageInfo, surface.Canvas);
+            var e = new PaintEventArgs (surface, framebufferImageInfo, surface.Canvas, Scaling);
             e.Canvas.DrawBackground (CurrentStyle);
             e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, (int)scaled_client_size.Width, (int)scaled_client_size.Height), CurrentStyle);
 

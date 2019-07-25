@@ -116,52 +116,6 @@ namespace Modern.Forms
         public static void DrawBackground(this SKCanvas canvas, ControlStyle style) =>
             canvas.Clear (style.GetBackgroundColor ());
 
-        public static void DrawArrow (this SKCanvas canvas, Rectangle bounds, SKColor color, ArrowDirection direction)
-        {
-            switch (direction) {
-                case ArrowDirection.Left: {
-                        var y = bounds.Y + (bounds.Height / 2);
-                        var x = bounds.X + (bounds.Width / 2) - 2;
-
-                        canvas.DrawLine (x, y, x + 1, y, color);
-                        canvas.DrawLine (x + 1, y - 1, x + 1, y + 2, color);
-                        canvas.DrawLine (x + 2, y - 2, x + 2, y + 3, color);
-                        canvas.DrawLine (x + 3, y - 3, x + 3, y + 4, color);
-                        break;
-                    }
-                case ArrowDirection.Up: {
-                        var y = bounds.Y + (bounds.Height / 2) - 2;
-                        var x = bounds.X + (bounds.Width / 2);
-
-                        canvas.DrawLine (x, y, x, y + 1, color);
-                        canvas.DrawLine (x - 1, y + 1, x + 2, y + 1, color);
-                        canvas.DrawLine (x - 2, y + 2, x + 3, y + 2, color);
-                        canvas.DrawLine (x - 3, y + 3, x + 4, y + 3, color);
-                        break;
-                    }
-                case ArrowDirection.Right: {
-                        var y = bounds.Y + (bounds.Height / 2);
-                        var x = bounds.X + (bounds.Width / 2) - 1;
-
-                        canvas.DrawLine (x, y - 3, x + 1, y + 4, color);
-                        canvas.DrawLine (x + 1, y - 2, x + 1, y + 3, color);
-                        canvas.DrawLine (x + 2, y - 1, x + 2, y + 2, color);
-                        canvas.DrawLine (x + 3, y, x + 3, y + 1, color);
-                        break;
-                    }
-                case ArrowDirection.Down: {
-                        var y = bounds.Y + (bounds.Height / 2) - 1;
-                        var x = bounds.X + (bounds.Width / 2);
-
-                        canvas.DrawLine (x - 3, y, x + 4, y + 1, color);
-                        canvas.DrawLine (x - 2, y + 1, x + 3, y + 1, color);
-                        canvas.DrawLine (x - 1, y + 2, x + 2, y + 2, color);
-                        canvas.DrawLine (x, y + 3, x + 1, y + 3, color);
-                        break;
-                    }
-            }
-        }
-
         public static void DrawBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect)
         {
             canvas.DrawBitmap (bitmap, rect.ToSKRect ());

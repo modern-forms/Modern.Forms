@@ -56,7 +56,7 @@ namespace Modern.Forms
             var button_bounds = DropDownButtonArea;
             button_bounds.Width = LogicalToDeviceUnits (12);
 
-            e.Canvas.DrawArrow (button_bounds, Theme.DarkTextColor, ArrowDirection.Down);
+            ControlPaint.DrawArrowGlyph (e, button_bounds, Theme.DarkTextColor, ArrowDirection.Down);
         }
 
         private void ClosePopup ()

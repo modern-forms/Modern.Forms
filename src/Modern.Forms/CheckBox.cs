@@ -53,18 +53,12 @@ namespace Modern.Forms
         {
             base.OnPaint (e);
 
-            var y = (Height - 16) / 2;
             var box_size = LogicalToDeviceUnits (BOX_BORDER_SIZE);
+            var y = (ScaledHeight - box_size) / 2;
 
             var box_bounds = new Rectangle (3, y, box_size, box_size);
-            var fill_bounds = new Rectangle (box_bounds.Left + 1 + LogicalToDeviceUnits (2), box_bounds.Top + 1 + LogicalToDeviceUnits (2), box_size - LogicalToDeviceUnits (5), box_size - LogicalToDeviceUnits (5));
 
-            if (Checked) {
-                e.Canvas.DrawRectangle (box_bounds, Theme.RibbonColor, LogicalToDeviceUnits (1));
-                e.Canvas.FillRectangle (fill_bounds, Theme.RibbonColor);
-            } else {
-                e.Canvas.DrawRectangle (box_bounds, Theme.BorderGray, LogicalToDeviceUnits (1));
-            }
+            ControlPaint.DrawCheckBox (e, box_bounds, Checked ? CheckState.Checked : CheckState.Unchecked);
 
             var glyph_padding = LogicalToDeviceUnits (GLYPH_TEXT_PADDING);
             e.Canvas.DrawText (Text, new Rectangle (box_bounds.Right + glyph_padding, 0, ScaledWidth - box_bounds.Right - glyph_padding, ScaledHeight), this, ContentAlignment.MiddleLeft);

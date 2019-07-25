@@ -53,7 +53,7 @@ namespace Modern.Forms
                 if (control.NeedsPaint) {
                     using (var canvas = new SKCanvas (buffer)) {
                         // start drawing
-                        var args = new PaintEventArgs (null, info, canvas);
+                        var args = new PaintEventArgs (null, info, canvas, Scaling);
 
                         control.RaisePaintBackground (args);
                         control.RaisePaint (args);

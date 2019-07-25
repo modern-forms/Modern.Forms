@@ -60,15 +60,8 @@ namespace Modern.Forms
 
             var x = LogicalToDeviceUnits (11);
             var y = ScaledHeight / 2;
-            var outer_radius = LogicalToDeviceUnits (8);
-            var inner_radius = LogicalToDeviceUnits (5);
 
-            if (Checked) {
-                e.Canvas.DrawCircle (x, y, outer_radius, Theme.RibbonColor);
-                e.Canvas.FillCircle (x, y, inner_radius, Theme.RibbonColor);
-            } else {
-                e.Canvas.DrawCircle (x, y, outer_radius, Theme.BorderGray);
-            }
+            ControlPaint.DrawRadioButton (e, new Point (x, y), Checked ? CheckState.Checked : CheckState.Unchecked);
 
             var text_bounds = ClientRectangle;
             text_bounds.X += LogicalToDeviceUnits (24);

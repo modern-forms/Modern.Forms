@@ -112,7 +112,7 @@ namespace Modern.Forms
             e.Canvas.Clip (ClientRectangle);
 
             foreach (var item in visible_items.Take (VisibleItemCount + 1))
-                item.OnPaint (e.Canvas);
+                item.OnPaint (e);
 
             e.Canvas.Restore ();
         }

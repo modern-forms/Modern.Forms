@@ -96,8 +96,7 @@ namespace Modern.Forms
             }
 
             // Form text
-            if (!string.IsNullOrWhiteSpace (Text))
-                e.Canvas.DrawText (Text.Trim (), Theme.UIFont, LogicalToDeviceUnits (Theme.FontSize), TitleBounds, Theme.LightTextColor, ContentAlignment.MiddleCenter);
+            e.Canvas.DrawText (Text.Trim (), Theme.UIFont, LogicalToDeviceUnits (Theme.FontSize), TitleBounds, Theme.LightTextColor, ContentAlignment.MiddleCenter);
 
             // Minimize button
             if (AllowMinimize) {
@@ -107,7 +106,7 @@ namespace Modern.Forms
                     e.Canvas.FillRectangle (minimize_button_bounds, Theme.RibbonTabHighlightColor);
 
                 var min_glyph_bounds = DrawingExtensions.CenterRectangle (minimize_button_bounds, LogicalToDeviceUnits (new Size (BUTTON_PADDING, 1)));
-                e.Canvas.DrawLine (min_glyph_bounds.X, min_glyph_bounds.Y, min_glyph_bounds.Right, min_glyph_bounds.Y, Theme.LightTextColor);
+                ControlPaint.DrawMinimizeGlyph (e, min_glyph_bounds);
             }
 
             // Maximize button
@@ -118,7 +117,7 @@ namespace Modern.Forms
                     e.Canvas.FillRectangle (maximize_button_bounds, Theme.RibbonTabHighlightColor);
 
                 var max_glyph_bounds = DrawingExtensions.CenterSquare (maximize_button_bounds, LogicalToDeviceUnits (BUTTON_PADDING));
-                e.Canvas.DrawRectangle (max_glyph_bounds, Theme.LightTextColor);
+                ControlPaint.DrawMaximizeGlyph (e, max_glyph_bounds);
             }
 
             // Close button
@@ -128,8 +127,7 @@ namespace Modern.Forms
                 e.Canvas.FillRectangle (close_button_bounds, Theme.FormCloseHighlightColor);
 
             var close_glyph_bounds = DrawingExtensions.CenterSquare (close_button_bounds, LogicalToDeviceUnits (BUTTON_PADDING));
-            e.Canvas.DrawLine (close_glyph_bounds.X, close_glyph_bounds.Y, close_glyph_bounds.Right, close_glyph_bounds.Bottom, Theme.LightTextColor);
-            e.Canvas.DrawLine (close_glyph_bounds.X, close_glyph_bounds.Bottom, close_glyph_bounds.Right, close_glyph_bounds.Y, Theme.LightTextColor);
+            ControlPaint.DrawCloseGlyph (e, close_glyph_bounds);
         }
 
         private int ScaledButtonWidth => LogicalToDeviceUnits (BUTTON_SIZE);
