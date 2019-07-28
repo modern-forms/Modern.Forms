@@ -26,7 +26,7 @@ namespace Modern.Forms
         private ControlBehaviors behaviors;
         private Rectangle bounds;
         private Control current_mouse_in;
-        //private Cursor cursor;
+        private Cursor cursor;
         internal int dist_right;
         internal int dist_bottom;
         private DockStyle dock_style;
@@ -173,15 +173,15 @@ namespace Modern.Forms
 
         public ControlCollection Controls { get; }
 
-        //public Cursor Cursor {
-        //    get => cursor ?? Parent?.Cursor ?? Cursors.Default;
-        //    set {
-        //        if (cursor != value) {
-        //            cursor = value;
-        //            OnCursorChanged (EventArgs.Empty);
-        //        }
-        //    }
-        //}
+        public Cursor Cursor {
+            get => cursor ?? Parent?.Cursor ?? Cursor.Default;
+            set {
+                if (cursor != value) {
+                    cursor = value;
+                    OnCursorChanged (EventArgs.Empty);
+                }
+            }
+        }
 
         public int DeviceDpi => (int)((FindWindow ()?.Scaling ?? 1) * 96);
 
@@ -817,6 +817,8 @@ namespace Modern.Forms
 
         protected virtual void OnMouseEnter (MouseEventArgs e)
         {
+            FindForm ()?.SetCursor (Cursor);
+
             if (behaviors.HasFlag (ControlBehaviors.Hoverable)) {
                 IsHovering = true;
                 Invalidate ();
@@ -856,6 +858,11 @@ namespace Modern.Forms
             if (current_mouse_in != null && current_mouse_in != child) {
                 current_mouse_in.RaiseMouseLeave (e);
                 current_mouse_in = null;
+
+                // If we are leaving a child and not entering another child,
+                // we need to raise MouseEnter on this control
+                if (child == null)
+                    OnMouseEnter (e);
             }
 
             if (current_mouse_in == null && child != null)

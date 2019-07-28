@@ -24,6 +24,8 @@ namespace Modern.Forms
         public TextBox ()
         {
             SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
+
+            Cursor = Cursors.IBeam;
         }
 
         public string Placeholder {

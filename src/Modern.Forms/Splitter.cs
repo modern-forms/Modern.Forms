@@ -17,6 +17,7 @@ namespace Modern.Forms
         public Splitter ()
         {
             Dock = DockStyle.Left;
+            Cursor = Cursors.SizeWestEast;
         }
         
         public event EventHandler<EventArgs<Point>> Drag;
@@ -29,6 +30,7 @@ namespace Modern.Forms
 
                     Size = new Size (Height, Width);
                     Dock = orientation == Orientation.Horizontal ? DockStyle.Left : DockStyle.Top;
+                    Cursor = orientation == Orientation.Horizontal ? Cursors.SizeWestEast : Cursors.SizeNorthSouth;
                 }
             }
         }

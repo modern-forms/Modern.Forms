@@ -31,8 +31,6 @@ namespace Modern.Forms
         public Button ()
         {
             SetControlBehavior (ControlBehaviors.Hoverable);
-
-            //Cursor = Cursors.Hand;
         }
 
         public ContentAlignment TextAlign {
