@@ -7,7 +7,7 @@ using Avalonia.Platform;
 
 namespace Avalonia.Native
 {
-    public class PopupImpl : WindowBaseImpl, IPopupImpl
+    class PopupImpl : WindowBaseImpl, IPopupImpl
     {
         public PopupImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts) : base(opts)
         {

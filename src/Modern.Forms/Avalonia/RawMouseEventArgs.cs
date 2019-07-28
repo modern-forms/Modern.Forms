@@ -5,7 +5,7 @@ using System;
 
 namespace Avalonia.Input.Raw
 {
-    public enum RawMouseEventType
+    enum RawMouseEventType
     {
         LeaveWindow,
         LeftButtonDown,
@@ -22,7 +22,7 @@ namespace Avalonia.Input.Raw
     /// <summary>
     /// A raw mouse event.
     /// </summary>
-    public class RawMouseEventArgs : RawInputEventArgs
+    class RawMouseEventArgs : RawInputEventArgs
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RawMouseEventArgs"/> class.

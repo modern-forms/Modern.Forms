@@ -6,7 +6,7 @@ using Avalonia.Utilities;
 
 namespace Avalonia.Controls
 {
-    public class Screens
+    class Screens
     {
         private readonly IScreenImpl _iScreenImpl;
 

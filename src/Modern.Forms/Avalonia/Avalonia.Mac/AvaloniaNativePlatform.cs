@@ -113,7 +113,7 @@ namespace Avalonia.Native
         public IAvaloniaNativeFactory Factory => _factory;
     }
 
-    public class AvaloniaNativeMacOptions
+    class AvaloniaNativeMacOptions
     {
         private readonly IAvnMacOptions _opts;
         private bool _showInDock;

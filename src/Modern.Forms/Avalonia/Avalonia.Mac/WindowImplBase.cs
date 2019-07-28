@@ -15,7 +15,7 @@ using Avalonia.Threading;
 
 namespace Avalonia.Native
 {
-    public class WindowBaseImpl : IWindowBaseImpl,
+    class WindowBaseImpl : IWindowBaseImpl,
         IFramebufferPlatformSurface
     {
         //IInputRoot _inputRoot;

@@ -1,6 +1,6 @@
 namespace Avalonia.Platform
 {
-    public interface IWindowingPlatform
+    interface IWindowingPlatform
     {
         IWindowImpl CreateWindow();
         //IEmbeddableWindowImpl CreateEmbeddableWindow();

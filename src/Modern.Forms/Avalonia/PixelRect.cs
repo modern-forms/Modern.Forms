@@ -10,7 +10,7 @@ namespace Avalonia
     /// <summary>
     /// Represents a rectangle in device pixels.
     /// </summary>
-    public readonly struct PixelRect
+    readonly struct PixelRect
     {
         /// <summary>
         /// An empty rectangle.

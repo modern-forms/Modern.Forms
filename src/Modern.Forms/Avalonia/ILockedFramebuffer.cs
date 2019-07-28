@@ -2,7 +2,7 @@
 
 namespace Avalonia.Platform
 {
-    public interface ILockedFramebuffer : IDisposable
+    interface ILockedFramebuffer : IDisposable
     {
         /// <summary>
         /// Address of the first pixel

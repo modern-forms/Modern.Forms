@@ -8,7 +8,7 @@ using Avalonia.X11;
 
 namespace Avalonia
 {
-    public static class AvaloniaGlobals
+    static class AvaloniaGlobals
     {
         public static IRuntimePlatform RuntimePlatform { get; }
         public static IPlatformThreadingInterface PlatformThreadingInterface { get; private set; }

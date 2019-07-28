@@ -5,7 +5,7 @@
 
 namespace Avalonia.Input
 {
-    public interface IPointerDevice : IInputDevice
+    interface IPointerDevice : IInputDevice
     {
         //IInputElement Captured { get; }
 

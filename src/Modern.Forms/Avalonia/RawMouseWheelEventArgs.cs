@@ -4,7 +4,7 @@
 
 namespace Avalonia.Input.Raw
 {
-    public class RawMouseWheelEventArgs : RawMouseEventArgs
+    class RawMouseWheelEventArgs : RawMouseEventArgs
     {
         public RawMouseWheelEventArgs(
             IInputDevice device,

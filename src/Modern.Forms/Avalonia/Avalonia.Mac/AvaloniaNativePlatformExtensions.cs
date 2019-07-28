@@ -7,7 +7,7 @@ using Avalonia.Native;
 
 namespace Avalonia
 {
-    public static class AvaloniaNativePlatformExtensions
+    static class AvaloniaNativePlatformExtensions
     {
         //public static T UseAvaloniaNative<T>(this T builder)
         //    where T : AppBuilderBase<T>, new()
@@ -20,7 +20,7 @@ namespace Avalonia
         //}
     }
 
-    public class AvaloniaNativePlatformOptions
+    class AvaloniaNativePlatformOptions
     {
         public bool UseDeferredRendering { get; set; } = false;
         public bool UseGpu { get; set; } = true;
@@ -28,7 +28,7 @@ namespace Avalonia
     }
 
     // ReSharper disable once InconsistentNaming
-    public class MacOSPlatformOptions
+    class MacOSPlatformOptions
     {
         public bool ShowInDock { get; set; } = true;
     }

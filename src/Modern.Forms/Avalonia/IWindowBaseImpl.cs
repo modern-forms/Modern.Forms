@@ -3,7 +3,7 @@ using Avalonia.Controls;
 
 namespace Avalonia.Platform
 {
-    public interface IWindowBaseImpl : ITopLevelImpl
+    interface IWindowBaseImpl : ITopLevelImpl
     {
         /// <summary>
         /// Shows the top level.

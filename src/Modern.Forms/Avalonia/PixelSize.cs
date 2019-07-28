@@ -10,7 +10,7 @@ namespace Avalonia
     /// <summary>
     /// Represents a size in device pixels.
     /// </summary>
-    public readonly struct PixelSize
+    readonly struct PixelSize
     {
         /// <summary>
         /// A size representing zero

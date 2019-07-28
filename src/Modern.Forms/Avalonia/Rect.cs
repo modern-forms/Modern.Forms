@@ -11,7 +11,7 @@ namespace Avalonia
     /// <summary>
     /// Defines a rectangle.
     /// </summary>
-    public readonly struct Rect
+    readonly struct Rect
     {
         static Rect()
         {

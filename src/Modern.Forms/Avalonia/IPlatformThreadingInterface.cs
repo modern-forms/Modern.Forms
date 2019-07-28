@@ -10,7 +10,7 @@ namespace Avalonia.Platform
     /// <summary>
     /// Provides platform-specific services relating to threading.
     /// </summary>
-    public interface IPlatformThreadingInterface
+    interface IPlatformThreadingInterface
     {
         void RunLoop(CancellationToken cancellationToken);
 

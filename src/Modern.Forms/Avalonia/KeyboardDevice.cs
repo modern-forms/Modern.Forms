@@ -9,7 +9,7 @@ using Avalonia.Input.Raw;
 
 namespace Avalonia.Input
 {
-    public class KeyboardDevice : IKeyboardDevice, INotifyPropertyChanged
+    class KeyboardDevice : IKeyboardDevice, INotifyPropertyChanged
     {
         //private IInputElement _focusedElement;
 

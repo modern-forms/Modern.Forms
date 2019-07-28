@@ -7,7 +7,7 @@ using System.ComponentModel;
 namespace Avalonia.Input
 {
     [Flags]
-    public enum InputModifiers
+    enum InputModifiers
     {
         None = 0,
         Alt = 1,
@@ -20,14 +20,14 @@ namespace Avalonia.Input
     }
 
     [Flags]
-    public enum KeyStates
+    enum KeyStates
     {
         None = 0,
         Down = 1,
         Toggled = 2,
     }
 
-    public interface IKeyboardDevice : IInputDevice, INotifyPropertyChanged
+    interface IKeyboardDevice : IInputDevice, INotifyPropertyChanged
     {
     //    IInputElement FocusedElement { get; }
 

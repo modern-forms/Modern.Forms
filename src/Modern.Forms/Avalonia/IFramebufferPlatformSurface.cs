@@ -2,7 +2,7 @@
 
 namespace Avalonia.Controls.Platform.Surfaces
 {
-    public interface IFramebufferPlatformSurface
+    interface IFramebufferPlatformSurface
     {
         /// <summary>
         /// Provides a framebuffer descriptor for drawing.

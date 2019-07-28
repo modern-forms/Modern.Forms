@@ -6,7 +6,7 @@ namespace Avalonia.Controls
     /// <summary>
     /// Defines the minimized/maximized state of a <see cref="Window"/>.
     /// </summary>
-    public enum WindowState
+    enum WindowState
     {
         /// <summary>
         /// The window is neither minimized or maximized.

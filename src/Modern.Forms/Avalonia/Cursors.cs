@@ -13,7 +13,7 @@ namespace Avalonia.Input
     =========================================================================================
     */
 
-    public enum StandardCursorType
+    enum StandardCursorType
     {
         Arrow,
         Ibeam,
@@ -45,7 +45,7 @@ namespace Avalonia.Input
         // SizeNorthEastSouthWest,
     }
 
-    public class Cursor
+    class Cursor
     {
         public static readonly Cursor Default = new Cursor(StandardCursorType.Arrow);
 

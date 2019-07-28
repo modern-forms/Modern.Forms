@@ -23,7 +23,7 @@ using static Avalonia.Win32.Interop.UnmanagedMethods;
 
 namespace Avalonia.Win32
 {
-    public class WindowImpl : IWindowImpl//, EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo
+    class WindowImpl : IWindowImpl//, EglGlPlatformSurface.IEglWindowGlPlatformSurfaceInfo
     {
         private static readonly List<WindowImpl> s_instances = new List<WindowImpl>();
 

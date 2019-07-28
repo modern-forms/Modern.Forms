@@ -5,7 +5,7 @@ using Avalonia.Input.Raw;
 
 namespace Avalonia.Input
 {
-    public interface IInputDevice
+    interface IInputDevice
     {
         /// <summary>
         /// Processes raw event. Is called after preprocessing by InputManager

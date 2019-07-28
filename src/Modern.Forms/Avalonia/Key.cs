@@ -9,7 +9,7 @@ namespace Avalonia.Input
     /// <summary>
     /// Defines the keys available on a keyboard.
     /// </summary>
-    public enum Key
+    enum Key
     {
         /// <summary>
         /// No key pressed.

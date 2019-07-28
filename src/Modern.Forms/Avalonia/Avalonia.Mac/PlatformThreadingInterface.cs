@@ -10,7 +10,7 @@ using SharpGen.Runtime;
 
 namespace Avalonia.Native
 {
-    public class PlatformThreadingInterface : IPlatformThreadingInterface
+    class PlatformThreadingInterface : IPlatformThreadingInterface
     {
         class TimerCallback : CallbackBase, IAvnActionCallback
         {

@@ -8,7 +8,7 @@ namespace Avalonia.Platform
     /// <summary>
     /// Represents a platform-specific handle.
     /// </summary>
-    public class PlatformHandle : IPlatformHandle
+    class PlatformHandle : IPlatformHandle
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PlatformHandle"/> class.

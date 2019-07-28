@@ -3,7 +3,7 @@
 
 namespace Avalonia.Input.Raw
 {
-    public class RawTextInputEventArgs : RawInputEventArgs
+    class RawTextInputEventArgs : RawInputEventArgs
     {
         public string Text { get; set; }
 

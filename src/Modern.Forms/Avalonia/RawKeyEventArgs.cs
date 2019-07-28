@@ -3,13 +3,13 @@
 
 namespace Avalonia.Input.Raw
 {
-    public enum RawKeyEventType
+    enum RawKeyEventType
     {
         KeyDown,
         KeyUp
     }
 
-    public class RawKeyEventArgs : RawInputEventArgs
+    class RawKeyEventArgs : RawInputEventArgs
     {
         public RawKeyEventArgs(
             IKeyboardDevice device,

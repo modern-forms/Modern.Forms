@@ -6,7 +6,7 @@ namespace Avalonia.Threading
     /// <summary>
     /// Dispatches jobs to a thread.
     /// </summary>
-    public interface IDispatcher
+    interface IDispatcher
     {
         /// <summary>
         /// Determines whether the calling thread is the thread associated with this <see cref="IDispatcher"/>.

@@ -2,7 +2,7 @@
 
 namespace Avalonia.Platform
 {
-    public interface IScreenImpl
+    interface IScreenImpl
     {
         int ScreenCount { get; }
 

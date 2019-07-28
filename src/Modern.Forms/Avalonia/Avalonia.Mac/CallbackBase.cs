@@ -6,7 +6,7 @@ using SharpGen.Runtime;
 
 namespace Avalonia.Native
 {
-    public class CallbackBase : SharpGen.Runtime.IUnknown
+    class CallbackBase : SharpGen.Runtime.IUnknown
     {
         private uint _refCount;
         private bool _disposed;

@@ -36,7 +36,7 @@ namespace Avalonia
     //    }
     //}
 
-    public class Win32PlatformOptions
+    class Win32PlatformOptions
     {
         public bool UseDeferredRendering { get; set; } = true;
         public bool AllowEglInitialization { get; set; }

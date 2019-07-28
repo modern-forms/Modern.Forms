@@ -5,7 +5,7 @@ using Avalonia.Native.Interop;
 
 namespace Avalonia.Native
 {
-    public static class Helpers
+    static class Helpers
     {
         public static Point ToAvaloniaPoint (this AvnPoint pt)
         {

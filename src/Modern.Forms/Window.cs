@@ -22,12 +22,12 @@ namespace Modern.Forms
 
         public virtual ControlStyle CurrentStyle => Style;
 
-        protected IWindowBaseImpl window;
+        internal IWindowBaseImpl window;
         public ControlAdapter adapter;
 
         private DateTime last_click_time;
 
-        protected Window (IWindowBaseImpl window)
+        internal Window (IWindowBaseImpl window)
         {
             this.window = window;
             adapter = new ControlAdapter (this);
@@ -93,7 +93,7 @@ namespace Modern.Forms
             get => new System.Drawing.Size ((int)window.ScaledClientSize.Width, (int)window.ScaledClientSize.Height);
         }
 
-        public Screens Screens => new Screens (window.Screen);
+        internal Screens Screens => new Screens (window.Screen);
 
         public void Show ()
         {

@@ -6,7 +6,7 @@ namespace Avalonia.Platform
     /// <summary>
     /// Defines a platform-specific popup window implementation.
     /// </summary>
-    public interface IPopupImpl : IWindowBaseImpl
+    interface IPopupImpl : IWindowBaseImpl
     {
 
     }

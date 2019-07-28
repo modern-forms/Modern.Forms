@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Avalonia.Input.Platform
 {
-    public interface IClipboard
+    interface IClipboard
     {
         Task<string> GetTextAsync();
 

@@ -9,7 +9,7 @@ using Avalonia.Platform;
 
 namespace Avalonia.Native
 {
-    public class WindowImpl : WindowBaseImpl, IWindowImpl
+    class WindowImpl : WindowBaseImpl, IWindowImpl
     {
         IAvnWindow _native;
         public WindowImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts) : base(opts)

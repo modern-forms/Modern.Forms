@@ -1745,7 +1745,7 @@ namespace Avalonia.X11 {
 	}
     
     [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct XImage
+    unsafe struct XImage
     {
         public int width, height; /* size of image */
         public int xoffset; /* number of pixels offset in X direction */

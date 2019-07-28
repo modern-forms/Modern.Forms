@@ -91,13 +91,13 @@ namespace Avalonia.X11
 namespace Avalonia
 {
 
-    public class X11PlatformOptions
+    class X11PlatformOptions
     {
         public bool UseEGL { get; set; }
         public bool UseGpu { get; set; } = true;
         public string WmClass { get; set; } = Assembly.GetEntryAssembly()?.GetName()?.Name ?? "AvaloniaApplication";
     }
-    public static class AvaloniaX11PlatformExtensions
+    static class AvaloniaX11PlatformExtensions
     {
         //    public static T UseX11<T>(this T builder) where T : AppBuilderBase<T>, new()
         //    {
