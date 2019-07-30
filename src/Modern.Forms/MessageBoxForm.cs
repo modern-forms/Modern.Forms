@@ -16,6 +16,7 @@ namespace Modern.Forms
             StartPosition = FormStartPosition.CenterParent;
             AllowMinimize = false;
             AllowMaximize = false;
+            Resizeable = false;
 
             label = new Label {
                 Width = 397,

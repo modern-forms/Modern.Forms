@@ -24,6 +24,7 @@ namespace Modern.Forms
         {
             TitleBar = Controls.AddImplicitControl (new FormTitleBar ());
 
+            Resizeable = true;
             Window.SetSystemDecorations (false);
 
             SetWindowStartupLocation ();

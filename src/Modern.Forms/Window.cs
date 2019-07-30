@@ -16,6 +16,9 @@ namespace Modern.Forms
         private const int DOUBLE_CLICK_TIME = 500;
         private const int DOUBLE_CLICK_MOVEMENT = 4;
 
+        // If the border is only 1 pixel it's too hard to resize, so we may steal some pixels from the client area
+        private const int MINIMUM_RESIZE_PIXELS = 4;
+
         public static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
          (style) => {
              style.BackgroundColor = Theme.FormBackgroundColor;
@@ -85,6 +88,8 @@ namespace Modern.Forms
             return new System.Drawing.Point (pt.X, pt.Y);
         }
 
+        public bool Resizeable { get; set; }
+
         public double Scaling => window.Scaling;
 
         public System.Drawing.Size Size {
@@ -137,6 +142,9 @@ namespace Modern.Forms
             if (e is RawMouseEventArgs me) {
                 switch (me.Type) {
                     case RawMouseEventType.LeftButtonDown:
+                        if (Resizeable && HandleMouseDown ((int)me.Position.X, (int)me.Position.Y))
+                            return;
+
                         var lbd_e = new MouseEventArgs (MouseButtons.Left, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (lbd_e);
                         break;
@@ -180,6 +188,9 @@ namespace Modern.Forms
                         adapter.RaiseMouseLeave (lw_e);
                         break;
                     case RawMouseEventType.Move:
+                        if (Resizeable && HandleMouseMove ((int)me.Position.X, (int)me.Position.Y))
+                            return;
+
                         var mea = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseMove (mea);
                         break;
@@ -239,6 +250,74 @@ namespace Modern.Forms
         protected virtual void OnVisibleChanged (EventArgs e)
         {
             adapter.RaiseParentVisibleChanged (EventArgs.Empty);
+        }
+
+        private WindowElement GetElementAtLocation (int x, int y)
+        {
+            if (x >= ScaledSize.Width - Math.Max (Style.Border.Right.GetWidth (), MINIMUM_RESIZE_PIXELS))
+                return WindowElement.RightBorder;
+            if (x < Math.Max (Style.Border.Left.GetWidth (), MINIMUM_RESIZE_PIXELS))
+                return WindowElement.LeftBorder;
+            if (y >= ScaledSize.Height - Math.Max (Style.Border.Bottom.GetWidth (), MINIMUM_RESIZE_PIXELS))
+                return WindowElement.BottomBorder;
+            if (y < Math.Max (Style.Border.Top.GetWidth (), MINIMUM_RESIZE_PIXELS))
+                return WindowElement.TopBorder;
+
+            return WindowElement.Client;
+        }
+
+        private bool HandleMouseDown (int x, int y)
+        {
+            var element = GetElementAtLocation (x, y);
+
+            switch (element) {
+                case WindowElement.TopBorder:
+                    window.BeginResizeDrag (WindowEdge.North);
+                    return true;
+                case WindowElement.RightBorder:
+                    window.BeginResizeDrag (WindowEdge.East);
+                    return true;
+                case WindowElement.BottomBorder:
+                    window.BeginResizeDrag (WindowEdge.South);
+                    return true;
+                case WindowElement.LeftBorder:
+                    window.BeginResizeDrag (WindowEdge.West);
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool HandleMouseMove (int x, int y)
+        {
+            var element = GetElementAtLocation (x, y);
+
+            switch (element) {
+                case WindowElement.TopBorder:
+                    window.SetCursor (Cursors.TopSide.cursor.PlatformCursor);
+                    return true;
+                case WindowElement.RightBorder:
+                    window.SetCursor (Cursors.RightSide.cursor.PlatformCursor);
+                    return true;
+                case WindowElement.BottomBorder:
+                    window.SetCursor (Cursors.BottomSide.cursor.PlatformCursor);
+                    return true;
+                case WindowElement.LeftBorder:
+                    window.SetCursor (Cursors.LeftSide.cursor.PlatformCursor);
+                    return true;
+            }
+
+            window.SetCursor (null);
+            return false;
+        }
+
+        private enum WindowElement
+        {
+            Client,
+            TopBorder,
+            RightBorder,
+            BottomBorder,
+            LeftBorder
         }
     }
 }
