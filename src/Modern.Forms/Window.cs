@@ -13,6 +13,9 @@ namespace Modern.Forms
 {
     public abstract class Window
     {
+        private const int DOUBLE_CLICK_TIME = 500;
+        private const int DOUBLE_CLICK_MOVEMENT = 4;
+
         public static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
          (style) => {
              style.BackgroundColor = Theme.FormBackgroundColor;
@@ -26,6 +29,7 @@ namespace Modern.Forms
         public ControlAdapter adapter;
 
         private DateTime last_click_time;
+        private Point last_click_point;
 
         internal Window (IWindowBaseImpl window)
         {
@@ -109,14 +113,23 @@ namespace Modern.Forms
         {
             var click_count = 1;
 
-            if (DateTime.Now.Subtract (last_click_time).TotalMilliseconds < 500)
+            if (DateTime.Now.Subtract (last_click_time).TotalMilliseconds < DOUBLE_CLICK_TIME && PointInDoubleClickRange (point))
                 click_count = 2;
 
             var e = new MouseEventArgs (buttons, click_count, (int)point.X, (int)point.Y, System.Drawing.Point.Empty, keyData: keyData);
 
             last_click_time = click_count > 1 ? DateTime.MinValue : DateTime.Now;
+            last_click_point = click_count > 1 ? Point.Empty : point;
 
             return e;
+        }
+
+        private bool PointInDoubleClickRange (Point point)
+        {
+            if (Math.Abs (point.X - last_click_point.X) > DOUBLE_CLICK_MOVEMENT)
+                return false;
+
+            return Math.Abs (point.Y - last_click_point.Y) <= DOUBLE_CLICK_MOVEMENT;
         }
 
         private void OnInput (RawInputEventArgs e)

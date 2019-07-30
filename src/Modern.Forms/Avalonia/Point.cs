@@ -48,6 +48,8 @@ namespace Avalonia
         /// </summary>
         public double Y => _y;
 
+        public static Point Empty { get; } = new Point ();
+
         /// <summary>
         /// Converts the <see cref="Point"/> to a <see cref="Vector"/>.
         /// </summary>
