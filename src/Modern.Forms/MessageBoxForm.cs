@@ -8,21 +8,14 @@ namespace Modern.Forms
 {
     public class MessageBoxForm : Form
     {
-        private readonly FormTitleBar titlebar;
         private readonly Label label;
 
         public MessageBoxForm ()
         {
             Text = "Demo";
             StartPosition = FormStartPosition.CenterParent;
-
-            titlebar = new FormTitleBar {
-                Text = "Demo",
-                AllowMinimize = false,
-                AllowMaximize = false
-            };
-
-            Controls.Add (titlebar);
+            AllowMinimize = false;
+            AllowMaximize = false;
 
             label = new Label {
                 Width = 397,
@@ -51,7 +44,6 @@ namespace Modern.Forms
         public MessageBoxForm (string title, string text) : this ()
         {
             Text = title;
-            titlebar.Text = title;
 
             label.Text = text;
         }
