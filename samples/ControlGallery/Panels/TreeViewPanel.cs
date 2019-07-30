@@ -59,7 +59,7 @@ namespace ControlGallery.Panels
             var tvi = new TreeViewItem (Path.GetFileName (path)) { Image = ImageLoader.Get ("folder.png") };
 
             try {
-                foreach (var dir in Directory.EnumerateDirectories (path).Take (5))
+                foreach (var dir in Directory.EnumerateDirectories (path).Take (max_dirs))
                     tvi.Items.Add (CreateDirectoryNode (dir));
             } catch (Exception) {
 

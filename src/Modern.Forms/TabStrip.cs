@@ -96,7 +96,7 @@ namespace Modern.Forms
             StackLayoutEngine.HorizontalExpand.Layout (ClientRectangle, Tabs.Cast<ILayoutable> ());
         }
 
-        private void SetHover (TabStripItem item)
+        private void SetHover (TabStripItem? item)
         {
             var old = Tabs.FirstOrDefault (tp => tp.Hovered);
 

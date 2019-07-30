@@ -8,11 +8,11 @@ namespace Modern.Forms
 {
     public class TabStripItem : ILayoutable
     {
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
         public bool Selected { get; set; }
         public bool Hovered { get; set; }
-        public object Tag { get; set; }
-        public TabStrip Parent { get; internal set; }
+        public object? Tag { get; set; }
+        public TabStrip? Parent { get; internal set; }
 
         public Rectangle Bounds { get; private set; }
 

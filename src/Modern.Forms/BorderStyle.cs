@@ -4,12 +4,12 @@ namespace Modern.Forms
 {
     public class BorderStyle
     {
-        private readonly BorderStyle _parent;
+        private readonly BorderStyle? _parent;
 
         private SKColor color;
         private int width;
 
-        public BorderStyle (BorderStyle parent = null)
+        public BorderStyle (BorderStyle? parent)
         {
             _parent = parent;
 
@@ -43,7 +43,7 @@ namespace Modern.Forms
 
         public int? Radius { get; set; }
 
-        public int GetRadius () => Radius ?? _parent.GetRadius ();
+        public int GetRadius () => Radius ?? _parent?.GetRadius () ?? 0;
 
         public BorderSideStyle Left { get; }
         public BorderSideStyle Top { get; }
@@ -53,16 +53,16 @@ namespace Modern.Forms
 
     public class BorderSideStyle
     {
-        private readonly BorderSideStyle _parent;
+        private readonly BorderSideStyle? _parent;
 
-        public BorderSideStyle (BorderSideStyle parent = null) => _parent = parent;
+        public BorderSideStyle (BorderSideStyle? parent) => _parent = parent;
 
         public SKColor? Color { get; set; }
 
-        public SKColor GetColor () => Color ?? _parent.GetColor ();
+        public SKColor GetColor () => Color ?? _parent?.GetColor () ?? Theme.BorderGray;
 
         public int? Width { get; set; }
 
-        public int GetWidth () => Width ?? _parent.GetWidth ();
+        public int GetWidth () => Width ?? _parent?.GetWidth () ?? 0;
     }
 }

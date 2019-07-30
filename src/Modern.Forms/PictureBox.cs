@@ -12,8 +12,8 @@ namespace Modern.Forms
     {
         private static HttpClient client;
 
-        private SKBitmap image;
-        private string image_location;
+        private SKBitmap? image;
+        private string? image_location;
         private bool is_error;
         private PictureBoxSizeMode size_mode;
 
@@ -26,7 +26,7 @@ namespace Modern.Forms
 
         protected override Size DefaultSize => new Size (100, 50);
 
-        public SKBitmap Image {
+        public SKBitmap? Image {
             get => image;
             set {
                 if (image == value)
@@ -39,12 +39,12 @@ namespace Modern.Forms
             }
         }
 
-        public string ImageLocation {
+        public string? ImageLocation {
             get => image_location;
             set => Load (value);
         }
 
-        public void Load (string url)
+        public void Load (string? url)
         {
             if (string.IsNullOrWhiteSpace (url))
                 throw new InvalidOperationException ("ImageLocation not specified.");

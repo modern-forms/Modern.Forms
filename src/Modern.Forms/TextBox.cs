@@ -17,7 +17,7 @@ namespace Modern.Forms
 
         private int cursor_index = 0;
         private bool read_only = false;
-        private string placeholder;
+        private string placeholder = string.Empty;
 
         protected override Size DefaultSize => new Size (100, 28);
 

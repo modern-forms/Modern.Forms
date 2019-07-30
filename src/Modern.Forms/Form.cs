@@ -18,7 +18,7 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        private string text;
+        private string text = string.Empty;
 
         public Form () : base (AvaloniaGlobals.WindowingInterface.CreateWindow ())
         {
@@ -41,7 +41,7 @@ namespace Modern.Forms
 
         protected override System.Drawing.Size DefaultSize => new System.Drawing.Size (1080, 720);
 
-        public SKBitmap Image {
+        public SKBitmap? Image {
             get => TitleBar.Image;
             set => TitleBar.Image = value;
         }
@@ -73,7 +73,7 @@ namespace Modern.Forms
             set => Window.WindowState = (WindowState)value;
         }
 
-        private void SetWindowStartupLocation (IWindowBaseImpl owner = null)
+        private void SetWindowStartupLocation (IWindowBaseImpl? owner = null)
         {
             var scaling = Scaling;
 

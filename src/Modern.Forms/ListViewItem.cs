@@ -9,11 +9,11 @@ namespace Modern.Forms
 {
     public class ListViewItem
     {
-        public string Text { get; set; }
-        public SKBitmap Image { get; set; }
+        public string Text { get; set; } = string.Empty;
+        public SKBitmap? Image { get; set; }
         public bool Selected { get; set; }
-        public object Tag { get; set; }
-        public ListView Parent { get; internal set; }
+        public object? Tag { get; set; }
+        public ListView? Parent { get; internal set; }
 
         public Rectangle Bounds { get; private set; }
 

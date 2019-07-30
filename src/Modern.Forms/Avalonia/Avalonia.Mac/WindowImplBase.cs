@@ -1,6 +1,8 @@
 // Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
@@ -23,11 +25,11 @@ namespace Avalonia.Native
         private object _syncRoot = new object();
         private bool _deferredRendering = false;
         private bool _gpu = false;
-        private readonly IMouseDevice _mouse;
-        private readonly IKeyboardDevice _keyboard;
-        private readonly IStandardCursorFactory _cursorFactory;
+        private readonly IMouseDevice _mouse = null;
+        private readonly IKeyboardDevice _keyboard = null;
+        private readonly IStandardCursorFactory _cursorFactory = null;
         private Size _savedLogicalSize;
-        private Size _lastRenderedLogicalSize;
+        //private Size _lastRenderedLogicalSize;
         private double _savedScaling;
         //private GlPlatformSurface _glSurface;
 

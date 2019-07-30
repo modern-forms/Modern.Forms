@@ -15,3 +15,4 @@
 [assembly: SuppressMessage ("Style", "IDE0054", Scope = "namespaceanddescendants", Target = "Avalonia")]
 [assembly: SuppressMessage ("Style", "IDE0059", Scope = "namespaceanddescendants", Target = "Avalonia")]
 [assembly: SuppressMessage ("Style", "IDE0060", Scope = "namespaceanddescendants", Target = "Avalonia")]
+[assembly: SuppressMessage ("Style", "IDE0063", Scope = "namespaceanddescendants", Target = "Avalonia")]

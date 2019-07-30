@@ -19,7 +19,25 @@ namespace Modern.Forms
 
         public ScrollableControl ()
         {
-            CreateScrollbars ();
+            hscrollbar = new HorizontalScrollBar {
+                Visible = false
+            };
+
+            hscrollbar.ValueChanged += HandleScroll;
+            hscrollbar.Scroll += (o, e) => OnScroll (e);
+
+            vscrollbar = new VerticalScrollBar {
+                Visible = false
+            };
+
+            vscrollbar.ValueChanged += HandleScroll;
+            vscrollbar.Scroll += (o, e) => OnScroll (e);
+
+            sizegrip = new SizeGrip {
+                Visible = false
+            };
+
+            Controls.AddImplicitControlRange (sizegrip, hscrollbar, vscrollbar);
 
             SizeChanged += (o, e) => Recalculate (true);
             VisibleChanged += (o, e) => Recalculate (true);
@@ -99,29 +117,6 @@ namespace Modern.Forms
 
             canvas_size.Width = width;
             canvas_size.Height = height;
-        }
-
-        private void CreateScrollbars ()
-        {
-            hscrollbar = new HorizontalScrollBar {
-                Visible = false
-            };
-
-            hscrollbar.ValueChanged += HandleScroll;
-            hscrollbar.Scroll += (o, e) => OnScroll (e);
-
-            vscrollbar = new VerticalScrollBar {
-                Visible = false
-            };
-
-            vscrollbar.ValueChanged += HandleScroll;
-            vscrollbar.Scroll += (o, e) => OnScroll (e);
-
-            sizegrip = new SizeGrip {
-                Visible = false
-            };
-
-            Controls.AddImplicitControlRange (sizegrip, hscrollbar, vscrollbar);
         }
 
         private void HandleScroll (object sender, EventArgs e)

@@ -10,7 +10,7 @@ namespace Modern.Forms
 {
     public class ControlAdapter : ScrollableControl
     {
-        private Control selected_control;
+        private Control? selected_control;
 
         public ControlAdapter (Window parent)
         {
@@ -53,7 +53,7 @@ namespace Modern.Forms
                 if (control.NeedsPaint) {
                     using (var canvas = new SKCanvas (buffer)) {
                         // start drawing
-                        var args = new PaintEventArgs (null, info, canvas, Scaling);
+                        var args = new PaintEventArgs(info, canvas, Scaling);
 
                         control.RaisePaintBackground (args);
                         control.RaisePaint (args);
@@ -71,7 +71,7 @@ namespace Modern.Forms
             set { }
         }
 
-        internal Control SelectedControl {
+        internal Control? SelectedControl {
             get => selected_control;
             set {
                 if (selected_control == value)

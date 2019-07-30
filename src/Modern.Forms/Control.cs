@@ -22,11 +22,11 @@ namespace Modern.Forms
 
         private AnchorStyles anchor_style = AnchorStyles.Top | AnchorStyles.Left;
         private AutoSizeMode auto_size_mode;
-        private SKBitmap back_buffer;
+        private SKBitmap? back_buffer;
         private ControlBehaviors behaviors;
         private Rectangle bounds;
-        private Control current_mouse_in;
-        private Cursor cursor;
+        private Control? current_mouse_in;
+        private Cursor? cursor;
         internal int dist_right;
         internal int dist_bottom;
         private DockStyle dock_style;
@@ -38,11 +38,11 @@ namespace Modern.Forms
         private bool layout_pending;
         private Padding margin;
         private Padding padding;
-        private Control parent;
+        private Control? parent;
         private bool recalculate_distances = true;
         private int tab_index = -1;
         private bool tab_stop = true;
-        private string text;
+        private string text = string.Empty;
 
         public virtual ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
@@ -112,7 +112,7 @@ namespace Modern.Forms
                 if (!behaviors.HasFlag (ControlBehaviors.Selectable))
                     return false;
 
-                var parent = this;
+                var parent = (Control?)this;
 
                 while (parent != null) {
                     if (!parent.Visible || !parent.Enabled)
@@ -160,11 +160,13 @@ namespace Modern.Forms
 
         public bool Contains (Control control)
         {
-            // Is control one of our children or grandchildren
-            while (control != null) {
-                control = control.Parent;
+            var start = (Control?)control;
 
-                if (control == this)
+            // Is control one of our children or grandchildren
+            while (start != null) {
+                start = start.Parent;
+
+                if (start == this)
                     return true;
             }
 
@@ -230,7 +232,7 @@ namespace Modern.Forms
             }
         }
 
-        public ControlAdapter FindAdapter ()
+        public ControlAdapter? FindAdapter ()
         {
             if (this is ControlAdapter adapter)
                 return adapter;
@@ -238,7 +240,7 @@ namespace Modern.Forms
             return Parent?.FindAdapter ();
         }
 
-        public Form FindForm ()
+        public Form? FindForm ()
         {
             if (this is ControlAdapter adapter && adapter.ParentForm is Form f)
                 return f;
@@ -246,13 +248,13 @@ namespace Modern.Forms
             return Parent?.FindForm ();
         }
 
-        public Control GetNextControl (Control start, bool forward = true)
+        public Control? GetNextControl (Control? start, bool forward = true)
         {
             if (Controls.Count == 0)
                 return null;
 
             // Ignore start control if it isn't our child/grandchild
-            if (!Contains (start))
+            if (start != null && !Contains (start))
                 start = null;
 
             // If the start control is the only control, return null
@@ -268,7 +270,7 @@ namespace Modern.Forms
             // If this is a grandchild, we need to give the parent a chance to move next
             while (start?.Parent != null && start?.Parent != this) {
                 var old_start = start;
-                start = start.Parent;
+                start = start?.Parent;
 
                 var child_control2 = start?.GetNextControl (old_start, forward);
 
@@ -349,7 +351,7 @@ namespace Modern.Forms
             }
         }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// The control canvas minus any borders and Padding
@@ -377,7 +379,7 @@ namespace Modern.Forms
             }
         }
 
-        public Control Parent {
+        public Control? Parent {
             get => parent;
             set {
                 if (value == this)
@@ -387,7 +389,7 @@ namespace Modern.Forms
                     return;
 
                 if (value == null) {
-                    parent.Controls.Remove (this);
+                    parent?.Controls.Remove (this);
                     parent = null;
                     return;
                 }
@@ -396,9 +398,9 @@ namespace Modern.Forms
             }
         }
 
-        public void PerformLayout () => PerformLayout (null, null);
+        public void PerformLayout () => PerformLayout (null, string.Empty);
 
-        public void PerformLayout (Control affectedControl, string affectedProperty)
+        public void PerformLayout (Control? affectedControl, string affectedProperty)
         {
             var levent = new LayoutEventArgs (affectedControl, affectedProperty);
 
@@ -433,17 +435,23 @@ namespace Modern.Forms
         {
             // If this is the top, add the point to our location
             if (this is ControlAdapter) {
-                var window_location = FindWindow ().Location.ToDrawingPoint ();
-                window_location.Offset (point);
+                var window_location = FindWindow ()?.Location.ToDrawingPoint ();
 
-                return window_location;
+                if (window_location == null)
+                    return point;
+
+                var location = window_location.Value;
+                location.Offset (point);
+
+                return location;
             }
 
             // If this isn't the top, we need to add our location to the point
             // and ask our parent to translate that
             point.Offset (ScaledBounds.Location);
 
-            return Parent.PointToScreen (point);
+            // If we aren't parented to a Form, this method is pretty meaningless
+            return Parent?.PointToScreen (point) ?? point;
         }
 
         public void ResumeLayout (bool performLayout = true)
@@ -486,11 +494,11 @@ namespace Modern.Forms
 
         public bool Selected { get; private set; }
 
-        public bool SelectNextControl (Control start, bool forward, bool tabStopOnly, bool nested, bool wrap)
+        public bool SelectNextControl (Control? start, bool forward, bool tabStopOnly, bool nested, bool wrap)
         {
-            Control c;
+            Control? c;
 
-            if (!Contains (start) || (!nested && (start.Parent != this)))
+            if (start == null || !Contains (start) || (!nested && (start.Parent != this)))
                 start = null;
 
             c = start;
@@ -582,7 +590,7 @@ namespace Modern.Forms
             }
         }
 
-        public object Tag { get; set; }
+        public object? Tag { get; set; }
 
         public string Text {
             get => text;
@@ -646,7 +654,7 @@ namespace Modern.Forms
             Invalidate ();
         }
 
-        internal Window FindWindow ()
+        internal Window? FindWindow ()
         {
             if (this is ControlAdapter adapter && adapter.ParentForm is Window w)
                 return w;
@@ -937,7 +945,7 @@ namespace Modern.Forms
                 if (control.NeedsPaint) {
                     using (var canvas = new SKCanvas (buffer)) {
                         // start drawing
-                        var args = new PaintEventArgs (null, info, canvas, Scaling);
+                        var args = new PaintEventArgs(info, canvas, Scaling);
 
                         control.RaisePaintBackground (args);
                         control.RaisePaint (args);
@@ -1111,7 +1119,7 @@ namespace Modern.Forms
         }
 
         // Used to break a StackOverflow circular reference
-        internal void SetParentInternal (Control control)
+        internal void SetParentInternal (Control? control)
         {
             var was_visible = Visible;
 

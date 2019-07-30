@@ -15,7 +15,7 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        private RibbonItem mouse_in_item;
+        private RibbonItem? mouse_in_item;
 
         public RibbonTabPageCollection TabPages { get; }
 
@@ -119,7 +119,7 @@ namespace Modern.Forms
             clicked_item?.FireEvent (e, ItemEventType.Click);
         }
 
-        public RibbonTabPage SelectedPage {
+        public RibbonTabPage? SelectedPage {
             get {
                 var selected_tab = TabStrip.SelectedTab;
 
@@ -146,9 +146,9 @@ namespace Modern.Forms
             Invalidate ();
         }
 
-        private RibbonItem GetItemAtPosition (Point position)
+        private RibbonItem? GetItemAtPosition (Point position)
         {
-            return SelectedPage.Groups.SelectMany (g => g.Items).FirstOrDefault (item => item.Bounds.Contains (position));
+            return SelectedPage?.Groups.SelectMany (g => g.Items).FirstOrDefault (item => item.Bounds.Contains (position));
         }
     }
 }

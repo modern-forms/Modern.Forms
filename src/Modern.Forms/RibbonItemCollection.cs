@@ -14,7 +14,7 @@ namespace Modern.Forms
             this.owner = owner;
         }
 
-        public RibbonItem Add (string text, SKBitmap image = null)
+        public RibbonItem Add (string text, SKBitmap? image = null)
         {
             var item = new RibbonItem {
                 Text = text,

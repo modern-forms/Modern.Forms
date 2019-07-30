@@ -10,15 +10,15 @@ namespace Modern.Forms
     public class RibbonItem : ILayoutable
     {
         private bool enabled = true;
-        private string text;
+        private string text = string.Empty;
 
         private const int IMAGE_SIZE = 32;
         private const int MINIMUM_ITEM_SIZE = 40;
 
-        public SKBitmap Image { get; set; }
+        public SKBitmap? Image { get; set; }
         public bool Selected { get; set; }
         public bool Highlighted { get; set; }
-        public RibbonItemGroup Owner { get; set; }
+        public RibbonItemGroup? Owner { get; set; }
 
         public Rectangle Bounds { get; private set; }
 
@@ -29,7 +29,7 @@ namespace Modern.Forms
         {
         }
 
-        public RibbonItem (string text, SKBitmap image = null, EventHandler onClick = null)
+        public RibbonItem (string text, SKBitmap? image = null, EventHandler? onClick = null)
         {
             Text = text;
             Image = image;
@@ -58,7 +58,7 @@ namespace Modern.Forms
             }
         }
 
-        public Ribbon FindRibbon () => Owner?.Owner?.Owner;
+        public Ribbon? FindRibbon () => Owner?.Owner?.Owner;
 
         public void Invalidate ()
         {
@@ -104,7 +104,7 @@ namespace Modern.Forms
 
         protected virtual void OnBoundsChanged ()
         {
-            OnLayout (new LayoutEventArgs ((Control)null, string.Empty));
+            OnLayout (new LayoutEventArgs ((Control?)null, string.Empty));
         }
 
         protected virtual void OnClick (MouseEventArgs e) => Click?.Invoke (this, e);

@@ -37,7 +37,7 @@ namespace Modern.Forms
 
         internal List<int> SelectedIndexes { get; } = new List<int> ();
 
-        internal object SelectedItem {
+        internal object? SelectedItem {
             get => SelectedIndexes.Count > 0 ? this[SelectedIndexes[0]] : null;
             set => SelectedIndex = value == null ? -1 : IndexOf (value);
         }

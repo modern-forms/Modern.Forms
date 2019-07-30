@@ -5,15 +5,12 @@ namespace Modern.Forms
 {
     public class PaintEventArgs : EventArgs
     {
-        public PaintEventArgs (SKSurface surface, SKImageInfo info, SKCanvas canvas, double scaling)
+        public PaintEventArgs (SKImageInfo info, SKCanvas canvas, double scaling)
         {
-            Surface = surface;
             Info = info;
             Canvas = canvas;
             Scaling = scaling;
         }
-
-        public SKSurface Surface { get; }
 
         public SKImageInfo Info { get; }
 

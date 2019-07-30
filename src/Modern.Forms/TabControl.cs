@@ -21,7 +21,7 @@ namespace Modern.Forms
 
         public TabPageCollection Pages { get; }
 
-        private TabPage GetPageFromTab (TabStripItem item) => (TabPage)item.Tag;
+        private TabPage? GetPageFromTab (TabStripItem item) => item.Tag as TabPage;
 
         private TabStripItem GetTabFromPage (TabPage page) => tab_strip.Tabs.FirstOrDefault (t => t.Tag == page);
 

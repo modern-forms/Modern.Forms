@@ -15,7 +15,7 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        private PopupWindow popup;
+        private PopupWindow? popup;
         private readonly ListBox popup_listbox;
 
         public ComboBox ()
@@ -102,6 +102,8 @@ namespace Modern.Forms
 
             popup?.Close ();
             popup = null;
+
+            popup_listbox.Dispose ();
         }
     }
 }

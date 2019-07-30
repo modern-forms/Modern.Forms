@@ -39,6 +39,6 @@ namespace Modern.Forms
             set => scrollbar.Value = value;
         }
 
-        public ScrollableControl ParentControl { get; }
+        public ScrollableControl? ParentControl { get; }
     }
 }

@@ -9,10 +9,10 @@ namespace Modern.Forms
 {
     public class RibbonTabPage
     {
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
         public bool Selected { get; set; }
         public bool Highlighted { get; set; }
-        public Ribbon Owner { get; set; }
+        public Ribbon? Owner { get; set; }
 
         public RibbonItemGroupCollection Groups { get; }
 

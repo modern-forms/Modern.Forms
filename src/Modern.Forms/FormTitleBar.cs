@@ -14,13 +14,13 @@ namespace Modern.Forms
         private bool close_button_hover;
         private bool maximize_button_hover;
         private bool minimize_button_hover;
-        private SKBitmap form_icon;
+        private SKBitmap? form_icon;
 
         private const int BUTTON_SIZE = 46;
         private const int BUTTON_PADDING = 10;
         private const int FORM_ICON_SIZE = 16;
 
-        public SKBitmap Image {
+        public SKBitmap? Image {
             get => form_icon;
             set {
                 if (form_icon != value) {
@@ -46,12 +46,17 @@ namespace Modern.Forms
             base.OnClick (e);
 
             if (CloseButtonBounds.Contains (e.Location))
-                FindForm ().Close ();
-            else if (AllowMinimize && MinimizeButtonBounds.Contains (e.Location))
-                FindForm ().WindowState = FormWindowState.Minimized;
-            else if (AllowMaximize && MaximizeButtonBounds.Contains (e.Location)) {
+                FindForm ()?.Close ();
+            else if (AllowMinimize && MinimizeButtonBounds.Contains (e.Location)) {
                 var form = FindForm ();
-                form.WindowState = form.WindowState == FormWindowState.Maximized ? FormWindowState.Normal : FormWindowState.Maximized;
+
+                if (form != null)
+                    form.WindowState = FormWindowState.Minimized;
+            }  else if (AllowMaximize && MaximizeButtonBounds.Contains (e.Location)) {
+                var form = FindForm ();
+
+                if (form != null)
+                    form.WindowState = form.WindowState == FormWindowState.Maximized ? FormWindowState.Normal : FormWindowState.Maximized;
             }
         }
 
@@ -62,7 +67,7 @@ namespace Modern.Forms
             if (!CloseButtonBounds.Contains (e.Location) && !(AllowMaximize && MaximizeButtonBounds.Contains (e.Location)) && !(AllowMinimize && MinimizeButtonBounds.Contains (e.Location))) {
                 // We won't get a MouseUp from the system for this, so don't capture the mouse
                 Capture = false;
-                FindForm ().BeginMoveDrag ();
+                FindForm ()?.BeginMoveDrag ();
             }
         }
 

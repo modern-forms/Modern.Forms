@@ -31,21 +31,21 @@ namespace Modern.Forms
 {
     public sealed class LayoutEventArgs : EventArgs
     {
-        public LayoutEventArgs (Control affectedControl, string affectedProperty)
+        public LayoutEventArgs (Control? affectedControl, string affectedProperty)
         {
             AffectedControl = affectedControl;
             AffectedProperty = affectedProperty;
         }
 
-        public LayoutEventArgs (IComponent affectedComponent, string affectedProperty)
+        public LayoutEventArgs (IComponent? affectedComponent, string affectedProperty)
         {
             AffectedComponent = affectedComponent;
             AffectedProperty = affectedProperty;
         }
 
-        public IComponent AffectedComponent { get; }
+        public IComponent? AffectedComponent { get; }
 
-        public Control AffectedControl { get; }
+        public Control? AffectedControl { get; }
 
         public string AffectedProperty { get; }
     }

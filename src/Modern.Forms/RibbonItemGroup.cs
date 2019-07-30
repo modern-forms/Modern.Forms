@@ -9,7 +9,7 @@ namespace Modern.Forms
 {
     public class RibbonItemGroup : ILayoutable
     {
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
 
         public RibbonItemCollection Items { get; }
 
@@ -17,7 +17,7 @@ namespace Modern.Forms
 
         public Padding Margin => Padding.Empty;
 
-        public RibbonTabPage Owner { get; set; }
+        public RibbonTabPage? Owner { get; set; }
 
         public Padding Padding => new Padding (3, 3, 4, 3);
 
@@ -38,7 +38,7 @@ namespace Modern.Forms
         {
             // Draw each ribbon item
             foreach (var item in Items)
-                item.FireEvent (new PaintEventArgs (null, SKImageInfo.Empty, canvas, Owner.Owner.Scaling), ItemEventType.Paint);
+                item.FireEvent (new PaintEventArgs(SKImageInfo.Empty, canvas, Owner?.Owner?.Scaling ?? 1), ItemEventType.Paint);
 
             // Right border (group separator)
             canvas.DrawLine (Bounds.Right - 1, Bounds.Top + 4, Bounds.Right - 1, Bounds.Bottom - 4, Theme.BorderGray);

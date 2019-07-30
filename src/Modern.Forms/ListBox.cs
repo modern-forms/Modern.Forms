@@ -96,7 +96,7 @@ namespace Modern.Forms
             }
         }
 
-        public object SelectedItem {
+        public object? SelectedItem {
             get => Items.SelectedItem;
             set {
                 if (value != null && !Items.Contains (value))

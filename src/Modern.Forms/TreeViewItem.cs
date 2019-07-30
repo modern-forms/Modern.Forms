@@ -11,17 +11,17 @@ namespace Modern.Forms
         private const int IMAGE_SIZE = 16;
         private const int GLYPH_SIZE = 8;
 
-        private readonly TreeView tree_view;
+        private readonly TreeView? tree_view;
 
         private bool expanded;
-        private TreeViewItemCollection items;
+        private TreeViewItemCollection? items;
 
-        public string Text { get; set; }
-        public SKBitmap Image { get; set; }
+        public string Text { get; set; } = string.Empty;
+        public SKBitmap? Image { get; set; }
         public TreeViewItemCollection Items => items ??= new TreeViewItemCollection (this);
         public bool Selected { get; set; }
-        public object Tag { get; set; }
-        public TreeViewItem Parent { get; internal set; }
+        public object? Tag { get; set; }
+        public TreeViewItem? Parent { get; internal set; }
 
         public Rectangle Bounds { get; private set; }
 
@@ -84,7 +84,7 @@ namespace Modern.Forms
             Bounds = new Rectangle (x, y, width, height);
         }
 
-        public TreeView TreeView {
+        public TreeView? TreeView {
             get {
                 if (tree_view != null)
                     return tree_view;
@@ -113,7 +113,7 @@ namespace Modern.Forms
 
         internal Rectangle GetGlyphBounds ()
         {
-            if (!TreeView.ShowDropdownGlyph)
+            if (!(TreeView?.ShowDropdownGlyph == true))
                 return Rectangle.Empty;
 
             var glyph_area = new Rectangle (Bounds.Left + (IndentLevel * LogicalToDeviceUnits (INDENT_SIZE)), Bounds.Top, Bounds.Height, Bounds.Height);
@@ -156,7 +156,7 @@ namespace Modern.Forms
             var left_index = Bounds.Left + (IndentLevel * LogicalToDeviceUnits (INDENT_SIZE));
             var tree_view = TreeView;
 
-            if (tree_view.ShowDropdownGlyph) {
+            if (tree_view?.ShowDropdownGlyph == true) {
                 var glyph_bounds = GetGlyphBounds ();
 
                 if (HasChildren)
@@ -165,11 +165,11 @@ namespace Modern.Forms
                 left_index = glyph_bounds.Right + LogicalToDeviceUnits (1);
             }
 
-            if (tree_view.ShowItemImages && Image != null) {
+            if (tree_view?.ShowItemImages == true && Image != null) {
                 var image_area = new Rectangle (left_index, Bounds.Top, Bounds.Height, Bounds.Height);
                 var image_bounds = DrawingExtensions.CenterSquare (image_area, LogicalToDeviceUnits (IMAGE_SIZE));
 
-                e.Canvas.DrawBitmap (Image, image_bounds);
+                e.Canvas.DrawBitmap (Image!, image_bounds);
 
                 left_index = image_bounds.Right;
             }
