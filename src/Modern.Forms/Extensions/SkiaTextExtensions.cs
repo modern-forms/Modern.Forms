@@ -31,10 +31,7 @@ namespace Modern.Forms
             using var paint = CreateTextPaint (font, fontsize, color);
 
             var font_height = new SKRect ();
-            paint.MeasureText (text, ref font_height);
-
-            // See how many lines we can fit if needed
-            var line_count = bounds.Height / font_height.Height;
+            paint.MeasureText ("O", ref font_height);
 
             var vertical_align = GetVerticalAlign (alignment);
             var y = bounds.Top + (int)font_height.Height;

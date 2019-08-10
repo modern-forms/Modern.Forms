@@ -43,7 +43,11 @@ namespace Modern.Forms
             window.Paint = OnPaint;
             window.Resized = OnResize;
             window.Closed = () => Closed?.Invoke (this, EventArgs.Empty);
-            window.Deactivated = () => Deactivated?.Invoke (this, EventArgs.Empty);
+            window.Deactivated = () => {
+                // If we're clicking off the form, deactivate any active menus
+                Application.ActiveMenu?.Deactivate ();
+                Deactivated?.Invoke (this, EventArgs.Empty);
+            };
             window.Resize (new Size (DefaultSize.Width, DefaultSize.Height));
         }
 

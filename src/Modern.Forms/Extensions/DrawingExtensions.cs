@@ -14,5 +14,8 @@ namespace Modern.Forms
 
         public static Rectangle CenterSquare (this Rectangle outer, int inner)
             => CenterRectangle (outer, new Size (inner, inner));
+
+        public static Point GetCenter (this Rectangle rectangle)
+            => new Point (rectangle.Left + ((rectangle.Right - rectangle.Left) / 2),  rectangle.Top + ((rectangle.Bottom - rectangle.Top) / 2));
     }
 }

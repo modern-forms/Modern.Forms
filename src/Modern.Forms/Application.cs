@@ -10,6 +10,8 @@ namespace Modern.Forms
         private static CancellationTokenSource _mainLoopCancellationTokenSource;
         private static bool is_exiting;
 
+        internal static MenuBase? ActiveMenu { get; set; }
+
         /// <summary>
         /// Sent when the application is exiting.
         /// </summary>

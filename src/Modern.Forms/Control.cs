@@ -791,6 +791,11 @@ namespace Modern.Forms
             if (child != null)
                 child.RaiseMouseDown (MouseEventsForControl (e, child));
             else {
+                // If we're clicking on the a Control that isn't the active menu, 
+                // we need to close the active menu (if any)
+                if (!(this is MenuBase))
+                    Application.ActiveMenu?.Deactivate ();
+
                 Select ();
                 Capture = true;
                 OnMouseDown (e);
@@ -996,7 +1001,7 @@ namespace Modern.Forms
             if (value)
                 behaviors |= behavior;
             else
-                behaviors &= behavior;
+                behaviors &= ~behavior;
         }
 
         internal void RaisePaintBackground (PaintEventArgs e) => OnPaintBackground (e);
