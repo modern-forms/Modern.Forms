@@ -32,6 +32,8 @@ namespace Modern.Forms
             IsActivated = false;
             SelectedItem = null;
 
+            root_item.HideDropDown ();
+
             Application.ActiveMenu = null;
         }
 

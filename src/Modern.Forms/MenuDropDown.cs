@@ -18,12 +18,27 @@ namespace Modern.Forms
         private int width = 400;
         private int height = 400;
 
+        public MenuDropDown () : base ()
+        {
+            Dock = DockStyle.Fill;
+
+            foreach (var item in Items)
+                item.ParentControl = this;
+        }
+
         public MenuDropDown (MenuItem root) : base (root)
         {
             Dock = DockStyle.Fill;
 
             foreach (var item in Items)
                 item.ParentControl = this;
+        }
+
+        internal override void Deactivate ()
+        {
+            base.Deactivate ();
+
+            Hide ();
         }
 
         public void Hide ()
@@ -69,7 +84,7 @@ namespace Modern.Forms
             newItem?.ShowDropDown ();
         }
 
-        public void Show (Point location)
+        public virtual void Show (Point location)
         {
             if (popup == null) {
                 popup = new PopupWindow (root_item.GetTopMenu ()?.FindForm ());

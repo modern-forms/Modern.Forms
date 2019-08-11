@@ -173,6 +173,8 @@ namespace Modern.Forms
             return false;
         }
 
+        public ContextMenu? ContextMenu { get; set; }
+
         public ControlCollection Controls { get; }
 
         public Cursor Cursor {
@@ -708,7 +710,15 @@ namespace Modern.Forms
                 OnClick (e);
         }
 
-        protected virtual void OnClick (MouseEventArgs e) => Click?.Invoke (this, e);
+        protected virtual void OnClick (MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && ContextMenu != null) {
+                ContextMenu.Show (PointToScreen (e.Location));
+                return;
+            }
+
+            Click?.Invoke (this, e);
+        }
 
         protected virtual void OnCursorChanged (EventArgs e) => CursorChanged?.Invoke (this, e);
 

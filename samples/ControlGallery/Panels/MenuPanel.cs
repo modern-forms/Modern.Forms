@@ -40,14 +40,30 @@ namespace ControlGallery.Panels
 
             foreach (var item in menu.Items)
                 HookUpEvent (item, label);
+
+            // Context menu
+            var context_menu = new ContextMenu ();
+
+            context_menu.Items.Add ("Copy", ImageLoader.Get ("copy.png"));
+            context_menu.Items.Add ("Cut", ImageLoader.Get ("cut.png"));
+            context_menu.Items.Add ("Paste", ImageLoader.Get ("paste.png"));
+            context_menu.Items.Add (new MenuSeparatorItem ());
+            var delete = context_menu.Items.Add ("Delete");
+            delete.Items.Add ("Recycle");
+            delete.Items.Add ("Delete");
+
+            var context_button = Controls.Add (new Button { Left = 10, Top = 250, Width = 250, Text = "Right click for context menu", ContextMenu = context_menu });
+
+            foreach (var item in context_menu.Items)
+                HookUpEvent (item, context_button);
         }
 
-        private void HookUpEvent (MenuItem item, Label label)
+        private void HookUpEvent (MenuItem item, Control control)
         {
-            item.Click += (o, e) => label.Text = item.Text + " clicked";
+            item.Click += (o, e) => control.Text = item.Text + " clicked";
 
             foreach (var child in item.Items)
-                HookUpEvent (child, label);
+                HookUpEvent (child, control);
         }
     }
 }
