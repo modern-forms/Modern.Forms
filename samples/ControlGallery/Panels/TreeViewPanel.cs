@@ -24,13 +24,11 @@ namespace ControlGallery.Panels
                 tvi.Text = $"{drive.Name.Trim ('\\')} - {drive.VolumeLabel}";
                 tvi.Image = ImageLoader.Get ("drive.png");
                 tvi.Tag = drive;
+                tvi.Expanded = true;
 
                 tree.Items.Add (tvi);
             }
 
-            tree.Items[0].Expanded = true;
-            tree.Items[1].Expanded = true;
-            tree.Items[2].Expanded = true;
             Controls.Add (tree);
 
             var show_dropdowns = Controls.Add (new CheckBox {
