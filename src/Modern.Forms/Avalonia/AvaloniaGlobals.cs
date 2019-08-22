@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Avalonia.Controls.Platform;
 using Avalonia.Platform;
 using Avalonia.Shared.PlatformSupport;
 using Avalonia.Win32;
@@ -14,6 +15,7 @@ namespace Avalonia
         public static IPlatformThreadingInterface PlatformThreadingInterface { get; private set; }
         public static IWindowingPlatform WindowingInterface { get; private set; }
         public static IStandardCursorFactory StandardCursorFactory { get; private set; }
+        public static ISystemDialogImpl SystemDialogImplementation { get; private set; }
 
         static AvaloniaGlobals ()
         {
@@ -39,6 +41,7 @@ namespace Avalonia
             WindowingInterface = x11;
             PlatformThreadingInterface = new X11PlatformThreading (x11);
             StandardCursorFactory = new X11CursorFactory (x11.Display);
+            SystemDialogImplementation = new X11.NativeDialogs.GtkSystemDialog ();
         }
 
         private static void InitializeOSX ()
@@ -48,14 +51,17 @@ namespace Avalonia
             WindowingInterface = platform;
             PlatformThreadingInterface = new Native.PlatformThreadingInterface (platform.Factory.CreatePlatformThreadingInterface ());
             StandardCursorFactory = new Native.CursorFactory (platform.Factory.CreateCursorFactory ());
+            SystemDialogImplementation = new Native.SystemDialogs (platform.Factory.CreateSystemDialogs ());
         }
- 
+
         private static void InitializeWindows ()
         {
-                Win32Platform.Initialize ();
-                PlatformThreadingInterface = Win32Platform.Instance;
-                WindowingInterface = Win32Platform.Instance;
-                StandardCursorFactory = CursorFactory.Instance;
+            Win32Platform.Initialize ();
+
+            PlatformThreadingInterface = Win32Platform.Instance;
+            WindowingInterface = Win32Platform.Instance;
+            StandardCursorFactory = CursorFactory.Instance;
+            SystemDialogImplementation = new SystemDialogImpl ();
         }
     }
 }
