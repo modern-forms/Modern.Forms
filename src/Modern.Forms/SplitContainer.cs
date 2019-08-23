@@ -13,6 +13,8 @@ namespace Modern.Forms
 
         public SplitContainer ()
         {
+            Dock = DockStyle.Fill;
+
             Panel2 = Controls.Add (new Panel { Dock = DockStyle.Fill });
             splitter = Controls.Add (new Splitter { SplitterWidth = 5 });
             Panel1 = Controls.Add (new Panel { Dock = DockStyle.Left });
