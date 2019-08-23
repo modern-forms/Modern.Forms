@@ -690,7 +690,7 @@ namespace Modern.Forms
             return new Rectangle (sx, sy, sw, sh);
         }
 
-        internal bool NeedsPaint => is_dirty || Controls.GetAllControls ().Any (c => c.is_dirty);
+        internal bool NeedsPaint => is_dirty || Controls.GetAllControls ().Any (c => c.NeedsPaint);
 
         internal void RaiseClick (MouseEventArgs e)
         {
