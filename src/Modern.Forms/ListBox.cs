@@ -194,7 +194,8 @@ namespace Modern.Forms
         {
             base.OnMouseWheel (e);
 
-            vscrollbar.RaiseMouseWheel (e);
+            if (vscrollbar.Visible)
+                vscrollbar.RaiseMouseWheel (e);
         }
 
         protected override void OnPaint (PaintEventArgs e)

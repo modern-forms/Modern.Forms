@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace Modern.Forms
@@ -23,6 +24,13 @@ namespace Modern.Forms
                 Add (item);
 
             owner.ResumeLayout (true);
+        }
+
+        protected override void OnCollectionChanged (NotifyCollectionChangedEventArgs e)
+        {
+            base.OnCollectionChanged (e);
+
+            owner.Invalidate ();
         }
 
         internal int SelectedIndex {
