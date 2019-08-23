@@ -47,8 +47,6 @@ namespace Modern.Forms
             set => TitleBar.Image = value;
         }
 
-        internal void SetCursor (Cursor cursor) => Window.SetCursor (cursor?.cursor.PlatformCursor);
-
         public void ShowDialog (Form parent) => Window.ShowDialog (parent.Window);
 
         /// <summary>

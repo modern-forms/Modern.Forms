@@ -33,6 +33,7 @@ namespace Modern.Forms
 
         private DateTime last_click_time;
         private Point last_click_point;
+        private Cursor? current_cursor;
 
         internal Window (IWindowBaseImpl window)
         {
@@ -256,6 +257,11 @@ namespace Modern.Forms
             adapter.RaiseParentVisibleChanged (EventArgs.Empty);
         }
 
+        internal void SetCursor (Cursor cursor)
+        {
+            current_cursor = cursor;
+        }
+
         private WindowElement GetElementAtLocation (int x, int y)
         {
             var left = false;
@@ -339,7 +345,7 @@ namespace Modern.Forms
                     return true;
             }
 
-            window.SetCursor (null);
+            window.SetCursor (current_cursor?.cursor?.PlatformCursor);
             return false;
         }
 
