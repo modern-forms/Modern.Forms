@@ -258,16 +258,20 @@ namespace Modern.Forms
 
         private WindowElement GetElementAtLocation (int x, int y)
         {
-            if (x >= ScaledSize.Width - Math.Max (Style.Border.Right.GetWidth (), MINIMUM_RESIZE_PIXELS))
-                return WindowElement.RightBorder;
-            if (x < Math.Max (Style.Border.Left.GetWidth (), MINIMUM_RESIZE_PIXELS))
-                return WindowElement.LeftBorder;
-            if (y >= ScaledSize.Height - Math.Max (Style.Border.Bottom.GetWidth (), MINIMUM_RESIZE_PIXELS))
-                return WindowElement.BottomBorder;
-            if (y < Math.Max (Style.Border.Top.GetWidth (), MINIMUM_RESIZE_PIXELS))
-                return WindowElement.TopBorder;
+            var left = false;
+            var right = false;
 
-            return WindowElement.Client;
+            if (x < Math.Max (Style.Border.Left.GetWidth (), MINIMUM_RESIZE_PIXELS))
+                left = true;
+            else if (x >= ScaledSize.Width - Math.Max (Style.Border.Right.GetWidth (), MINIMUM_RESIZE_PIXELS))
+                right = true;
+
+            if (y < Math.Max (Style.Border.Top.GetWidth (), MINIMUM_RESIZE_PIXELS))
+                return left ? WindowElement.TopLeftCorner : right ? WindowElement.TopRightCorner : WindowElement.TopBorder;
+            else if (y >= ScaledSize.Height - Math.Max (Style.Border.Bottom.GetWidth (), MINIMUM_RESIZE_PIXELS))
+                return left ? WindowElement.BottomLeftCorner : right ? WindowElement.BottomRightCorner : WindowElement.BottomBorder;
+
+            return left ? WindowElement.LeftBorder : right ? WindowElement.RightBorder : WindowElement.Client;
         }
 
         private bool HandleMouseDown (int x, int y)
@@ -286,6 +290,18 @@ namespace Modern.Forms
                     return true;
                 case WindowElement.LeftBorder:
                     window.BeginResizeDrag (WindowEdge.West);
+                    return true;
+                case WindowElement.TopLeftCorner:
+                    window.BeginResizeDrag (WindowEdge.NorthWest);
+                    return true;
+                case WindowElement.TopRightCorner:
+                    window.BeginResizeDrag (WindowEdge.NorthEast);
+                    return true;
+                case WindowElement.BottomLeftCorner:
+                    window.BeginResizeDrag (WindowEdge.SouthWest);
+                    return true;
+                case WindowElement.BottomRightCorner:
+                    window.BeginResizeDrag (WindowEdge.SouthEast);
                     return true;
             }
 
@@ -309,6 +325,18 @@ namespace Modern.Forms
                 case WindowElement.LeftBorder:
                     window.SetCursor (Cursors.LeftSide.cursor.PlatformCursor);
                     return true;
+                case WindowElement.TopLeftCorner:
+                    window.SetCursor (Cursors.TopLeftCorner.cursor.PlatformCursor);
+                    return true;
+                case WindowElement.TopRightCorner:
+                    window.SetCursor (Cursors.TopRightCorner.cursor.PlatformCursor);
+                    return true;
+                case WindowElement.BottomLeftCorner:
+                    window.SetCursor (Cursors.BottomLeftCorner.cursor.PlatformCursor);
+                    return true;
+                case WindowElement.BottomRightCorner:
+                    window.SetCursor (Cursors.BottomRightCorner.cursor.PlatformCursor);
+                    return true;
             }
 
             window.SetCursor (null);
@@ -321,7 +349,11 @@ namespace Modern.Forms
             TopBorder,
             RightBorder,
             BottomBorder,
-            LeftBorder
+            LeftBorder,
+            TopLeftCorner,
+            TopRightCorner,
+            BottomLeftCorner,
+            BottomRightCorner
         }
     }
 }
