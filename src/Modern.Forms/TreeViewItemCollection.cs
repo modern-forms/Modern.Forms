@@ -15,6 +15,12 @@ namespace Modern.Forms
             this.owner = owner;
         }
 
+        public T Add<T> (T item) where T : TreeViewItem
+        {
+            base.Add (item);
+            return item;
+        }
+
         public TreeViewItem Add (string text)
         {
             var item = new TreeViewItem {

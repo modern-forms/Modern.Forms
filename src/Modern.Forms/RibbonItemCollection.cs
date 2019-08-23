@@ -14,6 +14,12 @@ namespace Modern.Forms
             this.owner = owner;
         }
 
+        public T Add<T> (T item) where T : RibbonItem
+        {
+            base.Add (item);
+            return item;
+        }
+
         public RibbonItem Add (string text, SKBitmap? image = null)
         {
             var item = new RibbonItem {
@@ -21,9 +27,7 @@ namespace Modern.Forms
                 Image = image
             };
 
-            Add (item);
-
-            return item;
+            return Add (item);
         }
 
         protected override void InsertItem (int index, RibbonItem item)

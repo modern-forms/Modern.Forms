@@ -14,15 +14,19 @@ namespace Modern.Forms
             this.owner = owner;
         }
 
+        public T Add<T> (T item) where T : RibbonItemGroup
+        {
+            base.Add (item);
+            return item;
+        }
+
         public RibbonItemGroup Add (string text)
         {
             var item = new RibbonItemGroup {
                 Text = text
             };
 
-            Add (item);
-
-            return item;
+            return Add (item);
         }
 
         protected override void InsertItem (int index, RibbonItemGroup item)
