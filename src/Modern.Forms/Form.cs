@@ -44,7 +44,10 @@ namespace Modern.Forms
 
         public SKBitmap? Image {
             get => TitleBar.Image;
-            set => TitleBar.Image = value;
+            set {
+                TitleBar.Image = value;
+                Window.SetIcon (value);
+            }
         }
 
         public void ShowDialog (Form parent) => Window.ShowDialog (parent.Window);

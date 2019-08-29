@@ -21,6 +21,7 @@ using Avalonia.Win32.Input;
 //using Avalonia.Threading;
 //using Avalonia.Win32.Input;
 using Avalonia.Win32.Interop;
+using Modern.Forms;
 using static Avalonia.Win32.Interop.UnmanagedMethods;
 
 namespace Avalonia.Win32
@@ -862,13 +863,20 @@ namespace Avalonia.Win32
             }
         }
 
-        //public void SetIcon(IWindowIconImpl icon)
-        //{
-        //    var impl = (IconImpl)icon;
-        //    var hIcon = impl.HIcon;
-        //    UnmanagedMethods.PostMessage(_hwnd, (int)UnmanagedMethods.WindowsMessage.WM_SETICON,
-        //        new IntPtr((int)UnmanagedMethods.Icons.ICON_BIG), hIcon);
-        //}
+        public void SetIcon (SkiaSharp.SKBitmap icon)
+        {
+            if (icon == null) {
+                UnmanagedMethods.PostMessage (_hwnd, (int)UnmanagedMethods.WindowsMessage.WM_SETICON,
+                    new IntPtr ((int)UnmanagedMethods.Icons.ICON_BIG), IntPtr.Zero);
+
+                return;
+            }
+
+            using var icon2 = icon.ToBitmap ();
+
+            UnmanagedMethods.PostMessage (_hwnd, (int)UnmanagedMethods.WindowsMessage.WM_SETICON,
+                new IntPtr ((int)UnmanagedMethods.Icons.ICON_BIG), icon2.GetHicon ());
+        }
 
         private static int ToInt32(IntPtr ptr)
         {

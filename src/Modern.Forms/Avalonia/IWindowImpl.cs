@@ -40,7 +40,7 @@ namespace Avalonia.Platform
         /// <summary>
         /// Sets the icon of this window.
         /// </summary>
-        //void SetIcon(IWindowIconImpl icon);
+        void SetIcon(SkiaSharp.SKBitmap? icon);
 
         /// <summary>
         /// Enables or disables the taskbar icon

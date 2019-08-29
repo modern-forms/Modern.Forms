@@ -918,14 +918,14 @@ namespace Avalonia.X11
             ShowCore();
         }
 
-        //public void SetIcon(IWindowIconImpl icon)
-        //{
-        //    var data = ((X11IconData)icon).Data;
-        //    fixed (void* pdata = data)
-        //        XChangeProperty(_x11.Display, _handle, _x11.Atoms._NET_WM_ICON,
-        //            new IntPtr((int)Atom.XA_CARDINAL), 32, PropertyMode.Replace,
-        //            pdata, data.Length);
-        //}
+        public void SetIcon (SkiaSharp.SKBitmap icon)
+        {
+            //var data = ((X11IconData)icon).Data;
+            //fixed (void* pdata = data)
+            //    XChangeProperty (_x11.Display, _handle, _x11.Atoms._NET_WM_ICON,
+            //        new IntPtr ((int)Atom.XA_CARDINAL), 32, PropertyMode.Replace,
+            //        pdata, data.Length);
+        }
 
         public void ShowTaskbarIcon(bool value)
         {

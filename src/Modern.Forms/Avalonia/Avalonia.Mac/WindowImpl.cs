@@ -97,10 +97,10 @@ namespace Avalonia.Native
             // NO OP On OSX
         }
 
-        //public void SetIcon(IWindowIconImpl icon)
-        //{
-        //    // NO OP on OSX
-        //}
+        public void SetIcon (SkiaSharp.SKBitmap icon)
+        {
+            // NO OP on OSX
+        }
 
         public Func<bool> Closing { get; set; }
     }
