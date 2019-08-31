@@ -10,6 +10,8 @@ namespace Modern.Forms
         private static CancellationTokenSource _mainLoopCancellationTokenSource;
         private static bool is_exiting;
 
+        // This is the top level active menu, if any.  
+        // This is used to hide menus if the user clicks elsewhere on the Form or off the Form
         internal static MenuBase? ActiveMenu { get; set; }
 
         /// <summary>

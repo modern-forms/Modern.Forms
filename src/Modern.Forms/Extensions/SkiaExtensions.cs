@@ -118,7 +118,8 @@ namespace Modern.Forms
 
         public static void DrawBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect)
         {
-            canvas.DrawBitmap (bitmap, rect.ToSKRect ());
+            using var paint = new SKPaint { FilterQuality = SKFilterQuality.High };
+            canvas.DrawBitmap (bitmap, rect.ToSKRect (), paint);
         }
 
         public static void DrawDisabledBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect)

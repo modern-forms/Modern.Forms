@@ -24,7 +24,8 @@ namespace Modern.Forms
         {
             IsActivated = true;
 
-            Application.ActiveMenu = this;
+            if (IsTopLevelMenu)
+                Application.ActiveMenu = this;
         }
 
         internal virtual void Deactivate ()
@@ -34,12 +35,25 @@ namespace Modern.Forms
 
             root_item.HideDropDown ();
 
-            Application.ActiveMenu = null;
+            if (IsTopLevelMenu)
+                Application.ActiveMenu = null;
         }
 
         public MenuItem GetItemAtLocation (Point location) => Items.FirstOrDefault (item => item.Bounds.Contains (location));
 
-        protected bool IsActivated { get; private set; }
+        public MenuBase? GetTopLevelMenu ()
+        {
+            if (IsTopLevelMenu)
+                return this;
+
+            return root_item.GetTopMenu ();
+        }
+
+        public bool IsActivated { get; private set; }
+
+        protected virtual bool IsReleaseOnClick => true;
+
+        protected virtual bool IsTopLevelMenu => false;
 
         public virtual MenuItemCollection Items => root_item.Items;
 
@@ -51,10 +65,20 @@ namespace Modern.Forms
 
             var clicked_item = GetItemAtLocation (e.Location);
 
+            // Clicking the currently dropped down item releases the menu
+            if (IsActivated && IsReleaseOnClick && clicked_item == SelectedItem) {
+                Deactivate ();
+                return;
+            }
+
+            // If we clicked an item, raise the Click events
             if (clicked_item != null) {
                 SelectedItem = clicked_item;
                 clicked_item.OnClick (e);
                 OnItemClicked (e, clicked_item);
+                Activate ();
+            } else {
+                Deactivate ();
             }
         }
 
@@ -98,8 +122,10 @@ namespace Modern.Forms
                 if (old != null)
                     old.Selected = false;
 
-                if (value != null)
+                if (value != null) {
                     value.Selected = true;
+                    Activate ();
+                }
 
                 Invalidate ();
             }

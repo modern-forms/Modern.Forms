@@ -9,9 +9,11 @@ namespace Modern.Forms
         {
         }
 
+        protected override bool IsTopLevelMenu => true;
+
         public override void Show (Point location)
         {
-            Application.ActiveMenu = this;
+            Application.ActiveMenu ??= this;
 
             base.Show (location);
         }

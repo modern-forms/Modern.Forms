@@ -13,21 +13,48 @@ namespace Modern.Forms
 
         public event EventHandler<MouseEventArgs> Click;
 
+        public MenuItem ()
+        {
+        }
+
+        public MenuItem (string text, SKBitmap? image = null, EventHandler<MouseEventArgs>? onClick = null)
+        {
+            Text = text;
+            Image = image;
+            Click += onClick;
+        }
+
         public Rectangle Bounds { get; private set; }
 
         public virtual Size GetPreferredSize (Size proposedSize)
         {
-            if (OwnerControl is Menu menu) {
-                var padding = menu?.LogicalToDeviceUnits (Padding.Horizontal) ?? Padding.Horizontal;
-                var font_size = menu?.LogicalToDeviceUnits (Theme.FontSize) ?? Theme.FontSize;
+            var owner = OwnerControl;
+
+            if (owner is Menu menu) {
+                var padding = menu.LogicalToDeviceUnits (Padding.Horizontal);
+                var font_size = menu.LogicalToDeviceUnits (Theme.FontSize);
                 var text_size = (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size));
 
                 return new Size (text_size + padding, Bounds.Height);
-            } 
-            
-            if (OwnerControl is MenuDropDown dropdown) {
-                var padding = dropdown?.LogicalToDeviceUnits (Padding) ?? Padding;
-                var font_size = dropdown?.LogicalToDeviceUnits (Theme.FontSize) ?? Theme.FontSize;
+            }
+
+            if (owner is ToolBar bar) {
+                var width = bar.LogicalToDeviceUnits (Padding.Horizontal);
+                var font_size = bar.LogicalToDeviceUnits (Theme.FontSize);
+                width += (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size));
+
+                if (!(Image is null))
+                    width += bar.LogicalToDeviceUnits (20);
+
+                if (HasItems)
+                    width += bar.LogicalToDeviceUnits (14);
+
+                return new Size (width, Bounds.Height);
+            }
+
+            if (owner is MenuDropDown dropdown) {
+                var padding = dropdown.LogicalToDeviceUnits (Padding);
+                var font_size = dropdown.LogicalToDeviceUnits (Theme.FontSize);
                 var text_size = TextMeasurer.MeasureText (Text, Theme.UIFont, font_size, new SKSize (0, font_size));
 
                 return new Size ((int)Math.Round (text_size.Width, 0, MidpointRounding.AwayFromZero) + padding.Horizontal + 70, (int)Math.Round (text_size.Height, 0, MidpointRounding.AwayFromZero) + 12);
@@ -77,21 +104,61 @@ namespace Modern.Forms
 
         public virtual void OnPaint (SKCanvas canvas)
         {
-            if (OwnerControl is Menu menu) {
+            var owner = OwnerControl;
+
+            if (owner is Menu menu) {
                 // Background
                 var background_color = Hovered || IsDropDownOpened ? Theme.RibbonItemHighlightColor : Theme.NeutralGray;
                 canvas.FillRectangle (Bounds, background_color);
 
                 // Text
                 var font_color = Theme.DarkTextColor;
-                var font_size = menu?.LogicalToDeviceUnits (Theme.FontSize) ?? Theme.FontSize;
+                var font_size = menu.LogicalToDeviceUnits (Theme.FontSize);
 
                 canvas.DrawText (Text, Theme.UIFont, font_size, Bounds, font_color, ContentAlignment.MiddleCenter);
 
                 return;
             }
 
-            if (OwnerControl is MenuDropDown dropdown) {
+            if (owner is ToolBar bar) {
+                // Background
+                var background_color = Hovered || IsDropDownOpened ? Theme.RibbonItemHighlightColor : Theme.NeutralGray;
+                canvas.FillRectangle (Bounds, background_color);
+
+                var bounds = Bounds;
+                bounds.X += bar.LogicalToDeviceUnits (8);
+
+                // Image
+                if (Image != null) {
+                    var image_size = bar.LogicalToDeviceUnits (20);
+                    var image_bounds = DrawingExtensions.CenterSquare (Bounds, image_size);
+                    var image_rect = new Rectangle (bounds.Left, image_bounds.Top, image_size, image_size);
+                    canvas.DrawBitmap (Image, image_rect);
+
+                    bounds.X += bar.LogicalToDeviceUnits (28);
+                } else {
+                    bounds.X += bar.LogicalToDeviceUnits (4);
+                }
+
+                // Text
+                var font_color = Theme.DarkTextColor;
+                var font_size = bar.LogicalToDeviceUnits (Theme.FontSize);
+
+                bounds.Y += 1;
+                canvas.DrawText (Text, Theme.UIFont, font_size, bounds, font_color, ContentAlignment.MiddleLeft);
+                bounds.Y -= 1;
+
+                // Dropdown Arrow
+                if (HasItems) {
+                    var arrow_bounds = DrawingExtensions.CenterSquare (Bounds, 16);
+                    var arrow_area = new Rectangle (Bounds.Right - 20, arrow_bounds.Top, 16, 16);
+                    ControlPaint.DrawArrowGlyph (new PaintEventArgs (SKImageInfo.Empty, canvas, bar.Scaling), arrow_area, Theme.DarkTextColor, ArrowDirection.Down);
+                }
+
+                return;
+            }
+
+            if (owner is MenuDropDown dropdown) {
                 // Background
                 var background_color = Hovered || IsDropDownOpened ? Theme.RibbonItemHighlightColor : Theme.LightTextColor;
                 canvas.FillRectangle (Bounds, background_color);
@@ -105,7 +172,7 @@ namespace Modern.Forms
 
                 // Text
                 var font_color = Theme.DarkTextColor;
-                var font_size = dropdown?.LogicalToDeviceUnits (Theme.FontSize) ?? Theme.FontSize;
+                var font_size = dropdown.LogicalToDeviceUnits (Theme.FontSize);
                 var bounds = Bounds;
                 bounds.X += 28;
                 canvas.DrawText (Text, Theme.UIFont, font_size, bounds, font_color, ContentAlignment.MiddleLeft);
@@ -114,7 +181,7 @@ namespace Modern.Forms
                 if (HasItems) {
                     var arrow_bounds = DrawingExtensions.CenterSquare (Bounds, 16);
                     var arrow_area = new Rectangle (Bounds.Right - 20, arrow_bounds.Top, 16, 16);
-                    ControlPaint.DrawArrowGlyph (new PaintEventArgs (SKImageInfo.Empty, canvas, OwnerControl?.Scaling ?? 1), arrow_area, Theme.DarkTextColor, ArrowDirection.Right);
+                    ControlPaint.DrawArrowGlyph (new PaintEventArgs (SKImageInfo.Empty, canvas, dropdown.Scaling), arrow_area, Theme.DarkTextColor, ArrowDirection.Right);
                 }
 
                 return;
@@ -167,7 +234,7 @@ namespace Modern.Forms
 
                 var dropdown_location = Point.Empty;
 
-                if (OwnerControl is Menu)
+                if (OwnerControl is Menu || OwnerControl is ToolBar)
                     dropdown_location = OwnerControl.PointToScreen (new Point (Bounds.Left + 1, Bounds.Bottom));
                 else if (OwnerControl is MenuDropDown)
                     dropdown_location = OwnerControl.PointToScreen (new Point (Bounds.Right - 1, Bounds.Top));

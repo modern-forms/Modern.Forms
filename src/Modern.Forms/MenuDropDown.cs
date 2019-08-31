@@ -48,6 +48,9 @@ namespace Modern.Forms
 
         protected override void LayoutItems ()
         {
+            if (Items.Count == 0)
+                return;
+
             var sizes = Items.Select (i => i.GetPreferredSize (Size.Empty));
 
             width = sizes.Select (s => s.Width).Max ();
@@ -98,6 +101,11 @@ namespace Modern.Forms
 
             Invalidate ();
             popup.Show ();
+        }
+
+        public override bool Visible {
+            get => popup?.Visible ?? false;
+            set => popup?.Show ();
         }
     }
 }
