@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 // Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
 
@@ -28,7 +30,8 @@ namespace Avalonia.Threading
             _platform = platform;
             _jobRunner = new JobRunner(platform);
 
-            if (_platform != null) {
+            if (_platform != null)
+            {
                 _platform.Signaled += _jobRunner.RunJobs;
             }
         }
@@ -66,9 +69,9 @@ namespace Avalonia.Threading
         /// <summary>
         /// Runs continuations pushed on the loop.
         /// </summary>
-        public void RunJobs ()
+        public void RunJobs()
         {
-            _jobRunner.RunJobs (null);
+            _jobRunner.RunJobs(null);
         }
 
         /// <summary>
@@ -78,66 +81,68 @@ namespace Avalonia.Threading
         public void RunJobs(DispatcherPriority minimumPriority) => _jobRunner.RunJobs(minimumPriority);
 
         /// <inheritdoc/>
-        public Task InvokeAsync (Action action, DispatcherPriority priority = DispatcherPriority.Normal)
+        public Task InvokeAsync(Action action, DispatcherPriority priority = DispatcherPriority.Normal)
         {
-            //Contract.Requires<ArgumentNullException> (action != null);
-            return _jobRunner.InvokeAsync (action, priority);
+            //Contract.Requires<ArgumentNullException>(action != null);
+            return _jobRunner.InvokeAsync(action, priority);
+        }
+        
+        /// <inheritdoc/>
+        public Task<TResult> InvokeAsync<TResult>(Func<TResult> function, DispatcherPriority priority = DispatcherPriority.Normal)
+        {
+            //Contract.Requires<ArgumentNullException>(function != null);
+            return _jobRunner.InvokeAsync(function, priority);
         }
 
-        ///// <inheritdoc/>
-        public Task<TResult> InvokeAsync<TResult> (Func<TResult> function, DispatcherPriority priority = DispatcherPriority.Normal)
+        /// <inheritdoc/>
+        public Task InvokeAsync(Func<Task> function, DispatcherPriority priority = DispatcherPriority.Normal)
         {
-            //Contract.Requires<ArgumentNullException> (function != null);
-            return _jobRunner.InvokeAsync (function, priority);
+            //Contract.Requires<ArgumentNullException>(function != null);
+            return _jobRunner.InvokeAsync(function, priority).Unwrap();
         }
 
-        ///// <inheritdoc/>
-        public Task InvokeAsync (Func<Task> function, DispatcherPriority priority = DispatcherPriority.Normal)
+        /// <inheritdoc/>
+        public Task<TResult> InvokeAsync<TResult>(Func<Task<TResult>> function, DispatcherPriority priority = DispatcherPriority.Normal)
         {
-            //Contract.Requires<ArgumentNullException> (function != null);
-            return _jobRunner.InvokeAsync (function, priority).Unwrap ();
+            //Contract.Requires<ArgumentNullException>(function != null);
+            return _jobRunner.InvokeAsync(function, priority).Unwrap();
         }
 
-        ///// <inheritdoc/>
-        public Task<TResult> InvokeAsync<TResult> (Func<Task<TResult>> function, DispatcherPriority priority = DispatcherPriority.Normal)
+        /// <inheritdoc/>
+        public void Post(Action action, DispatcherPriority priority = DispatcherPriority.Normal)
         {
-            //Contract.Requires<ArgumentNullException> (function != null);
-            return _jobRunner.InvokeAsync (function, priority).Unwrap ();
+            //Contract.Requires<ArgumentNullException>(action != null);
+            _jobRunner.Post(action, priority);
         }
 
-        ///// <inheritdoc/>
-        public void Post (Action action, DispatcherPriority priority = DispatcherPriority.Normal)
-        {
-            //Contract.Requires<ArgumentNullException> (action != null);
-            _jobRunner.Post (action, priority);
-        }
-
-        ///// <summary>
-        ///// This is needed for platform backends that don't have internal priority system (e. g. win32)
-        ///// To ensure that there are no jobs with higher priority
-        ///// </summary>
-        ///// <param name="currentPriority"></param>
-        internal void EnsurePriority (DispatcherPriority currentPriority)
+        /// <summary>
+        /// This is needed for platform backends that don't have internal priority system (e. g. win32)
+        /// To ensure that there are no jobs with higher priority
+        /// </summary>
+        /// <param name="currentPriority"></param>
+        internal void EnsurePriority(DispatcherPriority currentPriority)
         {
             if (currentPriority == DispatcherPriority.MaxValue)
                 return;
             currentPriority += 1;
-            _jobRunner.RunJobs (currentPriority);
+            _jobRunner.RunJobs(currentPriority);
         }
 
-        ///// <summary>
-        ///// Allows unit tests to change the platform threading interface.
-        ///// </summary>
-        internal void UpdateServices ()
+        /// <summary>
+        /// Allows unit tests to change the platform threading interface.
+        /// </summary>
+        internal void UpdateServices()
         {
-            if (_platform != null) {
+            if (_platform != null)
+            {
                 _platform.Signaled -= _jobRunner.RunJobs;
             }
 
             _platform = AvaloniaGlobals.PlatformThreadingInterface;
-            _jobRunner.UpdateServices ();
+            _jobRunner.UpdateServices();
 
-            if (_platform != null) {
+            if (_platform != null)
+            {
                 _platform.Signaled += _jobRunner.RunJobs;
             }
         }

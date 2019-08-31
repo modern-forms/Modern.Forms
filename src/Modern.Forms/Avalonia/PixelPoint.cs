@@ -1,9 +1,11 @@
-﻿// Copyright (c) The Avalonia Project. All rights reserved.
+﻿#nullable disable
+
+// Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
 
 using System;
 using System.Globalization;
-//using Avalonia.Utilities;
+using Avalonia.Utilities;
 
 namespace Avalonia
 {
@@ -106,7 +108,7 @@ namespace Avalonia
                 return hash;
             }
         }
-
+        
         /// <summary>
         /// Returns a new <see cref="PixelPoint"/> with the same Y co-ordinate and the specified X co-ordinate.
         /// </summary>

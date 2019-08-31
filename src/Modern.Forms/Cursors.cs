@@ -34,7 +34,7 @@ namespace Modern.Forms
         public static Cursor Arrow => arrow ??= new Cursor (Avalonia.Input.StandardCursorType.Arrow);
         public static Cursor BottomLeftCorner => bottom_left_corner ??= new Cursor (Avalonia.Input.StandardCursorType.BottomLeftCorner);
         public static Cursor BottomRightCorner => bottom_right_corner ??= new Cursor (Avalonia.Input.StandardCursorType.BottomRightCorner);
-        public static Cursor BottomSide => bottom_side ??= new Cursor (Avalonia.Input.StandardCursorType.BottomSize);
+        public static Cursor BottomSide => bottom_side ??= new Cursor (Avalonia.Input.StandardCursorType.BottomSide);
         public static Cursor Cross => cross ??= new Cursor (Avalonia.Input.StandardCursorType.Cross);
         public static Cursor DragCopy => drag_copy ??= new Cursor (Avalonia.Input.StandardCursorType.DragCopy);
         public static Cursor DragLink => drag_link ??= new Cursor (Avalonia.Input.StandardCursorType.DragLink);

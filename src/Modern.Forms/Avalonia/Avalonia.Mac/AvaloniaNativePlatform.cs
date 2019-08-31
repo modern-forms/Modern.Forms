@@ -1,14 +1,13 @@
+﻿#nullable disable
+
 // Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
-
-#nullable disable
-
 using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using Avalonia.Controls.Platform;
 using Avalonia.Input;
-using Avalonia.Input.Platform;
+//using Avalonia.Input.Platform;
 using Avalonia.Native.Interop;
 //using Avalonia.OpenGL;
 using Avalonia.Platform;

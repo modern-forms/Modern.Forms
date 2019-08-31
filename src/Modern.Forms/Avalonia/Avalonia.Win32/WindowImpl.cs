@@ -1,7 +1,7 @@
+﻿#nullable disable
+
 // Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
-
-#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -12,14 +12,11 @@ using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
-//using Avalonia.Input;
-//using Avalonia.Input.Raw;
 //using Avalonia.OpenGL;
 using Avalonia.Platform;
-using Avalonia.Win32.Input;
 //using Avalonia.Rendering;
-//using Avalonia.Threading;
-//using Avalonia.Win32.Input;
+using Avalonia.Threading;
+using Avalonia.Win32.Input;
 using Avalonia.Win32.Interop;
 using Modern.Forms;
 using static Avalonia.Win32.Interop.UnmanagedMethods;
@@ -148,9 +145,10 @@ namespace Avalonia.Win32
             _maxSize = maxSize;
         }
 
-        public IScreenImpl Screen {
+        public IScreenImpl Screen
+        {
             get;
-        } = new ScreenImpl ();
+        } = new ScreenImpl();
 
 
         //public IRenderer CreateRenderer(IRenderRoot root)
@@ -504,20 +502,20 @@ namespace Avalonia.Win32
 
                 case UnmanagedMethods.WindowsMessage.WM_KEYDOWN:
                 case UnmanagedMethods.WindowsMessage.WM_SYSKEYDOWN:
-                    e = new RawKeyEventArgs (
+                    e = new RawKeyEventArgs(
                             WindowsKeyboardDevice.Instance,
                             timestamp,
                             RawKeyEventType.KeyDown,
-                            KeyInterop.KeyFromVirtualKey (ToInt32 (wParam)), WindowsKeyboardDevice.Instance.Modifiers);
+                            KeyInterop.KeyFromVirtualKey(ToInt32(wParam)), WindowsKeyboardDevice.Instance.Modifiers);
                     break;
 
                 case UnmanagedMethods.WindowsMessage.WM_KEYUP:
                 case UnmanagedMethods.WindowsMessage.WM_SYSKEYUP:
-                    e = new RawKeyEventArgs (
+                    e = new RawKeyEventArgs(
                             WindowsKeyboardDevice.Instance,
                             timestamp,
                             RawKeyEventType.KeyUp,
-                            KeyInterop.KeyFromVirtualKey (ToInt32 (wParam)), WindowsKeyboardDevice.Instance.Modifiers);
+                            KeyInterop.KeyFromVirtualKey(ToInt32(wParam)), WindowsKeyboardDevice.Instance.Modifiers);
                     break;
                 case UnmanagedMethods.WindowsMessage.WM_CHAR:
                     // Ignore control chars
@@ -582,21 +580,21 @@ namespace Avalonia.Win32
                     break;
 
                 case UnmanagedMethods.WindowsMessage.WM_MOUSEWHEEL:
-                    e = new RawMouseWheelEventArgs (
+                    e = new RawMouseWheelEventArgs(
                         WindowsMouseDevice.Instance,
                         timestamp,
                         //_owner,
                         PointToClient (PointFromLParam (lParam)) * Scaling,
-                        new Vector (0, (ToInt32 (wParam) >> 16) / wheelDelta), GetMouseModifiers (wParam));
+                        new Vector(0, (ToInt32(wParam) >> 16) / wheelDelta), GetMouseModifiers(wParam));
                     break;
 
                 case UnmanagedMethods.WindowsMessage.WM_MOUSEHWHEEL:
-                    e = new RawMouseWheelEventArgs (
+                    e = new RawMouseWheelEventArgs(
                         WindowsMouseDevice.Instance,
                         timestamp,
                         //_owner,
                         PointToClient (PointFromLParam (lParam)) * Scaling,
-                        new Vector (-(ToInt32 (wParam) >> 16) / wheelDelta, 0), GetMouseModifiers (wParam));
+                        new Vector(-(ToInt32(wParam) >> 16) / wheelDelta, 0), GetMouseModifiers(wParam));
                     break;
 
                 case UnmanagedMethods.WindowsMessage.WM_MOUSELEAVE:
@@ -606,7 +604,7 @@ namespace Avalonia.Win32
                         timestamp,
                         //_owner,
                         RawMouseEventType.LeaveWindow,
-                        new Point (), WindowsKeyboardDevice.Instance.Modifiers);
+                        new Point(), WindowsKeyboardDevice.Instance.Modifiers);
                     break;
 
                 case UnmanagedMethods.WindowsMessage.WM_NCLBUTTONDOWN:
@@ -706,10 +704,12 @@ namespace Avalonia.Win32
                 return UnmanagedMethods.DefWindowProc(hWnd, msg, wParam, lParam);
 #endif
 
-            if (e != null && Input != null) {
-                Input (e);
+            if (e != null && Input != null)
+            {
+                Input(e);
 
-                if (e.Handled) {
+                if (e.Handled)
+                {
                     return IntPtr.Zero;
                 }
             }

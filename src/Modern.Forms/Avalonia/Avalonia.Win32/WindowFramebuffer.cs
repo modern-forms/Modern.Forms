@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Avalonia.Platform;
 using Avalonia.Win32.Interop;
 using PixelFormat = Avalonia.Platform.PixelFormat;

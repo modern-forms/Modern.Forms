@@ -1,4 +1,6 @@
-﻿namespace Avalonia.Platform
+﻿#nullable disable
+
+namespace Avalonia.Platform
 {
     enum PixelFormat
     {

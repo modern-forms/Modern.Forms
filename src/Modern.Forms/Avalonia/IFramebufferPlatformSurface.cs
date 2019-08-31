@@ -1,4 +1,6 @@
-﻿using Avalonia.Platform;
+﻿#nullable disable
+
+using Avalonia.Platform;
 
 namespace Avalonia.Controls.Platform.Surfaces
 {

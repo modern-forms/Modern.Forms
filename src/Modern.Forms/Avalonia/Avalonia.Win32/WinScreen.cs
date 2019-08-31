@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using Avalonia.Platform;
 
 namespace Avalonia.Win32

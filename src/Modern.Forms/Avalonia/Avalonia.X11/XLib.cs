@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -324,6 +324,9 @@ namespace Avalonia.X11
             ref XColor foreground_color, ref XColor background_color, int x_hot, int y_hot);
 
         [DllImport(libX11)]
+        public static extern IntPtr XCreateBitmapFromData(IntPtr display, IntPtr drawable, byte[] data, int width, int height);
+
+        [DllImport(libX11)]
         public static extern IntPtr XCreatePixmapFromBitmapData(IntPtr display, IntPtr drawable, byte[] data, int width,
             int height, IntPtr fg, IntPtr bg, int depth);
 
@@ -436,7 +439,7 @@ namespace Avalonia.X11
         [DllImport(libX11)]
         public static extern IntPtr XCreateColormap(IntPtr display, IntPtr window, IntPtr visual, int create);
         
-        public enum XLookupStatus
+        enum XLookupStatus
         {
             XBufferOverflow = -1,
             XLookupNone = 1,
@@ -548,7 +551,7 @@ namespace Avalonia.X11
 
         }
 
-        public struct XGeometry
+        internal struct XGeometry
         {
             public IntPtr root;
             public int x;

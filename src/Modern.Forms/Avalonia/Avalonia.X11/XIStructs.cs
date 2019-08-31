@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using System.Runtime.InteropServices;
 using Bool = System.Boolean;
@@ -230,11 +232,18 @@ namespace Avalonia.X11
         public double root_y;
         public double event_x;
         public double event_y;
-        public int flags;
+        public XiDeviceEventFlags flags;
         public XIButtonState buttons;
         public XIValuatorState valuators;
         public XIModifierState mods;
         public XIModifierState group;
+    }
+
+    [Flags]
+    enum XiDeviceEventFlags : int
+    {
+        None = 0,
+        XIPointerEmulated = (1 << 16)
     }
 
     [StructLayout(LayoutKind.Sequential)]

@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +10,8 @@ namespace Avalonia.X11
 {
     class X11CursorFactory : IStandardCursorFactory
     {
+        private static IntPtr _nullCursor;
+
         private readonly IntPtr _display;
         private Dictionary<CursorFontShape, IntPtr> _cursors;
 
@@ -22,7 +26,7 @@ namespace Avalonia.X11
                 {StandardCursorType.No, CursorFontShape.XC_X_cursor},
                 {StandardCursorType.Wait, CursorFontShape.XC_watch},
                 {StandardCursorType.AppStarting, CursorFontShape.XC_watch},
-                {StandardCursorType.BottomSize, CursorFontShape.XC_bottom_side},
+                {StandardCursorType.BottomSide, CursorFontShape.XC_bottom_side},
                 {StandardCursorType.DragCopy, CursorFontShape.XC_center_ptr},
                 {StandardCursorType.DragLink, CursorFontShape.XC_fleur},
                 {StandardCursorType.DragMove, CursorFontShape.XC_diamond_cross},
@@ -42,16 +46,34 @@ namespace Avalonia.X11
         public X11CursorFactory(IntPtr display)
         {
             _display = display;
+            _nullCursor = GetNullCursor(display);
             _cursors = Enum.GetValues(typeof(CursorFontShape)).Cast<CursorFontShape>()
                 .ToDictionary(id => id, id => XLib.XCreateFontCursor(_display, id));
         }
-        
+
         public IPlatformHandle GetCursor(StandardCursorType cursorType)
         {
-            var handle = s_mapping.TryGetValue(cursorType, out var shape)
+            IntPtr handle;
+            if (cursorType == StandardCursorType.None)
+            {
+                handle = _nullCursor;
+            }
+            else
+            {
+                handle = s_mapping.TryGetValue(cursorType, out var shape)
                 ? _cursors[shape]
                 : _cursors[CursorFontShape.XC_top_left_arrow];
+            }
             return new PlatformHandle(handle, "XCURSOR");
+        }
+
+        private static IntPtr GetNullCursor(IntPtr display)
+        {
+            XColor color = new XColor();
+            byte[] data = new byte[] { 0 };
+            IntPtr window = XLib.XRootWindow(display, 0);
+            IntPtr pixmap = XLib.XCreateBitmapFromData(display, window, data, 1, 1);
+            return XLib.XCreatePixmapCursor(display, pixmap, pixmap, ref color, ref color, 0, 0);
         }
     }
 }

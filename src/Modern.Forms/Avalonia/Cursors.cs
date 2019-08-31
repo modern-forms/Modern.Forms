@@ -1,3 +1,5 @@
+﻿#nullable disable
+
 // Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
 
@@ -28,7 +30,7 @@ namespace Avalonia.Input
         AppStarting,
         Help,
         TopSide,
-        BottomSize,
+        BottomSide,
         LeftSide,
         RightSide,
         TopLeftCorner,
@@ -38,6 +40,7 @@ namespace Avalonia.Input
         DragMove,
         DragCopy,
         DragLink,
+        None
 
         // Not available in GTK directly, see http://www.pixelbeat.org/programming/x_cursors/ 
         // We might enable them later, preferably, by loading pixmax direclty from theme with fallback image

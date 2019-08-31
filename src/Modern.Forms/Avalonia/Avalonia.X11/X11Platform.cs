@@ -6,13 +6,13 @@ using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Platform;
 using Avalonia.Input;
-using Avalonia.Input.Platform;
+//using Avalonia.Input.Platform;
 //using Avalonia.OpenGL;
 using Avalonia.Platform;
 //using Avalonia.Rendering;
 using Avalonia.X11;
 //using Avalonia.X11.Glx;
-//using Avalonia.X11.NativeDialogs;
+using Avalonia.X11.NativeDialogs;
 using static Avalonia.X11.XLib;
 namespace Avalonia.X11
 {
@@ -30,6 +30,7 @@ namespace Avalonia.X11
         public X11PlatformOptions Options { get; private set; }
         public void Initialize(X11PlatformOptions options)
         {
+            Options = options;
             XInitThreads();
             Display = XOpenDisplay(IntPtr.Zero);
             DeferredDisplay = XOpenDisplay(IntPtr.Zero);
