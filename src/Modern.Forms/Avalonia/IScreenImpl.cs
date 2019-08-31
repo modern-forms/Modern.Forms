@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Avalonia.Platform
 {
-    interface IScreenImpl
+    internal interface IScreenImpl
     {
         int ScreenCount { get; }
 

@@ -11,7 +11,7 @@ namespace Avalonia.Platform
     /// <summary>
     /// Defines the platform-specific interface for a <see cref="Avalonia.Media.Imaging.Bitmap"/>.
     /// </summary>
-    interface IBitmapImpl : IDisposable
+    internal interface IBitmapImpl : IDisposable
     {
         /// <summary>
         /// Gets the dots per inch (DPI) of the image.

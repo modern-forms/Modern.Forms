@@ -4,7 +4,7 @@ using System;
 
 namespace Avalonia.Platform
 {
-    interface ILockedFramebuffer : IDisposable
+    internal interface ILockedFramebuffer : IDisposable
     {
         /// <summary>
         /// Address of the first pixel

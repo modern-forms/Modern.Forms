@@ -10,7 +10,7 @@ namespace Avalonia.Input
     /// <summary>
     /// Represents a mouse device.
     /// </summary>
-    interface IMouseDevice : IPointerDevice
+    internal interface IMouseDevice : IPointerDevice
     {
         /// <summary>
         /// Gets the mouse position, in screen coordinates.

@@ -10,7 +10,7 @@ using SkiaSharp;
 
 namespace Avalonia.Skia
 {
-    static class SkiaSharpExtensions
+    internal static class SkiaSharpExtensions
     {
         public static SKPoint ToSKPoint(this Point p)
         {

@@ -15,7 +15,7 @@ namespace Avalonia.X11.NativeDialogs
         private const string GObjectName = "libgobject-2.0.so.0";
 
         [DllImport(GlibName)]
-        public static extern void g_slist_free(GSList* data);
+        internal static extern void g_slist_free(GSList* data);
 
         [DllImport(GObjectName)]
         private static extern void g_object_ref(IntPtr instance);
@@ -165,10 +165,10 @@ namespace Avalonia.X11.NativeDialogs
 
 
         [DllImport(GtkName)]
-        public static extern void gtk_window_set_modal(IntPtr window, bool modal);
+        internal static extern void gtk_window_set_modal(IntPtr window, bool modal);
 
         [DllImport(GtkName)]
-        public static extern void gtk_window_present(IntPtr gtkWindow);
+        internal static extern void gtk_window_present(IntPtr gtkWindow);
 
 
         public delegate bool signal_generic(IntPtr gtkWidget, IntPtr userData);
@@ -176,42 +176,42 @@ namespace Avalonia.X11.NativeDialogs
         public delegate bool signal_dialog_response(IntPtr gtkWidget, GtkResponseType response, IntPtr userData);
 
         [DllImport(GtkName)]
-        public static extern IntPtr gtk_file_chooser_dialog_new(Utf8Buffer title, IntPtr parent,
+        internal static extern IntPtr gtk_file_chooser_dialog_new(Utf8Buffer title, IntPtr parent,
             GtkFileChooserAction action, IntPtr ignore);
 
         [DllImport(GtkName)]
-        public static extern void gtk_file_chooser_set_select_multiple(IntPtr chooser, bool allow);
+        internal static extern void gtk_file_chooser_set_select_multiple(IntPtr chooser, bool allow);
 
         [DllImport(GtkName)]
-        public static extern void
+        internal static extern void
             gtk_dialog_add_button(IntPtr raw, Utf8Buffer button_text, GtkResponseType response_id);
 
         [DllImport(GtkName)]
-        public static extern GSList* gtk_file_chooser_get_filenames(IntPtr chooser);
+        internal static extern GSList* gtk_file_chooser_get_filenames(IntPtr chooser);
 
         [DllImport(GtkName)]
-        public static extern void gtk_file_chooser_set_filename(IntPtr chooser, Utf8Buffer file);
+        internal static extern void gtk_file_chooser_set_filename(IntPtr chooser, Utf8Buffer file);
 
         [DllImport(GtkName)]
-        public static extern IntPtr gtk_file_filter_new();
+        internal static extern IntPtr gtk_file_filter_new();
         
         [DllImport(GtkName)]
-        public static extern IntPtr gtk_file_filter_set_name(IntPtr filter, Utf8Buffer name);
+        internal static extern IntPtr gtk_file_filter_set_name(IntPtr filter, Utf8Buffer name);
         
         [DllImport(GtkName)]
-        public static extern IntPtr gtk_file_filter_add_pattern(IntPtr filter, Utf8Buffer pattern);
+        internal static extern IntPtr gtk_file_filter_add_pattern(IntPtr filter, Utf8Buffer pattern);
         
         [DllImport(GtkName)]
-        public static extern IntPtr gtk_file_chooser_add_filter(IntPtr chooser, IntPtr filter);
+        internal static extern IntPtr gtk_file_chooser_add_filter(IntPtr chooser, IntPtr filter);
         
         [DllImport(GtkName)]
-        public static extern void gtk_widget_realize(IntPtr gtkWidget);
+        internal static extern void gtk_widget_realize(IntPtr gtkWidget);
 
         [DllImport(GtkName)]
-        public static extern IntPtr gtk_widget_get_window(IntPtr gtkWidget);
+        internal static extern IntPtr gtk_widget_get_window(IntPtr gtkWidget);
 
         [DllImport(GtkName)]
-        public static extern void gtk_widget_hide(IntPtr gtkWidget);
+        internal static extern void gtk_widget_hide(IntPtr gtkWidget);
 
         [DllImport(GtkName)]
         static extern bool gtk_init_check(int argc, IntPtr argv);
@@ -229,7 +229,7 @@ namespace Avalonia.X11.NativeDialogs
         static extern IntPtr gtk_application_new(Utf8Buffer appId, int flags);
 
         [DllImport(GdkName)]
-        public static extern void gdk_window_set_transient_for(IntPtr window, IntPtr parent);
+        internal static extern void gdk_window_set_transient_for(IntPtr window, IntPtr parent);
 
         public static IntPtr GetForeignWindow(IntPtr xid) => gdk_x11_window_foreign_new_for_display(s_display, xid);
 

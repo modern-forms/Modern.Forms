@@ -11,7 +11,7 @@ namespace Avalonia.Skia.Helpers
     /// <summary>
     /// Helps with resolving pixel formats to Skia color types.
     /// </summary>
-    static class PixelFormatHelper
+    internal static class PixelFormatHelper
     {
         /// <summary>
         /// Resolve given format to Skia color type.

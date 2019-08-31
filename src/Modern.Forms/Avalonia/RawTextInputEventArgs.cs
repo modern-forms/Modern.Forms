@@ -5,7 +5,7 @@
 
 namespace Avalonia.Input.Raw
 {
-    class RawTextInputEventArgs : RawInputEventArgs
+    internal class RawTextInputEventArgs : RawInputEventArgs
     {
         public string Text { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace Avalonia.Platform
 {
-    class Screen
+    internal class Screen
     {
         public PixelRect Bounds { get; }
 

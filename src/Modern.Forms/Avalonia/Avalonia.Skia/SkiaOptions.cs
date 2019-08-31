@@ -11,7 +11,7 @@ namespace Avalonia
     /// <summary>
     /// Options for Skia rendering subsystem.
     /// </summary>
-    class SkiaOptions
+    internal class SkiaOptions
     {
         /// <summary>
         /// Custom gpu factory to use. Can be used to customize behavior of Skia renderer.

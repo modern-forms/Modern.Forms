@@ -7,11 +7,11 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Native.Interop;
 using Avalonia.Platform;
-//using Avalonia.Platform.Interop;
+using Avalonia.Platform.Interop;
 
 namespace Avalonia.Native
 {
-    class WindowImpl : WindowBaseImpl, IWindowImpl
+    internal class WindowImpl : WindowBaseImpl, IWindowImpl
     {
         IAvnWindow _native;
         public WindowImpl(IAvaloniaNativeFactory factory, AvaloniaNativePlatformOptions opts) : base(opts)

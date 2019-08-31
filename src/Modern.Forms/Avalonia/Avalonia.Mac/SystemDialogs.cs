@@ -14,7 +14,7 @@ using Avalonia.Platform;
 
 namespace Avalonia.Native
 {
-    class SystemDialogs : ISystemDialogImpl
+    internal class SystemDialogs : ISystemDialogImpl
     {
         IAvnSystemDialogs _native;
 
@@ -59,7 +59,7 @@ namespace Avalonia.Native
         }
     }
 
-    class SystemDialogEvents : CallbackBase, IAvnSystemDialogEvents
+    internal class SystemDialogEvents : CallbackBase, IAvnSystemDialogEvents
     {
         private TaskCompletionSource<string[]> _tcs;
 

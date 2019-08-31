@@ -6,7 +6,7 @@ using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Platform;
 using Avalonia.Input;
-//using Avalonia.Input.Platform;
+using Avalonia.Input.Platform;
 //using Avalonia.OpenGL;
 using Avalonia.Platform;
 //using Avalonia.Rendering;

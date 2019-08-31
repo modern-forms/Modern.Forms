@@ -5,7 +5,7 @@ using Avalonia.Controls;
 
 namespace Avalonia.Platform
 {
-    interface IWindowBaseImpl : ITopLevelImpl
+    internal interface IWindowBaseImpl : ITopLevelImpl
     {
         /// <summary>
         /// Shows the top level.

@@ -7,7 +7,7 @@ using Avalonia.Input;
 
 namespace Avalonia.Platform
 {
-    interface IStandardCursorFactory
+    internal interface IStandardCursorFactory
     {
         IPlatformHandle GetCursor(StandardCursorType cursorType);
     }

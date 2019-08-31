@@ -5,14 +5,14 @@ using System.Reflection;
 
 namespace Avalonia.Platform
 {
-    interface IRuntimePlatform
+    internal interface IRuntimePlatform
     {
         IDisposable StartSystemTimer(TimeSpan interval, Action tick);
         RuntimePlatformInfo GetRuntimeInfo();
         IUnmanagedBlob AllocBlob(int size);
     }
 
-    interface IUnmanagedBlob : IDisposable
+    internal interface IUnmanagedBlob : IDisposable
     {
         IntPtr Address { get; }
         int Size { get; }
@@ -20,7 +20,7 @@ namespace Avalonia.Platform
         
     }
 
-    struct RuntimePlatformInfo
+    internal struct RuntimePlatformInfo
     {
         public OperatingSystemType OperatingSystem { get; set; }
         public bool IsDesktop { get; set; }
@@ -31,7 +31,7 @@ namespace Avalonia.Platform
         public bool IsUnix { get; set; }
     }
 
-    enum OperatingSystemType
+    internal enum OperatingSystemType
     {
         Unknown,
         WinNT,

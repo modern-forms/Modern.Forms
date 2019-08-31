@@ -9,7 +9,7 @@ using Avalonia.Utilities;
 
 namespace Avalonia.Controls
 {
-    class Screens
+    internal class Screens
     {
         private readonly IScreenImpl _iScreenImpl;
 

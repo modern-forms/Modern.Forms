@@ -13,7 +13,7 @@ namespace Avalonia
     /// <summary>
     /// Defines a size.
     /// </summary>
-    readonly struct Size
+    internal readonly struct Size
     {
         static Size()
         {

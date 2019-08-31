@@ -16,7 +16,7 @@ namespace Avalonia.Input
     /// <summary>
     /// Represents a mouse device.
     /// </summary>
-    class MouseDevice : IMouseDevice
+    internal class MouseDevice : IMouseDevice
     {
         //private int _clickCount;
         //private Rect _lastClickRect;

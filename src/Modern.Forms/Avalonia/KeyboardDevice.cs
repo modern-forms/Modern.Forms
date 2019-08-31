@@ -11,7 +11,7 @@ using Avalonia.Input.Raw;
 
 namespace Avalonia.Input
 {
-    class KeyboardDevice : IKeyboardDevice, INotifyPropertyChanged
+    internal class KeyboardDevice : IKeyboardDevice, INotifyPropertyChanged
     {
         //private IInputElement _focusedElement;
 

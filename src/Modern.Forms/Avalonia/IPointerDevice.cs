@@ -8,7 +8,7 @@ using System;
 
 namespace Avalonia.Input
 {
-    interface IPointerDevice : IInputDevice
+    internal interface IPointerDevice : IInputDevice
     {
         //IInputElement Captured { get; }
 

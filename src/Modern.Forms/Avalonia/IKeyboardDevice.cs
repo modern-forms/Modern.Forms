@@ -9,7 +9,7 @@ using System.ComponentModel;
 namespace Avalonia.Input
 {
     [Flags, Obsolete("Use KeyModifiers and PointerPointProperties")]
-    enum InputModifiers
+    internal enum InputModifiers
     {
         None = 0,
         Alt = 1,
@@ -22,7 +22,7 @@ namespace Avalonia.Input
     }
 
     [Flags]
-    enum KeyModifiers
+    internal enum KeyModifiers
     {
         None = 0,
         Alt = 1,
@@ -32,7 +32,7 @@ namespace Avalonia.Input
     }
 
     [Flags]
-    enum KeyStates
+    internal enum KeyStates
     {
         None = 0,
         Down = 1,
@@ -40,7 +40,7 @@ namespace Avalonia.Input
     }
 
     [Flags]
-    enum RawInputModifiers
+    internal enum RawInputModifiers
     {
         None = 0,
         Alt = 1,
@@ -59,7 +59,7 @@ namespace Avalonia.Input
             (KeyModifiers)(modifiers & RawInputModifiers.KeyboardMask);
     }
 
-    interface IKeyboardDevice : IInputDevice, INotifyPropertyChanged
+    internal interface IKeyboardDevice : IInputDevice, INotifyPropertyChanged
     {
     //    IInputElement FocusedElement { get; }
 

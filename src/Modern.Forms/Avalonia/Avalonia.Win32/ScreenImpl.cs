@@ -10,7 +10,7 @@ using static Avalonia.Win32.Interop.UnmanagedMethods;
 
 namespace Avalonia.Win32
 {
-    class ScreenImpl : IScreenImpl
+    internal class ScreenImpl : IScreenImpl
     {
         public  int ScreenCount
         {

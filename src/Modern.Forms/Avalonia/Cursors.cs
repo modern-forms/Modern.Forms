@@ -15,7 +15,7 @@ namespace Avalonia.Input
     =========================================================================================
     */
 
-    enum StandardCursorType
+    internal enum StandardCursorType
     {
         Arrow,
         Ibeam,
@@ -40,7 +40,10 @@ namespace Avalonia.Input
         DragMove,
         DragCopy,
         DragLink,
-        None
+        None,
+
+        [Obsolete("Use BottomSide")]
+        BottomSize = BottomSide
 
         // Not available in GTK directly, see http://www.pixelbeat.org/programming/x_cursors/ 
         // We might enable them later, preferably, by loading pixmax direclty from theme with fallback image
@@ -48,7 +51,7 @@ namespace Avalonia.Input
         // SizeNorthEastSouthWest,
     }
 
-    class Cursor
+    internal class Cursor
     {
         public static readonly Cursor Default = new Cursor(StandardCursorType.Arrow);
 

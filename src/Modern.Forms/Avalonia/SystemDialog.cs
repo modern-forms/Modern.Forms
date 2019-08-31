@@ -9,18 +9,18 @@ using Avalonia.Platform;
 
 namespace Avalonia.Controls
 {
-    abstract class FileDialog : FileSystemDialog
+    internal abstract class FileDialog : FileSystemDialog
     {
         public List<FileDialogFilter> Filters { get; set; } = new List<FileDialogFilter>();
         public string InitialFileName { get; set; }        
     }
 
-    abstract class FileSystemDialog : SystemDialog
+    internal abstract class FileSystemDialog : SystemDialog
     {
         public string InitialDirectory { get; set; }
     }
 
-    class SaveFileDialog : FileDialog
+    internal class SaveFileDialog : FileDialog
     {
         public string DefaultExtension { get; set; }
 
@@ -34,7 +34,7 @@ namespace Avalonia.Controls
         }
     }
 
-    class OpenFileDialog : FileDialog
+    internal class OpenFileDialog : FileDialog
     {
         public bool AllowMultiple { get; set; }
 
@@ -46,7 +46,7 @@ namespace Avalonia.Controls
         }
     }
 
-    class OpenFolderDialog : FileSystemDialog
+    internal class OpenFolderDialog : FileSystemDialog
     {
         public string DefaultDirectory { get; set; }
 
@@ -58,12 +58,12 @@ namespace Avalonia.Controls
         }
     }
 
-    abstract class SystemDialog
+    internal abstract class SystemDialog
     {
         public string Title { get; set; }
     }
 
-    class FileDialogFilter
+    internal class FileDialogFilter
     {
         public string Name { get; set; }
         public List<string> Extensions { get; set; } = new List<string>();

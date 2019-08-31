@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using Avalonia.Controls.Platform;
 using Avalonia.Input;
-//using Avalonia.Input.Platform;
+using Avalonia.Input.Platform;
 using Avalonia.Native.Interop;
 //using Avalonia.OpenGL;
 using Avalonia.Platform;

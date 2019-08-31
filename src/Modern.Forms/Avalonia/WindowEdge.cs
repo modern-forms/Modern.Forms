@@ -3,7 +3,7 @@
 namespace Avalonia.Controls
 {
     
-    enum WindowEdge
+    internal enum WindowEdge
     {
         //Please don't reorder stuff here, I was lazy to write proper conversion code
         //so the order of values is matching one from GTK

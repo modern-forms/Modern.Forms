@@ -11,7 +11,7 @@ namespace Avalonia.Platform
     /// <summary>
     /// Defines a platform-specific window implementation.
     /// </summary>
-    interface IWindowImpl : IWindowBaseImpl
+    internal interface IWindowImpl : IWindowBaseImpl
     {
         /// <summary>
         /// Gets or sets the minimized/maximized state of the window.

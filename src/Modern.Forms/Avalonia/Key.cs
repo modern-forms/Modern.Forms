@@ -11,7 +11,7 @@ namespace Avalonia.Input
     /// <summary>
     /// Defines the keys available on a keyboard.
     /// </summary>
-    enum Key
+    internal enum Key
     {
         /// <summary>
         /// No key pressed.

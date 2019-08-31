@@ -19,7 +19,7 @@ namespace Avalonia.Platform
     /// This interface is the common interface to <see cref="IWindowImpl"/> and
     /// <see cref="IPopupImpl"/>.
     /// </remarks>
-    interface ITopLevelImpl : IDisposable
+    internal interface ITopLevelImpl : IDisposable
     {
         /// <summary>
         /// Gets the client size of the toplevel.

@@ -9,7 +9,7 @@ namespace Avalonia.Threading
     /// Defines the priorities with which jobs can be invoked on a <see cref="Dispatcher"/>.
     /// </summary>
     // TODO: These are copied from WPF - many won't apply to Avalonia.
-    enum DispatcherPriority
+    internal enum DispatcherPriority
     {
         /// <summary>
         /// Minimum possible priority

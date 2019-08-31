@@ -17,7 +17,7 @@ namespace Avalonia.Threading
     /// In Avalonia, there is usually only a single <see cref="Dispatcher"/> in the application -
     /// the one for the UI thread, retrieved via the <see cref="UIThread"/> property.
     /// </remarks>
-    class Dispatcher : IDispatcher
+    internal class Dispatcher : IDispatcher
     {
         private readonly JobRunner _jobRunner;
         private IPlatformThreadingInterface _platform;

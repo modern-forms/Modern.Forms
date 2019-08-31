@@ -8,7 +8,7 @@ using SharpGen.Runtime;
 
 namespace Avalonia.Native
 {
-    class CallbackBase : SharpGen.Runtime.IUnknown
+    internal class CallbackBase : SharpGen.Runtime.IUnknown
     {
         private uint _refCount;
         private bool _disposed;

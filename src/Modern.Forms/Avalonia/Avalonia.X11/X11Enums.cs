@@ -5,7 +5,7 @@ using System;
 namespace Avalonia.X11
 {
 
-    enum Status
+    internal enum Status
     {
         Success = 0, /* everything's okay */
         BadRequest = 1, /* bad request code */
@@ -40,7 +40,7 @@ namespace Avalonia.X11
     }
 
     [Flags]
-    enum XEventMask : int
+    internal enum XEventMask : int
     {
         NoEventMask = 0,
         KeyPressMask = (1 << 0),
@@ -71,7 +71,7 @@ namespace Avalonia.X11
     }
 
     [Flags]
-    enum XModifierMask
+    internal enum XModifierMask
     {
         ShiftMask = (1 << 0),
         LockMask = (1 << 1),
@@ -91,7 +91,7 @@ namespace Avalonia.X11
     }
     
     [Flags]
-    enum XCreateWindowFlags
+    internal enum XCreateWindowFlags
     {
         CWBackPixmap = (1 << 0),
         CWBackPixel = (1 << 1),

@@ -11,7 +11,7 @@ namespace Avalonia.Controls.Platform
     /// <summary>
     /// Defines a platform-specific system dialog implementation.
     /// </summary>
-    interface ISystemDialogImpl
+    internal interface ISystemDialogImpl
     {
         /// <summary>
         /// Shows a file dialog.

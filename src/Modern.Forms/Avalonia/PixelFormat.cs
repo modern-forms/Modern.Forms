@@ -2,7 +2,7 @@
 
 namespace Avalonia.Platform
 {
-    enum PixelFormat
+    internal enum PixelFormat
     {
         Rgb565,
         Rgba8888,

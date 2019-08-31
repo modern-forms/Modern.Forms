@@ -10,7 +10,7 @@ namespace Avalonia.Skia
     /// <summary>
     /// Skia platform initializer.
     /// </summary>
-    static class SkiaPlatform
+    internal static class SkiaPlatform
     {
         /// <summary>
         /// Initialize Skia platform.

@@ -7,7 +7,7 @@ using PixelFormat = Avalonia.Platform.PixelFormat;
 
 namespace Avalonia.Win32
 {
-    class WindowFramebuffer : ILockedFramebuffer
+    internal class WindowFramebuffer : ILockedFramebuffer
     {
         private readonly IntPtr _handle;
         private IUnmanagedBlob _bitmapBlob;

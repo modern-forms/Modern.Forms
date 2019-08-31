@@ -16,7 +16,7 @@ namespace Avalonia.Input.Raw
     /// pre-processing they are consumed by the relevant <see cref="Device"/> and turned into
     /// standard Avalonia events.
     /// </remarks>
-    class RawInputEventArgs : EventArgs
+    internal class RawInputEventArgs : EventArgs
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RawInputEventArgs"/> class.

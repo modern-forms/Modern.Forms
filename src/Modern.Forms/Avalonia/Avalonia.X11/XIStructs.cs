@@ -240,7 +240,7 @@ namespace Avalonia.X11
     }
 
     [Flags]
-    enum XiDeviceEventFlags : int
+    internal enum XiDeviceEventFlags : int
     {
         None = 0,
         XIPointerEmulated = (1 << 16)

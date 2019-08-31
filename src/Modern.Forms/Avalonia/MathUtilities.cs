@@ -11,7 +11,7 @@ namespace Avalonia.Utilities
     /// <summary>
     /// Provides math utilities not provided in System.Math.
     /// </summary>
-    static class MathUtilities
+    internal static class MathUtilities
     {
         /// <summary>
         /// Clamps a value between a minimum and maximum value.

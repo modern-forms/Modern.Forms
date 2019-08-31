@@ -142,15 +142,15 @@ private void CopyFile (string src, string dst)
     text = $"#nullable disable{Environment.NewLine}{Environment.NewLine}{text}";
 
     // We do not publicly expose the Avalonia types
-    text = text.Replace ("public class", "class");
-    text = text.Replace ("public abstract class", "abstract class");
-    text = text.Replace ("public static class", "static class");
-    text = text.Replace ("public static extern", "static extern");
-    text = text.Replace ("public enum", "enum");
-    text = text.Replace ("public interface", "interface");
-    text = text.Replace ("public struct", "struct");
-    text = text.Replace ("public readonly struct", "readonly struct");
-    text = text.Replace ("public unsafe struct", "unsafe struct");
+    text = text.Replace ("public class", "internal class");
+    text = text.Replace ("public abstract class", "internal abstract class");
+    text = text.Replace ("public static class", "internal static class");
+    text = text.Replace ("public static extern", "internal static extern");
+    text = text.Replace ("public enum", "internal enum");
+    text = text.Replace ("public interface", "internal interface");
+    text = text.Replace ("public struct", "internal struct");
+    text = text.Replace ("public readonly struct", "internal readonly struct");
+    text = text.Replace ("public unsafe struct", "internal unsafe struct");
 
     // Some namespaces we do not use
     text = Comment (text, "using Avalonia.Animation");
@@ -162,7 +162,7 @@ private void CopyFile (string src, string dst)
     text = Comment (text, "using Avalonia.VisualTree");
     text = Comment (text, "using Avalonia.X11.Glx");
     text = Comment (text, "using JetBrains.Annotations");
-    text = Comment (text, "using System.Component.DataAnnotation");
+    text = Comment (text, "using System.ComponentModel.DataAnnotation");
     text = Comment (text, "using System.Reactive.Disposables");
     text = Comment (text, "using System.Reactive.Linq");
 

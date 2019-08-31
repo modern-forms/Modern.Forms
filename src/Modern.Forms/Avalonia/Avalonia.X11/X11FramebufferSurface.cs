@@ -6,7 +6,7 @@ using Avalonia.Platform;
 using static Avalonia.X11.XLib;
 namespace Avalonia.X11
 {
-    class X11FramebufferSurface : IFramebufferPlatformSurface
+    internal class X11FramebufferSurface : IFramebufferPlatformSurface
     {
         private readonly IntPtr _display;
         private readonly IntPtr _xid;

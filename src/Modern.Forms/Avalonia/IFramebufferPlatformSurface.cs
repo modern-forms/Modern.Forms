@@ -4,7 +4,7 @@ using Avalonia.Platform;
 
 namespace Avalonia.Controls.Platform.Surfaces
 {
-    interface IFramebufferPlatformSurface
+    internal interface IFramebufferPlatformSurface
     {
         /// <summary>
         /// Provides a framebuffer descriptor for drawing.
