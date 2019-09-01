@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable disable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 //using Avalonia.Interactivity;
@@ -6,12 +8,12 @@ using System.Linq;
 
 namespace Avalonia.Input
 {
-    public class Pointer : IPointer, IDisposable
+    internal class Pointer : IPointer, IDisposable
     {
         private static int s_NextFreePointerId = 1000;
-        public static int GetNextFreeId () => s_NextFreePointerId++;
-
-        public Pointer (int id, PointerType type, bool isPrimary)
+        public static int GetNextFreeId() => s_NextFreePointerId++;
+        
+        public Pointer(int id, PointerType type, bool isPrimary)
         {
             Id = id;
             Type = type;

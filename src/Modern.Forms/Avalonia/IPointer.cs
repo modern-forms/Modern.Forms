@@ -1,6 +1,8 @@
-﻿namespace Avalonia.Input
+﻿#nullable disable
+
+namespace Avalonia.Input
 {
-    public interface IPointer
+    internal interface IPointer
     {
         int Id { get; }
         //void Capture(IInputElement control);
@@ -10,7 +12,7 @@
         
     }
 
-    public enum PointerType
+    internal enum PointerType
     {
         Mouse,
         Touch

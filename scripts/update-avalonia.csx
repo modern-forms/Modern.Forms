@@ -180,6 +180,14 @@ private void CopyFile (string src, string dst)
     text = Comment (text, "Animation.Animation.RegisterAnimator");
     text = Comment (text, "[Pure]");
 
+    text = text.Replace("////using Avalonia", "//using Avalonia");
+
+    // Some Avalonia structs that are still public
+    text = text.Replace ("internal interface ICloseable", "public interface ICloseable");
+    text = text.Replace ("internal readonly struct PixelPoint", "public readonly struct PixelPoint");
+    text = text.Replace ("internal readonly struct Point", "public readonly struct Point");
+    text = text.Replace ("internal readonly struct Vector", "public readonly struct Vector");
+
     File.WriteAllText (full_dst, text, Encoding.UTF8);
 }
 

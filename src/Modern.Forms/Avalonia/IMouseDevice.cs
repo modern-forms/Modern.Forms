@@ -17,5 +17,7 @@ namespace Avalonia.Input
         /// </summary>
         [Obsolete("Use PointerEventArgs.GetPosition")]
         PixelPoint Position { get; }
+
+        //void SceneInvalidated(IInputRoot root, Rect rect);
     }
 }
