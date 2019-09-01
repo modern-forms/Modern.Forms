@@ -197,20 +197,20 @@ namespace Avalonia.X11
                         //client.InputRoot, 
                         ev.Position, scrollDelta, ev.Modifiers));
                 if (_pointerDevice.HasMotion(ev))
-                    client.ScheduleInput(new RawMouseEventArgs(_platform.MouseDevice, ev.Timestamp, //client.InputRoot,
-                        RawMouseEventType.Move, ev.Position, ev.Modifiers));
+                    client.ScheduleInput(new RawPointerEventArgs(_platform.MouseDevice, ev.Timestamp, //client.InputRoot,
+                        RawPointerEventType.Move, ev.Position, ev.Modifiers));
             }
 
             if (ev.Type == XiEventType.XI_ButtonPress || ev.Type == XiEventType.XI_ButtonRelease)
             {
                 var down = ev.Type == XiEventType.XI_ButtonPress;
                 var type =
-                    ev.Button == 1 ? (down ? RawMouseEventType.LeftButtonDown : RawMouseEventType.LeftButtonUp)
-                    : ev.Button == 2 ? (down ? RawMouseEventType.MiddleButtonDown : RawMouseEventType.MiddleButtonUp)
-                    : ev.Button == 3 ? (down ? RawMouseEventType.RightButtonDown : RawMouseEventType.RightButtonUp)
-                    : (RawMouseEventType?)null;
+                    ev.Button == 1 ? (down ? RawPointerEventType.LeftButtonDown : RawPointerEventType.LeftButtonUp)
+                    : ev.Button == 2 ? (down ? RawPointerEventType.MiddleButtonDown : RawPointerEventType.MiddleButtonUp)
+                    : ev.Button == 3 ? (down ? RawPointerEventType.RightButtonDown : RawPointerEventType.RightButtonUp)
+                    : (RawPointerEventType?)null;
                 if (type.HasValue)
-                    client.ScheduleInput(new RawMouseEventArgs(_platform.MouseDevice, ev.Timestamp, //client.InputRoot,
+                    client.ScheduleInput(new RawPointerEventArgs(_platform.MouseDevice, ev.Timestamp, //client.InputRoot,
                         type.Value, ev.Position, ev.Modifiers));
             }
 
@@ -221,7 +221,7 @@ namespace Avalonia.X11
     unsafe class ParsedDeviceEvent
     {
         public XiEventType Type { get; }
-        public InputModifiers Modifiers { get; }
+        public RawInputModifiers Modifiers { get; }
         public ulong Timestamp { get; }
         public Point Position { get; }
         public int Button { get; set; }
@@ -232,25 +232,25 @@ namespace Avalonia.X11
             Timestamp = (ulong)ev->time.ToInt64();
             var state = (XModifierMask)ev->mods.Effective;
             if (state.HasFlag(XModifierMask.ShiftMask))
-                Modifiers |= InputModifiers.Shift;
+                Modifiers |= RawInputModifiers.Shift;
             if (state.HasFlag(XModifierMask.ControlMask))
-                Modifiers |= InputModifiers.Control;
+                Modifiers |= RawInputModifiers.Control;
             if (state.HasFlag(XModifierMask.Mod1Mask))
-                Modifiers |= InputModifiers.Alt;
+                Modifiers |= RawInputModifiers.Alt;
             if (state.HasFlag(XModifierMask.Mod4Mask))
-                Modifiers |= InputModifiers.Windows;
+                Modifiers |= RawInputModifiers.Meta;
 
             if (ev->buttons.MaskLen > 0)
             {
                 var buttons = ev->buttons.Mask;
                 if (XIMaskIsSet(buttons, 1))
-                    Modifiers |= InputModifiers.LeftMouseButton;
+                    Modifiers |= RawInputModifiers.LeftMouseButton;
                 
                 if (XIMaskIsSet(buttons, 2))
-                    Modifiers |= InputModifiers.MiddleMouseButton;
+                    Modifiers |= RawInputModifiers.MiddleMouseButton;
                 
                 if (XIMaskIsSet(buttons, 3))
-                    Modifiers |= InputModifiers.RightMouseButton;
+                    Modifiers |= RawInputModifiers.RightMouseButton;
             }
 
             Valuators = new Dictionary<int, double>();

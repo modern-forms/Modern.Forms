@@ -6,15 +6,15 @@
 
 namespace Avalonia.Input.Raw
 {
-    internal class RawMouseWheelEventArgs : RawMouseEventArgs
+    internal class RawMouseWheelEventArgs : RawPointerEventArgs
     {
         public RawMouseWheelEventArgs(
             IInputDevice device,
             ulong timestamp,
            // IInputRoot root,
             Point position,
-            Vector delta, InputModifiers inputModifiers)
-            : base(device, timestamp, RawMouseEventType.Wheel, position, inputModifiers)
+            Vector delta, RawInputModifiers inputModifiers)
+            : base(device, timestamp, /*root,*/ RawPointerEventType.Wheel, position, inputModifiers)
         {
             Delta = delta;
         }

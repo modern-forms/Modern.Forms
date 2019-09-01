@@ -15,24 +15,33 @@ namespace Avalonia.Win32.Input
     {
         public static WindowsMouseDevice Instance { get; } = new WindowsMouseDevice();
 
+        public WindowsMouseDevice() : base(new WindowsMousePointer())
+        {
+            
+        }
+        
         public WindowImpl CurrentWindow
         {
             get;
             set;
         }
 
-        //public override void Capture(IInputElement control)
-        //{
-        //    base.Capture(control);
+        class WindowsMousePointer : Pointer
+        {
+            public WindowsMousePointer() : base(Pointer.GetNextFreeId(),PointerType.Mouse, true)
+            {
+            }
 
-        //    if (control != null)
-        //    {
-        //        UnmanagedMethods.SetCapture(CurrentWindow.Handle.Handle);
-        //    }
-        //    else
-        //    {
-        //        UnmanagedMethods.ReleaseCapture();
-        //    }
-        //}
+            //protected override void PlatformCapture(IInputElement element)
+            //{
+            //    var hwnd = ((element?.GetVisualRoot() as TopLevel)?.PlatformImpl as WindowImpl)
+            //        ?.Handle.Handle;
+
+            //    if (hwnd.HasValue && hwnd != IntPtr.Zero)
+            //        UnmanagedMethods.SetCapture(hwnd.Value);
+            //    else
+            //        UnmanagedMethods.ReleaseCapture();
+            //}
+        }
     }
 }

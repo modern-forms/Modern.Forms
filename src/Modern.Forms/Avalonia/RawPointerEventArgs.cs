@@ -1,11 +1,11 @@
-// Copyright (c) The Avalonia Project. All rights reserved.
+﻿// Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
 
 using System;
 
 namespace Avalonia.Input.Raw
 {
-    enum RawMouseEventType
+    public enum RawPointerEventType
     {
         LeaveWindow,
         LeftButtonDown,
@@ -17,15 +17,19 @@ namespace Avalonia.Input.Raw
         Move,
         Wheel,
         NonClientLeftButtonDown,
+        TouchBegin,
+        TouchUpdate,
+        TouchEnd,
+        TouchCancel
     }
 
     /// <summary>
     /// A raw mouse event.
     /// </summary>
-    class RawMouseEventArgs : RawInputEventArgs
+    internal class RawPointerEventArgs : RawInputEventArgs
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RawMouseEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="RawPointerEventArgs"/> class.
         /// </summary>
         /// <param name="device">The associated device.</param>
         /// <param name="timestamp">The event timestamp.</param>
@@ -33,13 +37,13 @@ namespace Avalonia.Input.Raw
         /// <param name="type">The type of the event.</param>
         /// <param name="position">The mouse position, in client DIPs.</param>
         /// <param name="inputModifiers">The input modifiers.</param>
-        public RawMouseEventArgs(
+        public RawPointerEventArgs(
             IInputDevice device,
             ulong timestamp,
             //IInputRoot root,
-            RawMouseEventType type,
+            RawPointerEventType type,
             Point position, 
-            InputModifiers inputModifiers)
+            RawInputModifiers inputModifiers)
             : base(device, timestamp)
         {
             //Contract.Requires<ArgumentNullException>(device != null);
@@ -64,11 +68,11 @@ namespace Avalonia.Input.Raw
         /// <summary>
         /// Gets the type of the event.
         /// </summary>
-        public RawMouseEventType Type { get; private set; }
+        public RawPointerEventType Type { get; private set; }
 
         /// <summary>
         /// Gets the input modifiers.
         /// </summary>
-        public InputModifiers InputModifiers { get; private set; }
+        public RawInputModifiers InputModifiers { get; private set; }
     }
 }

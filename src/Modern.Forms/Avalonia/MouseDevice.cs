@@ -24,6 +24,13 @@ namespace Avalonia.Input
         //private IInputElement _captured;
         //private IDisposable _capturedSubscription;
        
+        private readonly Pointer _pointer;
+
+        public MouseDevice (Pointer pointer = null)
+        {
+            _pointer = pointer ?? new Pointer (Pointer.GetNextFreeId (), PointerType.Mouse, true);
+        }
+
         /// <summary>
         /// Gets the control that is currently capturing by the mouse, if any.
         /// </summary>
@@ -98,7 +105,7 @@ namespace Avalonia.Input
 
         public void ProcessRawEvent(RawInputEventArgs e)
         {
-            if (!e.Handled && e is RawMouseEventArgs margs)
+            if (!e.Handled && e is RawPointerEventArgs margs)
                 ProcessRawEvent(margs);
         }
 

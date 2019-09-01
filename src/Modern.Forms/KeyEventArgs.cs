@@ -1,4 +1,4 @@
-// Permission is hereby granted, free of charge, to any person obtaining
+﻿// Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
 // without limitation the rights to use, copy, modify, merge, publish,
@@ -63,15 +63,15 @@ namespace Modern.Forms
             }
         }
 
-        internal static Keys FromInputModifiers (InputModifiers modifiers)
+        internal static Keys FromInputModifiers (RawInputModifiers modifiers)
         {
             var keys = Keys.None;
 
-            if (modifiers.HasFlag (InputModifiers.Alt))
+            if (modifiers.HasFlag (RawInputModifiers.Alt))
                 keys |= Keys.Alt;
-            if (modifiers.HasFlag (InputModifiers.Control))
+            if (modifiers.HasFlag (RawInputModifiers.Control))
                 keys |= Keys.Control;
-            if (modifiers.HasFlag (InputModifiers.Shift))
+            if (modifiers.HasFlag (RawInputModifiers.Shift))
                 keys |= Keys.Shift;
 
             return keys;
