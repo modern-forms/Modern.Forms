@@ -1,63 +1,67 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Drawing;
 using SkiaSharp;
-using SkiaSharp.HarfBuzz;
+using Topten.RichTextKit;
 
 namespace Modern.Forms
 {
     public static class TextMeasurer
     {
-        public static SKSize MeasureText (string text, ControlStyle style)
+        public static SKSize MeasureText (string text, Control control)
+            => MeasureText (text, control, new Size (1000, 1000));
+
+        public static SKSize MeasureText (string text, Control control, Size maxSize)
+            => MeasureText (text, control.CurrentStyle.GetFont (), control.LogicalToDeviceUnits (control.CurrentStyle.GetFontSize ()), maxSize);
+
+        public static SKSize MeasureText (string text, SKTypeface font, int fontSize)
+            => MeasureText (text, font, fontSize, new Size (1000, 1000));
+
+        public static SKSize MeasureText (string text, SKTypeface font, int fontSize, Size maxSize)
         {
-            var bounds = SKRect.Empty;
+            var tb = CreateTextBlock (text, font, fontSize, maxSize);
 
-            using var paint = new SKPaint { Typeface = style.GetFont (), TextSize = style.GetFontSize () };
-
-            paint.MeasureText (text, ref bounds);
-            return bounds.Size;
+            return new SKSize (tb.MeasuredWidth, tb.MeasuredHeight);
         }
 
-        public static float MeasureText (string text, SKTypeface font, int fontSize)
+        public static Rectangle GetCursorLocation (string text, Rectangle bounds, SKTypeface font, int fontSize, Size maxSize, ContentAlignment alignment, int codePoint)
         {
-            using var paint = SkiaTextExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
+            // If there isn't any text the cursor height will be 0, so put a dummy character here
+            if (string.IsNullOrWhiteSpace (text))
+                text = "l";
 
-            return paint.MeasureText (text);
+            var tb = CreateTextBlock (text, font, fontSize, maxSize, GetTextAlign (alignment));
+            var caret_rect = tb.GetCaretInfo (codePoint).CaretRectangle;
+
+            // We need to offset the caret to client bounds
+            var vertical = GetVerticalAlign (alignment);
+
+            if (vertical == SKTextAlign.Left)
+                return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Y, (int)caret_rect.Width, (int)caret_rect.Height);
+            else if (vertical == SKTextAlign.Right)
+                return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Bottom - (int)caret_rect.Width, (int)caret_rect.Width, (int)caret_rect.Height);
+
+            // Centered
+            return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Y + ((bounds.Height - (int)caret_rect.Height) / 2), (int)caret_rect.Width, (int)caret_rect.Height);
         }
 
-        public static SKSize MeasureText (string text, SKTypeface font, int fontSize, SKSize proposedSize)
+        public static int GetMaxCaretIndex (string text)
         {
-            var text_bounds = SKRect.Empty;
+            var tb = new TextBlock ();
 
-            using var paint = SkiaTextExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
+            tb.AddText (text, new Style ());
 
-            paint.MeasureText (text, ref text_bounds);
-
-            // If we fit in the proposed size then just use that
-            if (text_bounds.Width <= proposedSize.Width && text_bounds.Height <= proposedSize.Height)
-                return new SKSize (text_bounds.Width, proposedSize.Height);
-
-            // Figure out how many lines we have room for
-            var line_count = proposedSize.Height / text_bounds.Height;
-
-            // If we only have room for one line there's not a lot we can do
-            if (line_count <= 1)
-                return new SKSize (text_bounds.Width, proposedSize.Height);
-
-            var words = BreakDownIntoWords (text);
-            var max_word_width = Math.Max (words.Select (w => MeasureText (w, font, fontSize)).Max (), proposedSize.Width);
-
-            return new SKSize (max_word_width, proposedSize.Height);
+            return tb.CaretIndicies[tb.CaretIndicies.Count - 1];
         }
 
-        public static SKPoint[] MeasureCharacters (string text, SKTypeface font, int fontSize, float xOffset = 0, float yOffset = 0)
+        public static HitTestResult HitTest (string text, Rectangle bounds, SKTypeface font, int fontSize, Size maxSize, ContentAlignment alignment, Point location)
         {
-            using var paint = SkiaTextExtensions.CreateTextPaint (font, fontSize, SKColors.Black);
-            using var shaper = new SKShaper (font);
+            var tb = CreateTextBlock (text, font, fontSize, maxSize, GetTextAlign (alignment));
 
-            var result = shaper.Shape (text, xOffset, yOffset, paint);
-            return result.Points;
+            // We need to offset the requested location to fit the desired bounds
+            var x = location.X + bounds.X;
+            var y = location.Y + bounds.Y;
+
+            return tb.HitTest (x, y);
         }
 
         public static bool IsWordSeparator (char c)
@@ -96,12 +100,56 @@ namespace Modern.Forms
             }
         }
 
-        public static string[] BreakDownIntoWords (string text)
+        internal static TextBlock CreateTextBlock (string text, SKTypeface font, int fontSize, Size maxSize, TextAlignment alignment = TextAlignment.Auto, SKColor color = new SKColor ())
         {
-            var words = text.Split (new[] { ' ', '\t', '(', ')', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            words = words.Select (w => w.Trim ()).Where (w => !string.IsNullOrWhiteSpace (w)).ToArray ();
+            var tb = new TextBlock {
+                MaxWidth = maxSize.Width,
+                MaxHeight = maxSize.Height,
+                Alignment = alignment
+            };
 
-            return words;
+            var styleNormal = new Style {
+                FontFamily = font.FamilyName,
+                FontSize = fontSize,
+                TextColor = color
+            };
+
+            tb.AddText (text, styleNormal);
+            
+            return tb;
+        }
+
+        internal static TextAlignment GetTextAlign (ContentAlignment alignment)
+        {
+            switch (alignment) {
+                case ContentAlignment.TopLeft:
+                case ContentAlignment.MiddleLeft:
+                case ContentAlignment.BottomLeft:
+                    return TextAlignment.Left;
+                case ContentAlignment.TopCenter:
+                case ContentAlignment.MiddleCenter:
+                case ContentAlignment.BottomCenter:
+                    return TextAlignment.Center;
+                default:
+                    return TextAlignment.Right;
+            }
+        }
+
+        internal static SKTextAlign GetVerticalAlign (ContentAlignment alignment)
+        {
+            // We are reusing Left, Center, Right as Top, Center, Bottom
+            switch (alignment) {
+                case ContentAlignment.TopLeft:
+                case ContentAlignment.TopCenter:
+                case ContentAlignment.TopRight:
+                    return SKTextAlign.Left;
+                case ContentAlignment.MiddleLeft:
+                case ContentAlignment.MiddleCenter:
+                case ContentAlignment.MiddleRight:
+                    return SKTextAlign.Center;
+                default:
+                    return SKTextAlign.Right;
+            }
         }
     }
 }

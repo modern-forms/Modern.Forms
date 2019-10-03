@@ -33,7 +33,7 @@ namespace Modern.Forms
             if (owner is Menu menu) {
                 var padding = menu.LogicalToDeviceUnits (Padding.Horizontal);
                 var font_size = menu.LogicalToDeviceUnits (Theme.FontSize);
-                var text_size = (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size));
+                var text_size = (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size).Width);
 
                 return new Size (text_size + padding, Bounds.Height);
             }
@@ -41,7 +41,7 @@ namespace Modern.Forms
             if (owner is ToolBar bar) {
                 var width = bar.LogicalToDeviceUnits (Padding.Horizontal);
                 var font_size = bar.LogicalToDeviceUnits (Theme.FontSize);
-                width += (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size));
+                width += (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size).Width);
 
                 if (!(Image is null))
                     width += bar.LogicalToDeviceUnits (20);
@@ -55,9 +55,9 @@ namespace Modern.Forms
             if (owner is MenuDropDown dropdown) {
                 var padding = dropdown.LogicalToDeviceUnits (Padding);
                 var font_size = dropdown.LogicalToDeviceUnits (Theme.FontSize);
-                var text_size = TextMeasurer.MeasureText (Text, Theme.UIFont, font_size, new SKSize (0, font_size));
+                var text_size = TextMeasurer.MeasureText (Text, Theme.UIFont, font_size);
 
-                return new Size ((int)Math.Round (text_size.Width, 0, MidpointRounding.AwayFromZero) + padding.Horizontal + 70, (int)Math.Round (text_size.Height, 0, MidpointRounding.AwayFromZero) + 12);
+                return new Size ((int)Math.Round (text_size.Width, 0, MidpointRounding.AwayFromZero) + padding.Horizontal + 70, (int)Math.Round (text_size.Height, 0, MidpointRounding.AwayFromZero) + 8);
             }
 
             return proposedSize;

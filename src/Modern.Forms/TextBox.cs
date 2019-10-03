@@ -53,13 +53,9 @@ namespace Modern.Forms
             if (CurrentText.Length == 0)
                 return 0;
 
-            var widths = TextMeasurer.MeasureCharacters (CurrentText + " ", CurrentStyle.GetFont (), CurrentFontSize, ClientRectangle.Left, ClientRectangle.Top);
-
-            for (var i = 0; i < widths.Length; i++)
-                if (widths[i].X > location.X)
-                    return i - 1;
-
-            return widths.Length - 1;
+            var hit = TextMeasurer.HitTest (Text, ClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), ContentAlignment.MiddleLeft, location);
+            
+            return hit.ClosestCodePointIndex;
         }
 
         protected override void OnKeyDown (KeyEventArgs e)
@@ -84,7 +80,7 @@ namespace Modern.Forms
 
                     return;
                 case Keys.Right:
-                    if (cursor_index == CurrentText.Length)
+                    if (cursor_index >= TextMeasurer.GetMaxCaretIndex (Text))
                         return;
 
                     cursor_index++;
@@ -157,12 +153,12 @@ namespace Modern.Forms
             else if (!string.IsNullOrEmpty (placeholder))
                 e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentFontSize, ClientRectangle, Theme.DisabledTextColor, ContentAlignment.MiddleLeft);
 
-            var cursor_loc =
-                    cursor_index == 0 ? 0f
-                                      : TextMeasurer.MeasureText (Text.Substring (0, cursor_index), CurrentStyle.GetFont (), CurrentFontSize);
+            if (Selected) {
+                var caret = TextMeasurer.GetCursorLocation (Text, ClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), ContentAlignment.MiddleLeft, cursor_index);
+                System.Diagnostics.Debug.WriteLine (caret);
+                e.Canvas.DrawRectangle (caret, Theme.DarkTextColor);
+            }
 
-            if (Selected)
-                e.Canvas.DrawLine (ClientRectangle.Left + cursor_loc, ClientRectangle.Top + 4, ClientRectangle.Left + cursor_loc, ClientRectangle.Bottom - 4, Theme.DarkTextColor);
         }
 
         private string CurrentText => Text ?? string.Empty;

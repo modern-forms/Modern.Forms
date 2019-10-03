@@ -66,7 +66,7 @@ namespace Modern.Forms
         public int ItemHeight {
             get {
                 if (item_height == -1)
-                    item_height = (int)TextMeasurer.MeasureText ("The quick brown Fox", Style).Height + 7;
+                    item_height = (int)TextMeasurer.MeasureText ("The quick brown Fox", this).Height + 3;
 
                 return item_height;
             }

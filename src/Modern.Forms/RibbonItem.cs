@@ -97,7 +97,7 @@ namespace Modern.Forms
             var padding = LogicalToDeviceUnits (Padding.Horizontal);
             var font_size = LogicalToDeviceUnits (Theme.RibbonItemFontSize);
             var proposed_size = LogicalToDeviceUnits (new Size (40, 30));
-            var text_size = (int)Math.Round (TextMeasurer.MeasureText (Text ?? string.Empty, Theme.UIFont, font_size, proposed_size.ToSKSize ()).Width);
+            var text_size = (int)Math.Round (TextMeasurer.MeasureText (Text ?? string.Empty, Theme.UIFont, font_size, proposed_size).Width);
 
             return new Size (Math.Max (text_size + padding, LogicalToDeviceUnits (MINIMUM_ITEM_SIZE)), 0);
         }
@@ -170,7 +170,7 @@ namespace Modern.Forms
                 canvas.Clip (Bounds);
 
                 var text_bounds = new Rectangle (Bounds.Left, image_area_bounds.Bottom, Bounds.Width, Bounds.Bottom - image_area_bounds.Bottom);
-                canvas.DrawText (Text, Theme.UIFont, font_size, text_bounds, Enabled ? Theme.DarkTextColor : Theme.DisabledTextColor);
+                canvas.DrawText (Text, Theme.UIFont, font_size, text_bounds, Enabled ? Theme.DarkTextColor : Theme.DisabledTextColor, ContentAlignment.MiddleCenter);
 
                 canvas.Restore ();
             }

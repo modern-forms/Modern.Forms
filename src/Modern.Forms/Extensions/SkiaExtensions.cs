@@ -133,6 +133,7 @@ namespace Modern.Forms
 
         public static SKSize ToSKSize (this Size size) => new SKSize (size.Width, size.Height);
 
+        public static Rectangle ToRectangle (this SKRect rect) => new Rectangle ((int)rect.Left, (int)rect.Top, (int)rect.Width, (int)rect.Height);
 
         public static Bitmap ToBitmap (this SKImage skiaImage)
         {

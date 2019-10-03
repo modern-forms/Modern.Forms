@@ -39,7 +39,7 @@ namespace Modern.Forms
         {
             var padding = Parent?.LogicalToDeviceUnits (Padding.Horizontal) ?? Padding.Horizontal;
             var font_size = Parent?.LogicalToDeviceUnits (Theme.FontSize) ?? Theme.FontSize;
-            var text_size = (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size));
+            var text_size = (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size).Width);
 
             return new Size (text_size + padding, Bounds.Height);
         }

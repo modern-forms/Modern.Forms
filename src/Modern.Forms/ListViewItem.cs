@@ -43,7 +43,7 @@ namespace Modern.Forms
 
                 var text_bounds = new Rectangle (Bounds.Left, image_bounds.Bottom + LogicalToDeviceUnits (3), Bounds.Width, Bounds.Bottom - image_bounds.Bottom - LogicalToDeviceUnits (3));
 
-                canvas.DrawText (Text, Theme.UIFont, font_size, text_bounds, Theme.DarkTextColor);
+                canvas.DrawText (Text, Theme.UIFont, font_size, text_bounds, Theme.DarkTextColor, ContentAlignment.MiddleCenter);
 
                 canvas.Restore ();
             }
