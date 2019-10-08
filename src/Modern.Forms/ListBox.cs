@@ -258,7 +258,7 @@ namespace Modern.Forms
 
         private void VerticalScrollBar_ValueChanged (object sender, EventArgs e)
         {
-            top_index = vscrollbar.Value;
+            top_index = Math.Max (vscrollbar.Value, 0);
 
             Invalidate ();
         }

@@ -40,7 +40,7 @@ namespace Avalonia.Native
 
             //_keyboard = AvaloniaLocator.Current.GetService<IKeyboardDevice>();
             //_mouse = AvaloniaLocator.Current.GetService<IMouseDevice>();
-            //_cursorFactory = AvaloniaLocator.Current.GetService<IStandardCursorFactory>();
+            _cursorFactory = AvaloniaGlobals.StandardCursorFactory;
         }
 
         protected void Init(IAvnWindowBase window, IAvnScreens screens)
@@ -232,11 +232,11 @@ namespace Avalonia.Native
             switch (type)
             {
                 case AvnRawMouseEventType.Wheel:
-                    Input?.Invoke(new RawMouseWheelEventArgs(_mouse, timeStamp, /*_inputRoot,*/ point.ToAvaloniaPoint(), new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
+                    Input?.Invoke(new RawMouseWheelEventArgs(_mouse, timeStamp, /*_inputRoot,*/ point.ToAvaloniaPoint() * Scaling, new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
                     break;
 
                 default:
-                    Input?.Invoke(new RawPointerEventArgs(_mouse, timeStamp, /*_inputRoot,*/ (RawPointerEventType)type, point.ToAvaloniaPoint(), (RawInputModifiers)modifiers));
+                    Input?.Invoke(new RawPointerEventArgs(_mouse, timeStamp, /*_inputRoot,*/ (RawPointerEventType)type, point.ToAvaloniaPoint() * Scaling, (RawInputModifiers)modifiers));
                     break;
             }
         }
@@ -316,7 +316,7 @@ namespace Avalonia.Native
             _native.SetTopMost(value);
         }
 
-        public double Scaling => _native.GetScaling();
+        public double Scaling => _native?.GetScaling() ?? 1;
 
         public Action Deactivated { get; set; }
         public Action Activated { get; set; }
