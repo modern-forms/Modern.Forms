@@ -23,25 +23,25 @@ namespace Modern.Forms
             return new SKSize (tb.MeasuredWidth, tb.MeasuredHeight);
         }
 
-        public static Rectangle GetCursorLocation (string text, Rectangle bounds, SKTypeface font, int fontSize, Size maxSize, ContentAlignment alignment, int codePoint)
+        public static Rectangle GetCursorLocation (string text, Rectangle bounds, SKTypeface font, int fontSize, Size maxSize, ContentAlignment alignment, int codePoint, int? maxLines = null)
         {
             // If there isn't any text the cursor height will be 0, so put a dummy character here
             if (string.IsNullOrWhiteSpace (text))
                 text = "l";
 
-            var tb = CreateTextBlock (text, font, fontSize, maxSize, GetTextAlign (alignment));
+            var tb = CreateTextBlock (text, font, fontSize, maxSize, GetTextAlign (alignment), maxLines: maxLines);
             var caret_rect = tb.GetCaretInfo (codePoint).CaretRectangle;
 
             // We need to offset the caret to client bounds
             var vertical = GetVerticalAlign (alignment);
 
             if (vertical == SKTextAlign.Left)
-                return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Y, (int)caret_rect.Width, (int)caret_rect.Height);
+                return new Rectangle (bounds.X + (int)caret_rect.Left, (int)caret_rect.Top, (int)caret_rect.Width, (int)caret_rect.Height);
             else if (vertical == SKTextAlign.Right)
-                return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Bottom - (int)caret_rect.Width, (int)caret_rect.Width, (int)caret_rect.Height);
+                return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Bottom - (int)caret_rect.Height, (int)caret_rect.Width, (int)caret_rect.Height);
 
             // Centered
-            return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Y + ((bounds.Height - (int)caret_rect.Height) / 2), (int)caret_rect.Width, (int)caret_rect.Height);
+            return new Rectangle (bounds.X + (int)caret_rect.Left, (int)caret_rect.Top + ((bounds.Height - (int)caret_rect.Height) / 2), (int)caret_rect.Width, (int)caret_rect.Height);
         }
 
         public static int GetMaxCaretIndex (string text)
@@ -53,9 +53,9 @@ namespace Modern.Forms
             return tb.CaretIndicies[tb.CaretIndicies.Count - 1];
         }
 
-        public static HitTestResult HitTest (string text, Rectangle bounds, SKTypeface font, int fontSize, Size maxSize, ContentAlignment alignment, Point location)
+        public static HitTestResult HitTest (string text, Rectangle bounds, SKTypeface font, int fontSize, Size maxSize, ContentAlignment alignment, Point location, int? maxLines = null)
         {
-            var tb = CreateTextBlock (text, font, fontSize, maxSize, GetTextAlign (alignment));
+            var tb = CreateTextBlock (text, font, fontSize, maxSize, GetTextAlign (alignment), maxLines: maxLines);
 
             // We need to offset the requested location to fit the desired bounds
             var x = location.X + bounds.X;
@@ -100,12 +100,19 @@ namespace Modern.Forms
             }
         }
 
-        internal static TextBlock CreateTextBlock (string text, SKTypeface font, int fontSize, Size maxSize, TextAlignment alignment = TextAlignment.Auto, SKColor color = new SKColor ())
+        internal static TextBlock CreateTextBlock (string text, SKTypeface font, int fontSize, Size maxSize, TextAlignment alignment = TextAlignment.Auto, SKColor color = new SKColor (), int? maxLines = null)
         {
+            if (maxLines == 1) {
+                text = text.Replace ("\n\r", "»");
+                text = text.Replace ("\n", "»");
+                text = text.Replace ("\r", "»");
+            }
+
             var tb = new TextBlock {
                 MaxWidth = maxSize.Width,
                 MaxHeight = maxSize.Height,
-                Alignment = alignment
+                Alignment = alignment,
+                MaxLines = maxLines
             };
 
             var styleNormal = new Style {

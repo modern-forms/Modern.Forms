@@ -37,6 +37,27 @@ namespace ControlGallery.Panels
             };
 
             Controls.Add (tb3);
+
+            var tb4 = new TextBox {
+                Left = 10,
+                Top = 130,
+                Width = 300,
+                Height = 56,
+                Text = "Not\nMultiline",
+            };
+
+            Controls.Add (tb4);
+
+            var tb5 = new TextBox {
+                Left = 10,
+                Top = 200,
+                Width = 300,
+                Height = 100,
+                Text = "The quick brown fox\njumped over the lazy\ndogs.",
+                MultiLine = true
+            };
+
+            Controls.Add (tb5);
         }
     }
 }

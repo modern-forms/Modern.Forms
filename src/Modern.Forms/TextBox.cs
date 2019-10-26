@@ -23,6 +23,7 @@ namespace Modern.Forms
         private int selection_end = -1;
         private bool is_highlighting;
         private int selection_anchor = -1;
+        private bool multiline = false;
 
         private static SKColor selection_color = new SKColor (153, 201, 239);
         private static SKColor selection_color_deselected = new SKColor (212, 220, 216);
@@ -34,6 +35,16 @@ namespace Modern.Forms
             SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
 
             Cursor = Cursors.IBeam;
+        }
+
+        public bool MultiLine {
+            get => multiline;
+            set {
+                if (multiline != value) {
+                    multiline = value;
+                    Invalidate ();
+                }
+            }
         }
 
         public string Placeholder {
@@ -61,7 +72,7 @@ namespace Modern.Forms
             if (CurrentText.Length == 0)
                 return 0;
 
-            var hit = TextMeasurer.HitTest (Text, ClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), ContentAlignment.MiddleLeft, location);
+            var hit = TextMeasurer.HitTest (Text, ClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), Alignment, location, MaxLines);
 
             return hit.ClosestCodePointIndex;
         }
@@ -214,12 +225,12 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             if (!string.IsNullOrEmpty (Text))
-                e.Canvas.DrawText (Text, ClientRectangle, this, ContentAlignment.MiddleLeft, selection_start, selection_end, Selected ? selection_color : selection_color_deselected);
+                e.Canvas.DrawText (Text, ClientRectangle, this, Alignment, selection_start, selection_end, Selected ? selection_color : selection_color_deselected, MaxLines);
             else if (!string.IsNullOrEmpty (placeholder))
-                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentFontSize, ClientRectangle, Theme.DisabledTextColor, ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentFontSize, ClientRectangle, Theme.DisabledTextColor, Alignment, maxLines: MaxLines);
 
             if (Selected) {
-                var caret = TextMeasurer.GetCursorLocation (Text, ClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), ContentAlignment.MiddleLeft, cursor_index);
+                var caret = TextMeasurer.GetCursorLocation (Text, ClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), Alignment, cursor_index, MaxLines);
                 e.Canvas.DrawRectangle (caret, Theme.DarkTextColor);
             }
         }
@@ -256,5 +267,9 @@ namespace Modern.Forms
         private bool IsTextHighlighted => selection_start >= 0 && selection_end >= 0 && SelectionLength != 0;
 
         private int SelectionLength => Math.Abs (selection_end - selection_start);
+
+        private int? MaxLines => multiline ? (int?)null : 1;
+
+        private ContentAlignment Alignment => MultiLine ? ContentAlignment.TopLeft : ContentAlignment.TopLeft;
     }
 }
