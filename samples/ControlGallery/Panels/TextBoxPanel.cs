@@ -27,6 +27,16 @@ namespace ControlGallery.Panels
             };
 
             Controls.Add (tb2);
+
+            var tb3 = new TextBox {
+                Left = 10,
+                Top = 90,
+                Width = 150,
+                Text = "Read Only",
+                ReadOnly = true
+            };
+
+            Controls.Add (tb3);
         }
     }
 }

@@ -7,10 +7,10 @@ namespace Modern.Forms
 {
     public static class SkiaTextExtensions
     {
-        public static void DrawText (this SKCanvas canvas, string text, Rectangle bounds, Control control, ContentAlignment alignment)
-            => canvas.DrawText (text, control.CurrentStyle.GetFont (), control.LogicalToDeviceUnits (control.CurrentStyle.GetFontSize ()), bounds, control.CurrentStyle.GetForegroundColor (), alignment);
+        public static void DrawText (this SKCanvas canvas, string text, Rectangle bounds, Control control, ContentAlignment alignment, int selectionStart = -1, int selectionEnd = -1, SKColor? selectionColor = null)
+            => canvas.DrawText (text, control.CurrentStyle.GetFont (), control.LogicalToDeviceUnits (control.CurrentStyle.GetFontSize ()), bounds, control.CurrentStyle.GetForegroundColor (), alignment, selectionStart, selectionEnd, selectionColor);
 
-        public static void DrawText (this SKCanvas canvas, string text, SKTypeface font, int fontSize, Rectangle bounds, SKColor color, ContentAlignment alignment)
+        public static void DrawText (this SKCanvas canvas, string text, SKTypeface font, int fontSize, Rectangle bounds, SKColor color, ContentAlignment alignment, int selectionStart = -1, int selectionEnd = -1, SKColor? selectionColor = null)
         {
             var tb = TextMeasurer.CreateTextBlock (text, font, fontSize, bounds.Size, TextMeasurer.GetTextAlign (alignment), color);
             var location = bounds.Location;
@@ -22,6 +22,12 @@ namespace Modern.Forms
                 location.Y += (bounds.Height - (int)tb.MeasuredHeight) / 2;
 
             var options = new TextPaintOptions { IsAntialias = true, LcdRenderText = true };
+
+            if (selectionStart >= 0 && selectionEnd >= 0 && selectionStart != selectionEnd) {
+                options.SelectionStart = selectionStart;
+                options.SelectionEnd = selectionEnd;
+                options.SelectionColor = selectionColor ?? SKColors.Blue;
+            }
 
             canvas.Save ();
             canvas.Clip (bounds);

@@ -1018,7 +1018,7 @@ namespace Modern.Forms
 
         protected virtual void OnPaintBackground (PaintEventArgs e)
         {
-            e.Canvas.DrawBackground(CurrentStyle);
+            e.Canvas.DrawBackground (CurrentStyle);
             e.Canvas.DrawBorder (ScaledBounds, CurrentStyle);
         }
 
