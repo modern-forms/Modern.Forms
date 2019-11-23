@@ -42,11 +42,11 @@ namespace Avalonia.Input.Raw
         public RawPointerEventArgs(
             IInputDevice device,
             ulong timestamp,
-            //IInputRoot root,
+            IInputRoot root,
             RawPointerEventType type,
             Point position, 
             RawInputModifiers inputModifiers)
-            : base(device, timestamp/*, root*/)
+            : base(device, timestamp, root)
         {
             //Contract.Requires<ArgumentNullException>(device != null);
             //Contract.Requires<ArgumentNullException>(root != null);

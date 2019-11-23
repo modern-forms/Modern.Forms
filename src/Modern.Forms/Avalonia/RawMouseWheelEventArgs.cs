@@ -11,10 +11,10 @@ namespace Avalonia.Input.Raw
         public RawMouseWheelEventArgs(
             IInputDevice device,
             ulong timestamp,
-           // IInputRoot root,
+            IInputRoot root,
             Point position,
             Vector delta, RawInputModifiers inputModifiers)
-            : base(device, timestamp, /*root,*/ RawPointerEventType.Wheel, position, inputModifiers)
+            : base(device, timestamp, root, RawPointerEventType.Wheel, position, inputModifiers)
         {
             Delta = delta;
         }

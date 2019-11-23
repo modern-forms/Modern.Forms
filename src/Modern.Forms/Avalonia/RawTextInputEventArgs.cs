@@ -10,10 +10,10 @@ namespace Avalonia.Input.Raw
         public RawTextInputEventArgs(
             IKeyboardDevice device,
             ulong timestamp,
-            //IInputRoot root,
+            IInputRoot root,
             string text,
             RawInputModifiers modifiers)
-            : base(device, timestamp/*, root*/)
+            : base(device, timestamp, root)
         {
             Text = text;
             Modifiers = modifiers;

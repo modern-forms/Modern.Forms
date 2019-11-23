@@ -233,9 +233,9 @@ namespace Avalonia.X11
 
                 if (scrollDelta != default)
                     client.ScheduleInput(new RawMouseWheelEventArgs(client.MouseDevice, ev.Timestamp,
-                        /* client.InputRoot, */ ev.Position, scrollDelta, ev.Modifiers));
+                        client.InputRoot, ev.Position, scrollDelta, ev.Modifiers));
                 if (_pointerDevice.HasMotion(ev))
-                    client.ScheduleInput(new RawPointerEventArgs(client.MouseDevice, ev.Timestamp, //client.InputRoot,
+                    client.ScheduleInput(new RawPointerEventArgs(client.MouseDevice, ev.Timestamp, client.InputRoot,
                         RawPointerEventType.Move, ev.Position, ev.Modifiers));
             }
 
@@ -248,7 +248,7 @@ namespace Avalonia.X11
                     : ev.Button == 3 ? (down ? RawPointerEventType.RightButtonDown : RawPointerEventType.RightButtonUp)
                     : (RawPointerEventType?)null;
                 if (type.HasValue)
-                    client.ScheduleInput(new RawPointerEventArgs(client.MouseDevice, ev.Timestamp, //client.InputRoot,
+                    client.ScheduleInput(new RawPointerEventArgs(client.MouseDevice, ev.Timestamp, client.InputRoot,
                         type.Value, ev.Position, ev.Modifiers));
             }
             
@@ -308,7 +308,7 @@ namespace Avalonia.X11
     
     interface IXI2Client
     {
-        //IInputRoot InputRoot { get; }
+        IInputRoot InputRoot { get; }
         void ScheduleInput(RawInputEventArgs args);
         IMouseDevice MouseDevice { get; }
         //TouchDevice TouchDevice { get; }

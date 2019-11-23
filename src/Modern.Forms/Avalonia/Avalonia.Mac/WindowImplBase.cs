@@ -21,7 +21,7 @@ namespace Avalonia.Native
     internal abstract class WindowBaseImpl : IWindowBaseImpl,
         IFramebufferPlatformSurface
     {
-        //IInputRoot _inputRoot;
+        IInputRoot _inputRoot;
         IAvnWindowBase _native;
         private object _syncRoot = new object();
         private bool _deferredRendering = false;
@@ -207,7 +207,7 @@ namespace Avalonia.Native
         {
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
 
-            var args = new RawTextInputEventArgs(_keyboard, timeStamp, text, RawInputModifiers.None);
+            var args = new RawTextInputEventArgs(_keyboard, timeStamp, _inputRoot, text, RawInputModifiers.None);
 
             Input?.Invoke(args);
 
@@ -218,7 +218,7 @@ namespace Avalonia.Native
         {
             Dispatcher.UIThread.RunJobs(DispatcherPriority.Input + 1);
 
-            var args = new RawKeyEventArgs(_keyboard, timeStamp, (RawKeyEventType)type, (Key)key, (RawInputModifiers)modifiers);
+            var args = new RawKeyEventArgs(_keyboard, timeStamp, _inputRoot, (RawKeyEventType)type, (Key)key, (RawInputModifiers)modifiers);
 
             Input?.Invoke(args);
 
@@ -232,11 +232,11 @@ namespace Avalonia.Native
             switch (type)
             {
                 case AvnRawMouseEventType.Wheel:
-                    Input?.Invoke(new RawMouseWheelEventArgs(_mouse, timeStamp, /*_inputRoot,*/ point.ToAvaloniaPoint() * Scaling, new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
+                    Input?.Invoke(new RawMouseWheelEventArgs(_mouse, timeStamp, _inputRoot, point.ToAvaloniaPoint() * Scaling, new Vector(delta.X, delta.Y), (RawInputModifiers)modifiers));
                     break;
 
                 default:
-                    Input?.Invoke(new RawPointerEventArgs(_mouse, timeStamp, /*_inputRoot,*/ (RawPointerEventType)type, point.ToAvaloniaPoint() * Scaling, (RawInputModifiers)modifiers));
+                    Input?.Invoke(new RawPointerEventArgs(_mouse, timeStamp, _inputRoot, (RawPointerEventType)type, point.ToAvaloniaPoint() * Scaling, (RawInputModifiers)modifiers));
                     break;
             }
         }
