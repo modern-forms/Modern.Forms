@@ -317,7 +317,7 @@ namespace Avalonia.Native
             _native.SetTopMost(value);
         }
 
-        public double Scaling => _native.GetScaling();
+        public double Scaling => _native?.GetScaling() ?? 1;
 
         public Action Deactivated { get; set; }
         public Action Activated { get; set; }
