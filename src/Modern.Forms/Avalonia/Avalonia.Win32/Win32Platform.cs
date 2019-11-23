@@ -25,7 +25,7 @@ using static Avalonia.Win32.Interop.UnmanagedMethods;
 
 namespace Avalonia
 {
-    //public static class Win32ApplicationExtensions
+    //internal static class Win32ApplicationExtensions
     //{
     //    public static T UseWin32<T>(
     //        this T builder) 
@@ -38,10 +38,12 @@ namespace Avalonia
     //    }
     //}
 
-    class Win32PlatformOptions
+    internal class Win32PlatformOptions
     {
         public bool UseDeferredRendering { get; set; } = true;
         public bool AllowEglInitialization { get; set; }
+        public bool? EnableMultitouch { get; set; }
+        public bool OverlayPopups { get; set; }
     }
 }
 
@@ -63,7 +65,9 @@ namespace Avalonia.Win32
 
         public static Win32Platform Instance => s_instance;
 
-        public static bool UseDeferredRendering { get; set; }
+        public static bool UseDeferredRendering => Options.UseDeferredRendering;
+        internal static bool UseOverlayPopups => Options.OverlayPopups;
+        public static Win32PlatformOptions Options { get; private set; }
 
         public Size DoubleClickSize => new Size(
             UnmanagedMethods.GetSystemMetrics(UnmanagedMethods.SystemMetric.SM_CXDOUBLECLK),
@@ -78,6 +82,7 @@ namespace Avalonia.Win32
 
         public static void Initialize(Win32PlatformOptions options)
         {
+            Options = options;
             //AvaloniaLocator.CurrentMutable
             //    .Bind<IClipboard>().ToSingleton<ClipboardImpl>()
             //    .Bind<IStandardCursorFactory>().ToConstant(CursorFactory.Instance)
@@ -85,14 +90,16 @@ namespace Avalonia.Win32
             //    .Bind<IPlatformSettings>().ToConstant(s_instance)
             //    .Bind<IPlatformThreadingInterface>().ToConstant(s_instance)
             //    .Bind<IRenderLoop>().ToConstant(new RenderLoop())
-            //    .Bind<IRenderTimer>().ToConstant(new RenderTimer(60))
+            //    .Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60))
             //    .Bind<ISystemDialogImpl>().ToSingleton<SystemDialogImpl>()
             //    .Bind<IWindowingPlatform>().ToConstant(s_instance)
             //    .Bind<PlatformHotkeyConfiguration>().ToSingleton<PlatformHotkeyConfiguration>()
-            //    .Bind<IPlatformIconLoader>().ToConstant(s_instance);
+            //    .Bind<IPlatformIconLoader>().ToConstant(s_instance)
+            //    .Bind<IMountedVolumeInfoProvider>().ToConstant(new WindowsMountedVolumeInfoProvider());
+
             //if (options.AllowEglInitialization)
             //    Win32GlManager.Initialize();
-            UseDeferredRendering = options.UseDeferredRendering;
+            
             _uiThread = Thread.CurrentThread;
 
             //if (OleContext.Current != null)
@@ -232,11 +239,6 @@ namespace Avalonia.Win32
         //    return embedded;
         //}
 
-        public IPopupImpl CreatePopup ()
-        {
-            return new PopupImpl ();
-        }
-
         //public IWindowIconImpl LoadIcon(string fileName)
         //{
         //    using (var stream = File.OpenRead(fileName))
@@ -298,6 +300,11 @@ namespace Avalonia.Win32
             }
 
             SetProcessDPIAware();
+        }
+
+        public IPopupImpl CreatePopup ()
+        {
+            return new PopupImpl ();
         }
     }
 }

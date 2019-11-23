@@ -12,7 +12,7 @@ namespace Avalonia
     /// <summary>
     /// Represents a size in device pixels.
     /// </summary>
-    internal readonly struct PixelSize
+    internal readonly struct PixelSize : IEquatable<PixelSize>
     {
         /// <summary>
         /// A size representing zero
@@ -53,7 +53,7 @@ namespace Avalonia
         /// <returns>True if the sizes are equal; otherwise false.</returns>
         public static bool operator ==(PixelSize left, PixelSize right)
         {
-            return left.Width == right.Width && left.Height == right.Height;
+            return left.Equals(right);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Avalonia
         /// <returns>The <see cref="PixelSize"/>.</returns>
         //public static PixelSize Parse(string s)
         //{
-        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid PixelSize"))
+        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid PixelSize."))
         //    {
         //        return new PixelSize(
         //            tokenizer.ReadInt32(),
@@ -83,21 +83,23 @@ namespace Avalonia
         //}
 
         /// <summary>
+        /// Returns a boolean indicating whether the size is equal to the other given size.
+        /// </summary>
+        /// <param name="other">The other size to test equality against.</param>
+        /// <returns>True if this size is equal to other; False otherwise.</returns>
+        public bool Equals(PixelSize other)
+        {
+            return Width == other.Width && Height == other.Height;
+        }
+
+        /// <summary>
         /// Checks for equality between a size and an object.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>
         /// True if <paramref name="obj"/> is a size that equals the current size.
         /// </returns>
-        public override bool Equals(object obj)
-        {
-            if (obj is PixelSize other)
-            {
-                return this == other;
-            }
-
-            return false;
-        }
+        public override bool Equals(object obj) => obj is PixelSize other && Equals(other);
 
         /// <summary>
         /// Returns a hash code for a <see cref="PixelSize"/>.

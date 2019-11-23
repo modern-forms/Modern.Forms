@@ -32,14 +32,13 @@ namespace Avalonia.Input
 
         //protected virtual void PlatformCapture(IInputElement element)
         //{
-
         //}
-
+        
         //public void Capture(IInputElement control)
         //{
         //    if (Captured != null)
         //        Captured.DetachedFromVisualTree -= OnCaptureDetached;
-        //    var oldCapture = control;
+        //    var oldCapture = Captured;
         //    Captured = control;
         //    PlatformCapture(control);
         //    if (oldCapture != null)
@@ -59,7 +58,7 @@ namespace Avalonia.Input
 
         //IInputElement GetNextCapture(IVisual parent) =>
         //    parent as IInputElement ?? parent.GetVisualAncestors().OfType<IInputElement>().FirstOrDefault();
-
+        
         //private void OnCaptureDetached(object sender, VisualTreeAttachmentEventArgs e)
         //{
         //    Capture(GetNextCapture(e.Parent));
@@ -67,7 +66,7 @@ namespace Avalonia.Input
 
 
         //public IInputElement Captured { get; private set; }
-
+            
         public PointerType Type { get; }
         public bool IsPrimary { get; }
         public void Dispose() {} // Capture(null);

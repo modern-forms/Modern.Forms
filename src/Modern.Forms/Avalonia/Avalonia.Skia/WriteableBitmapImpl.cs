@@ -33,8 +33,8 @@ namespace Avalonia.Skia
             Dpi = dpi;
 
             var colorType = PixelFormatHelper.ResolveColorType(format);
-
-            var runtimePlatform = AvaloniaGlobals.RuntimePlatform;// AvaloniaLocator.Current?.GetService<IRuntimePlatform>();
+            
+            var runtimePlatform = AvaloniaGlobals.RuntimePlatform;
             
             if (runtimePlatform != null)
             {

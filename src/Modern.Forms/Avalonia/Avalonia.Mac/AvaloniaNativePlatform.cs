@@ -3,7 +3,6 @@
 // Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using Avalonia.Controls.Platform;
 using Avalonia.Input;
@@ -12,6 +11,7 @@ using Avalonia.Native.Interop;
 //using Avalonia.OpenGL;
 using Avalonia.Platform;
 //using Avalonia.Rendering;
+using Avalonia.Platform.Interop;
 
 namespace Avalonia.Native
 {
@@ -23,7 +23,6 @@ namespace Avalonia.Native
         [DllImport("libAvaloniaNative")]
         static extern IntPtr CreateAvaloniaNative();
 
-        internal static readonly MouseDevice MouseDevice = new MouseDevice();
         internal static readonly KeyboardDevice KeyboardDevice = new KeyboardDevice();
 
         public Size DoubleClickSize => new Size(4, 4);
@@ -36,16 +35,17 @@ namespace Avalonia.Native
             return Initialize (CreateAvaloniaNative (), options);
         }
 
-        public static AvaloniaNativePlatform Initialize (IntPtr factory, AvaloniaNativePlatformOptions options)
+        public static AvaloniaNativePlatform Initialize(IntPtr factory, AvaloniaNativePlatformOptions options)
         {
-            var platform = new AvaloniaNativePlatform (new IAvaloniaNativeFactory (factory));
-            platform.DoInitialize(options);
-            return platform;
+            var result =  new AvaloniaNativePlatform(new IAvaloniaNativeFactory(factory));
+            result.DoInitialize(options);
+
+            return result;
         }
 
         delegate IntPtr CreateAvaloniaNativeDelegate();
 
-        public static void Initialize(AvaloniaNativePlatformOptions options)
+        public static AvaloniaNativePlatform Initialize(AvaloniaNativePlatformOptions options)
         {
             if (options.AvaloniaNativeLibraryPath != null)
             {
@@ -58,11 +58,27 @@ namespace Avalonia.Native
                 var d = Marshal.GetDelegateForFunctionPointer<CreateAvaloniaNativeDelegate>(proc);
 
 
-                Initialize(d(), options);
+                return Initialize(d(), options);
             }
             else
-                Initialize(CreateAvaloniaNative(), options);
+                return Initialize(CreateAvaloniaNative(), options);
         }
+
+        //public void SetupApplicationMenuExporter ()
+        //{
+        //    var exporter = new AvaloniaNativeMenuExporter(_factory);
+        //}
+
+        //public void SetupApplicationName ()
+        //{
+        //    if(!string.IsNullOrWhiteSpace(Application.Current.Name))
+        //    {
+        //        using (var buffer = new Utf8Buffer(Application.Current.Name))
+        //        {
+        //            _factory.MacOptions.SetApplicationTitle(buffer.DangerousGetHandle());
+        //        }
+        //    }
+        //}
 
         private AvaloniaNativePlatform(IAvaloniaNativeFactory factory)
         {
@@ -107,15 +123,15 @@ namespace Avalonia.Native
         //    throw new NotImplementedException();
         //}
 
-        public IPopupImpl CreatePopup()
+        public IPopupImpl CreatePopup ()
         {
-            return new PopupImpl(_factory, _options);
+            return new PopupImpl (_factory, _options);
         }
 
         public IAvaloniaNativeFactory Factory => _factory;
     }
 
-    class AvaloniaNativeMacOptions
+    internal class AvaloniaNativeMacOptions
     {
         private readonly IAvnMacOptions _opts;
         private bool _showInDock;

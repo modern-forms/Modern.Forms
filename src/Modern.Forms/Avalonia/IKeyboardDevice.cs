@@ -8,6 +8,19 @@ using System.ComponentModel;
 
 namespace Avalonia.Input
 {
+    //[Flags, Obsolete("Use KeyModifiers and PointerPointProperties")]
+    //internal enum InputModifiers
+    //{
+    //    None = 0,
+    //    Alt = 1,
+    //    Control = 2,
+    //    Shift = 4,
+    //    Windows = 8,
+    //    LeftMouseButton = 16,
+    //    RightMouseButton = 32,
+    //    MiddleMouseButton = 64
+    //}
+
     [Flags]
     internal enum KeyModifiers
     {

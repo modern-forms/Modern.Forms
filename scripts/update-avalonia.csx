@@ -3,6 +3,7 @@
 // manually reverted before the result will build and can be committed.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -188,8 +189,31 @@ private void CopyFile (string src, string dst)
     text = text.Replace ("internal readonly struct Point", "public readonly struct Point");
     text = text.Replace ("internal readonly struct Vector", "public readonly struct Vector");
 
-    File.WriteAllText (full_dst, text, Encoding.UTF8);
+    var dest_lines = CommentDiffs (text, full_dst);
+    File.WriteAllLines (full_dst, dest_lines, Encoding.UTF8);
 }
 
 // We prefer to comment unused stuff so we can tell stuff we've disabled versus new stuff in diffs
 private string Comment (string text, string str) => text.Replace (str, "//" + str);
+
+// Try to remove stuff we've commented from the new files for easier diffs
+private string[] CommentDiffs (string text, string dest)
+{
+    var dest_lines = File.ReadAllLines (dest);
+
+    var src_lines = new List<string> ();
+    using var sw = new StringReader (text);
+    string s;
+
+    while ((s = sw.ReadLine ()) != null)
+        src_lines.Add (s);
+
+    for (var i = 0; i < Math.Min (src_lines.Count, dest_lines.Length); i++) {
+        if (StripWhitespace ("//" + src_lines[i]) == StripWhitespace (dest_lines[i]))
+            src_lines[i] = dest_lines[i];
+    }
+
+    return src_lines.ToArray ();
+}
+
+private string StripWhitespace (string str) => str.Replace (" ", "").Replace ("\t", "");
