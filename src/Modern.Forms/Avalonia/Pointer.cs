@@ -32,6 +32,7 @@ namespace Avalonia.Input
 
         //protected virtual void PlatformCapture(IInputElement element)
         //{
+            
         //}
         
         //public void Capture(IInputElement control)

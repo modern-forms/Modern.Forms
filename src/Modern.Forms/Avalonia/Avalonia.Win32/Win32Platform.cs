@@ -63,8 +63,6 @@ namespace Avalonia.Win32
             CreateMessageWindow();
         }
 
-        public static Win32Platform Instance => s_instance;
-
         public static bool UseDeferredRendering => Options.UseDeferredRendering;
         internal static bool UseOverlayPopups => Options.OverlayPopups;
         public static Win32PlatformOptions Options { get; private set; }
@@ -301,6 +299,8 @@ namespace Avalonia.Win32
 
             SetProcessDPIAware();
         }
+
+        public static Win32Platform Instance => s_instance;
 
         public IPopupImpl CreatePopup ()
         {

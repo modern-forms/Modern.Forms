@@ -29,12 +29,6 @@ namespace Avalonia.Native
 
         public TimeSpan DoubleClickTime => TimeSpan.FromMilliseconds(500); //TODO
 
-        public static AvaloniaNativePlatform Initialize ()
-        {
-            var options = new AvaloniaNativePlatformOptions ();
-            return Initialize (CreateAvaloniaNative (), options);
-        }
-
         public static AvaloniaNativePlatform Initialize(IntPtr factory, AvaloniaNativePlatformOptions options)
         {
             var result =  new AvaloniaNativePlatform(new IAvaloniaNativeFactory(factory));
@@ -92,6 +86,7 @@ namespace Avalonia.Native
             //if (_factory.MacOptions != null)
             //{
             //    var macOpts = AvaloniaLocator.Current.GetService<MacOSPlatformOptions>();
+
             //    _factory.MacOptions.ShowInDock = macOpts?.ShowInDock != false ? 1 : 0;
             //}
 
@@ -101,7 +96,6 @@ namespace Avalonia.Native
             //    .Bind<IStandardCursorFactory>().ToConstant(new CursorFactory(_factory.CreateCursorFactory()))
             //    .Bind<IPlatformIconLoader>().ToSingleton<IconLoader>()
             //    .Bind<IKeyboardDevice>().ToConstant(KeyboardDevice)
-            //    .Bind<IMouseDevice>().ToConstant(MouseDevice)
             //    .Bind<IPlatformSettings>().ToConstant(this)
             //    .Bind<IWindowingPlatform>().ToConstant(this)
             //    .Bind<IClipboard>().ToConstant(new ClipboardImpl(_factory.CreateClipboard()))
@@ -109,8 +103,8 @@ namespace Avalonia.Native
             //    .Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60))
             //    .Bind<ISystemDialogImpl>().ToConstant(new SystemDialogs(_factory.CreateSystemDialogs()))
             //    .Bind<IWindowingPlatformGlFeature>().ToConstant(new GlPlatformFeature(_factory.ObtainGlFeature()))
-            //    .Bind<PlatformHotkeyConfiguration>()
-            //    .ToConstant(new PlatformHotkeyConfiguration(InputModifiers.Windows));
+            //    .Bind<PlatformHotkeyConfiguration>().ToConstant(new PlatformHotkeyConfiguration(InputModifiers.Windows))
+            //    .Bind<IMountedVolumeInfoProvider>().ToConstant(new MacOSMountedVolumeInfoProvider());
         }
 
         public IWindowImpl CreateWindow()
@@ -129,6 +123,12 @@ namespace Avalonia.Native
         }
 
         public IAvaloniaNativeFactory Factory => _factory;
+
+        public static AvaloniaNativePlatform Initialize ()
+        {
+            var options = new AvaloniaNativePlatformOptions ();
+            return Initialize (CreateAvaloniaNative (), options);
+        }
     }
 
     internal class AvaloniaNativeMacOptions

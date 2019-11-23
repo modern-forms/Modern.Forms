@@ -16,13 +16,14 @@ namespace Avalonia.Input
     /// <summary>
     /// Represents a mouse device.
     /// </summary>
-    internal class MouseDevice : IMouseDevice
+    internal class MouseDevice : IMouseDevice, IDisposable
     {
         //private int _clickCount;
         //private Rect _lastClickRect;
         //private ulong _lastClickTime;
 
         private readonly Pointer _pointer;
+        private bool _disposed;
 
         public MouseDevice(Pointer pointer = null)
         {
@@ -88,6 +89,11 @@ namespace Avalonia.Input
                 ProcessRawEvent(margs);
         }
 
+        //public void TopLevelClosed(IInputRoot root)
+        //{
+        //    ClearPointerOver(this, 0, root, PointerPointProperties.None, KeyModifiers.None);
+        //}
+
         //public void SceneInvalidated(IInputRoot root, Rect rect)
         //{
         //    var clientPoint = root.PointToClient(Position);
@@ -123,7 +129,9 @@ namespace Avalonia.Input
         //{
         //    //Contract.Requires<ArgumentNullException>(e != null);
 
-        //    var mouse = (IMouseDevice)e.Device;
+        //    var mouse = (MouseDevice)e.Device;
+        //    if(mouse._disposed)
+        //        return;
 
         //    Position = e.Root.PointToScreen(e.Position);
         //    var props = CreateProperties(e);
@@ -218,7 +226,7 @@ namespace Avalonia.Input
         //            _lastClickTime = timestamp;
         //            _lastClickRect = new Rect(p, new Size())
         //                .Inflate(new Thickness(settings.DoubleClickSize.Width / 2, settings.DoubleClickSize.Height / 2));
-        //            _lastMouseDownButton = properties.GetObsoleteMouseButton();
+        //            _lastMouseDownButton = properties.PointerUpdateKind.GetMouseButton();
         //            var e = new PointerPressedEventArgs(source, _pointer, root, p, timestamp, properties, inputModifiers, _clickCount);
         //            source.RaiseEvent(e);
         //            return e.Handled;
@@ -264,7 +272,8 @@ namespace Avalonia.Input
         //    if (hit != null)
         //    {
         //        var source = GetSource(hit);
-        //        var e = new PointerReleasedEventArgs(source, _pointer, root, p, timestamp, props, inputModifiers);
+        //        var e = new PointerReleasedEventArgs(source, _pointer, root, p, timestamp, props, inputModifiers,
+        //            _lastMouseDownButton);
 
         //        source?.RaiseEvent(e);
         //        _pointer.Capture(null);
@@ -437,5 +446,11 @@ namespace Avalonia.Input
         //        el = (IInputElement)el.VisualParent;
         //    }
         //}
+
+        public void Dispose()
+        {
+            _disposed = true;
+            //_pointer?.Dispose();
+        }
     }
 }

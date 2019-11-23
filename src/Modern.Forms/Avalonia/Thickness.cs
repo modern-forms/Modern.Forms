@@ -205,7 +205,9 @@ namespace Avalonia
         /// <returns>The <see cref="Thickness"/>.</returns>
         //public static Thickness Parse(string s)
         //{
-        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid Thickness"))
+        //    const string exceptionMessage = "Invalid Thickness.";
+
+        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage))
         //    {
         //        if (tokenizer.TryReadDouble(out var a))
         //        {
@@ -222,7 +224,7 @@ namespace Avalonia
         //            return new Thickness(a);
         //        }
 
-        //        throw new FormatException("Invalid Thickness.");
+        //        throw new FormatException(exceptionMessage);
         //    }
         //}
 

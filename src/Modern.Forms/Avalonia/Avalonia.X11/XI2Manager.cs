@@ -140,15 +140,20 @@ namespace Avalonia.X11
         {
             _clients[xid] = window;
 
-            XiSelectEvents(_x11.Display, xid, new Dictionary<int, List<XiEventType>>
-            {
-                [_pointerDevice.Id] = new List<XiEventType>()
-                {
-                    XiEventType.XI_Motion,
-                    XiEventType.XI_ButtonPress,
-                    XiEventType.XI_ButtonRelease,
-                }
-            });
+            var eventsLength = DefaultEventTypes.Length;
+
+            if (_multitouch)
+                eventsLength += MultiTouchEventTypes.Length;
+
+            var events = new List<XiEventType>(eventsLength);
+
+            events.AddRange(DefaultEventTypes);
+
+            if (_multitouch)
+                events.AddRange(MultiTouchEventTypes);
+
+            XiSelectEvents(_x11.Display, xid,
+                new Dictionary<int, List<XiEventType>> {[_pointerDevice.Id] = events});
                 
             // We are taking over mouse input handling from here
             return XEventMask.PointerMotionMask
@@ -174,6 +179,7 @@ namespace Avalonia.X11
 
             //TODO: this should only be used for non-touch devices
             if (xev->evtype >= XiEventType.XI_ButtonPress && xev->evtype <= XiEventType.XI_Motion)
+
             {
                 var dev = (XIDeviceEvent*)xev;
                 if (_clients.TryGetValue(dev->EventWindow, out var client))

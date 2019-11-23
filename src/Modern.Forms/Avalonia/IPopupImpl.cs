@@ -3,6 +3,8 @@
 // Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
 
+//using Avalonia.Controls.Primitives.PopupPositioning;
+
 namespace Avalonia.Platform
 {
     /// <summary>
@@ -10,6 +12,6 @@ namespace Avalonia.Platform
     /// </summary>
     internal interface IPopupImpl : IWindowBaseImpl
     {
-
+        //IPopupPositioner PopupPositioner { get; }
     }
 }

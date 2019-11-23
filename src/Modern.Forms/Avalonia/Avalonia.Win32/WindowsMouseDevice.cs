@@ -13,19 +13,11 @@ namespace Avalonia.Win32.Input
 {
     class WindowsMouseDevice : MouseDevice
     {
-        public static WindowsMouseDevice Instance { get; } = new WindowsMouseDevice();
-
         public WindowsMouseDevice() : base(new WindowsMousePointer())
         {
             
         }
         
-        public WindowImpl CurrentWindow
-        {
-            get;
-            set;
-        }
-
         class WindowsMousePointer : Pointer
         {
             public WindowsMousePointer() : base(Pointer.GetNextFreeId(),PointerType.Mouse, true)
@@ -42,6 +34,14 @@ namespace Avalonia.Win32.Input
             //    else
             //        UnmanagedMethods.ReleaseCapture();
             //}
+        }
+
+        public static WindowsMouseDevice Instance { get; } = new WindowsMouseDevice();
+        
+        public WindowImpl CurrentWindow
+        {
+            get;
+            set;
         }
     }
 }
