@@ -1,12 +1,12 @@
 ## What is Modern.Forms?
 
-*** **This is just a proof of concept. The demo runs well, but that's all that has been implemented.** ***
+*** **This is currently a proof of concept. It is not intended for production use.** ***
 
-Modern.Forms is a cross-platform spiritual successor to Winforms for .NET Core 3.0.
+Modern.Forms is a cross-platform spiritual successor to Winforms for .NET Core 3.0+.
 
 **This is accomplished with:**
 
-* .NET Core 3.0 Preview
+* .NET Core 3.0+
 * Some infrastructure code from Mono's Winforms (like layouts):
   * https://github.com/mono/mono/tree/master/mcs/class/System.Windows.Forms
 * A port of Avalonia's native backends
@@ -37,8 +37,8 @@ Windows | Mac - High Sierra | Ubuntu 16.04
 ### Windows
 
 * Clone this repository
-* Install .NET Core 3.0 Preview 4+
-  * https://dotnet.microsoft.com/download/dotnet-core/3.0
+* Install .NET Core 3.0+
+  * https://dotnet.microsoft.com/download/dotnet-core
 * Open `Modern.Forms.sln` in Visual Studio 2019
 * Ensure `Explore` is set as the Startup project
 * Hit F5
@@ -48,8 +48,8 @@ Windows | Mac - High Sierra | Ubuntu 16.04
 ### Ubuntu 19.04 AMD64
 
 * Clone this repository
-* Install .NET Core 3.0 Preview 4+
-  * https://dotnet.microsoft.com/download/dotnet-core/3.0
+* Install .NET Core 3.0+
+  * https://dotnet.microsoft.com/download/dotnet-core
 * Navigate to `samples/Explorer`
 * Run `dotnet run`
 
@@ -58,8 +58,8 @@ Windows | Mac - High Sierra | Ubuntu 16.04
 ### Mac OSX
 
 * Clone this repository
-* Install .NET Core 3.0 Preview 4+
-  * https://dotnet.microsoft.com/download/dotnet-core/3.0
+* Install .NET Core 3.0+
+  * https://dotnet.microsoft.com/download/dotnet-core
 * Navigate to `samples/Explorer`
 * Run `dotnet run`
 
