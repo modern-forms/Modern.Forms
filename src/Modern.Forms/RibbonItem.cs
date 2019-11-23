@@ -37,14 +37,14 @@ namespace Modern.Forms
             Click += onClick;
         }
 
-        public event EventHandler Click;
-        public event EventHandler EnabledChanged;
-        public event EventHandler<MouseEventArgs> MouseDown;
-        public event EventHandler<MouseEventArgs> MouseEnter;
-        public event EventHandler MouseLeave;
-        public event EventHandler<MouseEventArgs> MouseMove;
-        public event EventHandler<MouseEventArgs> MouseUp;
-        public event EventHandler TextChanged;
+        public event EventHandler? Click;
+        public event EventHandler? EnabledChanged;
+        public event EventHandler<MouseEventArgs>? MouseDown;
+        public event EventHandler<MouseEventArgs>? MouseEnter;
+        public event EventHandler? MouseLeave;
+        public event EventHandler<MouseEventArgs>? MouseMove;
+        public event EventHandler<MouseEventArgs>? MouseUp;
+        public event EventHandler? TextChanged;
 
         public bool Enabled {
             get => enabled;

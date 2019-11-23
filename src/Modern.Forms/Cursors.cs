@@ -6,29 +6,29 @@ namespace Modern.Forms
 {
     public static class Cursors
     {
-        private static Cursor app_starting;
-        private static Cursor arrow;
-        private static Cursor bottom_left_corner;
-        private static Cursor bottom_right_corner;
-        private static Cursor bottom_side;
-        private static Cursor cross;
-        private static Cursor drag_copy;
-        private static Cursor drag_link;
-        private static Cursor drag_move;
-        private static Cursor hand;
-        private static Cursor help;
-        private static Cursor ibeam;
-        private static Cursor left_side;
-        private static Cursor no;
-        private static Cursor right_side;
-        private static Cursor size_all;
-        private static Cursor size_north_south;
-        private static Cursor size_west_east;
-        private static Cursor top_left_corner;
-        private static Cursor top_right_corner;
-        private static Cursor top_side;
-        private static Cursor up_arrow;
-        private static Cursor wait;
+        private static Cursor? app_starting;
+        private static Cursor? arrow;
+        private static Cursor? bottom_left_corner;
+        private static Cursor? bottom_right_corner;
+        private static Cursor? bottom_side;
+        private static Cursor? cross;
+        private static Cursor? drag_copy;
+        private static Cursor? drag_link;
+        private static Cursor? drag_move;
+        private static Cursor? hand;
+        private static Cursor? help;
+        private static Cursor? ibeam;
+        private static Cursor? left_side;
+        private static Cursor? no;
+        private static Cursor? right_side;
+        private static Cursor? size_all;
+        private static Cursor? size_north_south;
+        private static Cursor? size_west_east;
+        private static Cursor? top_left_corner;
+        private static Cursor? top_right_corner;
+        private static Cursor? top_side;
+        private static Cursor? up_arrow;
+        private static Cursor? wait;
 
         public static Cursor AppStarting => app_starting ??= new Cursor (Avalonia.Input.StandardCursorType.AppStarting);
         public static Cursor Arrow => arrow ??= new Cursor (Avalonia.Input.StandardCursorType.Arrow);

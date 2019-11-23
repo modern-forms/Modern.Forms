@@ -33,8 +33,8 @@ namespace Modern.Forms
             TabStop = false;
         }
 
-        public event EventHandler<ScrollEventArgs> Scroll;
-        public event EventHandler ValueChanged;
+        public event EventHandler<ScrollEventArgs>? Scroll;
+        public event EventHandler? ValueChanged;
 
         public int LargeChange {
             get => Math.Min (large_change, maximum - minimum + 1);

@@ -18,7 +18,7 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        public event EventHandler CheckedChanged;
+        public event EventHandler? CheckedChanged;
 
         private bool is_checked;
 

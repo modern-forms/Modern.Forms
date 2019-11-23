@@ -40,7 +40,7 @@ namespace Modern.Forms
             Controls.AddImplicitControl (vscrollbar);
         }
 
-        public event EventHandler SelectedIndexChanged;
+        public event EventHandler? SelectedIndexChanged;
 
         public ListBoxItemCollection Items { get; }
 

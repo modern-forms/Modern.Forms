@@ -64,22 +64,22 @@ namespace Modern.Forms
             Theme.ThemeChanged += (o, e) => is_dirty = true;
         }
 
-        public event EventHandler<MouseEventArgs> Click;
-        public event EventHandler CursorChanged;
-        public event EventHandler DockChanged;
-        public event EventHandler EnabledChanged;
-        public event EventHandler<KeyEventArgs> KeyDown;
-        public event EventHandler<KeyPressEventArgs> KeyPress;
-        public event EventHandler<KeyEventArgs> KeyUp;
-        public event EventHandler<LayoutEventArgs> Layout;
-        public event EventHandler LocationChanged;
-        public event EventHandler MarginChanged;
-        public event EventHandler PaddingChanged;
-        public event EventHandler SizeChanged;
-        public event EventHandler TabIndexChanged;
-        public event EventHandler TabStopChanged;
-        public event EventHandler TextChanged;
-        public event EventHandler VisibleChanged;
+        public event EventHandler<MouseEventArgs>? Click;
+        public event EventHandler? CursorChanged;
+        public event EventHandler? DockChanged;
+        public event EventHandler? EnabledChanged;
+        public event EventHandler<KeyEventArgs>? KeyDown;
+        public event EventHandler<KeyPressEventArgs>? KeyPress;
+        public event EventHandler<KeyEventArgs>? KeyUp;
+        public event EventHandler<LayoutEventArgs>? Layout;
+        public event EventHandler? LocationChanged;
+        public event EventHandler? MarginChanged;
+        public event EventHandler? PaddingChanged;
+        public event EventHandler? SizeChanged;
+        public event EventHandler? TabIndexChanged;
+        public event EventHandler? TabStopChanged;
+        public event EventHandler? TextChanged;
+        public event EventHandler? VisibleChanged;
 
         public virtual AnchorStyles Anchor {
             get => anchor_style;

@@ -18,7 +18,7 @@ namespace Modern.Forms
             Items = new ListViewItemCollection (this);
         }
 
-        public event EventHandler<EventArgs<ListViewItem>> ItemDoubleClicked;
+        public event EventHandler<EventArgs<ListViewItem>>? ItemDoubleClicked;
 
         protected override Padding DefaultPadding => new Padding (3);
 

@@ -41,7 +41,8 @@ namespace Modern.Forms
             Controls.AddImplicitControl (vscrollbar);
         }
 
-        public event EventHandler<EventArgs<TreeViewItem>> ItemSelected;
+        public event EventHandler<EventArgs<TreeViewItem>>? BeforeExpand;
+        public event EventHandler<EventArgs<TreeViewItem>>? ItemSelected;
 
         public TreeViewItem GetItemAtLocation (Point location) => root_item.GetVisibleItems ().FirstOrDefault (tp => tp.Bounds.Contains (location));
 

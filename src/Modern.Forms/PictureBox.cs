@@ -10,7 +10,7 @@ namespace Modern.Forms
     // Async Loading      
     public class PictureBox : Control
     {
-        private static HttpClient client;
+        private static HttpClient? client;
 
         private SKBitmap? image;
         private string? image_location;
@@ -22,7 +22,7 @@ namespace Modern.Forms
             SetControlBehavior (ControlBehaviors.Selectable, false);
         }
 
-        public event EventHandler SizeModeChanged;
+        public event EventHandler? SizeModeChanged;
 
         protected override Size DefaultSize => new Size (100, 50);
 

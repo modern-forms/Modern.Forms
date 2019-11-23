@@ -11,7 +11,7 @@ namespace Modern.Forms
         private MenuDropDown? dropdown;
         private bool selected;
 
-        public event EventHandler<MouseEventArgs> Click;
+        public event EventHandler<MouseEventArgs>? Click;
 
         public MenuItem ()
         {

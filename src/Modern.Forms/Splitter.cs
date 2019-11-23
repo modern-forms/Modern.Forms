@@ -20,7 +20,7 @@ namespace Modern.Forms
             Cursor = Cursors.SizeWestEast;
         }
         
-        public event EventHandler<EventArgs<Point>> Drag;
+        public event EventHandler<EventArgs<Point>>? Drag;
 
         public Orientation Orientation {
             get => orientation;

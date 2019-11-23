@@ -52,8 +52,8 @@ namespace Modern.Forms
             window.Resize (new Size (DefaultSize.Width, DefaultSize.Height));
         }
 
-        public event EventHandler Closed;
-        public event EventHandler Deactivated;
+        public event EventHandler? Closed;
+        public event EventHandler? Deactivated;
 
         public void BeginMoveDrag () => window.BeginMoveDrag ();
 

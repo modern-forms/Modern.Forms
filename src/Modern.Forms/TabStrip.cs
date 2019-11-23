@@ -27,7 +27,7 @@ namespace Modern.Forms
             Tabs = new TabStripItemCollection (this);
         }
 
-        public event EventHandler SelectedTabChanged;
+        public event EventHandler? SelectedTabChanged;
 
         public TabStripItem SelectedTab {
             get => Tabs.FirstOrDefault (tp => tp.Selected);

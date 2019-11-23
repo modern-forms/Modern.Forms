@@ -43,7 +43,7 @@ namespace Modern.Forms
             VisibleChanged += (o, e) => Recalculate (true);
         }
 
-        public event EventHandler<ScrollEventArgs> Scroll;
+        public event EventHandler<ScrollEventArgs>? Scroll;
 
         public bool AutoScroll {
             get => auto_scroll;

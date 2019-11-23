@@ -7,7 +7,7 @@ namespace Modern.Forms
 {
     public static class Application
     {
-        private static CancellationTokenSource _mainLoopCancellationTokenSource;
+        private static CancellationTokenSource? _mainLoopCancellationTokenSource;
         private static bool is_exiting;
 
         // This is the top level active menu, if any.  
@@ -17,7 +17,7 @@ namespace Modern.Forms
         /// <summary>
         /// Sent when the application is exiting.
         /// </summary>
-        public static event EventHandler OnExit;
+        public static event EventHandler? OnExit;
 
         public static void Run (Form form)
         {

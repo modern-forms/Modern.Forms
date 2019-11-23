@@ -13,7 +13,7 @@ namespace Modern.Forms
 
         private static readonly Dictionary<string, object> values = new Dictionary<string, object> ();
 
-        public static event EventHandler ThemeChanged;
+        public static event EventHandler? ThemeChanged;
 
         static Theme ()
         {
