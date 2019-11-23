@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Controls.Platform;
 using Avalonia.Platform;
 
 namespace Avalonia.Controls
@@ -17,7 +16,13 @@ namespace Avalonia.Controls
 
     internal abstract class FileSystemDialog : SystemDialog
     {
-        public string InitialDirectory { get; set; }
+        [Obsolete("Use Directory")]
+        public string InitialDirectory
+        {
+            get => Directory;
+            set => Directory = value;
+        }
+        public string Directory { get; set; }
     }
 
     internal class SaveFileDialog : FileDialog
@@ -48,8 +53,12 @@ namespace Avalonia.Controls
 
     internal class OpenFolderDialog : FileSystemDialog
     {
-        public string DefaultDirectory { get; set; }
-
+        [Obsolete("Use Directory")]
+        public string DefaultDirectory
+        {
+            get => Directory;
+            set => Directory = value;
+        }
         public Task<string> ShowAsync(IWindowBaseImpl parent)
         {
             if(parent == null)

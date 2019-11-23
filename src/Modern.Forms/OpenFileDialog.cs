@@ -13,7 +13,7 @@ namespace Modern.Forms
         {
             var dialog = new Avalonia.Controls.OpenFileDialog {
                 AllowMultiple = AllowMultiple,
-                InitialDirectory = InitialDirectory,
+                Directory = InitialDirectory,
                 InitialFileName = FileName,
                 Title = Title,
                 Filters = filters

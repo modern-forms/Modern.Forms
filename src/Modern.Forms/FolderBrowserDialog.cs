@@ -10,7 +10,7 @@ namespace Modern.Forms
         public async Task<DialogResult> ShowDialog (Window window)
         {
             var dialog = new Avalonia.Controls.OpenFolderDialog {
-                InitialDirectory = InitialDirectory,
+                Directory = InitialDirectory,
                 Title = Title,
             };
 

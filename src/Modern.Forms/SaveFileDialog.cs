@@ -11,7 +11,7 @@ namespace Modern.Forms
         {
             var dialog = new Avalonia.Controls.SaveFileDialog {
                 DefaultExtension = DefaultExtension,
-                InitialDirectory = InitialDirectory,
+                Directory = InitialDirectory,
                 InitialFileName = FileName,
                 Title = Title,
                 Filters = filters
