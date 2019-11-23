@@ -174,6 +174,9 @@ namespace Modern.Forms
         {
             base.OnMouseDown (e);
 
+            if (e.Button != MouseButtons.Left)
+                return;
+
             cursor_index = GetCharIndexFromPosition (e.Location);
 
             is_highlighting = true;
@@ -204,6 +207,9 @@ namespace Modern.Forms
         protected override void OnMouseUp (MouseEventArgs e)
         {
             base.OnMouseUp (e);
+
+            if (e.Button != MouseButtons.Left)
+                return;
 
             cursor_index = GetCharIndexFromPosition (e.Location);
 
@@ -258,6 +264,26 @@ namespace Modern.Forms
             selection_end = -1;
 
             return true;
+        }
+
+        public int SelectionEnd {
+            get => selection_end;
+            set {
+                if (selection_end != value) {
+                    selection_end = value;
+                    Invalidate ();
+                }
+            }
+        }
+
+        public int SelectionStart {
+            get => selection_start;
+            set {
+                if (selection_start != value) {
+                    selection_start = value;
+                    Invalidate ();
+                }
+            }
         }
 
         private string CurrentText => Text ?? string.Empty;
