@@ -3,6 +3,7 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Platform.Surfaces;
+using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Platform;
 using Avalonia.Skia;
@@ -55,7 +56,7 @@ namespace Modern.Forms
         public event EventHandler? Closed;
         public event EventHandler? Deactivated;
 
-        public void BeginMoveDrag () => window.BeginMoveDrag ();
+        public void BeginMoveDrag () => window.BeginMoveDrag (new Avalonia.Input.PointerPressedEventArgs ());
 
         public void Close () => window.Dispose ();
 
@@ -286,28 +287,28 @@ namespace Modern.Forms
 
             switch (element) {
                 case WindowElement.TopBorder:
-                    window.BeginResizeDrag (WindowEdge.North);
+                    window.BeginResizeDrag (WindowEdge.North, new PointerPressedEventArgs ());
                     return true;
                 case WindowElement.RightBorder:
-                    window.BeginResizeDrag (WindowEdge.East);
+                    window.BeginResizeDrag (WindowEdge.East, new PointerPressedEventArgs ());
                     return true;
                 case WindowElement.BottomBorder:
-                    window.BeginResizeDrag (WindowEdge.South);
+                    window.BeginResizeDrag (WindowEdge.South, new PointerPressedEventArgs ());
                     return true;
                 case WindowElement.LeftBorder:
-                    window.BeginResizeDrag (WindowEdge.West);
+                    window.BeginResizeDrag (WindowEdge.West, new PointerPressedEventArgs ());
                     return true;
                 case WindowElement.TopLeftCorner:
-                    window.BeginResizeDrag (WindowEdge.NorthWest);
+                    window.BeginResizeDrag (WindowEdge.NorthWest, new PointerPressedEventArgs ());
                     return true;
                 case WindowElement.TopRightCorner:
-                    window.BeginResizeDrag (WindowEdge.NorthEast);
+                    window.BeginResizeDrag (WindowEdge.NorthEast, new PointerPressedEventArgs ());
                     return true;
                 case WindowElement.BottomLeftCorner:
-                    window.BeginResizeDrag (WindowEdge.SouthWest);
+                    window.BeginResizeDrag (WindowEdge.SouthWest, new PointerPressedEventArgs ());
                     return true;
                 case WindowElement.BottomRightCorner:
-                    window.BeginResizeDrag (WindowEdge.SouthEast);
+                    window.BeginResizeDrag (WindowEdge.SouthEast, new PointerPressedEventArgs ());
                     return true;
             }
 
