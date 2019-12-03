@@ -248,8 +248,11 @@ namespace Modern.Forms
 
             cursor_index = Math.Min (selection_start, selection_end);
 
-            Text = CurrentText.Remove (Math.Min (selection_start, selection_end), SelectionLength);
+            // The selection may have started at the end and moved to the beginning
+            var highlight_start = Math.Min (selection_start, selection_end);
 
+            Text = CurrentText.Remove (highlight_start, Math.Min (SelectionLength, CurrentText.Length - highlight_start));
+            
             Dehighlight ();
 
             return true;
