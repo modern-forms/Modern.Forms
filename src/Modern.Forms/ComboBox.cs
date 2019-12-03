@@ -51,7 +51,7 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             if (Items.SelectedItem != null)
-                e.Canvas.DrawText (Items.SelectedItem.ToString (), TextArea, this, ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (Items.SelectedItem.ToString (), TextArea, this, ContentAlignment.MiddleLeft, maxLines: 1);
 
             var button_bounds = DropDownButtonArea;
             button_bounds.Width = LogicalToDeviceUnits (12);

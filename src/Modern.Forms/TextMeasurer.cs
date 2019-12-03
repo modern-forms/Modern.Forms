@@ -114,7 +114,7 @@ namespace Modern.Forms
             }
 
             var tb = new TextBlock {
-                MaxWidth = maxSize.Width,
+                MaxWidth = maxLines.GetValueOrDefault () == 1 ? (float?)null : maxSize.Width,
                 MaxHeight = maxSize.Height,
                 Alignment = alignment,
                 MaxLines = maxLines
