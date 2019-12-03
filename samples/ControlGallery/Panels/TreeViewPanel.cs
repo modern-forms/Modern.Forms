@@ -50,6 +50,15 @@ namespace ControlGallery.Panels
             });
 
             show_images.CheckedChanged += (o, e) => tree.ShowItemImages = show_images.Checked;
+
+            var virtual_mode = Controls.Add (new CheckBox {
+                Text = "Virtual Mode",
+                Left = 550,
+                Top = 70,
+                Width = 200
+            });
+
+            virtual_mode.CheckedChanged += (o, e) => tree.VirtualMode = virtual_mode.Checked;
         }
 
         private TreeViewItem CreateDirectoryNode (string path)

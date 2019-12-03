@@ -19,6 +19,7 @@ namespace Modern.Forms
         private int top_index = 0;
         private bool show_dropdown_glyph = true;
         private bool show_item_images = true;
+        private bool virtual_mode;
         private readonly VerticalScrollBar vscrollbar;
 
         public TreeView ()
@@ -118,17 +119,34 @@ namespace Modern.Forms
             e.Canvas.Restore ();
         }
 
+        public void OnBeforeExpand (EventArgs<TreeViewItem> e) => BeforeExpand?.Invoke (this, e);
+
         protected override void OnClick (MouseEventArgs e)
         {
-            base.OnClick (e);
-
-            if (!Enabled || !e.Button.HasFlag (MouseButtons.Left))
+            if (!Enabled)
                 return;
 
             var item = GetItemAtLocation (e.Location);
 
-            if (item == null)
+            // If an item wasn't clicked, let the base run and nothing else
+            if (item == null) {
+                base.OnClick (e);
                 return;
+            }
+
+            // If an item with a ContextMenu was right-clicked, show its ContextMenu
+            if (e.Button == MouseButtons.Right) {
+                if (item.ContextMenu != null) {
+                    item.ContextMenu.Show (PointToScreen (e.Location));
+                    return;
+                }
+
+                // Otherwise let the base handle any right-click
+                base.OnClick (e);
+                return;
+            }
+
+            base.OnClick (e);
 
             var element = item.GetElementAtLocation (e.Location);
 
@@ -207,6 +225,16 @@ namespace Modern.Forms
             top_index = vscrollbar.Value;
 
             Invalidate ();
+        }
+
+        public bool VirtualMode {
+            get => virtual_mode;
+            set {
+                if (virtual_mode != value) {
+                    virtual_mode = value;
+                    Invalidate ();
+                }
+            }
         }
 
         private int VisibleItemCount => ScaledHeight / ScaledItemHeight;
