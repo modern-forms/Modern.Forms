@@ -97,7 +97,7 @@ namespace Modern.Forms
             popup.Location = new Avalonia.PixelPoint (location.X, location.Y);
 
             LayoutItems ();
-            popup.Size = new Size (width, height);
+            popup.Size = ScaleSize (new Size (width, height), 1 / (float)Scaling, 1 / (float)Scaling);
 
             Invalidate ();
             popup.Show ();

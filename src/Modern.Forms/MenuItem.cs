@@ -57,7 +57,7 @@ namespace Modern.Forms
                 var font_size = dropdown.LogicalToDeviceUnits (Theme.FontSize);
                 var text_size = TextMeasurer.MeasureText (Text, Theme.UIFont, font_size);
 
-                return new Size ((int)Math.Round (text_size.Width, 0, MidpointRounding.AwayFromZero) + padding.Horizontal + 70, (int)Math.Round (text_size.Height, 0, MidpointRounding.AwayFromZero) + 8);
+                return new Size ((int)Math.Round (text_size.Width, 0, MidpointRounding.AwayFromZero) + padding.Horizontal + dropdown.LogicalToDeviceUnits (70), (int)Math.Round (text_size.Height, 0, MidpointRounding.AwayFromZero) + dropdown.LogicalToDeviceUnits (8));
             }
 
             return proposedSize;
@@ -151,7 +151,7 @@ namespace Modern.Forms
                 // Dropdown Arrow
                 if (HasItems) {
                     var arrow_bounds = DrawingExtensions.CenterSquare (Bounds, 16);
-                    var arrow_area = new Rectangle (Bounds.Right - 20, arrow_bounds.Top, 16, 16);
+                    var arrow_area = new Rectangle (Bounds.Right - bar.LogicalToDeviceUnits (16) - 4, arrow_bounds.Top, 16, 16);
                     ControlPaint.DrawArrowGlyph (new PaintEventArgs (SKImageInfo.Empty, canvas, bar.Scaling), arrow_area, Theme.DarkTextColor, ArrowDirection.Down);
                 }
 
@@ -165,8 +165,9 @@ namespace Modern.Forms
 
                 // Image
                 if (Image != null) {
-                    var image_bounds = DrawingExtensions.CenterSquare (Bounds, 16);
-                    var image_rect = new Rectangle (Bounds.Left + 6, image_bounds.Top, 16, 16);
+                    var image_size = dropdown.LogicalToDeviceUnits (16);
+                    var image_bounds = DrawingExtensions.CenterSquare (Bounds, image_size);
+                    var image_rect = new Rectangle (Bounds.Left + dropdown.LogicalToDeviceUnits (6), image_bounds.Top, image_size, image_size);
                     canvas.DrawBitmap (Image, image_rect);
                 }
 
@@ -174,13 +175,13 @@ namespace Modern.Forms
                 var font_color = Theme.DarkTextColor;
                 var font_size = dropdown.LogicalToDeviceUnits (Theme.FontSize);
                 var bounds = Bounds;
-                bounds.X += 28;
+                bounds.X += dropdown.LogicalToDeviceUnits (28);
                 canvas.DrawText (Text, Theme.UIFont, font_size, bounds, font_color, ContentAlignment.MiddleLeft);
 
                 // Dropdown Arrow
                 if (HasItems) {
                     var arrow_bounds = DrawingExtensions.CenterSquare (Bounds, 16);
-                    var arrow_area = new Rectangle (Bounds.Right - 20, arrow_bounds.Top, 16, 16);
+                    var arrow_area = new Rectangle (Bounds.Right - dropdown.LogicalToDeviceUnits (16) - 4, arrow_bounds.Top, 16, 16);
                     ControlPaint.DrawArrowGlyph (new PaintEventArgs (SKImageInfo.Empty, canvas, dropdown.Scaling), arrow_area, Theme.DarkTextColor, ArrowDirection.Right);
                 }
 
