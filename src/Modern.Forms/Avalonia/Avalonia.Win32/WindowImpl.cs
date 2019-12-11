@@ -317,11 +317,11 @@ namespace Avalonia.Win32
             return new PixelPoint(p.X, p.Y);
         }
 
-        //public void SetInputRoot(IInputRoot inputRoot)
-        //{
-        //    _owner = inputRoot;
-        //    CreateDropTarget();
-        //}
+        public void SetInputRoot (IInputRoot inputRoot)
+        {
+            _owner = inputRoot;
+            CreateDropTarget ();
+        }
 
         public void SetTitle(string title)
         {

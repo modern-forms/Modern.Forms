@@ -675,11 +675,11 @@ namespace Avalonia.X11
         }
 
         public IInputRoot InputRoot => _inputRoot;
-        
-        //public void SetInputRoot(IInputRoot inputRoot)
-        //{
-        //    _inputRoot = inputRoot;
-        //}
+
+        public void SetInputRoot (IInputRoot inputRoot)
+        {
+            _inputRoot = inputRoot;
+        }
 
         public void Dispose()
         {

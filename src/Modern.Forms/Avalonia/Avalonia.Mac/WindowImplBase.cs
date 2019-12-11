@@ -271,10 +271,10 @@ namespace Avalonia.Native
                 _native.Invalidate(new AvnRect { Height = rect.Height, Width = rect.Width, X = rect.X, Y = rect.Y });
         }
 
-        //public void SetInputRoot(IInputRoot inputRoot)
-        //{
-        //    _inputRoot = inputRoot;
-        //}
+        public void SetInputRoot (IInputRoot inputRoot)
+        {
+            _inputRoot = inputRoot;
+        }
 
 
         public void Show()
