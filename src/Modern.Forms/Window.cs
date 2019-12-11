@@ -35,6 +35,7 @@ namespace Modern.Forms
         private DateTime last_click_time;
         private Point last_click_point;
         private Cursor? current_cursor;
+        internal bool shown;
 
         internal Window (IWindowBaseImpl window)
         {
@@ -55,6 +56,7 @@ namespace Modern.Forms
 
         public event EventHandler? Closed;
         public event EventHandler? Deactivated;
+        public event EventHandler? Shown;
 
         public void BeginMoveDrag () => window.BeginMoveDrag (new Avalonia.Input.PointerPressedEventArgs ());
 
@@ -116,6 +118,11 @@ namespace Modern.Forms
             OnVisibleChanged (EventArgs.Empty);
 
             window.Show ();
+
+            if (!shown) {
+                shown = true;
+                OnShown (EventArgs.Empty);
+            }
         }
 
         public bool Visible { get; private set; }
@@ -252,6 +259,8 @@ namespace Modern.Forms
         {
             adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, ScaledSize.Width, ScaledSize.Height);
         }
+
+        protected virtual void OnShown (EventArgs e) => Shown?.Invoke (this, e);
 
         protected virtual void OnVisibleChanged (EventArgs e)
         {

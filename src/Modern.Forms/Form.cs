@@ -19,6 +19,7 @@ namespace Modern.Forms
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
         private string text = string.Empty;
+        private bool use_system_decorations;
 
         public Form () : base (AvaloniaGlobals.WindowingInterface.CreateWindow ())
         {
@@ -66,6 +67,21 @@ namespace Modern.Forms
                     text = value;
                     Window.SetTitle (text);
                     TitleBar.Text = text;
+                }
+            }
+        }
+
+        public bool UseSystemDecorations {
+            get => use_system_decorations;
+            set {
+                if (shown)
+                    throw new InvalidOperationException ($"Cannot change {nameof (UseSystemDecorations)} once a Form has been shown.");
+                
+                if (use_system_decorations != value) {
+                    use_system_decorations = value;
+                    TitleBar.Visible = !use_system_decorations;
+                    Style.Border.Width = use_system_decorations ? 0 : 1;
+                    Window.SetSystemDecorations (value);
                 }
             }
         }
