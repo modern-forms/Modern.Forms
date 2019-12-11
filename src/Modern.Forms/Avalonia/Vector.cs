@@ -6,6 +6,7 @@
 using System;
 using System.Globalization;
 //using Avalonia.Animation.Animators;
+using Avalonia.Utilities;
 //using JetBrains.Annotations;
 
 namespace Avalonia
@@ -88,6 +89,22 @@ namespace Avalonia
             => Divide(vector, scale);
 
         /// <summary>
+        /// Parses a <see cref="Vector"/> string.
+        /// </summary>
+        /// <param name="s">The string.</param>
+        /// <returns>The <see cref="Vector"/>.</returns>
+        //public static Vector Parse(string s)
+        //{
+        //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid Vector."))
+        //    {
+        //        return new Vector(
+        //            tokenizer.ReadDouble(),
+        //            tokenizer.ReadDouble()
+        //        );
+        //    }
+        //}
+
+        /// <summary>
         /// Length of the vector
         /// </summary>
         public double Length => Math.Sqrt(SquaredLength);
@@ -168,9 +185,9 @@ namespace Avalonia
         }
 
         /// <summary>
-        /// Returns the string representation of the point.
+        /// Returns the string representation of the vector.
         /// </summary>
-        /// <returns>The string representation of the point.</returns>
+        /// <returns>The string representation of the vector.</returns>
         public override string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "{0}, {1}", _x, _y);

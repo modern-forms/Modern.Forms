@@ -177,9 +177,9 @@ namespace Avalonia.X11
                 _pointerDevice.Update(changed->Classes, changed->NumClasses);
             }
 
-            //TODO: this should only be used for non-touch devices
-            if (xev->evtype >= XiEventType.XI_ButtonPress && xev->evtype <= XiEventType.XI_Motion)
-
+            
+            if ((xev->evtype >= XiEventType.XI_ButtonPress && xev->evtype <= XiEventType.XI_Motion)
+                || (xev->evtype>=XiEventType.XI_TouchBegin&&xev->evtype<=XiEventType.XI_TouchEnd))
             {
                 var dev = (XIDeviceEvent*)xev;
                 if (_clients.TryGetValue(dev->EventWindow, out var client))
@@ -242,11 +242,15 @@ namespace Avalonia.X11
             if (ev.Type == XiEventType.XI_ButtonPress || ev.Type == XiEventType.XI_ButtonRelease)
             {
                 var down = ev.Type == XiEventType.XI_ButtonPress;
-                var type =
-                    ev.Button == 1 ? (down ? RawPointerEventType.LeftButtonDown : RawPointerEventType.LeftButtonUp)
-                    : ev.Button == 2 ? (down ? RawPointerEventType.MiddleButtonDown : RawPointerEventType.MiddleButtonUp)
-                    : ev.Button == 3 ? (down ? RawPointerEventType.RightButtonDown : RawPointerEventType.RightButtonUp)
-                    : (RawPointerEventType?)null;
+                var type = ev.Button switch
+                {
+                    1 => down ? RawPointerEventType.LeftButtonDown : RawPointerEventType.LeftButtonUp,
+                    2 => down ? RawPointerEventType.MiddleButtonDown : RawPointerEventType.MiddleButtonUp,
+                    3 => down ? RawPointerEventType.RightButtonDown : RawPointerEventType.RightButtonUp,
+                    8 => down ? RawPointerEventType.XButton1Down : RawPointerEventType.XButton1Up,
+                    9 => down ? RawPointerEventType.XButton2Down : RawPointerEventType.XButton2Up,
+                    _ => (RawPointerEventType?)null
+                };
                 if (type.HasValue)
                     client.ScheduleInput(new RawPointerEventArgs(client.MouseDevice, ev.Timestamp, client.InputRoot,
                         type.Value, ev.Position, ev.Modifiers));
@@ -285,12 +289,14 @@ namespace Avalonia.X11
                 var buttons = ev->buttons.Mask;
                 if (XIMaskIsSet(buttons, 1))
                     Modifiers |= RawInputModifiers.LeftMouseButton;
-                
                 if (XIMaskIsSet(buttons, 2))
                     Modifiers |= RawInputModifiers.MiddleMouseButton;
-                
                 if (XIMaskIsSet(buttons, 3))
                     Modifiers |= RawInputModifiers.RightMouseButton;
+                if (XIMaskIsSet(buttons, 8))
+                    Modifiers |= RawInputModifiers.XButton1MouseButton;
+                if (XIMaskIsSet(buttons, 9))
+                    Modifiers |= RawInputModifiers.XButton2MouseButton;
             }
 
             Valuators = new Dictionary<int, double>();

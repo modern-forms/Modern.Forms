@@ -1100,7 +1100,10 @@ namespace Avalonia.Win32.Interop
         
         [DllImport("ole32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         internal static extern HRESULT RegisterDragDrop(IntPtr hwnd, IDropTarget target);
-        
+
+        [DllImport("ole32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        internal static extern HRESULT RevokeDragDrop(IntPtr hwnd);
+
         [DllImport("ole32.dll", EntryPoint = "OleInitialize")]
         internal static extern HRESULT OleInitialize(IntPtr val);
 

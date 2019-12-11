@@ -33,7 +33,7 @@ namespace Avalonia.Native
                     var screen = _native.GetScreen(i);
 
                     result[i] = new Screen(
-                        1,//screen.PixelDensity,
+                        screen.PixelDensity,
                         screen.Bounds.ToAvaloniaPixelRect(),
                         screen.WorkingArea.ToAvaloniaPixelRect(),
                         screen.Primary);

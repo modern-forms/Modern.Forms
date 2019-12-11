@@ -12,6 +12,7 @@ using System.Text;
 // - /code
 //   - /Avalonia
 //   - /Modern.Forms
+//   - /Modern.Forms.Mac.Backend
 string avalonia_repo_path = Path.Combine ("..", "..", "Avalonia");
 string modern_forms_repo_path = "..";
 
@@ -77,6 +78,7 @@ CopyFile ("Avalonia.Controls/WindowState.cs", "WindowState.cs");
 CopyFile ("Avalonia.Native/AvaloniaNativePlatform.cs", "Avalonia.Mac/AvaloniaNativePlatform.cs");
 CopyFile ("Avalonia.Native/AvaloniaNativePlatformExtensions.cs", "Avalonia.Mac/AvaloniaNativePlatformExtensions.cs");
 CopyFile ("Avalonia.Native/CallbackBase.cs", "Avalonia.Mac/CallbackBase.cs");
+CopyFile ("Avalonia.Native/ClipboardImpl.cs", "Avalonia.Mac/ClipboardImpl.cs");
 CopyFile ("Avalonia.Native/Cursor.cs", "Avalonia.Mac/Cursor.cs");
 CopyFile ("Avalonia.Native/DynLoader.cs", "Avalonia.Mac/DynLoader.cs");
 CopyFile ("Avalonia.Native/Helpers.cs", "Avalonia.Mac/Helpers.cs");
@@ -88,6 +90,7 @@ CopyFile ("Avalonia.Native/WindowImpl.cs", "Avalonia.Mac/WindowImpl.cs");
 CopyFile ("Avalonia.Native/WindowImplBase.cs", "Avalonia.Mac/WindowImplBase.cs");
 
 // Windows Backend
+CopyFile ("Windows/Avalonia.Win32/ClipboardImpl.cs", "Avalonia.Win32/ClipboardImpl.cs");
 CopyFile ("Windows/Avalonia.Win32/CursorFactory.cs", "Avalonia.Win32/CursorFactory.cs");
 CopyFile ("Windows/Avalonia.Win32/FramebufferManager.cs", "Avalonia.Win32/FramebufferManager.cs");
 CopyFile ("Windows/Avalonia.Win32/Input/KeyInterop.cs", "Avalonia.Win32/KeyInterop.cs");
@@ -133,6 +136,13 @@ CopyFile ("Skia/Avalonia.Skia/SkiaOptions.cs", "Avalonia.Skia/SkiaOptions.cs");
 CopyFile ("Skia/Avalonia.Skia/SkiaPlatform.cs", "Avalonia.Skia/SkiaPlatform.cs");
 CopyFile ("Skia/Avalonia.Skia/SkiaSharpExtensions.cs", "Avalonia.Skia/SkiaSharpExtensions.cs");
 CopyFile ("Skia/Avalonia.Skia/WriteableBitmapImpl.cs", "Avalonia.Skia/WriteableBitmapImpl.cs");
+
+// Mac Native Bits
+var native_dir = Path.Combine (avalonia_path, "..", "native", "Avalonia.Native");
+var mfmb_dir = Path.Combine ("..", "..", "Modern.Forms.Mac.Backend");
+
+DirectoryCopy (Path.Combine (native_dir, "inc"), Path.Combine (mfmb_dir, "inc"), true);
+DirectoryCopy (Path.Combine (native_dir, "src"), Path.Combine (mfmb_dir, "src"), true);
 
 private void CopyFile (string src, string dst)
 {
@@ -217,3 +227,43 @@ private string[] CommentDiffs (string text, string dest)
 }
 
 private string StripWhitespace (string str) => str.Replace (" ", "").Replace ("\t", "");
+
+private static void DirectoryCopy (string sourceDirName, string destDirName, bool copySubDirs)
+{
+    // Get the subdirectories for the specified directory.
+    var dir = new DirectoryInfo (sourceDirName);
+
+    if (!dir.Exists)
+    {
+        throw new DirectoryNotFoundException(
+            "Source directory does not exist or could not be found: "
+            + sourceDirName);
+    }
+
+    var dirs = dir.GetDirectories ();
+    
+    // If the destination directory doesn't exist, create it.
+    if (!Directory.Exists (destDirName))
+    {
+        Directory.CreateDirectory (destDirName);
+    }
+    
+    // Get the files in the directory and copy them to the new location.
+    var files = dir.GetFiles ();
+    
+    foreach (FileInfo file in files)
+    {
+        var temppath = Path.Combine (destDirName, file.Name);
+        file.CopyTo (temppath, true);
+    }
+
+    // If copying subdirectories, copy them and their contents to new location.
+    if (copySubDirs)
+    {
+        foreach (var subdir in dirs)
+        {
+            var temppath = Path.Combine (destDirName, subdir.Name);
+            DirectoryCopy (subdir.FullName, temppath, copySubDirs);
+        }
+    }
+}

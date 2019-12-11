@@ -18,6 +18,34 @@ using Avalonia.Threading;
 
 namespace Avalonia.Native
 {
+    internal class MacOSTopLevelWindowHandle : IPlatformHandle//, IMacOSTopLevelPlatformHandle
+    {
+        IAvnWindowBase _native;
+
+        public MacOSTopLevelWindowHandle(IAvnWindowBase native)
+        {
+            _native = native;
+        }
+
+        public IntPtr Handle => NSWindow;
+
+        public string HandleDescriptor => "NSWindow";
+
+        public IntPtr NSView => _native.ObtainNSViewHandle();
+
+        public IntPtr NSWindow => _native.ObtainNSWindowHandle();
+
+        public IntPtr GetNSViewRetained()
+        {
+            return _native.ObtainNSViewHandleRetained();
+        }
+
+        public IntPtr GetNSWindowRetained()
+        {
+            return _native.ObtainNSWindowHandleRetained();
+        }
+    }
+
     internal abstract class WindowBaseImpl : IWindowBaseImpl,
         IFramebufferPlatformSurface
     {
@@ -26,11 +54,11 @@ namespace Avalonia.Native
         private object _syncRoot = new object();
         private bool _deferredRendering = false;
         private bool _gpu = false;
-        private readonly IMouseDevice _mouse = null;
-        private readonly IKeyboardDevice _keyboard = null;
-        private readonly IStandardCursorFactory _cursorFactory = null;
+        private readonly MouseDevice _mouse;
+        private readonly IKeyboardDevice _keyboard;
+        private readonly IStandardCursorFactory _cursorFactory;
         private Size _savedLogicalSize;
-        //private Size _lastRenderedLogicalSize;
+        private Size _lastRenderedLogicalSize;
         private double _savedScaling;
         //private GlPlatformSurface _glSurface;
 
@@ -47,6 +75,9 @@ namespace Avalonia.Native
         protected void Init(IAvnWindowBase window, IAvnScreens screens)
         {
             _native = window;
+
+            Handle = new MacOSTopLevelWindowHandle(window);
+            
             //_glSurface = new GlPlatformSurface(window);
             Screen = new ScreenImpl(screens);
             _savedLogicalSize = ClientSize;
@@ -271,7 +302,7 @@ namespace Avalonia.Native
                 _native.Invalidate(new AvnRect { Height = rect.Height, Width = rect.Width, X = rect.X, Y = rect.Y });
         }
 
-        public void SetInputRoot (IInputRoot inputRoot)
+        public void SetInputRoot(IInputRoot inputRoot)
         {
             _inputRoot = inputRoot;
         }
@@ -351,7 +382,7 @@ namespace Avalonia.Native
 
         }
 
-        public IPlatformHandle Handle => new PlatformHandle(IntPtr.Zero, "NOT SUPPORTED");
+        public IPlatformHandle Handle { get; private set; }
 
         public Size ScaledClientSize {
             get {

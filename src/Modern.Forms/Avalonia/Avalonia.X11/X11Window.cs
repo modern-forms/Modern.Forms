@@ -353,10 +353,17 @@ namespace Avalonia.X11
             {
                 if (ActivateTransientChildIfNeeded())
                     return;
-                if (ev.ButtonEvent.button < 4)
-                    MouseEvent(ev.ButtonEvent.button == 1 ? RawPointerEventType.LeftButtonDown
-                        : ev.ButtonEvent.button == 2 ? RawPointerEventType.MiddleButtonDown
-                        : RawPointerEventType.RightButtonDown, ref ev, ev.ButtonEvent.state);
+                if (ev.ButtonEvent.button < 4 || ev.ButtonEvent.button == 8 || ev.ButtonEvent.button == 9)
+                    MouseEvent(
+                        ev.ButtonEvent.button switch
+                        {
+                            1 => RawPointerEventType.LeftButtonDown,
+                            2 => RawPointerEventType.MiddleButtonDown,
+                            3 => RawPointerEventType.RightButtonDown,
+                            8 => RawPointerEventType.XButton1Down,
+                            9 => RawPointerEventType.XButton2Down
+                        },
+                        ref ev, ev.ButtonEvent.state);
                 else
                 {
                     var delta = ev.ButtonEvent.button == 4
@@ -374,10 +381,17 @@ namespace Avalonia.X11
             }
             else if (ev.type == XEventName.ButtonRelease)
             {
-                if (ev.ButtonEvent.button < 4)
-                    MouseEvent(ev.ButtonEvent.button == 1 ? RawPointerEventType.LeftButtonUp
-                        : ev.ButtonEvent.button == 2 ? RawPointerEventType.MiddleButtonUp
-                        : RawPointerEventType.RightButtonUp, ref ev, ev.ButtonEvent.state);
+                if (ev.ButtonEvent.button < 4 || ev.ButtonEvent.button == 8 || ev.ButtonEvent.button == 9)
+                    MouseEvent(
+                        ev.ButtonEvent.button switch
+                        {
+                            1 => RawPointerEventType.LeftButtonUp,
+                            2 => RawPointerEventType.MiddleButtonUp,
+                            3 => RawPointerEventType.RightButtonUp,
+                            8 => RawPointerEventType.XButton1Up,
+                            9 => RawPointerEventType.XButton2Up
+                        },
+                        ref ev, ev.ButtonEvent.state);
             }
             else if (ev.type == XEventName.ConfigureNotify)
             {
@@ -588,8 +602,12 @@ namespace Avalonia.X11
                 rv |= RawInputModifiers.LeftMouseButton;
             if (state.HasFlag(XModifierMask.Button2Mask))
                 rv |= RawInputModifiers.RightMouseButton;
-            if (state.HasFlag(XModifierMask.Button2Mask))
+            if (state.HasFlag(XModifierMask.Button3Mask))
                 rv |= RawInputModifiers.MiddleMouseButton;
+            if (state.HasFlag(XModifierMask.Button4Mask))
+                rv |= RawInputModifiers.XButton1MouseButton;
+            if (state.HasFlag(XModifierMask.Button5Mask))
+                rv |= RawInputModifiers.XButton2MouseButton;
             if (state.HasFlag(XModifierMask.ShiftMask))
                 rv |= RawInputModifiers.Shift;
             if (state.HasFlag(XModifierMask.ControlMask))
@@ -675,8 +693,8 @@ namespace Avalonia.X11
         }
 
         public IInputRoot InputRoot => _inputRoot;
-
-        public void SetInputRoot (IInputRoot inputRoot)
+        
+        public void SetInputRoot(IInputRoot inputRoot)
         {
             _inputRoot = inputRoot;
         }

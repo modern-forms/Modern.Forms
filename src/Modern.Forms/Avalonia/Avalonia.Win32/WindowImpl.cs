@@ -255,6 +255,11 @@ namespace Avalonia.Win32
 
         public void Dispose()
         {
+            //if (_dropTarget != null)
+            //{
+            //    OleContext.Current?.UnregisterDragDrop(Handle);
+            //    _dropTarget = null;
+            //}
             if (_hwnd != IntPtr.Zero)
             {
                 UnmanagedMethods.DestroyWindow(_hwnd);
@@ -317,10 +322,10 @@ namespace Avalonia.Win32
             return new PixelPoint(p.X, p.Y);
         }
 
-        public void SetInputRoot (IInputRoot inputRoot)
+        public void SetInputRoot(IInputRoot inputRoot)
         {
             _owner = inputRoot;
-            CreateDropTarget ();
+            CreateDropTarget();
         }
 
         public void SetTitle(string title)
