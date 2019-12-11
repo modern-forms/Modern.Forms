@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Avalonia.Controls.Platform;
+using Avalonia.Input.Platform;
 using Avalonia.Platform;
 using Avalonia.Shared.PlatformSupport;
 using Avalonia.Win32;
@@ -16,6 +17,7 @@ namespace Avalonia
         public static IWindowingPlatform WindowingInterface { get; private set; }
         public static IStandardCursorFactory StandardCursorFactory { get; private set; }
         public static ISystemDialogImpl SystemDialogImplementation { get; private set; }
+        public static IClipboard ClipboardInterface { get; private set; }
 
         static AvaloniaGlobals ()
         {
@@ -42,6 +44,7 @@ namespace Avalonia
             PlatformThreadingInterface = new X11PlatformThreading (x11);
             StandardCursorFactory = new X11CursorFactory (x11.Display);
             SystemDialogImplementation = new X11.NativeDialogs.GtkSystemDialog ();
+            ClipboardInterface = new X11Clipboard (x11);
         }
 
         private static void InitializeOSX ()
@@ -52,6 +55,7 @@ namespace Avalonia
             PlatformThreadingInterface = new Native.PlatformThreadingInterface (platform.Factory.CreatePlatformThreadingInterface ());
             StandardCursorFactory = new Native.CursorFactory (platform.Factory.CreateCursorFactory ());
             SystemDialogImplementation = new Native.SystemDialogs (platform.Factory.CreateSystemDialogs ());
+            ClipboardInterface = new Native.ClipboardImpl (platform.Factory.CreateClipboard ());
         }
 
         private static void InitializeWindows ()
@@ -62,6 +66,7 @@ namespace Avalonia
             WindowingInterface = Win32Platform.Instance;
             StandardCursorFactory = CursorFactory.Instance;
             SystemDialogImplementation = new SystemDialogImpl ();
+            ClipboardInterface = new ClipboardImpl ();
         }
     }
 }

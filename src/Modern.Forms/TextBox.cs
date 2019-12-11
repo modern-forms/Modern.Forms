@@ -37,6 +37,26 @@ namespace Modern.Forms
             Cursor = Cursors.IBeam;
         }
 
+        public void Copy ()
+        {
+            if (!IsTextHighlighted)
+                return;
+
+            var text = HighlightedText;
+            AsyncHelper.RunSync (() => Avalonia.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
+        }
+
+        public void Cut ()
+        {
+            if (!IsTextHighlighted)
+                return;
+
+            var text = HighlightedText;
+            AsyncHelper.RunSync (() => Avalonia.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
+
+            DeleteHighlightedText ();
+        }
+
         public bool MultiLine {
             get => multiline;
             set {
@@ -121,6 +141,27 @@ namespace Modern.Forms
                     cursor_index = CurrentText.Length;
                     Invalidate ();
                     e.Handled = true;
+
+                    return;
+                case Keys.C:
+                    if (e.Control) {
+                        Copy ();
+                        e.Handled = true;
+                    }
+
+                    return;
+                case Keys.V:
+                    if (e.Control) {
+                        Paste ();
+                        e.Handled = true;
+                    }
+
+                    return;
+                case Keys.X:
+                    if (e.Control) {
+                        Cut ();
+                        e.Handled = true;
+                    }
 
                     return;
             }
@@ -240,6 +281,17 @@ namespace Modern.Forms
                 e.Canvas.DrawRectangle (caret, Theme.DarkTextColor);
             }
         }
+        
+        public void Paste ()
+        {
+            var text = AsyncHelper.RunSync (() => Avalonia.AvaloniaGlobals.ClipboardInterface.GetTextAsync ());
+
+            if (!string.IsNullOrEmpty (text)) {
+                DeleteHighlightedText ();
+                Text = CurrentText.Insert (cursor_index++, text);
+                cursor_index += text.Length - 1;
+            }
+        }
 
         private bool DeleteHighlightedText ()
         {
@@ -292,6 +344,10 @@ namespace Modern.Forms
         private string CurrentText => Text ?? string.Empty;
 
         private int CurrentFontSize => LogicalToDeviceUnits (CurrentStyle.GetFontSize ());
+
+        private string HighlightedText => CurrentText.Substring (HighlightStart, Math.Min (SelectionLength, CurrentText.Length - HighlightStart));
+
+        private int HighlightStart => Math.Min (selection_start, selection_end);
 
         private bool IsTextHighlighted => selection_start >= 0 && selection_end >= 0 && SelectionLength != 0;
 

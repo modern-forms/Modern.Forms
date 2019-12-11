@@ -210,11 +210,11 @@ namespace Modern.Forms
             } else if (e is RawKeyEventArgs ke) {
                 switch (ke.Type) {
                     case RawKeyEventType.KeyDown:
-                        var kd_e = new KeyEventArgs ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key));
+                        var kd_e = new KeyEventArgs (KeyInterop.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
                         adapter.RaiseKeyDown (kd_e);
                         break;
                     case RawKeyEventType.KeyUp:
-                        var ku_e = new KeyEventArgs ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key));
+                        var ku_e = new KeyEventArgs (KeyInterop.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
                         adapter.RaiseKeyUp (ku_e);
                         break;
                 }

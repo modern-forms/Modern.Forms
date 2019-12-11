@@ -379,5 +379,17 @@ namespace Avalonia.Win32.Input
             s_virtualKeyFromKey.TryGetValue(key, out result);
             return result;
         }
+
+        public static Modern.Forms.Keys AddModifiers (Modern.Forms.Keys keys, RawInputModifiers modifiers)
+        {
+            if (modifiers.HasFlag (RawInputModifiers.Alt))
+                keys |= Modern.Forms.Keys.Alt;
+            if (modifiers.HasFlag (RawInputModifiers.Control))
+                keys |= Modern.Forms.Keys.Control;
+            if (modifiers.HasFlag (RawInputModifiers.Shift))
+                keys |= Modern.Forms.Keys.Shift;
+
+            return keys;
+        }
     }
 }
