@@ -5,7 +5,7 @@
 
 using System;
 
-namespace Avalonia.Input
+namespace Modern.Forms
 {
     public interface ICloseable
     {

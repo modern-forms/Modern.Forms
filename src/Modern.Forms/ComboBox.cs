@@ -80,8 +80,7 @@ namespace Modern.Forms
                 Size = new Size (Width, 102)
             };
 
-            var pt = PointToScreen (new Point (1, ScaledHeight - 1));
-            popup.Location = new Avalonia.PixelPoint (pt.X, pt.Y);
+            popup.Location = PointToScreen (new Point (1, ScaledHeight - 1));
             popup.Controls.Add (popup_listbox);
 
             popup.Show ();

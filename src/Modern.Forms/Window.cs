@@ -81,11 +81,11 @@ namespace Modern.Forms
 
         public void Invalidate (System.Drawing.Rectangle rect) => Invalidate ();
 
-        public PixelPoint Location {
-            get => window.Position;
+        public System.Drawing.Point Location {
+            get => window.Position.ToDrawingPoint ();
             set {
-                if (window.Position != value) {
-                    window.Position = value;
+                if (window.Position.ToDrawingPoint () != value) {
+                    window.Position = value.ToPixelPoint ();
                 }
             }
         }

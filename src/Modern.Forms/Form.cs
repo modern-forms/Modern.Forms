@@ -101,10 +101,10 @@ namespace Modern.Forms
                 PixelSize.FromSize (window.ClientSize, scaling));
 
             if (StartPosition == FormStartPosition.CenterScreen) {
-                var screen = Screens.ScreenFromPoint (owner?.Position ?? Location);
+                var screen = Screens.ScreenFromPoint (owner?.Position ?? Location.ToPixelPoint ());
 
                 if (screen != null) {
-                    Location = screen.WorkingArea.CenterRect (rect).Position;
+                    Location = screen.WorkingArea.CenterRect (rect).Position.ToDrawingPoint ();
                 }
             } else if (StartPosition == FormStartPosition.CenterParent) {
                 if (owner != null) {
@@ -112,7 +112,7 @@ namespace Modern.Forms
                     var ownerRect = new PixelRect (
                         owner.Position,
                         PixelSize.FromSize (owner.ClientSize, scaling));
-                    Location = ownerRect.CenterRect (rect).Position;
+                    Location = ownerRect.CenterRect (rect).Position.ToDrawingPoint ();
                 }
             }
         }

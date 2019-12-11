@@ -13,7 +13,7 @@ namespace Avalonia
     /// <summary>
     /// Defines a point.
     /// </summary>
-    public readonly struct Point : IEquatable<Point>
+    internal readonly struct Point : IEquatable<Point>
     {
         static Point()
         {

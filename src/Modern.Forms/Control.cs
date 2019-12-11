@@ -437,7 +437,7 @@ namespace Modern.Forms
         {
             // If this is the top, add the point to our location
             if (this is ControlAdapter) {
-                var window_location = FindWindow ()?.Location.ToDrawingPoint ();
+                var window_location = FindWindow ()?.Location;
 
                 if (window_location == null)
                     return point;

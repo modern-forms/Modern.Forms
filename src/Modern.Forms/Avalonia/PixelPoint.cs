@@ -12,7 +12,7 @@ namespace Avalonia
     /// <summary>
     /// Represents a point in device pixels.
     /// </summary>
-    public readonly struct PixelPoint : IEquatable<PixelPoint>
+    internal readonly struct PixelPoint : IEquatable<PixelPoint>
     {
         /// <summary>
         /// A point representing 0,0.
