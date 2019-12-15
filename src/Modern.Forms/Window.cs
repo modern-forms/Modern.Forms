@@ -228,6 +228,7 @@ namespace Modern.Forms
             } else if (e is RawTextInputEventArgs te) {
                 var kp_e = new KeyPressEventArgs (te.Text[0], KeyEventArgs.FromInputModifiers (te.Modifiers));
                 adapter.RaiseKeyPress (kp_e);
+                e.Handled = true;
             }
         }
 
