@@ -38,12 +38,12 @@ namespace Modern.Forms
                 var vertical = GetVerticalAlign (alignment);
 
                 if (vertical == SKTextAlign.Left)
-                    return new Rectangle (bounds.X + (int)caret_rect.Left, (int)caret_rect.Top, (int)caret_rect.Width, (int)caret_rect.Height);
+                    return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Y + (int)caret_rect.Top, (int)caret_rect.Width, (int)caret_rect.Height);
                 else if (vertical == SKTextAlign.Right)
-                    return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Bottom - (int)caret_rect.Height, (int)caret_rect.Width, (int)caret_rect.Height);
+                    return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Y + bounds.Bottom - (int)caret_rect.Height, (int)caret_rect.Width, (int)caret_rect.Height);
 
                 // Centered
-                return new Rectangle (bounds.X + (int)caret_rect.Left, (int)caret_rect.Top + ((bounds.Height - (int)caret_rect.Height) / 2), (int)caret_rect.Width, (int)caret_rect.Height);
+                return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Y + (int)caret_rect.Top + ((bounds.Height - (int)caret_rect.Height) / 2), (int)caret_rect.Width, (int)caret_rect.Height);
             } catch (ArgumentOutOfRangeException) {
                 return Rectangle.Empty;
             }

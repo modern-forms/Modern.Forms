@@ -92,7 +92,7 @@ namespace Modern.Forms
             if (CurrentText.Length == 0)
                 return 0;
 
-            var hit = TextMeasurer.HitTest (Text, ClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), Alignment, location, MaxLines);
+            var hit = TextMeasurer.HitTest (Text, PaddedClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), Alignment, location, MaxLines);
 
             return hit.ClosestCodePointIndex;
         }
@@ -272,12 +272,12 @@ namespace Modern.Forms
             base.OnPaint (e);
 
             if (!string.IsNullOrEmpty (Text))
-                e.Canvas.DrawText (Text, ClientRectangle, this, Alignment, selection_start, selection_end, Selected ? selection_color : selection_color_deselected, MaxLines);
+                e.Canvas.DrawText (Text, PaddedClientRectangle, this, Alignment, selection_start, selection_end, Selected ? selection_color : selection_color_deselected, MaxLines);
             else if (!string.IsNullOrEmpty (placeholder))
-                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentFontSize, ClientRectangle, Theme.DisabledTextColor, Alignment, maxLines: MaxLines);
+                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentFontSize, PaddedClientRectangle, Theme.DisabledTextColor, Alignment, maxLines: MaxLines);
 
             if (Selected) {
-                var caret = TextMeasurer.GetCursorLocation (Text, ClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), Alignment, cursor_index, MaxLines);
+                var caret = TextMeasurer.GetCursorLocation (Text, PaddedClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), Alignment, cursor_index, MaxLines);
                 e.Canvas.DrawRectangle (caret, Theme.DarkTextColor);
             }
         }

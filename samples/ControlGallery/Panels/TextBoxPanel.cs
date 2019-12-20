@@ -58,6 +58,16 @@ namespace ControlGallery.Panels
             };
 
             Controls.Add (tb5);
+
+            var tb6 = new TextBox {
+                Text = "With Padding",
+                Left = 200,
+                Top = 10,
+                Width = 150,
+                Padding = new Padding (5)
+            };
+
+            Controls.Add (tb6);
         }
     }
 }
