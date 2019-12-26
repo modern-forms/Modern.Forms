@@ -194,6 +194,9 @@ namespace Modern.Forms
         {
             base.OnMouseWheel (e);
 
+            if (!Enabled)
+                return;
+
             if (e.Delta.Y != 0)
                 UpdateFromValue (Value - (e.Delta.Y * SmallChange));
         }
@@ -219,6 +222,9 @@ namespace Modern.Forms
             e.Canvas.FillRectangle (bottom_arrow_area, SKColors.White);
             e.Canvas.DrawRectangle (bottom_arrow_area, Theme.BorderGray);
             ControlPaint.DrawArrowGlyph (e, bottom_arrow_area, Theme.BorderGray, IncrementArrowDirection);
+
+            if (!Enabled)
+                return;
 
             // Grip
             var thumb_bounds = ThumbDragBounds;
@@ -267,14 +273,14 @@ namespace Modern.Forms
 
             thumb_drag_position = (int)new_pos;
 
+            Invalidate ();
+
             if (current_value == value)
                 return;
 
             current_value = value;
 
             OnValueChanged (EventArgs.Empty);
-
-            Invalidate ();
         }
 
         protected void UpdateFromPoint (int pixel)

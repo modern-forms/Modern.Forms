@@ -7,6 +7,8 @@ namespace Modern.Forms
 {
     public static class TextMeasurer
     {
+        public static Size MaxSize = new Size (int.MaxValue, int.MaxValue);
+
         public static SKSize MeasureText (string text, Control control)
             => MeasureText (text, control, new Size (1000, 1000));
 
@@ -44,6 +46,21 @@ namespace Modern.Forms
 
                 // Centered
                 return new Rectangle (bounds.X + (int)caret_rect.Left, bounds.Y + (int)caret_rect.Top + ((bounds.Height - (int)caret_rect.Height) / 2), (int)caret_rect.Width, (int)caret_rect.Height);
+            } catch (ArgumentOutOfRangeException) {
+                return Rectangle.Empty;
+            }
+        }
+
+        public static Rectangle GetCursorLocation (TextBlock block, Point location, int codePoint, int fontSize)
+        {
+            // If there isn't any text the cursor height will be 0, so return a best effort based on font size
+            if (block.MeasuredHeight == 0)
+                return new Rectangle (location.X, location.Y + 1, 0, fontSize + 2);
+
+            try {
+                var caret_rect = block.GetCaretInfo (codePoint).CaretRectangle;
+
+                return new Rectangle (location.X + (int)caret_rect.Left, location.Y + (int)caret_rect.Top + 1, (int)caret_rect.Width, (int)caret_rect.Height - 2);
             } catch (ArgumentOutOfRangeException) {
                 return Rectangle.Empty;
             }
@@ -115,7 +132,7 @@ namespace Modern.Forms
 
             var tb = new TextBlock {
                 MaxWidth = maxLines.GetValueOrDefault () == 1 ? (float?)null : maxSize.Width,
-                MaxHeight = maxSize.Height,
+                MaxHeight = maxSize.Height == int.MaxValue ? (int?)null : maxSize.Height,
                 Alignment = alignment,
                 MaxLines = maxLines
             };
