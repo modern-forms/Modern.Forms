@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -15,11 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HarfBuzzSharp" Version="2.6.1" />
-    <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="2.6.1" />
+    <PackageReference Include="HarfBuzzSharp" Version="2.6.1.1" />
+    <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="2.6.1.1" />
     <PackageReference Include="Modern.Forms.Mac.Backend" Version="0.0.5" />
-    <PackageReference Include="SkiaSharp" Version="1.68.1" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="1.68.1" />
+    <PackageReference Include="SkiaSharp" Version="1.68.1.1" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="1.68.1.1" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="Topten.RichTextKit" Version="0.1.118" />
   </ItemGroup>
