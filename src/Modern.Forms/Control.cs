@@ -231,6 +231,7 @@ namespace Modern.Forms
                 is_enabled = value;
 
                 OnEnabledChanged (EventArgs.Empty);
+                Invalidate ();
             }
         }
 
@@ -358,7 +359,7 @@ namespace Modern.Forms
         /// <summary>
         /// The control canvas minus any borders and Padding
         /// </summary>
-        public Rectangle PaddedClientRectangle {
+        public virtual Rectangle PaddedClientRectangle {
             get {
                 var client_rect = ClientRectangle;
 
@@ -594,7 +595,7 @@ namespace Modern.Forms
 
         public object? Tag { get; set; }
 
-        public string Text {
+        public virtual string Text {
             get => text;
             set {
                 if (text == value)

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using SkiaSharp;
+using Topten.RichTextKit;
 
 namespace Modern.Forms
 {
     // TODO:
-    public class TextBox : Control
+    public class TextBox : ScrollControl
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
@@ -16,199 +16,172 @@ namespace Modern.Forms
 
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        private int cursor_index = 0;
-        private bool read_only = false;
-        private string placeholder = string.Empty;
-        private int selection_start = -1;
-        private int selection_end = -1;
+        private readonly TextBoxDocument document;
+
         private bool is_highlighting;
         private int selection_anchor = -1;
-        private bool multiline = false;
+        private int scroll_x = 0;
+        private int scroll_y = 0;
 
-        private static SKColor selection_color = new SKColor (153, 201, 239);
-        private static SKColor selection_color_deselected = new SKColor (212, 220, 216);
-
-        protected override Size DefaultSize => new Size (100, 28);
+        protected override Size DefaultSize => new Size (100, 25);
+        protected override Padding DefaultPadding => new Padding (1, 0, 0, 0);
 
         public TextBox ()
         {
-            SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
-
             Cursor = Cursors.IBeam;
+
+            document = new TextBoxDocument (this);
+
+            VerticalScrollBar.ValueChanged += (o, e) => DoScroll (0, (o as VerticalScrollBar)!.Value - scroll_y);
         }
 
         public void Copy ()
         {
-            if (!IsTextHighlighted)
+            if (!document.IsTextSelected)
                 return;
 
-            var text = HighlightedText;
+            var text = document.SelectedText;
             AsyncHelper.RunSync (() => Avalonia.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
         }
 
         public void Cut ()
         {
-            if (!IsTextHighlighted)
+            if (!document.IsTextSelected)
                 return;
 
-            var text = HighlightedText;
+            var text = document.SelectedText;
             AsyncHelper.RunSync (() => Avalonia.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
 
-            DeleteHighlightedText ();
+            document.DeleteSelection ();
+        }
+
+        public int MaxLength {
+            get => document.MaxLength;
+            set => document.MaxLength = value;
         }
 
         public bool MultiLine {
-            get => multiline;
+            get => document.IsMultiline;
             set {
-                if (multiline != value) {
-                    multiline = value;
-                    Invalidate ();
+                if (document.IsMultiline != value) {
+
+                    if (Padding == DefaultPadding)
+                        Padding = new Padding (value ? 4 : 1, 0, 0, 0);
+
+                    document.IsMultiline = value;
                 }
             }
         }
 
         public string Placeholder {
-            get => placeholder;
-            set {
-                if (placeholder != value) {
-                    placeholder = value;
-                    Invalidate ();
-                }
-            }
+            get => document.Placeholder;
+            set => document.Placeholder = value;
         }
 
         public bool ReadOnly {
-            get => read_only;
-            set {
-                if (read_only != value) {
-                    read_only = value;
-                    Invalidate ();
-                }
-            }
+            get => document.ReadOnly;
+            set => document.ReadOnly = value;
         }
 
         public int GetCharIndexFromPosition (Point location)
         {
-            if (CurrentText.Length == 0)
+            if (!document.Text.HasValue ())
                 return 0;
 
-            var hit = TextMeasurer.HitTest (Text, PaddedClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), Alignment, location, MaxLines);
+            return document.GetCharIndexFromPosition (location.X - TextOrigin.X, location.Y - TextOrigin.Y).ClosestCodePointIndex;
+        }
 
-            return hit.ClosestCodePointIndex;
+        private bool HandleKeyDown (KeyEventArgs e)
+        {
+            var need_refresh = false;
+
+            try {
+                switch (e.KeyData & Keys.KeyCode) {
+                    case Keys.Left:
+                        need_refresh = document.MoveCursor (ArrowDirection.Left, e.Shift, e.Control, false);
+                        return true;
+                    case Keys.Right:
+                        need_refresh = document.MoveCursor (ArrowDirection.Right, e.Shift, e.Control, false);
+                        return true;
+                    case Keys.Home:
+                        need_refresh = document.MoveCursor (ArrowDirection.Left, e.Shift, e.Control, true);
+                        return true;
+                    case Keys.End:
+                        need_refresh = document.MoveCursor (ArrowDirection.Right, e.Shift, e.Control, true);
+                        return true;
+                    case Keys.Up:
+                        need_refresh = document.MoveCursor (ArrowDirection.Up, e.Shift, e.Control, false);
+                        return true;
+                    case Keys.Down:
+                        need_refresh = document.MoveCursor (ArrowDirection.Down, e.Shift, e.Control, false);
+                        return true;
+                    case Keys.Delete:
+                        need_refresh = document.DeleteText (true, e.Control);
+                        return true;
+                    case Keys.Back:
+                        need_refresh = document.DeleteText (false, e.Control);
+                        return true;
+                    case Keys.C:
+                        if (e.Control)
+                            Copy ();
+
+                        return e.Control;
+                    case Keys.X:
+                        if (e.Control)
+                            Cut ();
+
+                        return e.Control;
+                    case Keys.V:
+                        if (e.Control)
+                            Paste ();
+
+                        return e.Control;
+
+                }
+            } finally {
+                if (need_refresh)
+                    ScrollToCaret ();
+            }
+
+            return false;
         }
 
         protected override void OnKeyDown (KeyEventArgs e)
         {
             base.OnKeyDown (e);
 
-            switch (e.KeyData & Keys.KeyCode) {
-                case Keys.Delete:
-                    if (read_only || DeleteHighlightedText () || cursor_index >= CurrentText.Length)
-                        return;
-
-                    Text = Text.Remove (cursor_index, 1);
-                    e.Handled = true;
-                    return;
-                case Keys.Left:
-                    if (!Dehighlight () && cursor_index > 0)
-                        cursor_index--;
-
-                    Invalidate ();
-                    e.Handled = true;
-
-                    return;
-                case Keys.Right:
-                    if (!Dehighlight () && cursor_index < TextMeasurer.GetMaxCaretIndex (Text))
-                        cursor_index++;
-
-                    Invalidate ();
-                    e.Handled = true;
-
-                    return;
-                case Keys.Home:
-                case Keys.Up:
-                    Dehighlight ();
-
-                    cursor_index = 0;
-                    Invalidate ();
-                    e.Handled = true;
-
-                    return;
-                case Keys.End:
-                case Keys.Down:
-                    Dehighlight ();
-
-                    cursor_index = CurrentText.Length;
-                    Invalidate ();
-                    e.Handled = true;
-
-                    return;
-                case Keys.C:
-                    if (e.Control) {
-                        Copy ();
-                        e.Handled = true;
-                    }
-
-                    return;
-                case Keys.V:
-                    if (e.Control) {
-                        Paste ();
-                        e.Handled = true;
-                    }
-
-                    return;
-                case Keys.X:
-                    if (e.Control) {
-                        Cut ();
-                        e.Handled = true;
-                    }
-
-                    return;
-            }
+            e.Handled = HandleKeyDown (e);
         }
 
         protected override void OnKeyPress (KeyPressEventArgs e)
         {
             base.OnKeyPress (e);
 
-            if (read_only) {
-                e.Handled = true;
-                return;
+            // Enter = 13
+            if (e.KeyChar == 13 && MultiLine) {
+                if (document.InsertText ("\n"))
+                    ScrollToCaret ();
             }
 
-            // Backspace = 8
-            if (e.KeyChar == 8) {
-                if (!DeleteHighlightedText () && cursor_index != 0)
-                    Text = CurrentText.Remove (--cursor_index, 1);
-
-                e.Handled = true;
-                return;
+            // Printable characters (except backspace)
+            if (e.KeyChar >= 32 && e.KeyChar != 127) {
+                if (document.InsertText ((e.KeyChar).ToString ()))
+                    ScrollToCaret ();
             }
+        }
 
-            // Ctrl-Backspace = 127
-            if (e.KeyChar == 127) {
-                var new_index = TextMeasurer.FindNextSeparator (CurrentText, cursor_index, false);
+        protected override void OnSizeChanged (EventArgs e)
+        {
+            base.OnSizeChanged (e);
 
-                if (!DeleteHighlightedText () && cursor_index != 0) {
-                    Text = CurrentText.Remove (new_index, cursor_index - new_index);
-                    cursor_index = new_index;
-                }
-
-                e.Handled = true;
-                return;
-            }
-
-            if (e.KeyChar >= 32) {
-                DeleteHighlightedText ();
-                Text = CurrentText.Insert (cursor_index++, (e.KeyChar).ToString ());
-            }
+            document.Width = PaddedClientRectangle.Width;
         }
 
         protected override void OnDeselected (EventArgs e)
         {
             base.OnDeselected (e);
 
-            Dehighlight ();
+            document.Deselect ();
         }
 
         protected override void OnMouseDown (MouseEventArgs e)
@@ -218,10 +191,10 @@ namespace Modern.Forms
             if (e.Button != MouseButtons.Left)
                 return;
 
-            cursor_index = GetCharIndexFromPosition (e.Location);
+            SetCursorToCharIndex (GetCharIndexFromPosition (e.Location));
 
             is_highlighting = true;
-            selection_anchor = cursor_index;
+            selection_anchor = document.CursorIndex;
 
             Invalidate ();
         }
@@ -231,14 +204,14 @@ namespace Modern.Forms
             base.OnMouseMove (e);
 
             if (is_highlighting) {
-                cursor_index = GetCharIndexFromPosition (e.Location);
+                SetCursorToCharIndex (GetCharIndexFromPosition (e.Location));
 
-                if (cursor_index == selection_anchor) {
-                    selection_start = -1;
-                    selection_end = -1;
+                if (document.CursorIndex == selection_anchor) {
+                    document.SelectionStart = -1;
+                    document.SelectionEnd = -1;
                 } else {
-                    selection_start = selection_anchor;
-                    selection_end = cursor_index;
+                    document.SelectionStart = selection_anchor;
+                    document.SelectionEnd = document.CursorIndex;
                 }
 
                 Invalidate ();
@@ -252,16 +225,16 @@ namespace Modern.Forms
             if (e.Button != MouseButtons.Left)
                 return;
 
-            cursor_index = GetCharIndexFromPosition (e.Location);
+            SetCursorToCharIndex (GetCharIndexFromPosition (e.Location));
 
             is_highlighting = false;
 
-            if (cursor_index == selection_anchor) {
-                selection_start = -1;
-                selection_end = -1;
+            if (document.CursorIndex == selection_anchor) {
+                document.SelectionStart = -1;
+                document.SelectionEnd = -1;
             } else {
-                selection_start = selection_anchor;
-                selection_end = cursor_index;
+                document.SelectionStart = selection_anchor;
+                document.SelectionEnd = document.CursorIndex;
             }
 
             Invalidate ();
@@ -271,90 +244,129 @@ namespace Modern.Forms
         {
             base.OnPaint (e);
 
-            if (!string.IsNullOrEmpty (Text))
-                e.Canvas.DrawText (Text, PaddedClientRectangle, this, Alignment, selection_start, selection_end, Selected ? selection_color : selection_color_deselected, MaxLines);
-            else if (!string.IsNullOrEmpty (placeholder))
-                e.Canvas.DrawText (placeholder, CurrentStyle.GetFont (), CurrentFontSize, PaddedClientRectangle, Theme.DisabledTextColor, Alignment, maxLines: MaxLines);
+            var text = Text.Length > 0 ? Text : Placeholder;
+
+            // Bail early if we don't need to draw anything
+            if (text.Length == 0 && !Selected)
+                return;
+
+            var block = document.GetTextBlock ();
+
+            UpdateScrollBars (block);
+
+            e.Canvas.Save ();
+            e.Canvas.Clip (PaddedClientRectangle);
+
+            if (text.Length > 0)
+                e.Canvas.DrawTextBlock (block, TextOrigin, document.GetTextSelection ());
 
             if (Selected) {
-                var caret = TextMeasurer.GetCursorLocation (Text, PaddedClientRectangle, CurrentStyle.GetFont (), LogicalToDeviceUnits (CurrentStyle.GetFontSize ()), new Size (1000, 1000), Alignment, cursor_index, MaxLines);
+                var caret = TextMeasurer.GetCursorLocation (block, TextOrigin, document.CursorIndex, CurrentFontSize);
                 e.Canvas.DrawRectangle (caret, Theme.DarkTextColor);
             }
+
+            e.Canvas.Restore ();
         }
-        
+
         public void Paste ()
         {
+            if (document.ReadOnly)
+                return;
+
             var text = AsyncHelper.RunSync (() => Avalonia.AvaloniaGlobals.ClipboardInterface.GetTextAsync ());
 
-            if (!string.IsNullOrEmpty (text)) {
-                DeleteHighlightedText ();
-                Text = CurrentText.Insert (cursor_index++, text);
-                cursor_index += text.Length - 1;
+            if (!string.IsNullOrEmpty (text) && document.InsertText (text))
+                    ScrollToCaret ();
+        }
+
+        public override string Text { 
+            get => document.Text; 
+            set {
+                if (document.Text != value) {
+                    document.Text = value;
+                    ScrollToCaret ();
+                }
             }
         }
 
-        private bool DeleteHighlightedText ()
+        internal void DoScroll (int x, int y)
         {
-            if (!IsTextHighlighted)
-                return false;
+            scroll_x += x;
+            scroll_y += y;
 
-            cursor_index = Math.Min (selection_start, selection_end);
-
-            // The selection may have started at the end and moved to the beginning
-            var highlight_start = Math.Min (selection_start, selection_end);
-
-            Text = CurrentText.Remove (highlight_start, Math.Min (SelectionLength, CurrentText.Length - highlight_start));
-            
-            Dehighlight ();
-
-            return true;
+            Invalidate ();
         }
 
-        private bool Dehighlight ()
+        public void ScrollToCaret ()
         {
-            if (!IsTextHighlighted)
-                return false;
+            var caret = TextMeasurer.GetCursorLocation (document.GetTextBlock (), TextOrigin, document.CursorIndex, CurrentFontSize);
 
-            selection_start = -1;
-            selection_end = -1;
+            if (caret.IsEmpty)
+                return;
 
-            return true;
+            caret.Offset (scroll_x, scroll_y);
+
+            var dx = 0;
+            var dy = 0;
+            var viewport = TextViewport;
+
+            if (caret.Top < viewport.Top)
+                dy = caret.Top - viewport.Top - 1;
+            else if (caret.Bottom > viewport.Bottom)
+                dy = caret.Bottom - viewport.Bottom + 3;
+
+            if (caret.Left < viewport.Left)
+                dx = caret.Left - viewport.Left - 1;
+            else if (caret.Right > viewport.Right)
+                dx = caret.Right - viewport.Right + 3;
+
+            DoScroll (dx, dy);
         }
 
         public int SelectionEnd {
-            get => selection_end;
-            set {
-                if (selection_end != value) {
-                    selection_end = value;
-                    Invalidate ();
-                }
-            }
+            get => document.SelectionEnd;
+            set => document.SelectionEnd = value;
         }
 
         public int SelectionStart {
-            get => selection_start;
-            set {
-                if (selection_start != value) {
-                    selection_start = value;
-                    Invalidate ();
-                }
-            }
+            get => document.SelectionStart;
+            set => document.SelectionStart = value;
         }
 
-        private string CurrentText => Text ?? string.Empty;
+        public void SetCursorToCharIndex (int index)
+        {
+            if (document.SetCursorToCharIndex (index))
+                ScrollToCaret ();
+        }
+
+        private void UpdateScrollBars (TextBlock block)
+        {
+            // TODO: Horizontal scrollbar not supported
+            // Something about the document changed, so we need to update the scrollbars
+            if ((int)block.MeasuredHeight - PaddedClientRectangle.Height > 0) {
+                VerticalScrollBar.Enabled = true;
+                VerticalScrollBar.Maximum = (int)block.MeasuredHeight - PaddedClientRectangle.Height;
+                VerticalScrollBar.LargeChange = PaddedClientRectangle.Height;
+                VerticalScrollBar.SmallChange = CurrentFontSize * 3;
+
+                var new_value = Math.Min (scroll_y, VerticalScrollBar.Maximum);
+
+                if (VerticalScrollBar.Value != new_value)
+                    VerticalScrollBar.Value = new_value;
+            } else {
+                if (scroll_y > 0)
+                    DoScroll (0, -scroll_y);
+
+                VerticalScrollBar.Enabled = false;
+            }
+
+        }
 
         private int CurrentFontSize => LogicalToDeviceUnits (CurrentStyle.GetFontSize ());
 
-        private string HighlightedText => CurrentText.Substring (HighlightStart, Math.Min (SelectionLength, CurrentText.Length - HighlightStart));
+        // Where the text starts, taking scrolling into account
+        private Point TextOrigin => new Point (PaddedClientRectangle.Location.X - scroll_x, PaddedClientRectangle.Location.Y - scroll_y);
 
-        private int HighlightStart => Math.Min (selection_start, selection_end);
-
-        private bool IsTextHighlighted => selection_start >= 0 && selection_end >= 0 && SelectionLength != 0;
-
-        private int SelectionLength => Math.Abs (selection_end - selection_start);
-
-        private int? MaxLines => multiline ? (int?)null : 1;
-
-        private ContentAlignment Alignment => MultiLine ? ContentAlignment.TopLeft : ContentAlignment.TopLeft;
+        private Rectangle TextViewport => new Rectangle (new Point (PaddedClientRectangle.Location.X + scroll_x, PaddedClientRectangle.Location.Y + scroll_y), PaddedClientRectangle.Size);
     }
 }

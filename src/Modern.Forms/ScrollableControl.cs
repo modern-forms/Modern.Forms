@@ -13,8 +13,8 @@ namespace Modern.Forms
         private Size canvas_size;
         private Size auto_scroll_min_size = Size.Empty;
         private Size auto_scroll_margin = Size.Empty;
-        private bool force_hscroll_visible = false;
-        private bool force_vscroll_visible = false;
+        protected bool force_hscroll_visible = false;
+        protected bool force_vscroll_visible = false;
         private bool auto_scroll = false;
 
         public ScrollableControl ()
