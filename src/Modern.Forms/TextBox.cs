@@ -136,6 +136,11 @@ namespace Modern.Forms
                             Paste ();
 
                         return e.Control;
+                    case Keys.A:
+                        if (e.Control)
+                            document.SelectAll ();
+
+                        return e.Control;
 
                 }
             } finally {

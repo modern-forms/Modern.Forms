@@ -325,23 +325,31 @@ namespace Modern.Forms
             cached_text_block = null;
         }
 
-        public string SelectedText => IsTextSelected ? text.Substring (Math.Min (selection_start, selection_end), SelectionLength) : string.Empty;
+        public void SelectAll ()
+        {
+            selection_start = 0;
+            selection_end = text.Length;
 
-        public int SelectionEnd {
-            get => selection_end;
-            set {
-                if (selection_end != value) {
-                    selection_end = value;
-                    Invalidate ();
-                }
-            }
+            Invalidate ();
         }
+
+        public string SelectedText => IsTextSelected ? text.Substring (Math.Min (selection_start, selection_end), SelectionLength) : string.Empty;
 
         public SKColor SelectionColor {
             get => selection_color;
             set {
                 if (selection_color != value) {
                     selection_color = value;
+                    Invalidate ();
+                }
+            }
+        }
+
+        public int SelectionEnd {
+            get => selection_end;
+            set {
+                if (selection_end != value) {
+                    selection_end = value;
                     Invalidate ();
                 }
             }
