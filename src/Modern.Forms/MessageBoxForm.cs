@@ -8,24 +8,26 @@ namespace Modern.Forms
 {
     public class MessageBoxForm : Form
     {
-        private readonly Label label;
+        private readonly TextBox label;
 
         public MessageBoxForm ()
         {
-            Text = "Demo";
             StartPosition = FormStartPosition.CenterParent;
             AllowMinimize = false;
             AllowMaximize = false;
             Resizeable = false;
-
-            label = new Label {
-                Width = 397,
-                Left = 1,
-                Top = 50
+            
+            label = new TextBox {
+                Dock = DockStyle.Top,
+                Height = 105,
+                MultiLine = true,
+                ReadOnly = true,
+                Padding = new Padding (10)
             };
 
-            label.Style.BackgroundColor = Style.BackgroundColor;
+            label.Style.BackgroundColor = Theme.FormBackgroundColor;
             label.Style.FontSize = 16;
+            label.Style.Border.Width = 0;
 
             Controls.Add (label);
 

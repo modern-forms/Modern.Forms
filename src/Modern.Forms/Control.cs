@@ -1019,6 +1019,10 @@ namespace Modern.Forms
 
         protected virtual void OnPaintBackground (PaintEventArgs e)
         {
+            // The ControlAdapter itself should not have a background/border
+            if (this is ControlAdapter)
+                return;
+
             e.Canvas.DrawBackground (CurrentStyle);
             e.Canvas.DrawBorder (ScaledBounds, CurrentStyle);
         }
