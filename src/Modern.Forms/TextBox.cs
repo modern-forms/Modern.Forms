@@ -32,6 +32,7 @@ namespace Modern.Forms
 
             document = new TextBoxDocument (this);
 
+            VerticalScrollBar.Enabled = false;
             VerticalScrollBar.ValueChanged += (o, e) => DoScroll (0, (o as VerticalScrollBar)!.Value - scroll_y);
         }
 
