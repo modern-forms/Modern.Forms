@@ -45,6 +45,11 @@ namespace Modern.Forms
                 OnExit?.Invoke (null, EventArgs.Empty);
         }
 
+        public static void RunOnUIThread (Action action)
+        {
+            Dispatcher.UIThread.Post (action);
+        }
+
         /// <summary>
         /// Exits the application
         /// </summary>
