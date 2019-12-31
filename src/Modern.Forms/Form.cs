@@ -51,7 +51,7 @@ namespace Modern.Forms
             }
         }
 
-        public void ShowDialog (Form parent) => Window.ShowDialog (parent.Window);
+        public void ShowDialog (Form parent) => ShowDialog (parent.Window);
 
         /// <summary>
         /// Gets or sets the startup location of the window.

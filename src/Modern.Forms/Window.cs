@@ -36,6 +36,7 @@ namespace Modern.Forms
         private Point last_click_point;
         private Cursor? current_cursor;
         internal bool shown;
+        internal IWindowImpl? dialog_parent;
 
         internal Window (IWindowBaseImpl window)
         {
@@ -60,7 +61,16 @@ namespace Modern.Forms
 
         public void BeginMoveDrag () => window.BeginMoveDrag (new Avalonia.Input.PointerPressedEventArgs ());
 
-        public void Close () => window.Dispose ();
+        public void Close () 
+        {
+            // If this was a dialog box we need to reactivate the parent
+            if (!(dialog_parent is null)) {
+                dialog_parent.Activate ();
+                dialog_parent = null;
+            }
+            
+            window.Dispose (); 
+        }
 
         public ControlCollection Controls => adapter.Controls;
 
@@ -122,6 +132,14 @@ namespace Modern.Forms
             if (!shown) {
                 shown = true;
                 OnShown (EventArgs.Empty);
+            }
+        }
+
+        internal void ShowDialog (IWindowImpl parent)
+        {
+            if (window is IWindowImpl win) {
+                dialog_parent = parent;
+                win.ShowDialog (parent);
             }
         }
 
