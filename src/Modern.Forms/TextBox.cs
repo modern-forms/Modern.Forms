@@ -256,6 +256,8 @@ namespace Modern.Forms
             if (text.Length == 0 && !Selected)
                 return;
 
+            document.FontSize = CurrentFontSize;
+
             var block = document.GetTextBlock ();
 
             UpdateScrollBars (block);
