@@ -1,7 +1,7 @@
 name: .NET Core
 
 # Trigger the workflow on push or pull request
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -25,5 +25,4 @@ jobs:
       run: dotnet build --configuration Release      
       
     - name: Test with dotnet
-      if: runner.os == 'Windows'
       run: dotnet test --configuration Release
