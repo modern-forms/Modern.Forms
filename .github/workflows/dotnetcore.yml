@@ -1,7 +1,7 @@
 name: .NET Core
 
 # Trigger the workflow on push or pull request
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -9,6 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-18.04]
+      fail-fast: false
     
     runs-on: ${{ matrix.os }}
 
@@ -24,5 +25,5 @@ jobs:
       run: dotnet build --configuration Release      
       
     - name: Test with dotnet
-      if: runner.os == 'Windows'
+      if: runner.os != 'Linux'
       run: dotnet test --configuration Release
