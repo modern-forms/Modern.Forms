@@ -25,4 +25,5 @@ jobs:
       run: dotnet build --configuration Release      
       
     - name: Test with dotnet
+      if: runner.os != 'Linux'
       run: dotnet test --configuration Release
