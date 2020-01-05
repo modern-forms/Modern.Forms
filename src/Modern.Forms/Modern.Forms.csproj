@@ -5,6 +5,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>Modern.Forms</PackageId>
+    <Version>0.1.0-rc1</Version>  
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/modern-forms/Modern.Forms</PackageProjectUrl>
+    <Description>Cross-platform spiritual successor to Winforms for .NET Core </Description>
+    <PackageTags>Modern;Forms;Winforms;GUI;UI;Cross;Platform</PackageTags>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
