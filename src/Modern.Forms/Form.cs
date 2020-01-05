@@ -104,7 +104,13 @@ namespace Modern.Forms
                 var screen = Screens.ScreenFromPoint (owner?.Position ?? Location.ToPixelPoint ());
 
                 if (screen != null) {
-                    Location = screen.WorkingArea.CenterRect (rect).Position.ToDrawingPoint ();
+                    var position = screen.WorkingArea.CenterRect (rect).Position.ToDrawingPoint ();
+
+                    // Ensure we don't position the titlebar offscreen
+                    position.X = Math.Max (position.X, screen.WorkingArea.X);
+                    position.Y = Math.Max (position.Y, screen.WorkingArea.Y);
+
+                    Location = position;
                 }
             } else if (StartPosition == FormStartPosition.CenterParent) {
                 if (owner != null) {
