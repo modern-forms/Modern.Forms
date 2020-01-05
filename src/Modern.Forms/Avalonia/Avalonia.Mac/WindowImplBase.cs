@@ -84,7 +84,7 @@ namespace Avalonia.Native
             _savedScaling = Scaling;
 
             var monitor = Screen.AllScreens.OrderBy(x => x.PixelDensity)
-                    .FirstOrDefault(m => m.Bounds.Contains(Position));
+                    .FirstOrDefault(m => m.Bounds.Contains(_native.GetPosition().ToAvaloniaPixelPoint()));
 
             Resize(new Size(monitor.WorkingArea.Width * 0.75d, monitor.WorkingArea.Height * 0.7d));
         }
@@ -316,8 +316,8 @@ namespace Avalonia.Native
 
         public PixelPoint Position
         {
-            get => _native.GetPosition().ToAvaloniaPixelPoint();
-            set => _native.SetPosition(value.ToAvnPoint());
+            get => new PixelPoint ((int)(_native.GetPosition ().X * Scaling), (int)(_native.GetPosition ().Y * Scaling));
+            set => _native.SetPosition (new AvnPoint { X = value.X / Scaling, Y = value.Y / Scaling });
         }
 
         public Point PointToClient(PixelPoint point)
