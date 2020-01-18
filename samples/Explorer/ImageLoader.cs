@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using SkiaSharp;
 
-namespace Modern.Forms
+namespace Explore
 {
     public static class ImageLoader
     {
