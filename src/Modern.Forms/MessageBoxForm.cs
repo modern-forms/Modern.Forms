@@ -35,8 +35,7 @@ namespace Modern.Forms
             ok_button = label_panel.Controls.Add (new Button {
                 Text = "OK",
                 Left = 150,
-                Top = 0,
-                Anchor = AnchorStyles.Bottom
+                Top = 0
             });
 
             ok_button.Click += (o, e) => Close ();
@@ -60,6 +59,8 @@ namespace Modern.Forms
                 Size = new Size (600, 300);
             else
                 Size = new Size (400, 200);
+
+            ok_button.Left = (int)((Size.Width - ok_button.Width) / 2);
         }
 
         protected override Size DefaultSize => new Size (400, 200);
