@@ -13,6 +13,8 @@ namespace Modern.Forms
 
         public PopupWindow (Form? parentForm) : base (AvaloniaGlobals.WindowingInterface.CreatePopup ())
         {
+            StartPosition = FormStartPosition.Manual;
+
             parent_form = parentForm;
 
             if (parent_form != null)
