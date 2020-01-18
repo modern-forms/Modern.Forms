@@ -127,6 +127,7 @@ namespace Modern.Forms
             Visible = true;
             OnVisibleChanged (EventArgs.Empty);
 
+            SetWindowStartupLocation ();
             window.Show ();
 
             if (!shown) {
@@ -139,6 +140,7 @@ namespace Modern.Forms
         {
             if (window is IWindowImpl win) {
                 dialog_parent = parent;
+                SetWindowStartupLocation (parent);
                 win.ShowDialog (parent);
             }
         }
@@ -376,6 +378,43 @@ namespace Modern.Forms
 
             window.SetCursor (current_cursor?.cursor?.PlatformCursor);
             return false;
+        }
+
+        /// <summary>
+        /// Gets or sets the startup location of the window.
+        /// </summary>
+        public FormStartPosition StartPosition { get; set; } = FormStartPosition.CenterScreen;
+
+        internal void SetWindowStartupLocation (IWindowBaseImpl? owner = null)
+        {
+            var scaling = Scaling;
+
+            // TODO: We really need non-client size here.
+            var rect = new PixelRect (
+                PixelPoint.Origin,
+                PixelSize.FromSize (window.ClientSize, scaling));
+
+            if (StartPosition == FormStartPosition.CenterScreen) {
+                var screen = Screens.ScreenFromPoint (owner?.Position ?? Location.ToPixelPoint ());
+
+                if (screen != null) {
+                    var position = screen.WorkingArea.CenterRect (rect).Position.ToDrawingPoint ();
+
+                    // Ensure we don't position the titlebar offscreen
+                    position.X = Math.Max (position.X, screen.WorkingArea.X);
+                    position.Y = Math.Max (position.Y, screen.WorkingArea.Y);
+
+                    Location = position;
+                }
+            } else if (StartPosition == FormStartPosition.CenterParent) {
+                if (owner != null) {
+                    // TODO: We really need non-client size here.
+                    var ownerRect = new PixelRect (
+                        owner.Position,
+                        PixelSize.FromSize (owner.ClientSize, scaling));
+                    Location = ownerRect.CenterRect (rect).Position.ToDrawingPoint ();
+                }
+            }
         }
 
         private enum WindowElement
