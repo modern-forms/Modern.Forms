@@ -11,9 +11,9 @@
     <Version>0.1.0-rc2</Version>  
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/modern-forms/Modern.Forms</PackageProjectUrl>
-    <Description>Cross-platform spiritual successor to Winforms for .NET Core </Description>
+    <Description>Cross-platform spiritual successor to Winforms for .NET Core</Description>
     <PackageTags>Modern;Forms;Winforms;GUI;UI;Cross;Platform</PackageTags>
-    <PackageOutputPath>../nupkg</PackageOutputPath>
+    <PackageOutputPath>../../nupkg</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
