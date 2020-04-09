@@ -56,6 +56,4 @@ To create your own Modern.Forms application, see [Getting Started](docs/getting-
 
 ## Build Status
 
-Windows | Mac - High Sierra | Ubuntu 16.04
--|-|-
-[![Build status](https://dev.azure.com/jonathan0207/Modern.Forms/_apis/build/status/Windows)](https://dev.azure.com/jonathan0207/Modern.Forms/_build/latest?definitionId=1) | [![Build status](https://dev.azure.com/jonathan0207/Modern.Forms/_apis/build/status/Mac%20OSX%20-%20High%20Sierra)](https://dev.azure.com/jonathan0207/Modern.Forms/_build/latest?definitionId=4) | [![Build status](https://dev.azure.com/jonathan0207/Modern.Forms/_apis/build/status/Ubuntu%2016.04)](https://dev.azure.com/jonathan0207/Modern.Forms/_build/latest?definitionId=2)
+![.NET Core](https://github.com/modern-forms/Modern.Forms/workflows/.NET%20Core/badge.svg)
