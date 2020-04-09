@@ -9,22 +9,53 @@ namespace ControlGallery.Panels
     {
         public CheckBoxPanel ()
         {
-            var cb1 = new CheckBox {
+            Controls.Add (new CheckBox {
                 Text = "Option 1",
                 Left = 10,
                 Top = 10,
+                Width = 200,
                 Checked = true
-            };
+            });
 
-            Controls.Add (cb1);
-
-            var cb2 = new CheckBox {
+            Controls.Add (new CheckBox {
                 Text = "Option 2",
                 Left = 10,
-                Top = 45
-            };
+                Top = 45,
+                Width = 200
+            });
 
-            Controls.Add (cb2);
+            Controls.Add (new CheckBox {
+                Text = "ThreeState",
+                Left = 10,
+                Top = 80,
+                Width = 200,
+                ThreeState = true
+            });
+
+            Controls.Add (new CheckBox {
+                Text = "Indeterminate by Code Only",
+                Left = 10,
+                Top = 115,
+                Width = 200,
+                CheckState = CheckState.Indeterminate
+            });
+
+            Controls.Add (new CheckBox {
+                Text = "Disabled",
+                Left = 10,
+                Top = 150,
+                Width = 200,
+                Checked = true,
+                Enabled = false
+            });
+
+            Controls.Add (new CheckBox {
+                Text = "AutoCheck False",
+                Left = 10,
+                Top = 185,
+                Width = 200,
+                AutoCheck = false
+            });
         }
     }
 }

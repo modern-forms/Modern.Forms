@@ -50,14 +50,34 @@ namespace Modern.Forms
             }
         }
 
-        public static void DrawCheckBox (PaintEventArgs e, Rectangle rectangle, CheckState state)
+        public static void DrawCheckBox (PaintEventArgs e, Rectangle rectangle, CheckState state, bool disabled = false)
         {
-            var border_color = state == CheckState.Checked ? Theme.RibbonColor : Theme.BorderGray;
-            e.Canvas.DrawRectangle (rectangle, border_color, e.LogicalToDeviceUnits (1));
+            var color = disabled ? Theme.DisabledTextColor
+                            : state == CheckState.Checked && !disabled ? Theme.RibbonColor
+                            : Theme.BorderGray;
+            var unit_1 = e.LogicalToDeviceUnits (1);
 
+            // Draw the border
+            e.Canvas.DrawRectangle (rectangle, color, unit_1);
+
+            // Draw the checked glyph if needed
             if (state == CheckState.Checked) {
-                var fill_bounds = new Rectangle (rectangle.Left + 1 + e.LogicalToDeviceUnits (2), rectangle.Top + 1 + e.LogicalToDeviceUnits (2), rectangle.Width - e.LogicalToDeviceUnits (5), rectangle.Height - e.LogicalToDeviceUnits (5));
-                e.Canvas.FillRectangle (fill_bounds, Theme.RibbonColor);
+                var unit_2 = e.LogicalToDeviceUnits (2);
+                var unit_5 = e.LogicalToDeviceUnits (5);
+                var fill_bounds = new Rectangle (rectangle.Left + 1 + unit_2, rectangle.Top + 1 + unit_2, rectangle.Width - unit_5, rectangle.Height - unit_5);
+
+                e.Canvas.FillRectangle (fill_bounds, color);
+            }
+
+            // Draw the indeterminate glyph if needed
+            if (state == CheckState.Indeterminate) {
+                var unit_2 = e.LogicalToDeviceUnits (2);
+                var unit_5 = e.LogicalToDeviceUnits (5);
+                var center_y = rectangle.GetCenter ().Y;
+
+                var fill_bounds = new Rectangle (rectangle.Left + 1 + unit_2, center_y, rectangle.Width - unit_5, unit_1 + unit_2);
+
+                e.Canvas.FillRectangle (fill_bounds, color);
             }
         }
 
