@@ -5,10 +5,11 @@ namespace Modern.Forms.Renderers
 {
     public static class RenderManager
     {
-        private static Dictionary<Type, Renderer> renderers = new Dictionary<Type, Renderer> ();
+        private static readonly Dictionary<Type, Renderer> renderers = new Dictionary<Type, Renderer> ();
 
         static RenderManager ()
         {
+            SetRenderer<Button> (new ButtonRenderer ());
             SetRenderer<CheckBox> (new CheckBoxRenderer ());
         }
 

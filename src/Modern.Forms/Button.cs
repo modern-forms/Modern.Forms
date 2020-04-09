@@ -1,19 +1,40 @@
 ﻿using System;
 using System.Drawing;
+using Modern.Forms.Renderers;
 
 namespace Modern.Forms
 {
-    // TODO:
-    // Disabled styles
-    // Pressed styles
-    // Image
-    // IsDefault?
-    // TextAlign/ImageAlign
+    /// <summary>
+    /// Represents a Button control.
+    /// </summary>
     public class Button : Control
     {
+        private ContentAlignment text_align = ContentAlignment.MiddleCenter;
+
+        /// <summary>
+        /// Initializes a new instance of the Button class.
+        /// </summary>
+        public Button ()
+        {
+            SetControlBehavior (ControlBehaviors.Hoverable);
+            SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
+        }
+
+        /// <inheritdoc/>
+        protected override Cursor DefaultCursor => Cursors.Hand;
+
+        /// <inheritdoc/>
+        protected override Size DefaultSize => new Size (100, 30);
+
+        /// <summary>
+        /// The default ControlStyle for all instances of Button.
+        /// </summary>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => style.Border.Width = 1);
 
+        /// <summary>
+        /// The default hover ControlStyle for all instances of Button.
+        /// </summary>
         public new static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle,
             (style) => {
                 style.BackgroundColor = Theme.RibbonTabHighlightColor;
@@ -21,19 +42,36 @@ namespace Modern.Forms
                 style.ForegroundColor = Theme.LightTextColor;
             });
 
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
-        public override ControlStyle StyleHover { get; } = new ControlStyle (DefaultStyleHover);
+        /// <summary>
+        /// Gets or sets a value that is returned to the parent form when the button is clicked.
+        /// </summary>
+        public DialogResult DialogResult { get; set; }
 
-        private ContentAlignment text_align = ContentAlignment.MiddleCenter;
-
-        protected override Size DefaultSize => new Size (100, 30);
-
-        public Button ()
+        /// <inheritdoc/>
+        protected override void OnPaint (PaintEventArgs e)
         {
-            SetControlBehavior (ControlBehaviors.Hoverable);
-            SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
+            base.OnPaint (e);
+
+            RenderManager.Render (this, e);
         }
 
+        /// <summary>
+        /// Generates a Click event for the Button.
+        /// </summary>
+        public void PerformClick ()
+        {
+            OnClick (new MouseEventArgs (MouseButtons.Left, 1, 0, 0, Point.Empty));
+        }
+
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+
+        /// <inheritdoc/>
+        public override ControlStyle StyleHover { get; } = new ControlStyle (DefaultStyleHover);
+
+        /// <summary>
+        /// Gets or sets the text alignment of the Button.
+        /// </summary>
         public ContentAlignment TextAlign {
             get => text_align;
             set {
@@ -43,19 +81,5 @@ namespace Modern.Forms
                 }
             }
         }
-
-        protected override void OnPaint (PaintEventArgs e)
-        {
-            base.OnPaint (e);
-
-            e.Canvas.DrawText (Text,PaddedClientRectangle, this, text_align);
-        }
-
-        public void PerformClick ()
-        {
-            OnClick (new MouseEventArgs(MouseButtons.Left, 1, 0, 0, Point.Empty));
-        }
-
-        public DialogResult DialogResult { get; set; }
     }
 }

@@ -169,6 +169,8 @@ namespace ControlGallery.Panels
             b11.Style.ForegroundColor = new SKColor (36, 41, 46);
 
             Controls.Add (b11);
+
+            Controls.Add (new Button { Text = "Disabled", Left = 225, Top = 300, Enabled = false });
         }
     }
 }

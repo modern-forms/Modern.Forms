@@ -48,7 +48,7 @@ namespace Modern.Forms
 
         public virtual ControlStyle StyleHover { get; } = new ControlStyle (DefaultStyleHover);
 
-        public virtual ControlStyle CurrentStyle => IsHovering ? StyleHover : Style;
+        public virtual ControlStyle CurrentStyle => IsHovering && Enabled ? StyleHover : Style;
 
         public Control ()
         {
@@ -60,6 +60,8 @@ namespace Modern.Forms
             bounds = new Rectangle (Point.Empty, DefaultSize);
 
             behaviors = ControlBehaviors.Selectable;
+
+            Cursor = DefaultCursor;
 
             Theme.ThemeChanged += (o, e) => is_dirty = true;
         }
@@ -186,6 +188,8 @@ namespace Modern.Forms
                 }
             }
         }
+
+        protected virtual Cursor DefaultCursor => Cursor.Default;
 
         public int DeviceDpi => (int)((FindWindow ()?.Scaling ?? 1) * 96);
 
@@ -707,7 +711,7 @@ namespace Modern.Forms
 
             if (child != null)
                 child.RaiseClick (MouseEventsForControl (e, child));
-            else
+            else if (Enabled)
                 OnClick (e);
         }
 
@@ -835,8 +839,8 @@ namespace Modern.Forms
 
             if (child != null)
                 child.RaiseMouseEnter (MouseEventsForControl (e, child));
-            else
-                OnMouseEnter (e);
+            else if (Enabled)
+                    OnMouseEnter (e);
         }
 
         protected virtual void OnMouseEnter (MouseEventArgs e)

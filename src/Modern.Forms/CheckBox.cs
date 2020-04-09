@@ -4,18 +4,19 @@ using Modern.Forms.Renderers;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a CheckBox control.
+    /// </summary>
     public class CheckBox : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => style.BackgroundColor = Theme.LightNeutralGray);
-
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
-
         private CheckState state;
 
+        /// <summary>
+        /// Initializes a new instance of the CheckBox class.
+        /// </summary>
         public CheckBox ()
         {
-            Cursor = Cursors.Hand;
+            SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
         }
 
         /// <summary>
@@ -56,7 +57,16 @@ namespace Modern.Forms
         /// </summary>
         public event EventHandler? CheckStateChanged;
 
+        /// <inheritdoc/>
+        protected override Cursor DefaultCursor => Cursors.Hand;
+
         protected override Size DefaultSize => new Size (104, 24);
+
+        /// <summary>
+        /// The default ControlStyle for all instances of CheckBox.
+        /// </summary>
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+            (style) => style.BackgroundColor = Theme.LightNeutralGray);
 
         /// <summary>
         /// Raises the CheckedChanged event.
@@ -66,7 +76,6 @@ namespace Modern.Forms
         /// <summary>
         /// Raises the CheckStateChanged event.
         /// </summary>
-        /// <param name="e"></param>
         protected virtual void OnCheckStateChanged (EventArgs e) => CheckStateChanged?.Invoke (this, e);
 
         /// <inheritdoc/>
@@ -96,6 +105,9 @@ namespace Modern.Forms
 
             RenderManager.Render (this, e);
         }
+
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
         /// <summary>
         /// Gets or sets a value indicating whether the CheckBox will allow three check states rather than two.
