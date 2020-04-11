@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Modern.Forms.Renderers
 {
@@ -12,7 +13,13 @@ namespace Modern.Forms.Renderers
             SetRenderer<Button> (new ButtonRenderer ());
             SetRenderer<CheckBox> (new CheckBoxRenderer ());
             SetRenderer<ComboBox> (new ComboBoxRenderer ());
+            SetRenderer<FormTitleBar> (new FormTitleBarRenderer ());
             SetRenderer<ListBox> (new ListBoxRenderer ());
+        }
+
+        public static T? GetRenderer<T> () where T : Renderer
+        {
+            return renderers.Values.OfType<T> ().FirstOrDefault ();
         }
 
         public static void Render<T> (T control, PaintEventArgs e)

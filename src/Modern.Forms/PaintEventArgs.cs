@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -25,5 +26,7 @@ namespace Modern.Forms
         /// <param name="value">value in logical units</param>
         /// <returns>value in device units</returns>
         public int LogicalToDeviceUnits (int value) => (int)Math.Round (Scaling * value);
+
+        public Size LogicalToDeviceUnits (Size value) => new Size ((int)Math.Round (Scaling * value.Width), (int)Math.Round (Scaling * value.Height));
     }
 }

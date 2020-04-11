@@ -1,192 +1,174 @@
 ﻿using System;
 using System.Drawing;
+using Modern.Forms.Renderers;
 using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a FormTitleBar control.
+    /// </summary>
     public class FormTitleBar : Control
     {
+        private SKBitmap? image;
+
+        /// <summary>
+        /// Initializes a new instance of the FormTitleBar class.
+        /// </summary>
+        public FormTitleBar ()
+        {
+            Dock = DockStyle.Top;
+
+            SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
+        }
+
+        /// <summary>
+        /// Gets or sets whenther the Maximize button is shown.
+        /// </summary>
+        public bool AllowMaximize { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets whether the Minimize button is shown.
+        /// </summary>
+        public bool AllowMinimize { get; set; } = true;
+
+        /// <inheritdoc/>
+        protected override Size DefaultSize => new Size (600, 34);
+
+        /// <inheritdoc/>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
            (style) => style.BackgroundColor = Theme.RibbonColor);
 
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+        /// <summary>
+        /// Gets the element at the specified location.
+        /// </summary>
+        public FormTitleBarElement GetElementAtLocation (Point location)
+        {
+            var renderer = RenderManager.GetRenderer<FormTitleBarRenderer> ()!;
 
-        private bool close_button_hover;
-        private bool maximize_button_hover;
-        private bool minimize_button_hover;
-        private SKBitmap? form_icon;
+            if (renderer.GetCloseButtonBounds (this).Contains (location))
+                return FormTitleBarElement.Close;
+            if (Image != null && renderer.GetIconBounds (this).Contains (location))
+                return FormTitleBarElement.Icon;
+            if (AllowMaximize && renderer.GetMaximizeButtonBounds (this).Contains (location))
+                return FormTitleBarElement.Maximize;
+            if (AllowMinimize && renderer.GetMinimizeButtonBounds (this).Contains (location))
+                return FormTitleBarElement.Minimize;
 
-        private const int BUTTON_SIZE = 46;
-        private const int BUTTON_PADDING = 10;
-        private const int FORM_ICON_SIZE = 16;
+            return FormTitleBarElement.Title;
+        }
 
+        /// <summary>
+        /// The element the mouse pointer is currently hovering over, if any.
+        /// </summary>
+        public FormTitleBarElement HoverElement { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the image used as the upper-left icon of the titlebar.
+        /// </summary>
         public SKBitmap? Image {
-            get => form_icon;
+            get => image;
             set {
-                if (form_icon != value) {
-                    form_icon = value;
+                if (image != value) {
+                    image = value;
                     Invalidate ();
                 }
             }
         }
 
-        public bool AllowMaximize { get; set; } = true;
-        public bool AllowMinimize { get; set; } = true;
-
-        protected override Size DefaultSize => new Size (600, 34);
-
-        public FormTitleBar ()
-        {
-            Dock = DockStyle.Top;
-            SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
-        }
-
+        /// <inheritdoc/>
         protected override void OnClick (MouseEventArgs e)
         {
             base.OnClick (e);
 
-            if (CloseButtonBounds.Contains (e.Location))
-                FindForm ()?.Close ();
-            else if (AllowMinimize && MinimizeButtonBounds.Contains (e.Location)) {
-                var form = FindForm ();
+            switch (GetElementAtLocation (e.Location)) {
+                case FormTitleBarElement.Maximize:
+                    var form_max = FindForm ();
 
-                if (form != null)
-                    form.WindowState = FormWindowState.Minimized;
-            }  else if (AllowMaximize && MaximizeButtonBounds.Contains (e.Location)) {
-                var form = FindForm ();
+                    if (form_max != null)
+                        form_max.WindowState = form_max.WindowState == FormWindowState.Maximized ? FormWindowState.Normal : FormWindowState.Maximized;
 
-                if (form != null)
-                    form.WindowState = form.WindowState == FormWindowState.Maximized ? FormWindowState.Normal : FormWindowState.Maximized;
+                    break;
+                case FormTitleBarElement.Minimize:
+                    var form_min = FindForm ();
+
+                    if (form_min != null)
+                        form_min.WindowState = FormWindowState.Minimized;
+
+                    break;
+                case FormTitleBarElement.Close:
+                    FindForm ()?.Close ();
+
+                    break;
+                default:
+                    break;
             }
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseDown (MouseEventArgs e)
         {
             base.OnMouseDown (e);
 
-            if (!CloseButtonBounds.Contains (e.Location) && !(AllowMaximize && MaximizeButtonBounds.Contains (e.Location)) && !(AllowMinimize && MinimizeButtonBounds.Contains (e.Location))) {
+            if (GetElementAtLocation (e.Location).In (FormTitleBarElement.Title, FormTitleBarElement.Icon)) {
                 // We won't get a MouseUp from the system for this, so don't capture the mouse
                 Capture = false;
                 FindForm ()?.BeginMoveDrag ();
             }
         }
 
-        protected override void OnMouseMove (MouseEventArgs e)
-        {
-            base.OnMouseMove (e);
-
-            SetCloseHover (CloseButtonBounds.Contains (e.Location));
-            SetMaximizeHover (MaximizeButtonBounds.Contains (e.Location));
-            SetMinimizeHover (MinimizeButtonBounds.Contains (e.Location));
-        }
-
+        /// <inheritdoc/>
         protected override void OnMouseLeave (EventArgs e)
         {
             base.OnMouseLeave (e);
 
-            SetCloseHover (false);
-            SetMaximizeHover (false);
-            SetMinimizeHover (false);
+            SetHover (FormTitleBarElement.None);
         }
 
+        /// <inheritdoc/>
+        protected override void OnMouseMove (MouseEventArgs e)
+        {
+            base.OnMouseMove (e);
+
+            SetHover (GetElementAtLocation (e.Location));
+        }
+
+        /// <inheritdoc/>
         protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 
-            // Form icon
-            if (form_icon != null) {
-                var icon_glyph_bounds = DrawingExtensions.CenterSquare (IconBounds, LogicalToDeviceUnits (FORM_ICON_SIZE));
-
-                e.Canvas.DrawBitmap (form_icon, icon_glyph_bounds);
-            }
-
-            // Form text
-            e.Canvas.DrawText (Text.Trim (), Theme.UIFont, LogicalToDeviceUnits (Theme.FontSize), TitleBounds, Theme.LightTextColor, ContentAlignment.MiddleCenter);
-
-            // Minimize button
-            if (AllowMinimize) {
-                var minimize_button_bounds = MinimizeButtonBounds;
-
-                if (minimize_button_hover)
-                    e.Canvas.FillRectangle (minimize_button_bounds, Theme.RibbonTabHighlightColor);
-
-                var min_glyph_bounds = DrawingExtensions.CenterRectangle (minimize_button_bounds, LogicalToDeviceUnits (new Size (BUTTON_PADDING, 1)));
-                ControlPaint.DrawMinimizeGlyph (e, min_glyph_bounds);
-            }
-
-            // Maximize button
-            if (AllowMaximize) {
-                var maximize_button_bounds = MaximizeButtonBounds;
-
-                if (maximize_button_hover)
-                    e.Canvas.FillRectangle (maximize_button_bounds, Theme.RibbonTabHighlightColor);
-
-                var max_glyph_bounds = DrawingExtensions.CenterSquare (maximize_button_bounds, LogicalToDeviceUnits (BUTTON_PADDING));
-                ControlPaint.DrawMaximizeGlyph (e, max_glyph_bounds);
-            }
-
-            // Close button
-            var close_button_bounds = CloseButtonBounds;
-
-            if (close_button_hover)
-                e.Canvas.FillRectangle (close_button_bounds, Theme.FormCloseHighlightColor);
-
-            var close_glyph_bounds = DrawingExtensions.CenterSquare (close_button_bounds, LogicalToDeviceUnits (BUTTON_PADDING));
-            ControlPaint.DrawCloseGlyph (e, close_glyph_bounds);
+            RenderManager.Render (this, e);
         }
 
-        private int ScaledButtonWidth => LogicalToDeviceUnits (BUTTON_SIZE);
-
-        private Rectangle IconBounds => new Rectangle (0, 0, ScaledHeight, ScaledHeight);
-        private Rectangle CloseButtonBounds => new Rectangle (ScaledWidth - ScaledButtonWidth, 0, ScaledButtonWidth, ScaledHeight);
-        private Rectangle MaximizeButtonBounds => AllowMaximize ? new Rectangle (ScaledWidth - (ScaledButtonWidth * 2), 0, ScaledButtonWidth, ScaledHeight) : Rectangle.Empty;
-
-        private Rectangle MinimizeButtonBounds {
-            get {
-                if (AllowMinimize && AllowMaximize)
-                    return new Rectangle (ScaledWidth - (ScaledButtonWidth * 3), 0, ScaledButtonWidth, ScaledHeight);
-
-                if (AllowMinimize)
-                    return new Rectangle (ScaledWidth - (ScaledButtonWidth * 2), 0, ScaledButtonWidth, ScaledHeight);
-
-                return Rectangle.Empty;
-            }
-        }
-
-        private Rectangle TitleBounds {
-            get {
-                var x = form_icon == null ? 0 : IconBounds.Right;
-                var right = AllowMinimize ? MinimizeButtonBounds.Left : AllowMaximize ? MaximizeButtonBounds.Left : CloseButtonBounds.Left;
-
-                return Rectangle.FromLTRB (x, Top, right, ScaledBounds.Bottom);
-            }
-        }
-
-        private void SetCloseHover (bool hover)
+        // Update the element that the mouse is currently hovered over
+        private void SetHover (FormTitleBarElement element)
         {
-            if (close_button_hover == hover)
+            if (element.In (FormTitleBarElement.Icon, FormTitleBarElement.Title))
+                element = FormTitleBarElement.None;
+
+            if (HoverElement == element)
                 return;
 
-            close_button_hover = hover;
-            Invalidate (CloseButtonBounds);
+            HoverElement = element;
+
+            Invalidate ();
         }
 
-        private void SetMaximizeHover (bool hover)
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+
+        /// <summary>
+        /// Elements of a FormTitleBar.
+        /// </summary>
+        public enum FormTitleBarElement
         {
-            if (!AllowMaximize || maximize_button_hover == hover)
-                return;
-
-            maximize_button_hover = hover;
-            Invalidate (MaximizeButtonBounds);
-        }
-
-        private void SetMinimizeHover (bool hover)
-        {
-            if (!AllowMinimize || minimize_button_hover == hover)
-                return;
-
-            minimize_button_hover = hover;
-            Invalidate (MinimizeButtonBounds);
+            None,
+            Title,
+            Icon,
+            Maximize,
+            Minimize,
+            Close
         }
     }
 }
