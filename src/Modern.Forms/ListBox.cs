@@ -38,6 +38,9 @@ namespace Modern.Forms
         }
 
         /// <inheritdoc/>
+        protected override Cursor DefaultCursor => Cursors.Hand;
+
+        /// <inheritdoc/>
         protected override Size DefaultSize => new Size (120, 96);
 
         /// <inheritdoc/>
@@ -231,9 +234,6 @@ namespace Modern.Forms
         public int SelectedIndex {
             get => Items.SelectedIndex;
             set {
-                if (value < -1 || value >= Items.Count)
-                    throw new ArgumentOutOfRangeException ("Index of out range");
-
                 if (SelectionMode == SelectionMode.None)
                     throw new ArgumentException ("Cannot call this method if SelectionMode is SelectionMode.None");
 
@@ -254,12 +254,7 @@ namespace Modern.Forms
         /// </summary>
         public object? SelectedItem {
             get => Items.SelectedItem;
-            set {
-                if (value != null && !Items.Contains (value))
-                    throw new ArgumentException ("Item is not part of this list");
-
-                SelectedIndex = value is null ? -1 : Items.IndexOf (value);
-            }
+            set => Items.SelectedItem = value;
         }
 
         /// <summary>

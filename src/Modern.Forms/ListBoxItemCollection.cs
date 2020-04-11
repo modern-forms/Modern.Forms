@@ -47,6 +47,9 @@ namespace Modern.Forms
         internal int SelectedIndex {
             get => SelectedIndexes.Count > 0 ? SelectedIndexes[0] : -1;
             set {
+                if (value < -1 || value >= Count)
+                    throw new ArgumentOutOfRangeException ("Index out of range");
+
                 SelectedIndexes.Clear ();
                 
                 if (value != -1)
@@ -58,7 +61,19 @@ namespace Modern.Forms
 
         internal object? SelectedItem {
             get => SelectedIndexes.Count > 0 ? this[SelectedIndexes[0]] : null;
-            set => SelectedIndex = value == null ? -1 : IndexOf (value);
+            set {
+                if (value is null) {
+                    SelectedIndex = -1;
+                    return;
+                }
+
+                var index = IndexOf (value);
+
+                if (index == -1)
+                    throw new ArgumentException ("Item is not part of this list");
+
+                SelectedIndex = index;
+            }
         }
 
         internal IEnumerable<object> SelectedItems => SelectedIndexes.Select (i => this[i]);

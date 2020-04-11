@@ -100,6 +100,9 @@ namespace ControlGallery.Panels
 
             Controls.Add (new Label { Text = "ShowHover", Left = 200, Top = 265, Width = 200 });
             Controls.Add (new ListBox { Left = 200, Top = 290, ShowHover = true }).Items.AddRange (fruits);
+
+            Controls.Add (new Label { Text = "Disabled", Left = 200, Top = 395, Width = 200 });
+            Controls.Add (new ListBox { Left = 200, Top = 420, Enabled = false }).Items.AddRange (fruits);
         }
 
         public class TestBlah
