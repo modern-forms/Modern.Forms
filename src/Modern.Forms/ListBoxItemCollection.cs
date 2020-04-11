@@ -10,6 +10,7 @@ namespace Modern.Forms
     public class ListBoxItemCollection : ObservableCollection<object>
     {
         private readonly ListBox owner;
+        private int hovered_index = -1;
 
         internal ListBoxItemCollection (ListBox owner)
         {
@@ -24,6 +25,16 @@ namespace Modern.Forms
                 Add (item);
 
             owner.ResumeLayout (true);
+        }
+
+        internal int HoveredIndex {
+            get => hovered_index;
+            set {
+                if (hovered_index != value) {
+                    hovered_index = value;
+                    owner.Invalidate ();
+                }
+            }
         }
 
         protected override void OnCollectionChanged (NotifyCollectionChangedEventArgs e)

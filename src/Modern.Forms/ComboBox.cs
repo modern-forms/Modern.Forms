@@ -20,7 +20,7 @@ namespace Modern.Forms
 
         public ComboBox ()
         {
-            popup_listbox = new ListBox { Dock = DockStyle.Fill };
+            popup_listbox = new ListBox { Dock = DockStyle.Fill, ShowHover = true };
             popup_listbox.SelectedIndexChanged += ListBox_SelectedIndexChanged;
         }
 

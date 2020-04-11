@@ -9,6 +9,8 @@ namespace ControlGallery.Panels
     {
         public ListBoxPanel ()
         {
+            var fruits = new[] { "Apple", "Banana", "Carrot", "Donut", "Eggs", "Figs", "Grapes", "Hamburger and Cheeseburgers", "Ice Cream", "Jelly" };
+
             Controls.Add (new Label { Text = "None", Left = 10, Top = 10 });
 
             var listbox1 = new ListBox {
@@ -81,7 +83,7 @@ namespace ControlGallery.Panels
                 SelectionMode = SelectionMode.MultiExtended
             };
 
-            lb5.Items.AddRange ("Apple", "Banana", "Carrot", "Donut", "Eggs", "Figs", "Grapes", "Hamburger and Cheeseburgers", "Ice Cream", "Jelly");
+            lb5.Items.AddRange (fruits);
 
             Controls.Add (lb5);
 
@@ -92,6 +94,12 @@ namespace ControlGallery.Panels
             var b2 = new Button { Left = 350, Top = 70, Width = 120, Text = "Set Ice Cream Top" };
             b2.Click += (o, e) => lb5.FirstVisibleIndex = 8;
             Controls.Add (b2);
+
+            Controls.Add (new Label { Text = "ScrollbarAlwaysVisible", Left = 200, Top = 135, Width = 200 });
+            Controls.Add (new ListBox { Left = 200, Top = 160, ScrollbarAlwaysVisible = true }).Items.AddRange ("Apple", "Banana");
+
+            Controls.Add (new Label { Text = "ShowHover", Left = 200, Top = 265, Width = 200 });
+            Controls.Add (new ListBox { Left = 200, Top = 290, ShowHover = true }).Items.AddRange (fruits);
         }
 
         public class TestBlah

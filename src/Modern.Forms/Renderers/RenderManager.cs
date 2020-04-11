@@ -11,6 +11,7 @@ namespace Modern.Forms.Renderers
         {
             SetRenderer<Button> (new ButtonRenderer ());
             SetRenderer<CheckBox> (new CheckBoxRenderer ());
+            SetRenderer<ListBox> (new ListBoxRenderer ());
         }
 
         public static void Render<T> (T control, PaintEventArgs e)
