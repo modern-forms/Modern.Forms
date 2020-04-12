@@ -14,6 +14,7 @@ namespace Modern.Forms.Renderers
             SetRenderer<CheckBox> (new CheckBoxRenderer ());
             SetRenderer<ComboBox> (new ComboBoxRenderer ());
             SetRenderer<FormTitleBar> (new FormTitleBarRenderer ());
+            SetRenderer<Label> (new LabelRenderer ());
             SetRenderer<ListBox> (new ListBoxRenderer ());
         }
 

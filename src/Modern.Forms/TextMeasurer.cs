@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using SkiaSharp;
 using Topten.RichTextKit;
 
@@ -122,7 +123,7 @@ namespace Modern.Forms
             }
         }
 
-        internal static TextBlock CreateTextBlock (string text, SKTypeface font, int fontSize, Size maxSize, TextAlignment alignment = TextAlignment.Auto, SKColor color = new SKColor (), int? maxLines = null)
+        internal static TextBlock CreateTextBlock (string text, SKTypeface font, int fontSize, Size maxSize, TextAlignment alignment = TextAlignment.Auto, SKColor color = new SKColor (), int? maxLines = null, bool ellipsis = false)
         {
             if (maxLines == 1) {
                 text = text.Replace ("\n\r", "»");
@@ -144,7 +145,18 @@ namespace Modern.Forms
             };
 
             tb.AddText (text, styleNormal);
-            
+
+            // Above, for a single line, we did not limit the width, and we need to fix it here
+            // - If it fits, we need to set MaxWidth so Left/Center/Right alignment will work
+            // - If it doesn't fit and we need an ellipsis, set MaxWidth to trigger the ellipsis
+            if (maxLines.GetValueOrDefault () == 1) {
+                if (tb.MeasuredWidth <= maxSize.Width || ellipsis)
+                    tb.MaxWidth = maxSize.Width;
+            } else if (maxLines.GetValueOrDefault () == 0) {
+                if (tb.Lines.Last ().Runs.Count > 1 && !ellipsis)
+                    tb.MaxHeight *= 2;
+            }
+
             return tb;
         }
 

@@ -141,6 +141,13 @@ namespace ControlGallery.Panels
             lbl10.Style.Border.Left.Width = 5;
 
             Controls.Add (lbl10);
+
+            Controls.Add (new Label { Text = "This text is too long to fit", Left = 10, Top = 190, Height = 35 });
+            Controls.Add (new Label { Text = "This text is too long to fit", Left = 10, Top = 230, Height = 35, AutoEllipsis = true });
+            Controls.Add (new Label { Text = "Disabled", Left = 10, Top = 270, Height = 35, Enabled = false });
+
+            Controls.Add (new Label { Text = "This text is too long to fit on two lines", Left = 160, Top = 190, Height = 45, Multiline = true });
+            Controls.Add (new Label { Text = "This text is too long to fit on two lines", Left = 160, Top = 250, Height = 45, Multiline = true, AutoEllipsis = true });
         }
     }
 }

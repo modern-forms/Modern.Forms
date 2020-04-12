@@ -17,6 +17,9 @@ namespace Modern.Forms
         private int top_index = 0;
         private readonly VerticalScrollBar vscrollbar;
 
+        /// <summary>
+        /// Initializes a new instance of the ListBox class.
+        /// </summary>
         public ListBox ()
         {
             Items = new ListBoxItemCollection (this);
