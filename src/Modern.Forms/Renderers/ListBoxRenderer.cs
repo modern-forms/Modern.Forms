@@ -5,7 +5,7 @@ namespace Modern.Forms.Renderers
 {
     public class ListBoxRenderer : Renderer<ListBox>
     {
-        public override void Render (ListBox control, PaintEventArgs e)
+        protected override void Render (ListBox control, PaintEventArgs e)
         {
             for (var i = control.FirstVisibleIndex; i < Math.Min (control.Items.Count, control.FirstVisibleIndex + control.VisibleItemCount + 1); i++) {
                 var item = control.Items[i];
@@ -15,7 +15,7 @@ namespace Modern.Forms.Renderers
             }
         }
 
-        public virtual void RenderItem (ListBox control, object item, int index, Rectangle bounds, PaintEventArgs e)
+        protected virtual void RenderItem (ListBox control, object item, int index, Rectangle bounds, PaintEventArgs e)
         {
             // Draw selected background
             if (control.Items.SelectedIndexes.Contains (index))

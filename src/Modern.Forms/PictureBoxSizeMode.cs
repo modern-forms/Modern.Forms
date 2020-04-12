@@ -1,4 +1,4 @@
-// Permission is hereby granted, free of charge, to any person obtaining
+﻿// Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
 // without limitation the rights to use, copy, modify, merge, publish,
@@ -29,7 +29,7 @@ namespace Modern.Forms
     {
         Normal = 0,
         StretchImage = 1,
-        AutoSize = 2,
+        //AutoSize = 2,
         CenterImage = 3,
         Zoom = 4
     }

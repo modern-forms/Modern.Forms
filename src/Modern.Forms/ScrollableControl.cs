@@ -1,22 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
+using Modern.Forms.Renderers;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a ScrollableControl control.
+    /// </summary>
     public class ScrollableControl : Control
     {
-        private HorizontalScrollBar hscrollbar;
-        private VerticalScrollBar vscrollbar;
-        private SizeGrip sizegrip;
-        private Point scroll_position;
-        private Size canvas_size;
+        private readonly HorizontalScrollBar hscrollbar;
+        private readonly VerticalScrollBar vscrollbar;
+        private readonly SizeGrip sizegrip;
+
+        private Point scroll_position = Point.Empty;
+        private Size canvas_size = Size.Empty;
         private Size auto_scroll_min_size = Size.Empty;
         private Size auto_scroll_margin = Size.Empty;
-        protected bool force_hscroll_visible = false;
-        protected bool force_vscroll_visible = false;
         private bool auto_scroll = false;
+        private bool force_hscroll_visible = false;
+        private bool force_vscroll_visible = false;
 
+        /// <summary>
+        /// Initializes a new instance of the ScrollableControl class.
+        /// </summary>
         public ScrollableControl ()
         {
             hscrollbar = new HorizontalScrollBar {
@@ -43,8 +50,14 @@ namespace Modern.Forms
             VisibleChanged += (o, e) => Recalculate (true);
         }
 
-        public event EventHandler<ScrollEventArgs>? Scroll;
+        /// <summary>
+        /// Adjusts the scrollbars based on the currently contained controls.
+        /// </summary>
+        protected virtual void AdjustFormScrollbars (bool displayScrollbars) => Recalculate (false);
 
+        /// <summary>
+        /// Gets or sets a value indicating the user can scroll to controls beyond the ScrollableControl's bounds.
+        /// </summary>
         public bool AutoScroll {
             get => auto_scroll;
             set {
@@ -55,22 +68,7 @@ namespace Modern.Forms
             }
         }
 
-        public ScrollProperties HorizontalScrollProperties => new ScrollProperties (hscrollbar);
-
-        public ScrollProperties VerticalScrollProperties => new ScrollProperties (vscrollbar);
-
-        protected virtual void AdjustFormScrollbars (bool displayScrollbars) => Recalculate (false);
-
-        protected override void OnLayout (LayoutEventArgs e)
-        {
-            CalculateCanvasSize ();
-            AdjustFormScrollbars (AutoScroll);
-
-            base.OnLayout (e);
-        }
-
-        protected virtual void OnScroll (ScrollEventArgs e) => Scroll?.Invoke (this, e);
-
+        // Calculates and sets the current canvas size.
         private void CalculateCanvasSize ()
         {
             var width = 0;
@@ -119,6 +117,7 @@ namespace Modern.Forms
             canvas_size.Height = height;
         }
 
+        // Handles events from the scrollbars to update the window position.
         private void HandleScroll (object sender, EventArgs e)
         {
             if (sender == vscrollbar && vscrollbar.Visible)
@@ -127,6 +126,34 @@ namespace Modern.Forms
                 ScrollWindow (hscrollbar.Value - scroll_position.X, 0);
         }
 
+        /// <summary>
+        /// Provides access to the properties of the horizontal scrollbar.
+        /// </summary>
+        public ScrollProperties HorizontalScrollProperties => new ScrollProperties (hscrollbar);
+
+        /// <inheritdoc/>
+        protected override void OnLayout (LayoutEventArgs e)
+        {
+            CalculateCanvasSize ();
+            AdjustFormScrollbars (AutoScroll);
+
+            base.OnLayout (e);
+        }
+
+        /// <inheritdoc/>
+        protected override void OnPaint (PaintEventArgs e)
+        {
+            base.OnPaint (e);
+
+            RenderManager.Render (this, e);
+        }
+
+        /// <summary>
+        /// Raises the Scroll event.
+        /// </summary>
+        protected virtual void OnScroll (ScrollEventArgs e) => Scroll?.Invoke (this, e);
+
+        // Recalculates all components of the ScrollableControl.
         private void Recalculate (bool doLayout)
         {
             var canvas = canvas_size;
@@ -209,6 +236,12 @@ namespace Modern.Forms
             ResumeLayout (doLayout);
         }
 
+        /// <summary>
+        /// Raised when the ScrollableControl is scrolled.
+        /// </summary>
+        public event EventHandler<ScrollEventArgs>? Scroll;
+
+        // Scrolls the control by the requested offsets.
         private void ScrollWindow (int xOffset, int yOffset)
         {
             if (xOffset == 0 && yOffset == 0)
@@ -223,5 +256,10 @@ namespace Modern.Forms
 
             ResumeLayout (false);
         }
+
+        /// <summary>
+        /// Provides access to the properties of the vertical scrollbar.
+        /// </summary>
+        public ScrollProperties VerticalScrollProperties => new ScrollProperties (vscrollbar);
     }
 }

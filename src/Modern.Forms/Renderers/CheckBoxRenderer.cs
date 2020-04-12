@@ -5,10 +5,10 @@ namespace Modern.Forms.Renderers
 {
     public class CheckBoxRenderer : Renderer<CheckBox>
     {
-        private const int GLYPH_SIZE = 15;          // Size of the checkbox glyph
-        private const int GLYPH_TEXT_PADDING = 4;   // Padding between glyph and text
+        protected const int GLYPH_SIZE = 15;          // Size of the checkbox glyph
+        protected const int GLYPH_TEXT_PADDING = 4;   // Padding between glyph and text
 
-        public override void Render (CheckBox control, PaintEventArgs e)
+        protected override void Render (CheckBox control, PaintEventArgs e)
         {
             var box_size = e.LogicalToDeviceUnits (GLYPH_SIZE);
             var glyph_padding = e.LogicalToDeviceUnits (GLYPH_TEXT_PADDING);

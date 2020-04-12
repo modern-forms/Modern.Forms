@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Modern.Forms;
+using Modern.Forms.Renderers;
 using SkiaSharp;
 
 namespace ControlGallery.Panels
@@ -171,6 +172,20 @@ namespace ControlGallery.Panels
             Controls.Add (b11);
 
             Controls.Add (new Button { Text = "Disabled", Left = 225, Top = 300, Enabled = false });
+            Controls.Add (new MyButton { Text = "MyButton", Left = 225, Top = 335 });
+            Controls.Add (new MyCustomRenderedButton { Text = "MyCustomButton", Left = 225, Top = 370 });
+
+            RenderManager.SetRenderer<MyCustomRenderedButton> (new MyCustomRenderer ());
+        }
+    }
+
+    public class MyButton : Button { }
+    public class MyCustomRenderedButton : Button { }
+    public class MyCustomRenderer : Renderer<MyCustomRenderedButton>
+    {
+        protected override void Render (MyCustomRenderedButton control, PaintEventArgs e)
+        {
+            e.Canvas.FillCircle (control.ScaledWidth / 2, control.ScaledHeight / 2, e.LogicalToDeviceUnits (10), SKColors.Red);
         }
     }
 }

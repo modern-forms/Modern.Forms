@@ -7,7 +7,7 @@ namespace Modern.Forms.Renderers
     {
         protected const int GLYPH_SIZE = 15;    // Size of the drop down glyph
 
-        public override void Render (ComboBox control, PaintEventArgs e)
+        protected override void Render (ComboBox control, PaintEventArgs e)
         {
             // Draw the text of the selected item
             if (control.Items.SelectedItem != null)

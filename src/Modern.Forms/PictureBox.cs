@@ -1,58 +1,87 @@
 ﻿using System;
 using System.Drawing;
 using System.Net.Http;
+using Modern.Forms.Renderers;
 using SkiaSharp;
 
 namespace Modern.Forms
 {
-    // TODO: 
-    // AutoSize
-    // Async Loading      
+    /// <summary>
+    /// Represents a PictureBox control.
+    /// </summary>
     public class PictureBox : Control
     {
         private static HttpClient? client;
 
         private SKBitmap? image;
         private string? image_location;
-        private bool is_error;
         private PictureBoxSizeMode size_mode;
 
+        /// <summary>
+        /// Initializes a new instance of the PictureBox class.
+        /// </summary>
         public PictureBox ()
         {
             SetControlBehavior (ControlBehaviors.Selectable, false);
         }
 
-        public event EventHandler? SizeModeChanged;
+        // Lazily initialize and cache an HttpClient if needed.
+        private static HttpClient Client => client ??= new HttpClient ();
 
+        /// <inheritdoc/>
         protected override Size DefaultSize => new Size (100, 50);
 
+       /// <summary>
+       /// Gets or sets the image the PictureBox should display.
+       /// </summary>
         public SKBitmap? Image {
             get => image;
             set {
-                if (image == value)
-                    return;
+                if (image != value) {
+                    image = value;
+                    IsErrored = false;
 
-                image = value;
-                is_error = false;
-
-                UpdateSize ();
+                    UpdateSize ();
+                }
             }
         }
 
+        /// <summary>
+        /// Gets or sets the path or URL of the image the PictureBox should display.
+        /// </summary>
         public string? ImageLocation {
             get => image_location;
-            set => Load (value);
+            set => LoadInternal (value);
         }
 
-        public void Load (string? url)
+        /// <summary>
+        /// Gets a value indicating the requested image could not be loaded.
+        /// </summary>
+        public bool IsErrored { get; private set; }
+
+        /// <summary>
+        /// Loads the image at the specified path or URL and sets ImageLocation to it.
+        /// </summary>
+        public void Load (string url)
         {
             if (string.IsNullOrWhiteSpace (url))
                 throw new InvalidOperationException ("ImageLocation not specified.");
 
+            ImageLocation = url;
+        }
+
+        // Load image from path or URL and display it.
+        private void LoadInternal (string? url)
+        {
             if (image_location == url)
                 return;
 
-            is_error = false;
+            if (url is null) {
+                Image = null;
+                return;
+            }
+
+            IsErrored = false;
             image_location = url;
 
             try {
@@ -61,64 +90,48 @@ namespace Modern.Forms
                 else
                     Image = SKBitmap.Decode (url);
             } catch (Exception) {
-                is_error = true;
+                IsErrored = true;
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicated the sizing mode used.
+        /// </summary>
         public PictureBoxSizeMode SizeMode {
             get => size_mode;
             set {
-                if (size_mode == value)
-                    return;
+                if (size_mode != value) {
+                    size_mode = value;
 
-                size_mode = value;
+                    //AutoSize = size_mode == PictureBoxSizeMode.AutoSize;
+                    //SetAutoSizeMode (size_mode == PictureBoxSizeMode.AutoSize ? AutoSizeMode.GrowAndShrink : AutoSizeMode.GrowOnly);
 
-                //AutoSize = size_mode == PictureBoxSizeMode.AutoSize;
-                SetAutoSizeMode (size_mode == PictureBoxSizeMode.AutoSize ? AutoSizeMode.GrowAndShrink : AutoSizeMode.GrowOnly);
+                    UpdateSize ();
 
-                UpdateSize ();
+                    OnSizeModeChanged (EventArgs.Empty);
+                }
             }
         }
 
+        /// <summary>
+        /// Raised when the value of the SizeMode property changes.
+        /// </summary>
+        public event EventHandler? SizeModeChanged;
+
+        /// <inheritdoc/>
         protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 
-            if (image != null) {
-                var client = PaddedClientRectangle;
-
-                switch (size_mode) {
-                    case PictureBoxSizeMode.AutoSize:
-                    case PictureBoxSizeMode.Normal:
-                        e.Canvas.DrawBitmap (image, new SKRect (0, 0, image.Width, image.Height));
-                        break;
-                    case PictureBoxSizeMode.StretchImage:
-                        e.Canvas.DrawBitmap (image, client);
-                        break;
-                    case PictureBoxSizeMode.CenterImage:
-                        e.Canvas.DrawBitmap (image, (client.Width / 2) - (image.Width / 2), (client.Height / 2) - (image.Height / 2));
-                        break;
-                    case PictureBoxSizeMode.Zoom:
-                        Size image_size;
-
-                        if (((float)image.Width / image.Height) >= ((float)client.Width / client.Height))
-                            image_size = new Size (client.Width, (image.Height * client.Width) / image.Width);
-                        else
-                            image_size = new Size ((image.Width * client.Height) / image.Height, client.Height);
-
-                        e.Canvas.DrawBitmap (image, SKRect.Create ((client.Width / 2) - (image_size.Width / 2), (client.Height / 2) - (image_size.Height / 2), image_size.Width, image_size.Height));
-                        break;
-                }
-            } else if (is_error) {
-                e.Canvas.DrawLine (0, 0, Width, Height, SKColors.Red, 2);
-                e.Canvas.DrawLine (0, Height, Width, 0, SKColors.Red, 2);
-            }
+            RenderManager.Render (this, e);
         }
 
+        /// <summary>
+        /// Raises the SizeModeChanged event.
+        /// </summary>
         protected void OnSizeModeChanged (EventArgs e) => SizeModeChanged?.Invoke (this, e);
 
-        private static HttpClient Client => client ??= new HttpClient ();
-
+        // Trigger a resizing.
         private void UpdateSize ()
         {
             if (image == null)

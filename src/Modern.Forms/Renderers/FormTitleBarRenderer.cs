@@ -9,7 +9,7 @@ namespace Modern.Forms.Renderers
         protected const int BUTTON_SIZE = 46;
         protected const int FORM_ICON_SIZE = 16;
 
-        public override void Render (FormTitleBar control, PaintEventArgs e)
+        protected override void Render (FormTitleBar control, PaintEventArgs e)
         {
             // Form icon
             if (control.Image != null) {

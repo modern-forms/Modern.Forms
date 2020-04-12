@@ -16,6 +16,9 @@ namespace ControlGallery.Panels
 
             var button2 = Controls.Add (new Button { Text = "Decrement", Left = 260, Top = 10 });
             button2.Click += (o, e) => pb.Increment (-23);
+
+            Controls.Add (new Label { Text = "Disabled", Left = 10, Top = 50 });
+            Controls.Add (new ProgressBar { Left = 10, Top = 75, Value = 70, Enabled = false });
         }
     }
 }

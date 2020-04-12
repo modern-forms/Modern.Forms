@@ -1,34 +1,33 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using Modern.Forms.Renderers;
 
 namespace Modern.Forms
 {
-    // TODO:
-    // Disabled style
-    // ThreeState
-    // TextAlign/CheckAlign
-    // Hover style?
-    // Pressed style?
-    // GroupKey?
+    /// <summary>
+    /// Represents a RadioButton control.
+    /// </summary>
     public class RadioButton : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => style.BackgroundColor = Theme.LightNeutralGray);
-
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
-
-        public event EventHandler? CheckedChanged;
-
         private bool is_checked;
 
+        /// <summary>
+        /// Initializes a new instance of the RadioButton class.
+        /// </summary>
         public RadioButton ()
         {
-            //Cursor = Cursors.Hand;
+            SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
         }
 
-        protected override Size DefaultSize => new Size (104, 24);
+        /// <summary>
+        /// Gets or sets a valud indicating if the RadioButton will respond to mouse clicks.
+        /// </summary>
+        public bool AutoCheck { get; set; } = true;
 
+        /// <summary>
+        /// Gets or sets a value indicating if the RadioButton is in the checked state.
+        /// </summary>
         public bool Checked {
             get => is_checked;
             set {
@@ -44,31 +43,45 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Raised when the value of the Checked property changes.
+        /// </summary>
+        public event EventHandler? CheckedChanged;
+
+        /// <inheritdoc/>
+        protected override Cursor DefaultCursor => Cursors.Hand;
+
+        /// <inheritdoc/>
+        protected override Size DefaultSize => new Size (104, 24);
+
+        /// <inheritdoc/>
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+            (style) => style.BackgroundColor = Theme.LightNeutralGray);
+
+        /// <summary>
+        /// Raises the CheckedChanged event.
+        /// </summary>
         protected virtual void OnCheckedChanged (EventArgs e) => CheckedChanged?.Invoke (this, e);
 
+        /// <inheritdoc/>
         protected override void OnClick (MouseEventArgs e)
         {
-            if (!Checked)
+            if (AutoCheck && !Checked)
                 Checked = true;
 
             base.OnClick (e);
         }
 
+        /// <inheritdoc/>
         protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 
-            var x = LogicalToDeviceUnits (11);
-            var y = ScaledHeight / 2;
-
-            ControlPaint.DrawRadioButton (e, new Point (x, y), Checked ? CheckState.Checked : CheckState.Unchecked);
-
-            var text_bounds = ClientRectangle;
-            text_bounds.X += LogicalToDeviceUnits (24);
-            text_bounds.Width -= LogicalToDeviceUnits (24);
-
-            e.Canvas.DrawText (Text, text_bounds, this, ContentAlignment.MiddleLeft);
+            RenderManager.Render (this, e);
         }
+
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
         // Uncheck any other RadioButtons on the Parent
         private void UpdateSiblings ()

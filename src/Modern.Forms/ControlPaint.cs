@@ -97,16 +97,18 @@ namespace Modern.Forms
             e.Canvas.DrawLine (rectangle.X, rectangle.Y, rectangle.Right, rectangle.Y, Theme.LightTextColor);
         }
 
-        public static void DrawRadioButton (PaintEventArgs e, Point origin, CheckState state)
+        public static void DrawRadioButton (PaintEventArgs e, Point origin, CheckState state, bool disabled = false)
         {
             var outer_radius = e.LogicalToDeviceUnits (8);
             var inner_radius = e.LogicalToDeviceUnits (5);
-            var border_color = state == CheckState.Checked ? Theme.RibbonColor : Theme.BorderGray;
+            var border_color = disabled ? Theme.DisabledTextColor :
+                               state == CheckState.Checked ? Theme.RibbonColor : 
+                               Theme.BorderGray;
 
             e.Canvas.DrawCircle (origin.X, origin.Y, outer_radius, border_color, e.LogicalToDeviceUnits (1));
 
             if (state == CheckState.Checked)
-                e.Canvas.FillCircle (origin.X, origin.Y, inner_radius, Theme.RibbonColor);
+                e.Canvas.FillCircle (origin.X, origin.Y, inner_radius, disabled ? Theme.DisabledTextColor : Theme.RibbonColor);
         }
     }
 }

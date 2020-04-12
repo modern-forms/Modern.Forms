@@ -16,6 +16,11 @@ namespace Modern.Forms.Renderers
             SetRenderer<FormTitleBar> (new FormTitleBarRenderer ());
             SetRenderer<Label> (new LabelRenderer ());
             SetRenderer<ListBox> (new ListBoxRenderer ());
+            SetRenderer<Panel> (new PanelRenderer ());
+            SetRenderer<PictureBox> (new PictureBoxRenderer ());
+            SetRenderer<ProgressBar> (new ProgressBarRenderer ());
+            SetRenderer<RadioButton> (new RadioButtonRenderer ());
+            SetRenderer<ScrollableControl> (new ScrollableControlRenderer ());
         }
 
         public static T? GetRenderer<T> () where T : Renderer
@@ -23,14 +28,21 @@ namespace Modern.Forms.Renderers
             return renderers.Values.OfType<T> ().FirstOrDefault ();
         }
 
-        public static void Render<T> (T control, PaintEventArgs e)
+        public static void Render<T> (T control, PaintEventArgs e) where T : Control
         {
-            if (!renderers.TryGetValue (typeof (T), out var renderer))
-                throw new InvalidOperationException ($"No renderer found for type {typeof (T).FullName}");
+            var type = control.GetType ();
 
-            var render = renderer as Renderer<T>;
+            while (type != null && type != typeof (object)) {
+                if (renderers.TryGetValue (type, out var renderer)) {
+                    var render = renderer as Renderer;
+                    render?.Render (control, e);
+                    return;
+                }
 
-            render?.Render (control, e);
+                type = type.BaseType;
+            }
+
+            throw new InvalidOperationException ($"No renderer found for type {typeof (T).FullName}");
         }
 
         public static void SetRenderer<T> (Renderer renderer)

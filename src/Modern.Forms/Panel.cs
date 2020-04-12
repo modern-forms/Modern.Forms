@@ -1,25 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
+using Modern.Forms.Renderers;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a Panel control.
+    /// </summary>
     public class Panel : ScrollableControl
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
-
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
-
+        /// <summary>
+        /// Initializes a new instance of the Panel class.
+        /// </summary>
         public Panel ()
         {
             TabStop = false;
 
             SetControlBehavior (ControlBehaviors.Selectable, false);
         }
-
+        /// <inheritdoc/>
         protected override Size DefaultSize => new Size (200, 100);
 
+        /// <inheritdoc/>
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
+
+        /// <inheritdoc/>
         public override Size GetPreferredSize (Size proposedSize)
         {
             var size = Size.Empty;
@@ -40,5 +45,16 @@ namespace Modern.Forms
 
             return size;
         }
+
+        /// <inheritdoc/>
+        protected override void OnPaint (PaintEventArgs e)
+        {
+            base.OnPaint (e);
+
+            RenderManager.Render (this, e);
+        }
+
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
     }
 }
