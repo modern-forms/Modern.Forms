@@ -860,7 +860,8 @@ namespace Modern.Forms
 
             current_mouse_in = null;
 
-            OnMouseLeave (e);
+            if (Enabled)
+                OnMouseLeave (e);
         }
 
         protected virtual void OnMouseLeave (EventArgs e)
@@ -900,7 +901,7 @@ namespace Modern.Forms
 
             if (child != null)
                 child?.RaiseMouseMove (MouseEventsForControl (e, child));
-            else
+            else if (Enabled)
                 OnMouseMove (e);
         }
 

@@ -240,10 +240,12 @@ namespace Modern.Forms
                 if (SelectionMode == SelectionMode.None)
                     throw new ArgumentException ("Cannot call this method if SelectionMode is SelectionMode.None");
 
-                Items.SelectedIndex = value;
-                OnSelectedIndexChanged (EventArgs.Empty);
+                if (Items.SelectedIndex != value) {
+                    Items.SelectedIndex = value;
+                    OnSelectedIndexChanged (EventArgs.Empty);
 
-                Invalidate ();
+                    Invalidate ();
+                }
             }
         }
 
@@ -318,7 +320,7 @@ namespace Modern.Forms
         }
 
         // Handle changes to the vertical scroll bar.
-        private void VerticalScrollBar_ValueChanged (object sender, EventArgs e)
+        private void VerticalScrollBar_ValueChanged (object? sender, EventArgs e)
         {
             top_index = Math.Max (vscrollbar.Value, 0);
 

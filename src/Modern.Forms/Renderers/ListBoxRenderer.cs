@@ -30,7 +30,7 @@ namespace Modern.Forms.Renderers
             bounds.Inflate (-4, 0);
 
             // Draw text
-            e.Canvas.DrawText (item.ToString (), bounds, control, ContentAlignment.MiddleLeft, maxLines: 1);
+            e.Canvas.DrawText (item.ToString ()!, bounds, control, ContentAlignment.MiddleLeft, maxLines: 1);
         }
     }
 }

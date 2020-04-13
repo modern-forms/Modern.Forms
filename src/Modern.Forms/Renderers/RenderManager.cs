@@ -21,6 +21,8 @@ namespace Modern.Forms.Renderers
             SetRenderer<ProgressBar> (new ProgressBarRenderer ());
             SetRenderer<RadioButton> (new RadioButtonRenderer ());
             SetRenderer<ScrollableControl> (new ScrollableControlRenderer ());
+            SetRenderer<ScrollBar> (new ScrollBarRenderer ());
+            SetRenderer<TabStrip> (new TabStripRenderer ());
         }
 
         public static T? GetRenderer<T> () where T : Renderer
@@ -30,7 +32,7 @@ namespace Modern.Forms.Renderers
 
         public static void Render<T> (T control, PaintEventArgs e) where T : Control
         {
-            var type = control.GetType ();
+            var type = (Type?)control.GetType ();
 
             while (type != null && type != typeof (object)) {
                 if (renderers.TryGetValue (type, out var renderer)) {

@@ -90,7 +90,7 @@ namespace Modern.Forms
         public ListBoxItemCollection Items => popup_listbox.Items;
 
         // When the selected item of the popup ListBox changes, update the ComboBox
-        private void ListBox_SelectedIndexChanged (object sender, EventArgs e)
+        private void ListBox_SelectedIndexChanged (object? sender, EventArgs e)
         {
             if (popup_listbox.SelectedIndex > -1) {
                 DroppedDown = false;

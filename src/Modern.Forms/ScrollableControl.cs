@@ -118,7 +118,7 @@ namespace Modern.Forms
         }
 
         // Handles events from the scrollbars to update the window position.
-        private void HandleScroll (object sender, EventArgs e)
+        private void HandleScroll (object? sender, EventArgs e)
         {
             if (sender == vscrollbar && vscrollbar.Visible)
                 ScrollWindow (0, vscrollbar.Value - scroll_position.Y);

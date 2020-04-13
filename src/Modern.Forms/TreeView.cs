@@ -220,7 +220,7 @@ namespace Modern.Forms
             }
         }
 
-        private void VerticalScrollBar_ValueChanged (object sender, EventArgs e)
+        private void VerticalScrollBar_ValueChanged (object? sender, EventArgs e)
         {
             top_index = vscrollbar.Value;
 

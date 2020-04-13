@@ -1,4 +1,4 @@
-// Permission is hereby granted, free of charge, to any person obtaining
+﻿// Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
 // without limitation the rights to use, copy, modify, merge, publish,
@@ -73,7 +73,7 @@ namespace Modern.Forms
             return p1 + p2;
         }
 
-        public override bool Equals (object other)
+        public override bool Equals (object? other)
         {
             if (other is Padding other_aux) {
                 return Left == other_aux.Left &&

@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Drawing;
-using SkiaSharp;
+using Modern.Forms.Renderers;
 
 namespace Modern.Forms
 {
-    // TODO:
-    // Disabled styles
-    // Timer based repeat
+    /// <summary>
+    /// Represents the base class of a ScrollBar control.
+    /// </summary>
     public abstract class ScrollBar : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => style.BackgroundColor = Theme.DarkNeutralGray);
-
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
-
         private int large_change = 10;
         private int maximum = 100;
         private int minimum = 0;
@@ -21,21 +16,28 @@ namespace Modern.Forms
         private int small_change = 1;
 
         protected bool vertical;
-        protected int thumb_drag_position;      // Current pixel of the midpoint of the thumb drag 
+        protected internal int thumb_drag_position;     // Current pixel of the midpoint of the thumb drag 
         protected bool thumb_pressed;
-        protected int thumbclick_offset;		// Position of the last button-down event relative to the thumb edge
+        protected int thumbclick_offset;		        // Position of the last button-down event relative to the thumb edge
 
         protected const int thumb_min_size = 8;
         protected const int thumb_notshown_size = 40;
 
-        public ScrollBar ()
+        /// <summary>
+        /// Initializes a new instance of the ScrollBar class.
+        /// </summary>
+        protected ScrollBar ()
         {
             TabStop = false;
         }
 
-        public event EventHandler<ScrollEventArgs>? Scroll;
-        public event EventHandler? ValueChanged;
+        /// <inheritdoc/>
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+            (style) => style.BackgroundColor = Theme.DarkNeutralGray);
 
+        /// <summary>
+        /// Gets or sets the amount the ScrollBar will change when clicked in the track area.
+        /// </summary>
         public int LargeChange {
             get => Math.Min (large_change, maximum - minimum + 1);
             set {
@@ -49,6 +51,9 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Gets or sets the maximum value the ScrollBar will allow.
+        /// </summary>
         public int Maximum {
             get => maximum;
             set {
@@ -65,6 +70,9 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Gets or sets the minimum value the ScrollBar will allow.
+        /// </summary>
         public int Minimum {
             get => minimum;
             set {
@@ -81,6 +89,14 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Raised when the ScrollBar is scrolled.
+        /// </summary>
+        public event EventHandler<ScrollEventArgs>? Scroll;
+
+        /// <summary>
+        /// Gets or sets the amount the ScrollBar will change when the increment or decrement arrows are clicked.
+        /// </summary>
         public int SmallChange {
             get => small_change;
             set {
@@ -94,6 +110,12 @@ namespace Modern.Forms
             }
         }
 
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+
+        /// <summary>
+        /// Gets or sets the current value of the ScrollBar.
+        /// </summary>
         public int Value {
             get => current_value;
             set {
@@ -104,41 +126,41 @@ namespace Modern.Forms
             }
         }
 
-        protected abstract int ArrowButtonSize { get; }
-        protected abstract int ThumbDragSize { get; }
-        protected abstract Rectangle DecrementArrowBounds { get; }
-        protected abstract ArrowDirection DecrementArrowDirection { get; }
-        protected abstract Rectangle IncrementArrowBounds { get; }
-        protected abstract ArrowDirection IncrementArrowDirection { get; }
-        protected abstract Rectangle ThumbDragBounds { get; }
-        protected abstract Rectangle DecrementTrackBounds { get; }
-        protected abstract Rectangle IncrementTrackBounds { get; }
-        protected abstract Rectangle TotalTrackBrounds { get; }
-        protected abstract Rectangle EffectiveTrackBounds { get; }
+        /// <summary>
+        /// Raised when the value of the ScrollBar changes.
+        /// </summary>
+        public event EventHandler? ValueChanged;
 
-        protected int PossibleValues => maximum - minimum + 1;
+        // The number of possible ScrollBar values.
+        private int PossibleValuesCount => maximum - minimum + 1;
+
+        // Retrieves the effective track bounds from the renderer.
+        private Rectangle GetEffectiveTrackBounds () => RenderManager.GetRenderer<ScrollBarRenderer> ()!.GetEffectiveTrackBounds (this);
 
         protected ScrollBarElement GetElementAtLocation (Point location)
         {
-            if (DecrementArrowBounds.Contains (location))
+            var renderer = RenderManager.GetRenderer<ScrollBarRenderer> ()!;
+
+            if (renderer.GetDecrementArrowBounds (this).Contains (location))
                 return ScrollBarElement.DecrementArrow;
 
-            if (IncrementArrowBounds.Contains (location))
+            if (renderer.GetIncrementArrowBounds (this).Contains (location))
                 return ScrollBarElement.IncrementArrow;
 
-            if (ThumbDragBounds.Contains (location))
+            if (renderer.GetThumbDragBounds (this).Contains (location))
                 return ScrollBarElement.Thumb;
 
-            if (DecrementTrackBounds.Contains (location))
+            if (renderer.GetDecrementTrackBounds (this).Contains (location))
                 return ScrollBarElement.DecrementTrack;
 
-            if (IncrementTrackBounds.Contains (location))
+            if (renderer.GetIncrementTrackBounds (this).Contains (location))
                 return ScrollBarElement.IncrementTrack;
 
             // In theory this shouldn't be possible...
             return ScrollBarElement.None;
         }
 
+        /// <inheritdoc/>
         protected override void OnSizeChanged (EventArgs e)
         {
             base.OnSizeChanged (e);
@@ -146,6 +168,7 @@ namespace Modern.Forms
             UpdateFromValue (current_value);
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseDown (MouseEventArgs e)
         {
             base.OnMouseDown (e);
@@ -173,6 +196,7 @@ namespace Modern.Forms
             }
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseMove (MouseEventArgs e)
         {
             base.OnMouseMove (e);
@@ -183,6 +207,7 @@ namespace Modern.Forms
             }
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseUp (MouseEventArgs e)
         {
             base.OnMouseUp (e);
@@ -190,6 +215,7 @@ namespace Modern.Forms
             thumb_pressed = false;
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseWheel (MouseEventArgs e)
         {
             base.OnMouseWheel (e);
@@ -201,40 +227,17 @@ namespace Modern.Forms
                 UpdateFromValue (Value - (e.Delta.Y * SmallChange));
         }
 
+        /// <inheritdoc/>
         protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 
-            var top_arrow_area = DecrementArrowBounds;
-            top_arrow_area.Width -= 1;
-            top_arrow_area.Height -= 1;
-
-            var bottom_arrow_area = IncrementArrowBounds;
-            bottom_arrow_area.Width -= 1;
-            bottom_arrow_area.Height -= 1;
-
-            // Top Arrow
-            e.Canvas.FillRectangle (top_arrow_area, SKColors.White);
-            e.Canvas.DrawRectangle (top_arrow_area, Theme.BorderGray);
-            ControlPaint.DrawArrowGlyph (e, top_arrow_area, Theme.BorderGray, DecrementArrowDirection);
-
-            // Bottom Arrow
-            e.Canvas.FillRectangle (bottom_arrow_area, SKColors.White);
-            e.Canvas.DrawRectangle (bottom_arrow_area, Theme.BorderGray);
-            ControlPaint.DrawArrowGlyph (e, bottom_arrow_area, Theme.BorderGray, IncrementArrowDirection);
-
-            if (!Enabled)
-                return;
-
-            // Grip
-            var thumb_bounds = ThumbDragBounds;
-
-            if (thumb_bounds.Width > 0 && thumb_bounds.Height > 0) {
-                e.Canvas.FillRectangle (thumb_bounds, SKColors.White);
-                e.Canvas.DrawRectangle (thumb_bounds, Theme.BorderGray);
-            }
+            RenderManager.Render (this, e);
         }
 
+        /// <summary>
+        /// Raises the Scroll event.
+        /// </summary>
         protected virtual void OnScroll (ScrollEventArgs e)
         {
             e.NewValue = Math.Max (e.NewValue, Minimum);
@@ -243,8 +246,12 @@ namespace Modern.Forms
             Scroll?.Invoke (this, e);
         }
 
+        /// <summary>
+        /// Raises the ValueChanged event.
+        /// </summary>
         protected virtual void OnValueChanged (EventArgs e) => ValueChanged?.Invoke (this, e);
 
+        /// <inheritdoc/>
         protected override void OnVisibleChanged (EventArgs e)
         {
             base.OnVisibleChanged (e);
@@ -253,6 +260,7 @@ namespace Modern.Forms
                 UpdateFromValue (Value);
         }
 
+        /// <inheritdoc/>
         protected override void SetBoundsCore (int x, int y, int width, int height, BoundsSpecified specified)
         {
             base.SetBoundsCore (x, y, width, height, specified);
@@ -260,42 +268,22 @@ namespace Modern.Forms
             UpdateFromValue (Value);
         }
 
-        protected void UpdateFromValue (int value)
-        {
-            value = Math.Max (value, minimum);
-            value = Math.Min (value, maximum);
-
-            var value_percent = (double)(value - minimum) / (PossibleValues - 1);
-
-            var new_pos =
-                vertical ? EffectiveTrackBounds.Y + (value_percent * EffectiveTrackBounds.Height)
-                         : EffectiveTrackBounds.X + (value_percent * EffectiveTrackBounds.Width);
-
-            thumb_drag_position = (int)new_pos;
-
-            Invalidate ();
-
-            if (current_value == value)
-                return;
-
-            current_value = value;
-
-            OnValueChanged (EventArgs.Empty);
-        }
-
+        // Updates ScrollBar value from a thumb drag position.
         protected void UpdateFromPoint (int pixel)
         {
             if (thumb_drag_position == pixel)
                 return;
 
-            pixel = Math.Max (pixel, vertical ? EffectiveTrackBounds.Top : EffectiveTrackBounds.Left);
-            pixel = Math.Min (pixel, vertical ? EffectiveTrackBounds.Bottom : EffectiveTrackBounds.Right);
+            var effective_track_bounds = GetEffectiveTrackBounds ();
+
+            pixel = Math.Max (pixel, vertical ? effective_track_bounds.Top : effective_track_bounds.Left);
+            pixel = Math.Min (pixel, vertical ? effective_track_bounds.Bottom : effective_track_bounds.Right);
 
             var position_percent = 
-                vertical ? (double)(pixel - EffectiveTrackBounds.Top) / EffectiveTrackBounds.Height
-                         : (double)(pixel - EffectiveTrackBounds.Left) / EffectiveTrackBounds.Width;
+                vertical ? (double)(pixel - effective_track_bounds.Top) / effective_track_bounds.Height
+                         : (double)(pixel - effective_track_bounds.Left) / effective_track_bounds.Width;
 
-            var value_position = (int)(position_percent * (PossibleValues - 1));
+            var value_position = (int)(position_percent * (PossibleValuesCount - 1));
 
             var new_value = minimum + value_position;
 
@@ -309,6 +297,32 @@ namespace Modern.Forms
             // We need to invalidate even if the value didn't change, because the position
             // changed, but each value may span multiple pixels
             Invalidate ();
+        }
+
+        // Updates thumb drag position from a ScrollBar value.
+        protected void UpdateFromValue (int value)
+        {
+            value = Math.Max (value, minimum);
+            value = Math.Min (value, maximum);
+
+            var value_percent = (double)(value - minimum) / (PossibleValuesCount - 1);
+
+            var effective_track_bounds = GetEffectiveTrackBounds ();
+
+            var new_pos =
+                vertical ? effective_track_bounds.Y + (value_percent * effective_track_bounds.Height)
+                         : effective_track_bounds.X + (value_percent * effective_track_bounds.Width);
+
+            thumb_drag_position = (int)new_pos;
+
+            Invalidate ();
+
+            if (current_value == value)
+                return;
+
+            current_value = value;
+
+            OnValueChanged (EventArgs.Empty);
         }
 
         protected enum ScrollBarElement

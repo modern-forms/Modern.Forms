@@ -1,122 +1,132 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Modern.Forms.Renderers;
 
 namespace Modern.Forms
 {
-    // TODO:
-    // Disabled styles
-    // Pressed styles
-    // Image
-    // Closeable?
-    // Overflow?
-    // Measuring
-    // OnSelectedTabChanging?
+    /// <summary>
+    /// Represents a VerticalScrollBar control.
+    /// </summary>
     public class TabStrip : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => {
-                style.BackgroundColor = Theme.RibbonColor;
-            });
-
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
-
+        /// <summary>
+        /// Initializes a new instance of the VerticalScrollBar class.
+        /// </summary>
         public TabStrip ()
         {
             Tabs = new TabStripItemCollection (this);
         }
 
-        public event EventHandler? SelectedTabChanged;
-
-        public TabStripItem SelectedTab {
-            get => Tabs.FirstOrDefault (tp => tp.Selected);
-            set {
-                var old = SelectedTab;
-
-                // Nothing is changing
-                if (old == value)
-                    return;
-
-                if (old != null)
-                    old.Selected = false;
-
-                value.Selected = true;
-
-                Invalidate ();
-
-                OnSelectedTabChanged (EventArgs.Empty);
-            }
-        }
-
-        public TabStripItemCollection Tabs { get; }
-
+        /// <inheritdoc/>
         protected override Size DefaultSize => new Size (600, 28);
 
+        /// <inheritdoc/>
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+            (style) => {
+                style.BackgroundColor = Theme.RibbonColor;
+            });
+
+        // Returns the tab at the specified location.
+        private TabStripItem? GetTabAtLocation (Point location) => Tabs.FirstOrDefault (tp => tp.Bounds.Contains (location));
+
+        // Layout the tabs.
+        private void LayoutTabs ()
+        {
+            StackLayoutEngine.HorizontalExpand.Layout (ClientRectangle, Tabs.Cast<ILayoutable> ());
+        }
+
+        /// <inheritdoc/>
         protected override void OnClick (MouseEventArgs e)
         {
             base.OnClick (e);
 
             var clicked_tab = GetTabAtLocation (e.Location);
 
-            if (clicked_tab != null)
+            // This does a null check
+            if (clicked_tab?.Enabled == true)
                 SelectedTab = clicked_tab;
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseLeave (EventArgs e)
         {
             base.OnMouseLeave (e);
 
-            SetHover (null);
+            Tabs.HoveredIndex = -1;
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseMove (MouseEventArgs e)
         {
             base.OnMouseMove (e);
 
-            SetHover (GetTabAtLocation (e.Location));
+            var hover_tab = GetTabAtLocation (e.Location);
+            Tabs.HoveredIndex = hover_tab is null ? -1 : Tabs.IndexOf (hover_tab);
         }
 
+        /// <inheritdoc/>
         protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 
+            // TODO: This should only be done when tabs are added or removed, or the TabStrip is resized.
             LayoutTabs ();
 
-            foreach (var item in Tabs)
-                item.OnPaint (e.Canvas);
+            RenderManager.Render (this, e);
         }
 
+        /// <summary>
+        /// Raises the SelectedTabChanged event.
+        /// </summary>
         protected virtual void OnSelectedTabChanged (EventArgs e) => SelectedTabChanged?.Invoke (this, e);
 
-        private TabStripItem GetTabAtLocation (Point location) => Tabs.FirstOrDefault (tp => tp.Bounds.Contains (location));
+        /// <summary>
+        /// Raised when the selected tab changes.
+        /// </summary>
+        public event EventHandler? SelectedTabChanged;
 
-        private void LayoutTabs ()
-        {
-            StackLayoutEngine.HorizontalExpand.Layout (ClientRectangle, Tabs.Cast<ILayoutable> ());
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+
+        /// <summary>
+        /// Gets or sets the index of the currently selected tab.
+        /// </summary>
+        public int SelectedIndex {
+            get => Tabs.SelectedIndex;
+            set {
+                if (Tabs.SelectedIndex != value) {
+                    Tabs.SelectedIndex = value;
+                    OnSelectedTabChanged (EventArgs.Empty);
+
+                    Invalidate ();
+                }
+            }
         }
 
-        private void SetHover (TabStripItem? item)
-        {
-            var old = Tabs.FirstOrDefault (tp => tp.Hovered);
-
-            if (item == null || item != old) {
-                // Clear any existing hovers
-                if (old != null) {
-                    old.Hovered = false;
-                    Invalidate (old.Bounds);
+        /// <summary>
+        /// Gets or sets the currently selected tab.
+        /// </summary>
+        public TabStripItem? SelectedTab {
+            get => SelectedIndex >= 0 ? Tabs[SelectedIndex] : null;
+            set {
+                if (value is null) {
+                    SelectedIndex = -1;
+                    return;
                 }
 
-                if (item == null)
-                    return;
+                var index = Tabs.IndexOf (value);
+
+                if (index == -1)
+                    throw new ArgumentException ("Item is not part of this list");
+
+                SelectedIndex = index;
             }
-
-            if (item.Hovered)
-                return;
-
-            item.Hovered = true;
-
-            Invalidate (item.Bounds);
         }
+
+        /// <summary>
+        /// Gets the collection of tabs contained by this TabStrip.
+        /// </summary>
+        public TabStripItemCollection Tabs { get; }
     }
 }

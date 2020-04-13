@@ -11,7 +11,7 @@ namespace Modern.Forms.Renderers
         {
             // Draw the text of the selected item
             if (control.Items.SelectedItem != null)
-                e.Canvas.DrawText (control.Items.SelectedItem.ToString (), GetTextArea (control, e), control, ContentAlignment.MiddleLeft, maxLines: 1);
+                e.Canvas.DrawText (control.Items.SelectedItem.ToString ()!, GetTextArea (control, e), control, ContentAlignment.MiddleLeft, maxLines: 1);
 
             // Draw the drop down glyph
             var button_bounds = GetDropDownButtonArea (control, e);
