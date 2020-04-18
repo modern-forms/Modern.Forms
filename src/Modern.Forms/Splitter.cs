@@ -1,52 +1,45 @@
 ﻿using System;
 using System.Drawing;
+using Modern.Forms.Renderers;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a Splitter control.
+    /// </summary>
     public class Splitter : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
-
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
-
         private Orientation orientation;
         private bool is_dragging;
         private Point drag_start_point;
         private Point? last_drag_point;
 
+        /// <summary>
+        /// Initializes a new instance of the Splitter class.
+        /// </summary>
         public Splitter ()
         {
             Dock = DockStyle.Left;
             Cursor = Cursors.SizeWestEast;
         }
         
+        /// <inheritdoc/>
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
+
+        /// <summary>
+        /// Raised when the user drags the Splitter.
+        /// </summary>
         public event EventHandler<EventArgs<Point>>? Drag;
 
-        public Orientation Orientation {
-            get => orientation;
-            set {
-                if (orientation != value) {
-                    orientation = value;
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-                    Size = new Size (Height, Width);
-                    Dock = orientation == Orientation.Horizontal ? DockStyle.Left : DockStyle.Top;
-                    Cursor = orientation == Orientation.Horizontal ? Cursors.SizeWestEast : Cursors.SizeNorthSouth;
-                }
-            }
-        }
-
-        public int SplitterWidth {
-            get => orientation == Orientation.Horizontal ? Width : Height;
-            set {
-                if (orientation == Orientation.Horizontal)
-                    Width = value;
-                else
-                    Height = value;
-            }
-        }
-
+        /// <summary>
+        /// Raises the Drag event.
+        /// </summary>
         protected void OnDrag (EventArgs<Point> e) => Drag?.Invoke (this, e);
 
+        /// <inheritdoc/>
         protected override void OnMouseDown (MouseEventArgs e)
         {
             base.OnMouseDown (e);
@@ -55,6 +48,7 @@ namespace Modern.Forms
             drag_start_point = e.ScreenLocation;
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseMove (MouseEventArgs e)
         {
             base.OnMouseMove (e);
@@ -69,12 +63,50 @@ namespace Modern.Forms
             }
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseUp (MouseEventArgs e)
         {
             base.OnMouseUp (e);
 
             is_dragging = false;
             last_drag_point = null;
+        }
+
+        /// <inheritdoc/>
+        protected override void OnPaint (PaintEventArgs e)
+        {
+            base.OnPaint (e);
+
+            RenderManager.Render (this, e);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating the orientation of the Splitter.
+        /// </summary>
+        public Orientation Orientation {
+            get => orientation;
+            set {
+                if (orientation != value) {
+                    orientation = value;
+
+                    Size = new Size (Height, Width);
+                    Dock = orientation == Orientation.Horizontal ? DockStyle.Left : DockStyle.Top;
+                    Cursor = orientation == Orientation.Horizontal ? Cursors.SizeWestEast : Cursors.SizeNorthSouth;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the width of the splitter.
+        /// </summary>
+        public int SplitterWidth {
+            get => orientation == Orientation.Horizontal ? Width : Height;
+            set {
+                if (orientation == Orientation.Horizontal)
+                    Width = value;
+                else
+                    Height = value;
+            }
         }
     }
 }

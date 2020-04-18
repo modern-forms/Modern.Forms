@@ -811,9 +811,11 @@ namespace Modern.Forms
                 if ((this as MenuBase)?.GetTopLevelMenu () != Application.ActiveMenu)
                     Application.ActiveMenu?.Deactivate ();
 
-                Select ();
-                Capture = true;
-                OnMouseDown (e);
+                if (Enabled) {
+                    Select ();
+                    Capture = true;
+                    OnMouseDown (e);
+                }
             }
         }
 
@@ -840,7 +842,7 @@ namespace Modern.Forms
             if (child != null)
                 child.RaiseMouseEnter (MouseEventsForControl (e, child));
             else if (Enabled)
-                    OnMouseEnter (e);
+                OnMouseEnter (e);
         }
 
         protected virtual void OnMouseEnter (MouseEventArgs e)
@@ -924,8 +926,10 @@ namespace Modern.Forms
             if (child != null)
                 child.RaiseMouseUp (MouseEventsForControl (e, child));
             else {
-                Capture = false;
-                OnMouseUp (e);
+                if (Enabled) {
+                    Capture = false;
+                    OnMouseUp (e);
+                }
             }
         }
 

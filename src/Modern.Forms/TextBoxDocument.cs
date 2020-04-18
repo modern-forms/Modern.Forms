@@ -14,7 +14,8 @@ namespace Modern.Forms
         private string placeholder = string.Empty;
 
         private TextBlock? cached_text_block;
-
+        
+        private bool enabled = true;
         private int cursor_index = 0;
         private bool read_only = false;
         private int selection_start = -1;
@@ -31,7 +32,7 @@ namespace Modern.Forms
 
         private static readonly string[] invalid_singleline_characters = new[] { "\r", "\n" };
 
-        public TextBoxDocument (TextBox textbox)
+        internal TextBoxDocument (TextBox textbox)
         {
             this.textbox = textbox;
             width = textbox.PaddedClientRectangle.Width;
@@ -112,6 +113,17 @@ namespace Modern.Forms
 
         public string DisplayText => text.Length > 0 ? text : placeholder;
 
+        public bool Enabled {
+            get => enabled;
+            set {
+                if (enabled != value) {
+                    enabled = value;
+                    cached_text_block = null;
+                    Invalidate ();
+                }
+            }
+        }
+
         public SKTypeface Font {
             get => font;
             set {
@@ -160,7 +172,9 @@ namespace Modern.Forms
                 return cached_text_block;
 
             var max_size = multiline ? new Size (width, int.MaxValue) : TextMeasurer.MaxSize;
-            var color = Text.HasValue () ? font_color : placeholder_font_color;
+            var color = !Enabled ? Theme.DisabledTextColor :
+                        Text.HasValue () ? font_color : 
+                                placeholder_font_color;
 
             return cached_text_block = TextMeasurer.CreateTextBlock (DisplayText, font, font_size, max_size, alignment, color, MaxLines);
         }

@@ -1,31 +1,25 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
+using Modern.Forms.Renderers;
 using Topten.RichTextKit;
 
 namespace Modern.Forms
 {
-    // TODO:
+    /// <summary>
+    /// Represents a TextBox control.
+    /// </summary>
     public class TextBox : ScrollControl
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => {
-                style.Border.Width = 1;
-                style.BackgroundColor = Theme.LightNeutralGray;
-            });
-
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
-
-        private readonly TextBoxDocument document;
+        internal readonly TextBoxDocument document;
 
         private bool is_highlighting;
         private int selection_anchor = -1;
         private int scroll_x = 0;
         private int scroll_y = 0;
 
-        protected override Size DefaultSize => new Size (100, 25);
-        protected override Padding DefaultPadding => new Padding (1, 0, 0, 0);
-
+        /// <summary>
+        /// Initializes a new instance of the TextBox class.
+        /// </summary>
         public TextBox ()
         {
             Cursor = Cursors.IBeam;
@@ -36,6 +30,9 @@ namespace Modern.Forms
             VerticalScrollBar.ValueChanged += (o, e) => DoScroll (0, (o as VerticalScrollBar)!.Value - scroll_y);
         }
 
+        /// <summary>
+        /// Copies the selected text of the TextBox to the clipboard.
+        /// </summary>
         public void Copy ()
         {
             if (!document.IsTextSelected)
@@ -45,6 +42,12 @@ namespace Modern.Forms
             AsyncHelper.RunSync (() => Avalonia.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
         }
 
+        // The scaled height of the current font.
+        internal int CurrentFontSize => LogicalToDeviceUnits (CurrentStyle.GetFontSize ());
+
+        /// <summary>
+        /// Copies the selected text of the TextBox to the clipboard and removes it from the TextBox.
+        /// </summary>
         public void Cut ()
         {
             if (!document.IsTextSelected)
@@ -56,35 +59,30 @@ namespace Modern.Forms
             document.DeleteSelection ();
         }
 
-        public int MaxLength {
-            get => document.MaxLength;
-            set => document.MaxLength = value;
+        /// <inheritdoc/>
+        protected override Padding DefaultPadding => new Padding (1, 0, 0, 0);
+
+        /// <inheritdoc/>
+        protected override Size DefaultSize => new Size (100, 25);
+
+        /// <inheritdoc/>
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+            (style) => {
+                style.Border.Width = 1;
+                style.BackgroundColor = Theme.LightNeutralGray;
+            });
+
+        // Scrolls the TextBox by the specified amounts.
+        private void DoScroll (int x, int y)
+        {
+            scroll_x += x;
+            scroll_y += y;
+
+            Invalidate ();
         }
 
-        public bool MultiLine {
-            get => document.IsMultiline;
-            set {
-                if (document.IsMultiline != value) {
-
-                    if (Padding == DefaultPadding)
-                        Padding = new Padding (value ? 4 : 1, 0, 0, 0);
-
-                    document.IsMultiline = value;
-                }
-            }
-        }
-
-        public string Placeholder {
-            get => document.Placeholder;
-            set => document.Placeholder = value;
-        }
-
-        public bool ReadOnly {
-            get => document.ReadOnly;
-            set => document.ReadOnly = value;
-        }
-
-        public int GetCharIndexFromPosition (Point location)
+        // Gets the index of the character at the specified location.
+        private int GetCharIndexFromPosition (Point location)
         {
             if (!document.Text.HasValue ())
                 return 0;
@@ -92,6 +90,7 @@ namespace Modern.Forms
             return document.GetCharIndexFromPosition (location.X - TextOrigin.X, location.Y - TextOrigin.Y).ClosestCodePointIndex;
         }
 
+        // Handles key down events.
         private bool HandleKeyDown (KeyEventArgs e)
         {
             var need_refresh = false;
@@ -152,6 +151,47 @@ namespace Modern.Forms
             return false;
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating the maximum length of text the TextBox can hold.
+        /// </summary>
+        public int MaxLength {
+            get => document.MaxLength;
+            set => document.MaxLength = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating if the TextBox supports multiple lines of text.
+        /// </summary>
+        public bool MultiLine {
+            get => document.IsMultiline;
+            set {
+                if (document.IsMultiline != value) {
+
+                    if (Padding == DefaultPadding)
+                        Padding = new Padding (value ? 4 : 1, 0, 0, 0);
+
+                    document.IsMultiline = value;
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        protected override void OnDeselected (EventArgs e)
+        {
+            base.OnDeselected (e);
+
+            document.Deselect ();
+        }
+
+        /// <inheritdoc/>
+        protected override void OnEnabledChanged (EventArgs e)
+        {
+            base.OnEnabledChanged (e);
+
+            document.Enabled = Enabled;
+        }
+
+        /// <inheritdoc/>
         protected override void OnKeyDown (KeyEventArgs e)
         {
             base.OnKeyDown (e);
@@ -159,6 +199,7 @@ namespace Modern.Forms
             e.Handled = HandleKeyDown (e);
         }
 
+        /// <inheritdoc/>
         protected override void OnKeyPress (KeyPressEventArgs e)
         {
             base.OnKeyPress (e);
@@ -176,20 +217,7 @@ namespace Modern.Forms
             }
         }
 
-        protected override void OnSizeChanged (EventArgs e)
-        {
-            base.OnSizeChanged (e);
-
-            document.Width = PaddedClientRectangle.Width;
-        }
-
-        protected override void OnDeselected (EventArgs e)
-        {
-            base.OnDeselected (e);
-
-            document.Deselect ();
-        }
-
+        /// <inheritdoc/>
         protected override void OnMouseDown (MouseEventArgs e)
         {
             base.OnMouseDown (e);
@@ -205,6 +233,7 @@ namespace Modern.Forms
             Invalidate ();
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseMove (MouseEventArgs e)
         {
             base.OnMouseMove (e);
@@ -224,6 +253,7 @@ namespace Modern.Forms
             }
         }
 
+        /// <inheritdoc/>
         protected override void OnMouseUp (MouseEventArgs e)
         {
             base.OnMouseUp (e);
@@ -246,36 +276,25 @@ namespace Modern.Forms
             Invalidate ();
         }
 
+        /// <inheritdoc/>
         protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
 
-            var text = Text.Length > 0 ? Text : Placeholder;
-
-            // Bail early if we don't need to draw anything
-            if (text.Length == 0 && !Selected)
-                return;
-
-            document.FontSize = CurrentFontSize;
-
-            var block = document.GetTextBlock ();
-
-            UpdateScrollBars (block);
-
-            e.Canvas.Save ();
-            e.Canvas.Clip (PaddedClientRectangle);
-
-            if (text.Length > 0)
-                e.Canvas.DrawTextBlock (block, TextOrigin, document.GetTextSelection ());
-
-            if (Selected) {
-                var caret = TextMeasurer.GetCursorLocation (block, TextOrigin, document.CursorIndex, CurrentFontSize);
-                e.Canvas.DrawRectangle (caret, Theme.DarkTextColor);
-            }
-
-            e.Canvas.Restore ();
+            RenderManager.Render (this, e);
         }
 
+        /// <inheritdoc/>
+        protected override void OnSizeChanged (EventArgs e)
+        {
+            base.OnSizeChanged (e);
+
+            document.Width = PaddedClientRectangle.Width;
+        }
+
+        /// <summary>
+        /// Inserts any text on the clipboard into the TextBox.
+        /// </summary>
         public void Paste ()
         {
             if (document.ReadOnly)
@@ -287,24 +306,25 @@ namespace Modern.Forms
                     ScrollToCaret ();
         }
 
-        public override string Text { 
-            get => document.Text; 
-            set {
-                if (document.Text != value) {
-                    document.Text = value;
-                    ScrollToCaret ();
-                }
-            }
+        /// <summary>
+        /// Gets or sets text to display if the TextBox contains no text.
+        /// </summary>
+        public string Placeholder {
+            get => document.Placeholder;
+            set => document.Placeholder = value;
         }
 
-        internal void DoScroll (int x, int y)
-        {
-            scroll_x += x;
-            scroll_y += y;
-
-            Invalidate ();
+        /// <summary>
+        /// Gets or sets a value indicating if the text can be edited.
+        /// </summary>
+        public bool ReadOnly {
+            get => document.ReadOnly;
+            set => document.ReadOnly = value;
         }
 
+        /// <summary>
+        /// Scrolls the TextBox so that the caret is visible.
+        /// </summary>
         public void ScrollToCaret ()
         {
             var caret = TextMeasurer.GetCursorLocation (document.GetTextBlock (), TextOrigin, document.CursorIndex, CurrentFontSize);
@@ -331,23 +351,51 @@ namespace Modern.Forms
             DoScroll (dx, dy);
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating the end of the TextBox's selected text.
+        /// </summary>
         public int SelectionEnd {
             get => document.SelectionEnd;
             set => document.SelectionEnd = value;
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating the start of the TextBox's selected text.
+        /// </summary>
         public int SelectionStart {
             get => document.SelectionStart;
             set => document.SelectionStart = value;
         }
 
-        public void SetCursorToCharIndex (int index)
+        // Sets cursor to specified character index and scrolls TextBox to cursor.
+        private void SetCursorToCharIndex (int index)
         {
             if (document.SetCursorToCharIndex (index))
                 ScrollToCaret ();
         }
 
-        private void UpdateScrollBars (TextBlock block)
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+
+        /// <inheritdoc/>
+        public override string Text { 
+            get => document.Text; 
+            set {
+                if (document.Text != value) {
+                    document.Text = value;
+                    ScrollToCaret ();
+                }
+            }
+        }
+
+        // Where the text starts, taking scrolling into account
+        internal Point TextOrigin => new Point (PaddedClientRectangle.Location.X - scroll_x, PaddedClientRectangle.Location.Y - scroll_y);
+
+        // The virtual bounds of what is currently shown to the user.
+        private Rectangle TextViewport => new Rectangle (new Point (PaddedClientRectangle.Location.X + scroll_x, PaddedClientRectangle.Location.Y + scroll_y), PaddedClientRectangle.Size);
+
+        // Enables and recalculates scrollbars as needed.
+        internal void UpdateScrollBars (TextBlock block)
         {
             // TODO: Horizontal scrollbar not supported
             // Something about the document changed, so we need to update the scrollbars
@@ -367,14 +415,6 @@ namespace Modern.Forms
 
                 VerticalScrollBar.Enabled = false;
             }
-
         }
-
-        private int CurrentFontSize => LogicalToDeviceUnits (CurrentStyle.GetFontSize ());
-
-        // Where the text starts, taking scrolling into account
-        private Point TextOrigin => new Point (PaddedClientRectangle.Location.X - scroll_x, PaddedClientRectangle.Location.Y - scroll_y);
-
-        private Rectangle TextViewport => new Rectangle (new Point (PaddedClientRectangle.Location.X + scroll_x, PaddedClientRectangle.Location.Y + scroll_y), PaddedClientRectangle.Size);
     }
 }
