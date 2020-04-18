@@ -16,6 +16,8 @@ namespace Modern.Forms.Renderers
             SetRenderer<FormTitleBar> (new FormTitleBarRenderer ());
             SetRenderer<Label> (new LabelRenderer ());
             SetRenderer<ListBox> (new ListBoxRenderer ());
+            SetRenderer<Menu> (new MenuRenderer ());
+            SetRenderer<MenuDropDown> (new MenuDropDownRenderer ());
             SetRenderer<Panel> (new PanelRenderer ());
             SetRenderer<PictureBox> (new PictureBoxRenderer ());
             SetRenderer<ProgressBar> (new ProgressBarRenderer ());
@@ -27,6 +29,7 @@ namespace Modern.Forms.Renderers
             SetRenderer<TabControl> (new TabControlRenderer ());
             SetRenderer<TabStrip> (new TabStripRenderer ());
             SetRenderer<TextBox> (new TextBoxRenderer ());
+            SetRenderer<ToolBar> (new ToolBarRenderer ());
             SetRenderer<TreeView> (new TreeViewRenderer ());
         }
 
@@ -35,21 +38,25 @@ namespace Modern.Forms.Renderers
             return renderers.Values.OfType<T> ().FirstOrDefault ();
         }
 
-        public static void Render<T> (T control, PaintEventArgs e) where T : Control
+        public static T? GetRenderer<T> (Control control) where T : Renderer
         {
             var type = (Type?)control.GetType ();
 
             while (type != null && type != typeof (object)) {
                 if (renderers.TryGetValue (type, out var renderer)) {
-                    var render = renderer as Renderer;
-                    render?.Render (control, e);
-                    return;
+                    return renderer as T;
                 }
 
                 type = type.BaseType;
             }
 
             throw new InvalidOperationException ($"No renderer found for type {typeof (T).FullName}");
+        }
+
+        public static void Render<T> (T control, PaintEventArgs e) where T : Control
+        {
+            var renderer = GetRenderer<Renderer> (control);
+            renderer?.Render (control, e);
         }
 
         public static void SetRenderer<T> (Renderer renderer)

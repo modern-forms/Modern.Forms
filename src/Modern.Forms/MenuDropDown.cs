@@ -4,20 +4,18 @@ using System.Linq;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a MenuDropDown control.
+    /// </summary>
     public class MenuDropDown : MenuBase
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => {
-                style.BackgroundColor = Theme.RibbonItemHighlightColor;
-                style.Border.Width = 1;
-            });
-
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
-
         private PopupWindow? popup;
         private int width = 400;
         private int height = 400;
 
+        /// <summary>
+        /// Initializes a new instance of the MenuDropDown class.
+        /// </summary>
         public MenuDropDown () : base ()
         {
             Dock = DockStyle.Fill;
@@ -26,6 +24,9 @@ namespace Modern.Forms
                 item.ParentControl = this;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the MenuDropDown class with the provided root MenuItem.
+        /// </summary>
         public MenuDropDown (MenuItem root) : base (root)
         {
             Dock = DockStyle.Fill;
@@ -34,6 +35,7 @@ namespace Modern.Forms
                 item.ParentControl = this;
         }
 
+        /// <inheritdoc/>
         internal override void Deactivate ()
         {
             base.Deactivate ();
@@ -41,11 +43,22 @@ namespace Modern.Forms
             Hide ();
         }
 
+        /// <inheritdoc/>
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+            (style) => {
+                style.BackgroundColor = Theme.RibbonItemHighlightColor;
+                style.Border.Width = 1;
+            });
+
+        /// <summary>
+        /// Hides the drop down.
+        /// </summary>
         public void Hide ()
         {
             popup?.Hide ();
         }
 
+        /// <inheritdoc/>
         protected override void LayoutItems ()
         {
             if (Items.Count == 0)
@@ -61,6 +74,7 @@ namespace Modern.Forms
             StackLayoutEngine.VerticalExpand.Layout (client_rect, Items.Cast<ILayoutable> ());
         }
 
+        /// <inheritdoc/>
         protected override void OnClick (MouseEventArgs e)
         {
             var clicked_item = GetItemAtLocation (e.Location);
@@ -76,6 +90,7 @@ namespace Modern.Forms
             }
         }
 
+        /// <inheritdoc/>
         protected override void OnHoverChanged (MenuItem? oldItem, MenuItem? newItem)
         {
             if (newItem != null) {
@@ -87,6 +102,9 @@ namespace Modern.Forms
             newItem?.ShowDropDown ();
         }
 
+        /// <summary>
+        /// Shows the drop down at the specified location.
+        /// </summary>
         public virtual void Show (Point location)
         {
             if (popup == null) {
@@ -103,6 +121,10 @@ namespace Modern.Forms
             popup.Show ();
         }
 
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+
+        /// <inheritdoc/>
         public override bool Visible {
             get => popup?.Visible ?? false;
             set => popup?.Show ();

@@ -1,22 +1,31 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using Modern.Forms.Renderers;
 using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a MenuItem menu item.
+    /// </summary>
     public class MenuItem : ILayoutable
     {
         private MenuItemCollection? items;
         private MenuDropDown? dropdown;
+        private bool enabled = true;
         private bool selected;
 
-        public event EventHandler<MouseEventArgs>? Click;
-
+        /// <summary>
+        /// Initializes a new instance of the MenuItem class.
+        /// </summary>
         public MenuItem ()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the MenuItem class.
+        /// </summary>
         public MenuItem (string text, SKBitmap? image = null, EventHandler<MouseEventArgs>? onClick = null)
         {
             Text = text;
@@ -24,41 +33,51 @@ namespace Modern.Forms
             Click += onClick;
         }
 
+        /// <summary>
+        /// Gets the bounding box of this menu item.
+        /// </summary>
         public Rectangle Bounds { get; private set; }
 
+        /// <summary>
+        /// Raised when the menu item is clicked.
+        /// </summary>
+        public event EventHandler<MouseEventArgs>? Click;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the menu item is enabled.
+        /// </summary>
+        public bool Enabled {
+            get => enabled && OwnerControl?.Enabled == true;
+            set {
+                if (enabled != value) {
+                    enabled = value;
+                    OwnerControl?.Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns a preferred size the menu item would like to be.
+        /// </summary>
+        /// <param name="proposedSize"></param>
+        /// <returns></returns>
         public virtual Size GetPreferredSize (Size proposedSize)
         {
             var owner = OwnerControl;
 
-            if (owner is Menu menu) {
-                var padding = menu.LogicalToDeviceUnits (Padding.Horizontal);
-                var font_size = menu.LogicalToDeviceUnits (Theme.FontSize);
-                var text_size = (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size).Width);
+            if (owner is null)
+                return proposedSize;
 
-                return new Size (text_size + padding, Bounds.Height);
-            }
+            var renderer = RenderManager.GetRenderer<Renderer> (owner);
 
-            if (owner is ToolBar bar) {
-                var width = bar.LogicalToDeviceUnits (Padding.Horizontal);
-                var font_size = bar.LogicalToDeviceUnits (Theme.FontSize);
-                width += (int)Math.Round (TextMeasurer.MeasureText (Text, Theme.UIFont, font_size).Width);
+            if (owner is Menu menu && renderer is MenuRenderer menu_renderer)
+                return menu_renderer.GetPreferredItemSize (menu, this, proposedSize);
 
-                if (!(Image is null))
-                    width += bar.LogicalToDeviceUnits (20);
+            if (owner is ToolBar tb && renderer is ToolBarRenderer tb_renderer)
+                return tb_renderer.GetPreferredItemSize (tb, this, proposedSize);
 
-                if (HasItems)
-                    width += bar.LogicalToDeviceUnits (14);
-
-                return new Size (width, Bounds.Height);
-            }
-
-            if (owner is MenuDropDown dropdown) {
-                var padding = dropdown.LogicalToDeviceUnits (Padding);
-                var font_size = dropdown.LogicalToDeviceUnits (Theme.FontSize);
-                var text_size = TextMeasurer.MeasureText (Text, Theme.UIFont, font_size);
-
-                return new Size ((int)Math.Round (text_size.Width, 0, MidpointRounding.AwayFromZero) + padding.Horizontal + dropdown.LogicalToDeviceUnits (70), (int)Math.Round (text_size.Height, 0, MidpointRounding.AwayFromZero) + dropdown.LogicalToDeviceUnits (8));
-            }
+            if (owner is MenuDropDown mdd && renderer is MenuDropDownRenderer mdd_renderer)
+                return mdd_renderer.GetPreferredItemSize (mdd, this, proposedSize);
 
             return proposedSize;
         }
@@ -74,8 +93,14 @@ namespace Modern.Forms
             return (root.OwnerControl as MenuBase);
         }
 
+        /// <summary>
+        /// Gets a value indicating if this menu item has any child items.
+        /// </summary>
         public bool HasItems => items?.Any () == true;
 
+        /// <summary>
+        /// Closes the menu item's drop down.
+        /// </summary>
         public void HideDropDown ()
         {
             selected = false;
@@ -87,109 +112,41 @@ namespace Modern.Forms
                 child.HideDropDown ();
         }
 
+        /// <summary>
+        /// Gets a value indicating the mouse cursor is currently hovering over this menu item.
+        /// </summary>
         public bool Hovered { get; internal set; }
 
+        /// <summary>
+        /// Gets or sets an image to be displayed on the menu item.
+        /// </summary>
         public SKBitmap? Image { get; set; }
 
+        /// <summary>
+        /// Gets a value indicating this menu item's drop down is currently open.
+        /// </summary>
         public bool IsDropDownOpened { get; private set; }
 
+        /// <summary>
+        /// Gets the collection of menu items contained by this menu item.
+        /// </summary>
         public MenuItemCollection Items => items ??= new MenuItemCollection (this);
 
+        /// <summary>
+        /// Gets or sets the margin of this menu item.
+        /// </summary>
         public Padding Margin { get; set; } = Padding.Empty;
 
-        public virtual void OnClick (MouseEventArgs e)
+        /// <summary>
+        /// Raises the Click event.
+        /// </summary>
+        protected internal virtual void OnClick (MouseEventArgs e)
         {
             Click?.Invoke (this, e);
         }
 
-        public virtual void OnPaint (SKCanvas canvas)
-        {
-            var owner = OwnerControl;
-
-            if (owner is Menu menu) {
-                // Background
-                var background_color = Hovered || IsDropDownOpened ? Theme.RibbonItemHighlightColor : Theme.NeutralGray;
-                canvas.FillRectangle (Bounds, background_color);
-
-                // Text
-                var font_color = Theme.DarkTextColor;
-                var font_size = menu.LogicalToDeviceUnits (Theme.FontSize);
-
-                canvas.DrawText (Text, Theme.UIFont, font_size, Bounds, font_color, ContentAlignment.MiddleCenter);
-
-                return;
-            }
-
-            if (owner is ToolBar bar) {
-                // Background
-                var background_color = Hovered || IsDropDownOpened ? Theme.RibbonItemHighlightColor : Theme.NeutralGray;
-                canvas.FillRectangle (Bounds, background_color);
-
-                var bounds = Bounds;
-                bounds.X += bar.LogicalToDeviceUnits (8);
-
-                // Image
-                if (Image != null) {
-                    var image_size = bar.LogicalToDeviceUnits (20);
-                    var image_bounds = DrawingExtensions.CenterSquare (Bounds, image_size);
-                    var image_rect = new Rectangle (bounds.Left, image_bounds.Top, image_size, image_size);
-                    canvas.DrawBitmap (Image, image_rect);
-
-                    bounds.X += bar.LogicalToDeviceUnits (28);
-                } else {
-                    bounds.X += bar.LogicalToDeviceUnits (4);
-                }
-
-                // Text
-                var font_color = Theme.DarkTextColor;
-                var font_size = bar.LogicalToDeviceUnits (Theme.FontSize);
-
-                bounds.Y += 1;
-                canvas.DrawText (Text, Theme.UIFont, font_size, bounds, font_color, ContentAlignment.MiddleLeft);
-                bounds.Y -= 1;
-
-                // Dropdown Arrow
-                if (HasItems) {
-                    var arrow_bounds = DrawingExtensions.CenterSquare (Bounds, 16);
-                    var arrow_area = new Rectangle (Bounds.Right - bar.LogicalToDeviceUnits (16) - 4, arrow_bounds.Top, 16, 16);
-                    ControlPaint.DrawArrowGlyph (new PaintEventArgs (SKImageInfo.Empty, canvas, bar.Scaling), arrow_area, Theme.DarkTextColor, ArrowDirection.Down);
-                }
-
-                return;
-            }
-
-            if (owner is MenuDropDown dropdown) {
-                // Background
-                var background_color = Hovered || IsDropDownOpened ? Theme.RibbonItemHighlightColor : Theme.LightTextColor;
-                canvas.FillRectangle (Bounds, background_color);
-
-                // Image
-                if (Image != null) {
-                    var image_size = dropdown.LogicalToDeviceUnits (16);
-                    var image_bounds = DrawingExtensions.CenterSquare (Bounds, image_size);
-                    var image_rect = new Rectangle (Bounds.Left + dropdown.LogicalToDeviceUnits (6), image_bounds.Top, image_size, image_size);
-                    canvas.DrawBitmap (Image, image_rect);
-                }
-
-                // Text
-                var font_color = Theme.DarkTextColor;
-                var font_size = dropdown.LogicalToDeviceUnits (Theme.FontSize);
-                var bounds = Bounds;
-                bounds.X += dropdown.LogicalToDeviceUnits (28);
-                canvas.DrawText (Text, Theme.UIFont, font_size, bounds, font_color, ContentAlignment.MiddleLeft);
-
-                // Dropdown Arrow
-                if (HasItems) {
-                    var arrow_bounds = DrawingExtensions.CenterSquare (Bounds, 16);
-                    var arrow_area = new Rectangle (Bounds.Right - dropdown.LogicalToDeviceUnits (16) - 4, arrow_bounds.Top, 16, 16);
-                    ControlPaint.DrawArrowGlyph (new PaintEventArgs (SKImageInfo.Empty, canvas, dropdown.Scaling), arrow_area, Theme.DarkTextColor, ArrowDirection.Right);
-                }
-
-                return;
-            }
-        }
-
-        internal Control? OwnerControl {
+        // The Control that owns this menu item.
+        private Control? OwnerControl {
             get {
                 if (ParentControl != null)
                     return ParentControl;
@@ -201,14 +158,22 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Gets or sets the amount of padding to apply to the menu item.
+        /// </summary>
         public Padding Padding { get; set; } = new Padding (14, 3, 14, 3);
 
-        // If this is a sub MenuItem, this is the parent MenuItem
+        /// <summary>
+        /// The parent menu item this item belongs to, if any.
+        /// </summary>
         public MenuItem? Parent { get; internal set; }
 
         // The control this MenuItem is parented to, for example a MenuDropDown or a Menu
         internal Control? ParentControl { get; set; }
 
+        /// <summary>
+        /// Gets a value indicating if this menu item is currently selected.
+        /// </summary>
         public bool Selected {
             get => selected;
             internal set {
@@ -223,11 +188,17 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Sets the bounds of the menu item. This API is considered internal and is not intended for public use.
+        /// </summary>
         public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
         {
             Bounds = new Rectangle (x, y, width, height);
         }
 
+        /// <summary>
+        /// Shows this menu items drop down, if any.
+        /// </summary>
         public void ShowDropDown ()
         {
             if (HasItems && OwnerControl != null) {
@@ -245,6 +216,9 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Gets or sets the text of the menu item.
+        /// </summary>
         public string Text { get; set; } = string.Empty;
     }
 }

@@ -9,6 +9,22 @@ namespace ControlGallery.Panels
     {
         public ToolBarPanel ()
         {
+            var tb2 = Controls.Add (new ToolBar { Enabled = false });
+            tb2.Items.Add (new MenuItem ("Parent Folder", ImageLoader.Get ("folder-up.png")));
+            tb2.Items.Add (new MenuSeparatorItem ());
+
+            var search2 = tb2.Items.Add (new MenuItem ("Search", ImageLoader.Get ("search.png")));
+
+            search2.Items.Add ("Images");
+            search2.Items.Add ("Music");
+            search2.Items.Add ("Movies");
+            search2.Items.Add (new MenuSeparatorItem ());
+
+            var more2 = search2.Items.Add ("More");
+            more2.Items.Add ("Zips");
+            more2.Items.Add ("Apps");
+            more2.Items.Add ("Games");
+
             var tb = new ToolBar ();
 
             tb.Items.Add (new MenuItem ("Parent Folder", ImageLoader.Get ("folder-up.png")));
@@ -24,7 +40,7 @@ namespace ControlGallery.Panels
 
             var more = search.Items.Add ("More");
             more.Items.Add ("Zips");
-            more.Items.Add ("Apps");
+            more.Items.Add ("Apps").Enabled = false;
             more.Items.Add ("Games");
 
             var delete = tb.Items.Add (new MenuItem ("Delete", ImageLoader.Get ("delete-red.png")));
@@ -33,9 +49,10 @@ namespace ControlGallery.Panels
             delete.Items.Add ("Permanently delete");
 
             tb.Items.Add (new MenuItem ("Email"));
-            tb.Items.Add (new MenuItem ("Zip", ImageLoader.Get ("compress.png")));
+            tb.Items.Add (new MenuItem ("Zip", ImageLoader.Get ("compress.png")) { Enabled = false });
 
             Controls.Add (tb);
+
         }
     }
 }

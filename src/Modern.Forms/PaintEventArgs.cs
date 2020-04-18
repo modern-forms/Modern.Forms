@@ -27,6 +27,14 @@ namespace Modern.Forms
         /// <returns>value in device units</returns>
         public int LogicalToDeviceUnits (int value) => (int)Math.Round (Scaling * value);
 
-        public Size LogicalToDeviceUnits (Size value) => new Size ((int)Math.Round (Scaling * value.Width), (int)Math.Round (Scaling * value.Height));
+        public Size LogicalToDeviceUnits (Size value) => new Size (LogicalToDeviceUnits (value.Width), LogicalToDeviceUnits (value.Height));
+
+        public Padding LogicalToDeviceUnits (Padding logicalPadding)
+        {
+            return new Padding (LogicalToDeviceUnits (logicalPadding.Left),
+                                LogicalToDeviceUnits (logicalPadding.Top),
+                                LogicalToDeviceUnits (logicalPadding.Right),
+                                LogicalToDeviceUnits (logicalPadding.Bottom));
+        }
     }
 }

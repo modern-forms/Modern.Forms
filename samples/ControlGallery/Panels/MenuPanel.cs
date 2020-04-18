@@ -34,6 +34,8 @@ namespace ControlGallery.Panels
             var cut = edit.Items.Add ("Cut", ImageLoader.Get ("cut.png"));
             var paste = edit.Items.Add ("Paste", ImageLoader.Get ("paste.png"));
 
+            menu.Items.Add ("Disabled").Enabled = false;
+
             Controls.Add (menu);
 
             var label = Controls.Add (new Label { Left = 250, Top = 10, Width = 200, Height = 50 });
