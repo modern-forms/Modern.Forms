@@ -3,6 +3,9 @@ using System.Drawing;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a TabStripItem.
+    /// </summary>
     public class TabStripItem : ILayoutable
     {
         private bool enabled = true;

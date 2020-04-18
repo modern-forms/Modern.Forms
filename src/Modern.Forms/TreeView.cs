@@ -2,19 +2,15 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Modern.Forms.Renderers;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a TreeView control.
+    /// </summary>
     public class TreeView : Control
     {
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => {
-                style.BackgroundColor = Theme.LightNeutralGray;
-                style.Border.Width = 1;
-            });
-
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
-
         private readonly TreeViewItem root_item;
         private int top_index = 0;
         private bool show_dropdown_glyph = true;
@@ -22,114 +18,88 @@ namespace Modern.Forms
         private bool virtual_mode;
         private readonly VerticalScrollBar vscrollbar;
 
+        /// <summary>
+        /// Initializes a new instance of the TreeView class.
+        /// </summary>
         public TreeView ()
         {
             root_item = new TreeViewItem (this) {
                 Expanded = true
             };
 
-            vscrollbar = new VerticalScrollBar {
+            vscrollbar = Controls.AddImplicitControl (new VerticalScrollBar {
                 Minimum = 0,
                 Maximum = 0,
                 SmallChange = 1,
                 LargeChange = 1,
                 Visible = false,
                 Dock = DockStyle.Right
-            };
+            });
 
             vscrollbar.ValueChanged += VerticalScrollBar_ValueChanged;
-
-            Controls.AddImplicitControl (vscrollbar);
         }
 
+        /// <summary>
+        /// Raised before a node is expanded.
+        /// </summary>
         public event EventHandler<EventArgs<TreeViewItem>>? BeforeExpand;
-        public event EventHandler<EventArgs<TreeViewItem>>? ItemSelected;
 
-        public TreeViewItem GetItemAtLocation (Point location) => root_item.GetVisibleItems ().FirstOrDefault (tp => tp.Bounds.Contains (location));
+        /// <inheritdoc/>
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+            (style) => {
+                style.BackgroundColor = Theme.LightNeutralGray;
+                style.Border.Width = 1;
+            });
 
-        public TreeViewItemCollection Items => root_item.Items;
-
-        public TreeViewItem SelectedItem {
-            get => GetAllItems ().FirstOrDefault (i => i.Selected);
-            set {
-                // Don't allow user to unselect items
-                if (value == null)
-                    return;
-
-                var old = SelectedItem;
-
-                if (old == value)
-                    return;
-
-                if (old != null)
-                    old.Selected = false;
-
-                value.Selected = true;
-
-                Invalidate ();
-
-                OnItemSelected (new EventArgs<TreeViewItem> (value));
-            }
-        }
-
-        public bool ShowDropdownGlyph {
-            get => show_dropdown_glyph;
-            set {
-                if (show_dropdown_glyph != value) {
-                    show_dropdown_glyph = value;
-                    Invalidate ();
-                }
-            }
-        }
-
-        public bool ShowItemImages {
-            get => show_item_images;
-            set {
-                if (show_item_images != value) {
-                    show_item_images = value;
-                    Invalidate ();
-                }
-            }
-        }
-
+        /// <inheritdoc/>
         protected override Size DefaultSize => new Size (250, 500);
 
-        protected virtual void OnItemSelected (EventArgs<TreeViewItem> e) => ItemSelected?.Invoke (this, e);
+        /// <summary>
+        /// Returns the TreeViewItem at the specified location.
+        /// </summary>
+        public TreeViewItem? GetItemAtLocation (Point location) => root_item.GetVisibleItems ().FirstOrDefault (tp => tp.Bounds.Contains (location));
 
-        protected override void OnMouseWheel (MouseEventArgs e)
+        // Enumerates through every visible TreeViewItem. Note items may not be in the currently shown part.
+        internal IEnumerable<TreeViewItem> GetVisibleItems () => root_item.GetVisibleItems ().Skip (1 + top_index);
+
+        /// <summary>
+        /// Gets the collection of items contained by this TreeView.
+        /// </summary>
+        public TreeViewItemCollection Items => root_item.Items;
+
+        /// <summary>
+        /// Raised when an item is selected.
+        /// </summary>
+        public event EventHandler<EventArgs<TreeViewItem>>? ItemSelected;
+
+        // Runs a layout pass on all TreeViewItems.
+        private List<TreeViewItem> LayoutItems ()
         {
-            base.OnMouseWheel (e);
+            UpdateVerticalScrollBar ();
+
+            var visible_items = root_item.GetVisibleItems ().Skip (1 + top_index).ToList ();  // Skip the root element
+            var client_rect = ClientRectangle;
 
             if (vscrollbar.Visible)
-                vscrollbar.RaiseMouseWheel (e);
+                client_rect.Width -= (client_rect.Width - vscrollbar.ScaledLeft + 1);
+
+            StackLayoutEngine.VerticalExpand.Layout (client_rect, visible_items.Cast<ILayoutable> ());
+
+            return visible_items;
         }
 
-        protected override void OnPaint (PaintEventArgs e)
-        {
-            var visible_items = LayoutItems ();
-
-            base.OnPaint (e);
-
-            e.Canvas.Save ();
-            e.Canvas.Clip (ClientRectangle);
-
-            foreach (var item in visible_items.Take (VisibleItemCount + 1))
-                item.OnPaint (e);
-
-            e.Canvas.Restore ();
-        }
-
+        /// <summary>
+        /// Raises the BeforeExpand event.
+        /// </summary>
         public void OnBeforeExpand (EventArgs<TreeViewItem> e) => BeforeExpand?.Invoke (this, e);
 
+        /// <inheritdoc/>
         protected override void OnClick (MouseEventArgs e)
         {
-            if (!Enabled)
-                return;
-
             var item = GetItemAtLocation (e.Location);
 
             // If an item wasn't clicked, let the base run and nothing else
-            if (item == null) {
+            if (item is null) {
                 base.OnClick (e);
                 return;
             }
@@ -153,19 +123,20 @@ namespace Modern.Forms
             if (element == TreeViewItem.TreeViewItemElement.Glyph)
                 item.Expanded = !item.Expanded;
             else
-                SelectedItem = GetItemAtLocation (e.Location);
+                SelectedItem = item;
         }
 
+        /// <inheritdoc/>
         protected override void OnDoubleClick (MouseEventArgs e)
         {
             base.OnDoubleClick (e);
 
-            if (!Enabled || !e.Button.HasFlag (MouseButtons.Left))
+            if (!e.Button.HasFlag (MouseButtons.Left))
                 return;
 
             var item = GetItemAtLocation (e.Location);
 
-            if (item == null)
+            if (item is null)
                 return;
 
             var element = item.GetElementAtLocation (e.Location);
@@ -174,6 +145,60 @@ namespace Modern.Forms
                 item.Expanded = !item.Expanded;
         }
 
+        /// <summary>
+        /// Raises the ItemSelected event.
+        /// </summary>
+        protected virtual void OnItemSelected (EventArgs<TreeViewItem> e) => ItemSelected?.Invoke (this, e);
+
+        /// <inheritdoc/>
+        protected override void OnMouseWheel (MouseEventArgs e)
+        {
+            base.OnMouseWheel (e);
+
+            if (vscrollbar.Visible)
+                vscrollbar.RaiseMouseWheel (e);
+        }
+
+        /// <inheritdoc/>
+        protected override void OnPaint (PaintEventArgs e)
+        {
+            LayoutItems ();
+
+            base.OnPaint (e);
+
+            RenderManager.Render (this, e);
+        }
+
+        // The scaled height of each TreeViewItem.
+        internal int ScaledItemHeight => root_item.GetPreferredSize (Size.Empty).Height;
+
+        /// <summary>
+        /// Gets or sets the currently selected TreeViewItem.
+        /// </summary>
+        public TreeViewItem SelectedItem {
+            get => root_item.GetAllItems ().FirstOrDefault (i => i.Selected);
+            set {
+                // Don't allow user to unselect items
+                if (value is null)
+                    return;
+
+                var current_selection = SelectedItem;
+
+                if (current_selection == value)
+                    return;
+
+                if (current_selection != null)
+                    current_selection.Selected = false;
+
+                value.Selected = true;
+
+                Invalidate ();
+
+                OnItemSelected (new EventArgs<TreeViewItem> (value));
+            }
+        }
+
+        /// <inheritdoc/>
         protected override void SetBoundsCore (int x, int y, int width, int height, BoundsSpecified specified)
         {
             base.SetBoundsCore (x, y, width, height, specified);
@@ -181,33 +206,43 @@ namespace Modern.Forms
             UpdateVerticalScrollBar ();
         }
 
-        private IEnumerable<TreeViewItem> GetAllItems () => root_item.GetAllItems ();
-
-        private int ScaledItemHeight => root_item.GetPreferredSize (Size.Empty).Height;
-
-        private List<TreeViewItem> LayoutItems ()
-        {
-            UpdateVerticalScrollBar ();
-
-            var visible_items = root_item.GetVisibleItems ().Skip (1 + top_index).ToList ();  // Skip the root element
-            var client_rect = ClientRectangle;
-
-            if (vscrollbar.Visible)
-                client_rect.Width -= (client_rect.Width - vscrollbar.ScaledLeft);
-
-            StackLayoutEngine.VerticalExpand.Layout (client_rect, visible_items.Cast<ILayoutable> ());
-
-            return visible_items;
+        /// <summary>
+        /// Gets or sets a value indicating the drop down glyph should be shown.
+        /// </summary>
+        public bool ShowDropdownGlyph {
+            get => show_dropdown_glyph;
+            set {
+                if (show_dropdown_glyph != value) {
+                    show_dropdown_glyph = value;
+                    Invalidate ();
+                }
+            }
         }
 
-        private int NeededHeightForItems => ScaledItemHeight * root_item.GetVisibleChildrenCount ();
+        /// <summary>
+        /// Gets or sets a value indicating item images should be shown.
+        /// </summary>
+        public bool ShowItemImages {
+            get => show_item_images;
+            set {
+                if (show_item_images != value) {
+                    show_item_images = value;
+                    Invalidate ();
+                }
+            }
+        }
 
+        /// <inheritdoc/>
+        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+
+        // Determines scrollbar visibility and scrollbar values.
         private void UpdateVerticalScrollBar ()
         {
             if (Items.Count == 0)
                 vscrollbar.Visible = false;
 
-            if (NeededHeightForItems > ScaledHeight) {
+            // See if we need more height than we have.
+            if (ScaledItemHeight * root_item.GetVisibleChildrenCount () > ScaledHeight) {
                 if (!vscrollbar.Visible)
                     vscrollbar.Value = 0;
 
@@ -220,6 +255,7 @@ namespace Modern.Forms
             }
         }
 
+        // Handles scrollbar scrolling.
         private void VerticalScrollBar_ValueChanged (object? sender, EventArgs e)
         {
             top_index = vscrollbar.Value;
@@ -227,6 +263,9 @@ namespace Modern.Forms
             Invalidate ();
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating if TreeViewItem nodes will be resolved when expanded.
+        /// </summary>
         public bool VirtualMode {
             get => virtual_mode;
             set {
@@ -237,6 +276,7 @@ namespace Modern.Forms
             }
         }
 
+        // The number of items that can be shown with the current height.
         private int VisibleItemCount => ScaledHeight / ScaledItemHeight;
     }
 }

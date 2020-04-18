@@ -24,8 +24,6 @@ namespace ControlGallery.Panels
             tb2.Tabs.Add (new TabStripItem { Text = "File" });
             tb2.Tabs.Add (new TabStripItem { Text = "Share" });
             tb2.Tabs.Add ("View");
-
-            tb2.SelectedIndex = 1;
         }
     }
 }

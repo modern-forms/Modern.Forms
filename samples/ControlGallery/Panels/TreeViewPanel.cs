@@ -51,10 +51,13 @@ namespace ControlGallery.Panels
 
             show_images.CheckedChanged += (o, e) => tree.ShowItemImages = show_images.Checked;
 
+            var enabled = Controls.Add (new CheckBox { Text = "Enabled", Left = 550, Top = 70, Width = 200, Checked = true });
+            enabled.CheckedChanged += (o, e) => tree.Enabled = enabled.Checked;
+
             var virtual_mode = Controls.Add (new CheckBox {
                 Text = "Virtual Mode",
                 Left = 550,
-                Top = 70,
+                Top = 100,
                 Width = 200
             });
 

@@ -18,11 +18,6 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Adds a new TabStripItem to the collection with the specified text.
-        /// </summary>
-        public TabStripItem Add (string text) => Add (new TabStripItem { Text = text });
-
-        /// <summary>
         /// Adds the TabStripItem to the collection.
         /// </summary>
         public new TabStripItem Add (TabStripItem item)
@@ -32,6 +27,11 @@ namespace Modern.Forms
 
             return item;
         }
+
+        /// <summary>
+        /// Adds a new TabStripItem to the collection with the specified text.
+        /// </summary>
+        public TabStripItem Add (string text) => Add (new TabStripItem { Text = text });
 
         /// <summary>
         /// Gets or sets the index of the tab the mouse is currently hovered over.
@@ -62,12 +62,23 @@ namespace Modern.Forms
         /// <inheritdoc/>
         protected override void RemoveItem (int index)
         {
-            this[index].Parent = null;
+            var item = this[index];
+
+            item.Parent = null;
+
+            var selected_tab = owner.SelectedTab;
 
             base.RemoveItem (index);
 
-            if (owner.SelectedTab == null && Count > 0)
-                owner.SelectedTab = this[0];
+            if (selected_tab == item && Count > 0) {
+                // Need to temporarily set this to nothing in case the index doesn't change,
+                // we still want to force it to be treated like a new selection.
+                selected_index = -1;
+                owner.SelectedIndex = Math.Max (index - 1, 0);
+            } 
+
+            if (selected_tab is null && Count > 0)
+                owner.SelectedIndex = 0;
             else
                 owner.Invalidate ();
         }

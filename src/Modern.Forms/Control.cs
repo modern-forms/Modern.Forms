@@ -745,7 +745,7 @@ namespace Modern.Forms
 
             if (child != null)
                 child.RaiseDoubleClick (MouseEventsForControl (e, child));
-            else
+            else if (Enabled)
                 OnDoubleClick (e);
         }
 

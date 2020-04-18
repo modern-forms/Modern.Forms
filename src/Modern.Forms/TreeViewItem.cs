@@ -1,40 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using Modern.Forms.Renderers;
 using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a TreeViewItem.
+    /// </summary>
     public class TreeViewItem : ILayoutable
     {
-        private const int INDENT_SIZE = 18;
-        private const int IMAGE_SIZE = 16;
-        private const int GLYPH_SIZE = 10;
-
         private readonly TreeView? tree_view;
 
         private bool expanded;
-        private TreeViewItemCollection? items;
+        internal TreeViewItemCollection? items;
 
-        public ContextMenu? ContextMenu { get; set; }
-
-        public string Text { get; set; } = string.Empty;
-        public SKBitmap? Image { get; set; }
-        public TreeViewItemCollection Items => items ??= new TreeViewItemCollection (this);
-        public bool Selected { get; set; }
-        public object? Tag { get; set; }
-        public TreeViewItem? Parent { get; internal set; }
-
-        public Rectangle Bounds { get; private set; }
-
-        public Padding Margin => new Padding (0);
-
+        /// <summary>
+        /// Initializes a new instance of the TreeViewItem class.
+        /// </summary>
         public TreeViewItem ()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the TreeViewItem class with the specified text.
+        /// </summary>
         public TreeViewItem (string text) : this () => Text = text;
 
+        /// <summary>
+        /// Initializes a new instance of the TreeViewItem class with the specified text and child nodes.
+        /// </summary>
         public TreeViewItem (string text, params TreeViewItem[] children) : this (text) => Items.AddRange (children);
 
         // This constructor is used by the TreeView to create the root node
@@ -44,6 +41,19 @@ namespace Modern.Forms
             Expanded = true;
         }
 
+        /// <summary>
+        /// Gets the current bounding box of the tab.
+        /// </summary>
+        public Rectangle Bounds { get; private set; }
+
+        /// <summary>
+        /// Gets or sets a context menu to display when the item is right-clicked.
+        /// </summary>
+        public ContextMenu? ContextMenu { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating this node is showing its child nodes.
+        /// </summary>
         public bool Expanded {
             get => expanded;
             set {
@@ -61,6 +71,42 @@ namespace Modern.Forms
             }
         }
 
+        // Get an IEnumerable of this item and all of its children, recursive.
+        internal IEnumerable<TreeViewItem> GetAllItems ()
+        {
+            yield return this;
+
+            if (HasChildren)
+                foreach (var item in Items)
+                    foreach (var child in item.GetAllItems ())
+                        yield return child;
+        }
+
+        // Gets the element of the item at the specified location.
+        internal TreeViewItemElement GetElementAtLocation (Point location)
+        {
+            var tv = TreeView;
+
+            if (tv is null)
+                return TreeViewItemElement.None;
+
+            var renderer = RenderManager.GetRenderer<TreeViewRenderer> ();
+
+            var glyph_bounds = renderer!.GetGlyphBounds (tv, this);
+
+            // Give the user a slightly more generous click target
+            if (!glyph_bounds.IsEmpty)
+                glyph_bounds.Inflate (4, 4);
+
+            if (glyph_bounds.Contains (location))
+                return TreeViewItemElement.Glyph;
+
+            return TreeViewItemElement.None;
+        }
+
+        /// <summary>
+        /// Gets the preferred size of the tab.
+        /// </summary>
         public Size GetPreferredSize (Size proposedSize)
         {
             var font_size = LogicalToDeviceUnits (Theme.FontSize);
@@ -69,8 +115,37 @@ namespace Modern.Forms
             return new Size (0, font_size + padding);
         }
 
+        // Gets the number of currently visible children nodes, recursively.
+        // Note this is nodes whose state is visible (parent is expanded).
+        // Not necessarily nodes currently scrolled into view.
+        internal int GetVisibleChildrenCount () => GetVisibleItems ().Count () - 1;
+
+        // Gets an enumerator of this node and currently visible children nodes, recursively.
+        // Note this is nodes whose state is visible (parent is expanded).
+        // Not necessarily nodes currently scrolled into view.
+        internal IEnumerable<TreeViewItem> GetVisibleItems ()
+        {
+            yield return this;
+
+            if (Expanded && HasChildren)
+                foreach (var item in Items)
+                    foreach (var child in item.GetVisibleItems ())
+                        yield return child;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this item contains child items.
+        /// </summary>
         public bool HasChildren => (items?.Count ?? 0) > 0;
 
+        /// <summary>
+        /// Gets or sets the image of the item.
+        /// </summary>
+        public SKBitmap? Image { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating how many levels this item is nested from the root.
+        /// </summary>
         public int IndentLevel {
             get {
                 // Root node is -1
@@ -85,16 +160,53 @@ namespace Modern.Forms
             }
         }
 
-        public void Invalidate ()
+        // Invalidates the node.
+        internal void Invalidate ()
         {
             TreeView?.Invalidate ();
         }
 
+        /// <summary>
+        /// Gets the collection of child nodes.
+        /// </summary>
+        public TreeViewItemCollection Items => items ??= new TreeViewItemCollection (this);
+
+        /// <summary>
+        /// Gets the amount of margin to leave around this item. This is internal API and should not be called.
+        /// </summary>
+        public Padding Margin => Padding.Empty;
+
+        /// <summary>
+        /// The parent item that contains this item.
+        /// </summary>
+        public TreeViewItem? Parent { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating this item is currently selected.
+        /// </summary>
+        public bool Selected { get; set; }
+
+        /// <summary>
+        /// Sets the bounding box of the tab. This is internal API and should not be called.
+        /// </summary>
         public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
         {
             Bounds = new Rectangle (x, y, width, height);
         }
 
+        /// <summary>
+        /// Gets or sets an object with additional user data about this item.
+        /// </summary>
+        public object? Tag { get; set; }
+
+        /// <summary>
+        /// Gets or sets the text of the item.
+        /// </summary>
+        public string Text { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets the TreeView that contains this item.
+        /// </summary>
         public TreeView? TreeView {
             get {
                 if (tree_view != null)
@@ -104,129 +216,7 @@ namespace Modern.Forms
             }
         }
 
-        internal IEnumerable<TreeViewItem> GetAllItems ()
-        {
-            yield return this;
-
-            if (HasChildren)
-                foreach (var item in Items)
-                    foreach (var child in item.GetAllItems ())
-                        yield return child;
-        }
-
-        internal TreeViewItemElement GetElementAtLocation (Point location)
-        {
-            // Give the user a slightly more generous click target
-            var glyph_bounds = GetGlyphBounds ();
-
-            if (!glyph_bounds.IsEmpty)
-                glyph_bounds.Inflate (4, 4);
-
-            if (glyph_bounds.Contains (location))
-                return TreeViewItemElement.Glyph;
-
-            return TreeViewItemElement.None;
-        }
-
-        internal Rectangle GetGlyphBounds ()
-        {
-            if (!ShowDropdownGlyph)
-                return Rectangle.Empty;
-
-            var glyph_area = new Rectangle (GetIndentStart (), Bounds.Top, LogicalToDeviceUnits (GLYPH_SIZE), Bounds.Height);
-            var glyph_bounds = DrawingExtensions.CenterSquare (glyph_area, LogicalToDeviceUnits (GLYPH_SIZE));
-
-            glyph_bounds.Width = LogicalToDeviceUnits (GLYPH_SIZE);
-
-            return glyph_bounds;
-        }
-
-        internal Rectangle GetImageBounds ()
-        {
-            if (!ShowItemImage || Image is null)
-                return Rectangle.Empty;
-
-            var left_index = ShowDropdownGlyph ? GetGlyphBounds ().Right : GetIndentStart ();
-            var image_area = new Rectangle (left_index, Bounds.Top, Bounds.Height, Bounds.Height);
-
-            return DrawingExtensions.CenterSquare (image_area, LogicalToDeviceUnits (IMAGE_SIZE));
-        }
-
-        internal int GetIndentStart () => Bounds.Left + IndentLevel * LogicalToDeviceUnits (INDENT_SIZE) + 2;
-
-        internal Rectangle GetTextBounds ()
-        {
-            var show_glyph = ShowDropdownGlyph;
-            var show_image = ShowItemImage;
-
-            if (!show_glyph && !show_image)
-                return new Rectangle (GetIndentStart (), Bounds.Top, Bounds.Width - GetIndentStart (), Bounds.Height);
-
-            // One of these will be valid because we handled the other case above
-            var padding = LogicalToDeviceUnits (6);
-            var used_bounds = show_image ? GetImageBounds () : GetGlyphBounds ();
-            return new Rectangle (used_bounds.Right + padding, Bounds.Top, Bounds.Right - used_bounds.Right - padding, Bounds.Height);
-        }
-
-        internal int GetVisibleChildrenCount ()
-        {
-            var value = 0;
-
-            if (!Expanded || !HasChildren)
-                return value;
-
-            foreach (var item in Items)
-                value += 1 + item.GetVisibleChildrenCount ();
-
-            return value;
-        }
-
-        internal IEnumerable<TreeViewItem> GetVisibleItems ()
-        {
-            yield return this;
-
-            if (Expanded && HasChildren)
-                foreach (var item in Items)
-                    foreach (var child in item.GetVisibleItems ())
-                        yield return child;
-        }
-
-        internal void OnPaint (PaintEventArgs e)
-        {
-            var background_color = Selected ? Theme.RibbonItemHighlightColor : Theme.LightNeutralGray;
-
-            e.Canvas.FillRectangle (Bounds, background_color);
-
-            var tree_view = TreeView;
-
-            if (tree_view?.ShowDropdownGlyph == true) {
-                var glyph_bounds = GetGlyphBounds ();
-
-                if (ShouldDrawDropdownGlyph)
-                    ControlPaint.DrawArrowGlyph (e, glyph_bounds, Theme.DarkTextColor, Expanded ? ArrowDirection.Down : ArrowDirection.Right);
-            }
-
-            if (tree_view?.ShowItemImages == true && Image != null) {
-                var image_bounds = GetImageBounds ();
-
-                e.Canvas.DrawBitmap (Image!, image_bounds);
-            }
-
-            if (string.IsNullOrWhiteSpace (Text))
-                return;
-
-            var text_bounds = GetTextBounds ();
-
-            e.Canvas.DrawText (Text.Trim (), Theme.UIFont, LogicalToDeviceUnits (Theme.FontSize), text_bounds, Theme.DarkTextColor, ContentAlignment.MiddleLeft);
-        }
-
         private int LogicalToDeviceUnits (int value) => TreeView?.LogicalToDeviceUnits (value) ?? value;
-
-        private bool ShouldDrawDropdownGlyph => ShowDropdownGlyph && (HasChildren || (TreeView?.VirtualMode == true && items == null));
-
-        private bool ShowDropdownGlyph => TreeView?.ShowDropdownGlyph == true;
-
-        private bool ShowItemImage => TreeView?.ShowItemImages == true;
 
         protected internal enum TreeViewItemElement
         {

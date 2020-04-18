@@ -3,23 +3,33 @@ using System.Collections.ObjectModel;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a collection of TabPages.
+    /// </summary>
     public class TabPageCollection : Collection<TabPage>
     {
-        private readonly TabControl tab_control;
+        private readonly TabControl owner;
         private readonly TabStrip tab_strip;
 
-        internal TabPageCollection (TabControl tabControl, TabStrip tabStrip)
+        internal TabPageCollection (TabControl owner, TabStrip tabStrip)
         {
-            tab_control = tabControl;
+            this.owner = owner;
             tab_strip = tabStrip;
         }
 
-        public TabPage Add (string text)
-        {
-            var page = new TabPage { Text = text };
-            Add (page);
+        /// <summary>
+        /// Adds a new TabPage to the collection with the specified text.
+        /// </summary>
+        public TabPage Add (string text) => Add (new TabPage (text));
 
-            return page;
+        /// <summary>
+        /// Adds the TabPage to the collection.
+        /// </summary>
+        public new TabPage Add (TabPage item)
+        {
+            base.Add (item);
+
+            return item;
         }
 
         protected override void InsertItem (int index, TabPage item)
@@ -27,15 +37,15 @@ namespace Modern.Forms
             base.InsertItem (index, item);
 
             item.Visible = false;
-            tab_control.Controls.Insert (index, item);
-            tab_strip.Tabs.Insert (index, CreateTabStripItem (item));
+            owner.Controls.Insert (index, item);
+            tab_strip.Tabs.Insert (index, item.TabStripItem);
         }
 
         protected override void RemoveItem (int index)
         {
             base.RemoveItem (index);
             
-            tab_control.Controls.RemoveAt (index);
+            owner.Controls.RemoveAt (index);
             tab_strip.Tabs.RemoveAt (index);
         }
 
@@ -44,10 +54,8 @@ namespace Modern.Forms
             base.SetItem (index, item);
 
             item.Visible = false;
-            tab_control.Controls[index] = item;
-            tab_strip.Tabs[index] = CreateTabStripItem (item);
+            owner.Controls[index] = item;
+            tab_strip.Tabs[index] = item.TabStripItem;
         }
-
-        private TabStripItem CreateTabStripItem (TabPage item) => new TabStripItem { Text = item.Text, Tag = item };
     }
 }

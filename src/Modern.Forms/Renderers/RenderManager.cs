@@ -22,7 +22,9 @@ namespace Modern.Forms.Renderers
             SetRenderer<RadioButton> (new RadioButtonRenderer ());
             SetRenderer<ScrollableControl> (new ScrollableControlRenderer ());
             SetRenderer<ScrollBar> (new ScrollBarRenderer ());
+            SetRenderer<TabControl> (new TabControlRenderer ());
             SetRenderer<TabStrip> (new TabStripRenderer ());
+            SetRenderer<TreeView> (new TreeViewRenderer ());
         }
 
         public static T? GetRenderer<T> () where T : Renderer
