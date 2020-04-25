@@ -21,6 +21,9 @@ namespace Modern.Forms
 
         public static SKSize MeasureText (string text, SKTypeface font, int fontSize, Size maxSize)
         {
+            if (!text.HasValue ())
+                return SKSize.Empty;
+
             var tb = CreateTextBlock (text, font, fontSize, maxSize);
 
             return new SKSize (tb.MeasuredWidth, tb.MeasuredHeight);

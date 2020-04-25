@@ -27,6 +27,7 @@ namespace ControlGallery.Panels
             share_group.Items.Add ("Email", ImageLoader.Get ("mail.png"));
             share_group.Items.Add ("Zip", ImageLoader.Get ("compress.png"));
             share_group.Items.Add ("Burn DVD", ImageLoader.Get ("cd-burn.png"));
+            share_group.Items.Add (new MenuSeparatorItem ());
             share_group.Items.Add ("Print", ImageLoader.Get ("print.png"));
 
             var view_tab = ribbon.TabPages.Add ("View");

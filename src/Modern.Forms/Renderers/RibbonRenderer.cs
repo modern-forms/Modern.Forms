@@ -30,7 +30,10 @@ namespace Modern.Forms.Renderers
         {
             // Draw each ribbon item
             foreach (var item in group.Items)
-                RenderItem (control, tabPage, group, item, e);
+                if (item is MenuSeparatorItem msi)
+                    RenderMenuSeparatorItem (control, tabPage, group, msi, e);
+                else
+                    RenderItem (control, tabPage, group, item, e);
 
             // Right border (group separator)
             e.Canvas.DrawLine (group.Bounds.Right - 1, group.Bounds.Top + 4, group.Bounds.Right - 1, group.Bounds.Bottom - 4, Theme.BorderGray);
@@ -67,10 +70,22 @@ namespace Modern.Forms.Renderers
             }
         }
 
+        protected virtual void RenderMenuSeparatorItem (Ribbon control, RibbonTabPage tabPage, RibbonItemGroup group, MenuSeparatorItem item, PaintEventArgs e)
+        {
+            // Background
+            e.Canvas.FillRectangle (item.Bounds, Theme.NeutralGray);
+
+            var center = item.Bounds.GetCenter ();
+            var thickness = e.LogicalToDeviceUnits (1);
+            var padding = e.LogicalToDeviceUnits (item.Padding);
+
+            e.Canvas.DrawLine (center.X, item.Bounds.Y + padding.Top, center.X, item.Bounds.Bottom - padding.Bottom, item.Enabled ? Theme.RibbonItemHighlightColor : Theme.DisabledTextColor, thickness);
+        }
+
         public virtual Size GetPreferredItemSize (Ribbon control, MenuItem item, Size proposedSize)
         {
-            //if (item is MenuSeparatorItem msi)
-            //    return GetPreferredSeparatorItemSize (control, msi, proposedSize);
+            if (item is MenuSeparatorItem msi)
+                return GetPreferredSeparatorItemSize (control, msi, proposedSize);
 
             var padding = control.LogicalToDeviceUnits (6);
             var font_size = control.LogicalToDeviceUnits (Theme.RibbonItemFontSize);
@@ -78,6 +93,14 @@ namespace Modern.Forms.Renderers
             var text_size = (int)Math.Round (TextMeasurer.MeasureText (item.Text ?? string.Empty, Theme.UIFont, font_size, proposed_size).Width);
 
             return new Size (Math.Max (text_size + padding, control.LogicalToDeviceUnits (MINIMUM_ITEM_SIZE)), 0);
+        }
+
+        protected virtual Size GetPreferredSeparatorItemSize (Ribbon control, MenuSeparatorItem item, Size proposedSize)
+        {
+            var padding = control.LogicalToDeviceUnits (6);
+            var thickness = control.LogicalToDeviceUnits (1);
+
+            return new Size (thickness + padding, proposedSize.Height);
         }
 
         // TODO: This should not be done during the paint process
