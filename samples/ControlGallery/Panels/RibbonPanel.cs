@@ -9,44 +9,34 @@ namespace ControlGallery.Panels
     {
         public RibbonPanel ()
         {
-            var ribbon = new Ribbon ();
+            var ribbon = Controls.Add (new Ribbon ());
 
             var home_tab = ribbon.TabPages.Add ("Home");
 
-            var group1 = new RibbonItemGroup { Text = "Home" };
+            var group1 = home_tab.Groups.Add ("Home");
+            group1.Items.Add ("Parent Folder", ImageLoader.Get ("folder-up.png"));
 
-            group1.Items.Add (new RibbonItem ("Parent Folder", ImageLoader.Get ("folder-up.png")));
-
-            var group2 = new RibbonItemGroup { Text = "Actions" };
-
-            group2.Items.Add (new RibbonItem ("New Folder", ImageLoader.Get ("folder-add.png")));
-            group2.Items.Add (new RibbonItem ("Search", ImageLoader.Get ("search.png")));
-            group2.Items.Add (new RibbonItem ("Delete", ImageLoader.Get ("delete-red.png")));
-
-            home_tab.Groups.Add (group1);
-            home_tab.Groups.Add (group2);
+            var group2 = home_tab.Groups.Add ("Actions");
+            group2.Items.Add ("New Folder", ImageLoader.Get ("folder-add.png"));
+            group2.Items.Add ("Search", ImageLoader.Get ("search.png"));
+            group2.Items.Add ("Delete", ImageLoader.Get ("delete-red.png"));
 
             var share_tab = ribbon.TabPages.Add ("Share");
-            var share_group = new RibbonItemGroup { Text = "Send" };
 
-            share_group.Items.Add (new RibbonItem ("Email", ImageLoader.Get ("mail.png")));
-            share_group.Items.Add (new RibbonItem ("Zip", ImageLoader.Get ("compress.png")));
-            share_group.Items.Add (new RibbonItem ("Burn DVD", ImageLoader.Get ("cd-burn.png")));
-            share_group.Items.Add (new RibbonItem ("Print", ImageLoader.Get ("print.png")));
-
-            share_tab.Groups.Add (share_group);
+            var share_group = share_tab.Groups.Add ("Send");
+            share_group.Items.Add ("Email", ImageLoader.Get ("mail.png"));
+            share_group.Items.Add ("Zip", ImageLoader.Get ("compress.png"));
+            share_group.Items.Add ("Burn DVD", ImageLoader.Get ("cd-burn.png"));
+            share_group.Items.Add ("Print", ImageLoader.Get ("print.png"));
 
             var view_tab = ribbon.TabPages.Add ("View");
-            var group3 = new RibbonItemGroup { Text = "Themes" };
-            group3.Items.Add (new RibbonItem ("Default", ImageLoader.Get ("swatches.png")));
-            group3.Items.Add (new RibbonItem ("Green", ImageLoader.Get ("swatches.png")));
-            group3.Items.Add (new RibbonItem ("Orange", ImageLoader.Get ("swatches.png")));
-            group3.Items.Add (new RibbonItem ("Purple", ImageLoader.Get ("swatches.png")));
-            group3.Items.Add (new RibbonItem ("Hotdog Stand", ImageLoader.Get ("swatches.png")));
 
-            view_tab.Groups.Add (group3);
-
-            Controls.Add (ribbon);
+            var group3 = view_tab.Groups.Add ("Themes");
+            group3.Items.Add ("Default", ImageLoader.Get ("swatches.png"));
+            group3.Items.Add ("Green", ImageLoader.Get ("swatches.png"));
+            group3.Items.Add ("Orange", ImageLoader.Get ("swatches.png"));
+            group3.Items.Add ("Purple", ImageLoader.Get ("swatches.png"));
+            group3.Items.Add ("Hotdog Stand", ImageLoader.Get ("swatches.png"));
         }
     }
 }

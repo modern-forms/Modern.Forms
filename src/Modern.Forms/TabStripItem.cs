@@ -9,7 +9,15 @@ namespace Modern.Forms
     public class TabStripItem : ILayoutable
     {
         private bool enabled = true;
-        private string text = string.Empty;
+        private string text;
+
+        /// <summary>
+        /// Initializes a new instance of the TabStripItem class.
+        /// </summary>
+        public TabStripItem (string? text = null)
+        {
+            this.text = text ?? string.Empty;
+        }
 
         /// <summary>
         /// Gets the current bounding box of the tab.

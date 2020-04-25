@@ -7,43 +7,34 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a RibbonItemGroup used in a RibbonTabPage control.
+    /// </summary>
     public class RibbonItemGroup : ILayoutable
     {
-        public string Text { get; set; } = string.Empty;
-
-        public RibbonItemCollection Items { get; }
-
-        public Rectangle Bounds { get; private set; }
-
-        public Padding Margin => Padding.Empty;
-
-        public RibbonTabPage? Owner { get; set; }
-
-        public Padding Padding => new Padding (3, 3, 4, 3);
-
-        public RibbonItemGroup ()
+        /// <summary>
+        /// Initializes a new instance of the RibbonItemGroup class.
+        /// </summary>
+        internal RibbonItemGroup (RibbonTabPage owner)
         {
             Items = new RibbonItemCollection (this);
+            Owner = owner;
         }
 
-        public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
+        /// <summary>
+        /// Initializes a new instance of the RibbonItemGroup class with the specified text.
+        /// </summary>
+        internal RibbonItemGroup (string text, RibbonTabPage owner) : this (owner)
         {
-            Bounds = new Rectangle (x, y, width, height);
-
-            // Lay out RibbonItems
-            StackLayoutEngine.HorizontalExpand.Layout (PaddedBounds, Items.Cast<ILayoutable> ());
+            Text = text;
         }
 
-        public void DrawGroup (SKCanvas canvas)
-        {
-            // Draw each ribbon item
-            foreach (var item in Items)
-                item.FireEvent (new PaintEventArgs(SKImageInfo.Empty, canvas, Owner?.Owner?.Scaling ?? 1), ItemEventType.Paint);
+        // This is the bounds for the item group.
+        internal Rectangle Bounds { get; private set; }
 
-            // Right border (group separator)
-            canvas.DrawLine (Bounds.Right - 1, Bounds.Top + 4, Bounds.Right - 1, Bounds.Bottom - 4, Theme.BorderGray);
-        }
-
+        /// <summary>
+        /// Returns a preferred size the group would like to be.
+        /// </summary>
         public Size GetPreferredSize (Size proposedSize)
         {
             var width = Padding.Horizontal;
@@ -54,6 +45,20 @@ namespace Modern.Forms
             return new Size (width, 0);
         }
 
+        /// <summary>
+        /// Gets the collection of ribbon items contained by this group.
+        /// </summary>
+        public RibbonItemCollection Items { get; }
+
+        /// <summary>
+        /// Gets the amount of spacing to leave between instances of this group.
+        /// </summary>
+        public Padding Margin => Padding.Empty;
+
+        // The RibbonTabPage that contains this group.
+        internal RibbonTabPage Owner { get; set; }
+
+        // The space available for items, taking Padding into account.
         private Rectangle PaddedBounds {
             get {
                 var x = Bounds.Left + Padding.Left;
@@ -63,5 +68,24 @@ namespace Modern.Forms
                 return new Rectangle (x, y, w, h);
             }
         }
+
+        // The amount of padding to leave between the group's bounds and the contained items' bounds.
+        private Padding Padding => new Padding (3, 3, 4, 3);
+
+        /// <summary>
+        /// Sets the bounding box of the tab page. This is internal API and should not be called.
+        /// </summary>
+        public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
+        {
+            Bounds = new Rectangle (x, y, width, height);
+
+            // Lay out RibbonItems
+            StackLayoutEngine.HorizontalExpand.Layout (PaddedBounds, Items.Cast<ILayoutable> ());
+        }
+
+        /// <summary>
+        /// Get or sets the text of this RibbonItemGroup.
+        /// </summary>
+        public string Text { get; set; } = string.Empty;
     }
 }

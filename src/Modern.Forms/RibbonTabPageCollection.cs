@@ -1,27 +1,36 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a collection of RibbonTabPages.
+    /// </summary>
     public class RibbonTabPageCollection : Collection<RibbonTabPage>
     {
         private readonly Ribbon owner;
+        private readonly TabStrip tab_strip;
 
-        internal RibbonTabPageCollection (Ribbon owner)
+        internal RibbonTabPageCollection (Ribbon owner, TabStrip tabStrip)
         {
             this.owner = owner;
+            tab_strip = tabStrip;
         }
 
+        /// <summary>
+        /// Create a new RibbonTabPage and adds it to the collection.
+        /// </summary>
+        public RibbonTabPage Add () => Add (string.Empty);
+
+        /// <summary>
+        /// Create a new RibbonTabPage with the specified text and adds it to the collection.
+        /// </summary>
         public RibbonTabPage Add (string text)
         {
-            var item = new RibbonTabPage {
-                Text = text
-            };
+            var item = new RibbonTabPage (text, owner);
 
-            Add (item);
-
+            base.Add (item);
             return item;
         }
 
@@ -30,38 +39,28 @@ namespace Modern.Forms
             base.InsertItem (index, item);
 
             item.Owner = owner;
-            owner.TabStrip.Tabs.Insert (index, CreateTabStripItem (item));
+            tab_strip.Tabs.Insert (index, item.TabStripItem);
 
             owner.Invalidate ();
         }
 
         protected override void RemoveItem (int index)
         {
-            var item = this[index];
-
             base.RemoveItem (index);
 
-            item.Owner = null;
-            owner.TabStrip.Tabs.RemoveAt (index);
+            tab_strip.Tabs.RemoveAt (index);
 
             owner.Invalidate ();
         }
 
         protected override void SetItem (int index, RibbonTabPage item)
         {
-            var old_item = this.ElementAtOrDefault (index);
-
-            if (old_item != null)
-                old_item.Owner = null;
-
             base.SetItem (index, item);
 
             item.Owner = owner;
-            owner.TabStrip.Tabs[index] = CreateTabStripItem (item);
+            tab_strip.Tabs[index] = item.TabStripItem;
 
             owner.Invalidate ();
         }
-
-        private TabStripItem CreateTabStripItem (RibbonTabPage item) => new TabStripItem { Text = item.Text, Tag = item };
     }
 }

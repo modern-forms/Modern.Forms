@@ -1,54 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Text;
 using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a ListViewItem.
+    /// </summary>
     public class ListViewItem
     {
-        public string Text { get; set; } = string.Empty;
-        public SKBitmap? Image { get; set; }
-        public bool Selected { get; set; }
-        public object? Tag { get; set; }
-        public ListView? Parent { get; internal set; }
-
+        /// <summary>
+        /// Gets the current bounding box of the item.
+        /// </summary>
         public Rectangle Bounds { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the image displayed on the item.
+        /// </summary>
+        public SKBitmap? Image { get; set; }
+
+        /// <summary>
+        /// Gets the ListView this item is currently a part of.
+        /// </summary>
+        public ListView? Parent { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating if the item is currently selected.
+        /// </summary>
+        public bool Selected { get; set; }
+
+        /// <summary>
+        /// Sets the bounding box of the item. This is internal API and should not be called.
+        /// </summary>
         public void SetBounds (int x, int y, int width, int height)
         {
             Bounds = new Rectangle (x, y, width, height);
         }
 
-        internal void DrawItem (SKCanvas canvas)
-        {
-            if (Selected)
-                canvas.FillRectangle (Bounds, Theme.RibbonItemHighlightColor);
+        /// <summary>
+        /// Gets or sets an object with additional user data about this item.
+        /// </summary>
+        public object? Tag { get; set; }
 
-            var image_size = LogicalToDeviceUnits (32);
-            var image_area = new Rectangle (Bounds.Left, Bounds.Top, Bounds.Width, Bounds.Width);
-            var image_bounds = DrawingExtensions.CenterSquare (image_area, image_size);
-            image_bounds.Y = Bounds.Top + LogicalToDeviceUnits (3);
-
-            if (Image != null)
-                canvas.DrawBitmap (Image, image_bounds);
-
-            if (!string.IsNullOrWhiteSpace (Text)) {
-                var font_size = LogicalToDeviceUnits (Theme.RibbonItemFontSize);
-
-                canvas.Save ();
-                canvas.Clip (Bounds);
-
-                var text_bounds = new Rectangle (Bounds.Left, image_bounds.Bottom + LogicalToDeviceUnits (3), Bounds.Width, Bounds.Bottom - image_bounds.Bottom - LogicalToDeviceUnits (3));
-
-                canvas.DrawText (Text, Theme.UIFont, font_size, text_bounds, Theme.DarkTextColor, ContentAlignment.MiddleCenter);
-
-                canvas.Restore ();
-            }
-        }
-
-        private int LogicalToDeviceUnits (int value) => Parent?.LogicalToDeviceUnits (value) ?? value;
+        /// <summary>
+        /// Gets or sets the text displayed on the item.
+        /// </summary>
+        public string Text { get; set; } = string.Empty;
     }
 }

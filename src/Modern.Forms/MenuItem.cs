@@ -59,8 +59,6 @@ namespace Modern.Forms
         /// <summary>
         /// Returns a preferred size the menu item would like to be.
         /// </summary>
-        /// <param name="proposedSize"></param>
-        /// <returns></returns>
         public virtual Size GetPreferredSize (Size proposedSize)
         {
             var owner = OwnerControl;

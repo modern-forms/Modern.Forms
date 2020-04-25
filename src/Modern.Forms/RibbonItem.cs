@@ -17,10 +17,8 @@ namespace Modern.Forms
 
         public SKBitmap? Image { get; set; }
         public bool Selected { get; set; }
-        public bool Highlighted { get; set; }
+        public bool Hovered { get; private set; }
         public RibbonItemGroup? Owner { get; set; }
-
-        public Rectangle Bounds { get; private set; }
 
         public Padding Margin { get; set; } = Padding.Empty;
         public Padding Padding { get; set; } = new Padding (3);
@@ -29,7 +27,7 @@ namespace Modern.Forms
         {
         }
 
-        public RibbonItem (string text, SKBitmap? image = null, EventHandler? onClick = null)
+        public RibbonItem (string text, SKBitmap? image = null, EventHandler<MouseEventArgs>? onClick = null)
         {
             Text = text;
             Image = image;
@@ -37,7 +35,9 @@ namespace Modern.Forms
             Click += onClick;
         }
 
-        public event EventHandler? Click;
+        public Rectangle Bounds { get; private set; }
+
+        public event EventHandler<MouseEventArgs>? Click;
         public event EventHandler? EnabledChanged;
         public event EventHandler<MouseEventArgs>? MouseDown;
         public event EventHandler<MouseEventArgs>? MouseEnter;
@@ -121,7 +121,7 @@ namespace Modern.Forms
 
         protected virtual void OnMouseEnter (MouseEventArgs e)
         {
-            Highlighted = true;
+            Hovered = true;
             Invalidate ();
 
             MouseEnter?.Invoke (this, e);
@@ -129,7 +129,7 @@ namespace Modern.Forms
 
         protected virtual void OnMouseLeave (EventArgs e)
         {
-            Highlighted = false;
+            Hovered = false;
             Invalidate ();
 
             MouseLeave?.Invoke (this, e);
@@ -145,44 +145,10 @@ namespace Modern.Forms
             MouseUp?.Invoke (this, e);
         }
 
-        protected virtual void OnPaint (PaintEventArgs e)
-        {
-            var canvas = e.Canvas;
-            var padding = LogicalToDeviceUnits (Padding);
-            var background_color = Selected ? Theme.RibbonItemSelectedColor : Highlighted ? Theme.RibbonItemHighlightColor : Theme.NeutralGray;
-
-            canvas.FillRectangle (Bounds, background_color);
-
-            var image_area_bounds = new Rectangle (Bounds.Left + padding.Left, Bounds.Top + padding.Top, Bounds.Width - padding.Horizontal, LogicalToDeviceUnits (MINIMUM_ITEM_SIZE));
-            var final_image_bounds = DrawingExtensions.CenterSquare (image_area_bounds, LogicalToDeviceUnits (IMAGE_SIZE));
-
-            if (Image != null) {
-                if (Enabled)
-                    canvas.DrawBitmap (Image, final_image_bounds);
-                else
-                    canvas.DrawDisabledBitmap (Image, image_area_bounds);
-            }
-
-            if (!string.IsNullOrWhiteSpace (Text)) {
-                var font_size = LogicalToDeviceUnits (Theme.RibbonItemFontSize);
-
-                canvas.Save ();
-                canvas.Clip (Bounds);
-
-                var text_bounds = new Rectangle (Bounds.Left, image_area_bounds.Bottom, Bounds.Width, Bounds.Bottom - image_area_bounds.Bottom);
-                canvas.DrawText (Text, Theme.UIFont, font_size, text_bounds, Enabled ? Theme.DarkTextColor : Theme.DisabledTextColor, ContentAlignment.MiddleCenter);
-
-                canvas.Restore ();
-            }
-        }
-
         protected virtual void OnTextChanged (EventArgs e) => TextChanged?.Invoke (this, e);
 
         internal void FireEvent (EventArgs e, ItemEventType type)
         {
-            if (!Enabled && type != ItemEventType.Paint)
-                return;
-
             switch (type) {
                 case ItemEventType.MouseDown:
                     OnMouseDown ((MouseEventArgs)e);
@@ -198,9 +164,6 @@ namespace Modern.Forms
                     break;
                 case ItemEventType.MouseUp:
                     OnMouseUp ((MouseEventArgs)e);
-                    break;
-                case ItemEventType.Paint:
-                    OnPaint ((PaintEventArgs)e);
                     break;
                 case ItemEventType.Click:
                     OnClick ((MouseEventArgs)e);

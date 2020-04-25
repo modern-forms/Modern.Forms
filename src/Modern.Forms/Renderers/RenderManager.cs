@@ -16,12 +16,14 @@ namespace Modern.Forms.Renderers
             SetRenderer<FormTitleBar> (new FormTitleBarRenderer ());
             SetRenderer<Label> (new LabelRenderer ());
             SetRenderer<ListBox> (new ListBoxRenderer ());
+            SetRenderer<ListView> (new ListViewRenderer ());
             SetRenderer<Menu> (new MenuRenderer ());
             SetRenderer<MenuDropDown> (new MenuDropDownRenderer ());
             SetRenderer<Panel> (new PanelRenderer ());
             SetRenderer<PictureBox> (new PictureBoxRenderer ());
             SetRenderer<ProgressBar> (new ProgressBarRenderer ());
             SetRenderer<RadioButton> (new RadioButtonRenderer ());
+            SetRenderer<Ribbon> (new RibbonRenderer ());
             SetRenderer<ScrollableControl> (new ScrollableControlRenderer ());
             SetRenderer<ScrollBar> (new ScrollBarRenderer ());
             SetRenderer<SplitContainer> (new SplitContainerRenderer ());

@@ -18,11 +18,6 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Adds a new TabPage to the collection with the specified text.
-        /// </summary>
-        public TabPage Add (string text) => Add (new TabPage (text));
-
-        /// <summary>
         /// Adds the TabPage to the collection.
         /// </summary>
         public new TabPage Add (TabPage item)
@@ -31,6 +26,11 @@ namespace Modern.Forms
 
             return item;
         }
+
+        /// <summary>
+        /// Adds a new TabPage to the collection with the specified text.
+        /// </summary>
+        public TabPage Add (string text) => Add (new TabPage (text));
 
         protected override void InsertItem (int index, TabPage item)
         {

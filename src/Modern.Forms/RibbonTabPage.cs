@@ -1,48 +1,63 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a RibbonTabPage used in a Ribbon control.
+    /// </summary>
     public class RibbonTabPage
     {
-        public string Text { get; set; } = string.Empty;
-        public bool Selected { get; set; }
-        public bool Highlighted { get; set; }
-        public Ribbon? Owner { get; set; }
-
-        public RibbonItemGroupCollection Groups { get; }
-
-        public RibbonTabPage ()
+        /// <summary>
+        /// Initializes a new instance of the RibbonTabPage class.
+        /// </summary>
+        internal RibbonTabPage (string text, Ribbon owner)
         {
             Groups = new RibbonItemGroupCollection (this);
+            TabStripItem = new TabStripItem (text);
+            Owner = owner;
         }
 
-        // This is the bounds for the tab page, where the buttons are
-        public Rectangle Bounds { get; private set; }
+        // This is the bounds for the tab page.
+        internal Rectangle Bounds { get; private set; }
 
+        /// <summary>
+        /// Gets the collection of ribbon item groups contained by this tab page.
+        /// </summary>
+        public RibbonItemGroupCollection Groups { get; }
+
+        // Lays out each group.
+        internal void LayoutItems ()
+        {
+            StackLayoutEngine.HorizontalExpand.Layout (Bounds, Groups.Cast<ILayoutable> ());
+        }
+
+        // The ribbon that contains this page.
+        internal Ribbon Owner { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating this RibbonTabPage is currently selected. 
+        /// </summary>
+        public bool Selected { get; internal set; }
+
+        /// <summary>
+        /// Sets the bounding box of the tab page. This is internal API and should not be called.
+        /// </summary>
         public void SetBounds (int x, int y, int width, int height)
         {
             Bounds = new Rectangle (x, y, width, height);
         }
 
-        public void DrawTabPage (SKCanvas canvas)
-        {
-            canvas.FillRectangle (Bounds, Theme.NeutralGray);
+        // The TabStripItem that accompanies this RibbonTabPage.
+        internal TabStripItem TabStripItem { get; }
 
-            LayoutItems ();
-
-            foreach (var group in Groups)
-                group.DrawGroup (canvas);
-        }
-
-        private void LayoutItems ()
-        {
-            // Lay out each group
-            StackLayoutEngine.HorizontalExpand.Layout (Bounds, Groups.Cast<ILayoutable> ());
+        /// <summary>
+        /// Get or sets the text of this RibbonTabPage's tab.
+        /// </summary>
+        public string Text {
+            get => TabStripItem.Text;
+            set => TabStripItem.Text = value;
         }
     }
 }

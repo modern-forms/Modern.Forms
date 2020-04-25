@@ -5,6 +5,9 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a collection of RibbonItems.
+    /// </summary>
     public class RibbonItemCollection : Collection<RibbonItem>
     {
         private readonly RibbonItemGroup owner;
@@ -14,20 +17,21 @@ namespace Modern.Forms
             this.owner = owner;
         }
 
+        /// <summary>
+        /// Adds the RibbonItem to the collection.
+        /// </summary>
         public T Add<T> (T item) where T : RibbonItem
         {
             base.Add (item);
             return item;
         }
 
-        public RibbonItem Add (string text, SKBitmap? image = null)
+        /// <summary>
+        /// Adds a new RibbonItem to the collection with the specified text and optional image.
+        /// </summary>
+        public RibbonItem Add (string text, SKBitmap? image = null, EventHandler<MouseEventArgs>? onClick = null)
         {
-            var item = new RibbonItem {
-                Text = text,
-                Image = image
-            };
-
-            return Add (item);
+            return Add (new RibbonItem (text, image, onClick));
         }
 
         protected override void InsertItem (int index, RibbonItem item)
