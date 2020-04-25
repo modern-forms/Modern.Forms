@@ -15,7 +15,7 @@ namespace ControlGallery.Panels
             menu.Items.Add (new MenuSeparatorItem ());
 
             var noo = file.Items.Add ("New");
-            var open = file.Items.Add ("Open", ImageLoader.Get ("folder.png"));
+            file.Items.Add ("Open", ImageLoader.Get ("folder.png")).Enabled = false;
             var recent = file.Items.Add ("Open Recent", ImageLoader.Get ("folder.png"));
 
             var file1 = recent.Items.Add ("file1.txt");

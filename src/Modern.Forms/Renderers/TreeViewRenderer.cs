@@ -40,7 +40,7 @@ namespace Modern.Forms.Renderers
             if (control.ShowItemImages == true && item.Image != null) {
                 var image_bounds = GetImageBounds (control, item, e);
 
-                e.Canvas.DrawBitmap (item.Image!, image_bounds);
+                e.Canvas.DrawBitmap (item.Image!, image_bounds, !control.Enabled);
             }
 
             if (string.IsNullOrWhiteSpace (item.Text))

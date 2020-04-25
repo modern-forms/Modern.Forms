@@ -50,12 +50,8 @@ namespace Modern.Forms.Renderers
             var image_area_bounds = new Rectangle (item.Bounds.Left + padding.Left, item.Bounds.Top + padding.Top, item.Bounds.Width - padding.Horizontal, e.LogicalToDeviceUnits (MINIMUM_ITEM_SIZE));
             var final_image_bounds = DrawingExtensions.CenterSquare (image_area_bounds, e.LogicalToDeviceUnits (IMAGE_SIZE));
 
-            if (item.Image != null) {
-                if (item.Enabled)
-                    canvas.DrawBitmap (item.Image, final_image_bounds);
-                else
-                    canvas.DrawDisabledBitmap (item.Image, image_area_bounds);
-            }
+            if (item.Image != null)
+                    canvas.DrawBitmap (item.Image, final_image_bounds, !item.Enabled);
 
             if (!string.IsNullOrWhiteSpace (item.Text)) {
                 var font_size = e.LogicalToDeviceUnits (Theme.RibbonItemFontSize);

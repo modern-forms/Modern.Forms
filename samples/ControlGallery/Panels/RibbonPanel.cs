@@ -19,7 +19,7 @@ namespace ControlGallery.Panels
             var group2 = home_tab.Groups.Add ("Actions");
             group2.Items.Add ("New Folder", ImageLoader.Get ("folder-add.png"));
             group2.Items.Add ("Search", ImageLoader.Get ("search.png"));
-            group2.Items.Add ("Delete", ImageLoader.Get ("delete-red.png"));
+            group2.Items.Add ("Delete", ImageLoader.Get ("delete-red.png")).Enabled = false;
 
             var share_tab = ribbon.TabPages.Add ("Share");
 

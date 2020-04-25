@@ -14,13 +14,13 @@ namespace Modern.Forms.Renderers
                 switch (control.SizeMode) {
                     //case PictureBoxSizeMode.AutoSize:
                     case PictureBoxSizeMode.Normal:
-                        e.Canvas.DrawBitmap (control.Image, new SKRect (0, 0, control.Image.Width, control.Image.Height));
+                        e.Canvas.DrawBitmap (control.Image, new Rectangle (0, 0, control.Image.Width, control.Image.Height), !control.Enabled);
                         break;
                     case PictureBoxSizeMode.StretchImage:
-                        e.Canvas.DrawBitmap (control.Image, client);
+                        e.Canvas.DrawBitmap (control.Image, client, !control.Enabled);
                         break;
                     case PictureBoxSizeMode.CenterImage:
-                        e.Canvas.DrawBitmap (control.Image, (client.Width / 2) - (control.Image.Width / 2), (client.Height / 2) - (control.Image.Height / 2));
+                        e.Canvas.DrawBitmap (control.Image, (client.Width / 2) - (control.Image.Width / 2), (client.Height / 2) - (control.Image.Height / 2), !control.Enabled);
                         break;
                     case PictureBoxSizeMode.Zoom:
                         Size image_size;
@@ -30,7 +30,7 @@ namespace Modern.Forms.Renderers
                         else
                             image_size = new Size ((control.Image.Width * client.Height) / control.Image.Height, client.Height);
 
-                        e.Canvas.DrawBitmap (control.Image, SKRect.Create ((client.Width / 2) - (image_size.Width / 2), (client.Height / 2) - (image_size.Height / 2), image_size.Width, image_size.Height));
+                        e.Canvas.DrawBitmap (control.Image, new Rectangle ((client.Width / 2) - (image_size.Width / 2), (client.Height / 2) - (image_size.Height / 2), image_size.Width, image_size.Height), !control.Enabled);
                         break;
                 }
             } else if (control.IsErrored) {

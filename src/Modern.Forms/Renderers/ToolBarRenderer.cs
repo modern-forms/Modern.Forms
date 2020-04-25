@@ -28,7 +28,7 @@ namespace Modern.Forms.Renderers
                 var image_size = e.LogicalToDeviceUnits (20);
                 var image_bounds = DrawingExtensions.CenterSquare (item.Bounds, image_size);
                 var image_rect = new Rectangle (bounds.Left, image_bounds.Top, image_size, image_size);
-                e.Canvas.DrawBitmap (item.Image, image_rect);
+                e.Canvas.DrawBitmap (item.Image, image_rect, !item.Enabled);
 
                 bounds.X += e.LogicalToDeviceUnits (28);
             } else {

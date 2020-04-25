@@ -116,17 +116,40 @@ namespace Modern.Forms
         public static void DrawBackground(this SKCanvas canvas, ControlStyle style) =>
             canvas.Clear (style.GetBackgroundColor ());
 
-        public static void DrawBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect)
+        public static void DrawBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect, bool disabled = false)
         {
+            if (disabled) {
+                DrawDisabledBitmap (canvas, bitmap, rect);
+                return;
+            }
+
             using var paint = new SKPaint { FilterQuality = SKFilterQuality.High };
             canvas.DrawBitmap (bitmap, rect.ToSKRect (), paint);
         }
 
+        public static void DrawBitmap (this SKCanvas canvas, SKBitmap bitmap, float x, float y, bool disabled = false)
+        {
+            if (disabled) {
+                DrawDisabledBitmap (canvas, bitmap, x, y);
+                return;
+            }
+
+            using var paint = new SKPaint { FilterQuality = SKFilterQuality.High };
+            canvas.DrawBitmap (bitmap, x, y, paint);
+        }
+
         public static void DrawDisabledBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect)
         {
-            using var paint = new SKPaint { ColorFilter = disabled_matrix };
+            using var paint = new SKPaint { FilterQuality = SKFilterQuality.High, ColorFilter = disabled_matrix };
 
             canvas.DrawBitmap (bitmap, rect.ToSKRect (), paint);
+        }
+
+        public static void DrawDisabledBitmap (this SKCanvas canvas, SKBitmap bitmap, float x, float y)
+        {
+            using var paint = new SKPaint { FilterQuality = SKFilterQuality.High, ColorFilter = disabled_matrix };
+
+            canvas.DrawBitmap (bitmap, x, y, paint);
         }
 
         public static SKRect ToSKRect (this Rectangle rect) => new SKRect (rect.X, rect.Y, rect.Right, rect.Bottom);

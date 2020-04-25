@@ -28,6 +28,7 @@ namespace Modern.Forms.Renderers
             SetRenderer<ScrollBar> (new ScrollBarRenderer ());
             SetRenderer<SplitContainer> (new SplitContainerRenderer ());
             SetRenderer<Splitter> (new SplitterRenderer ());
+            SetRenderer<StatusBar> (new StatusBarRenderer ());
             SetRenderer<TabControl> (new TabControlRenderer ());
             SetRenderer<TabStrip> (new TabStripRenderer ());
             SetRenderer<TextBox> (new TextBoxRenderer ());
