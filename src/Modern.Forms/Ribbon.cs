@@ -12,7 +12,7 @@ namespace Modern.Forms
     public class Ribbon : Control
     {
         private readonly TabStrip tab_strip;
-        private RibbonItem? mouse_in_item;
+        private MenuItem? mouse_in_item;
 
         /// <summary>
         /// Initializes a new instance of the Ribbon class.
@@ -40,7 +40,7 @@ namespace Modern.Forms
                 style.Border.Bottom.Width = 1;
             });
 
-        private RibbonItem? GetItemAtLocation (Point location)
+        private MenuItem? GetItemAtLocation (Point location)
         {
             return SelectedTabPage?.Groups.SelectMany (g => g.Items).FirstOrDefault (item => item.Bounds.Contains (location));
         }
@@ -53,18 +53,7 @@ namespace Modern.Forms
             base.OnClick (e);
 
             var clicked_item = GetItemAtLocation (e.Location);
-            clicked_item?.FireEvent (e, ItemEventType.Click);
-        }
-
-        /// <inheritdoc/>
-        protected override void OnMouseDown (MouseEventArgs e)
-        {
-            base.OnMouseDown (e);
-
-            if (SelectedTabPage != null) {
-                var item = GetItemAtLocation (e.Location);
-                item?.FireEvent (e, ItemEventType.MouseDown);
-            }
+            clicked_item?.OnClick (e);
         }
 
         /// <inheritdoc/>
@@ -72,11 +61,7 @@ namespace Modern.Forms
         {
             base.OnMouseLeave (e);
 
-            if (SelectedTabPage != null) {
-                // Clear out the old item
-                mouse_in_item?.FireEvent (e, ItemEventType.MouseLeave);
-                mouse_in_item = null;
-            }
+            SetHover (null);
         }
 
         /// <inheritdoc/>
@@ -84,32 +69,7 @@ namespace Modern.Forms
         {
             base.OnMouseMove (e);
 
-            if (SelectedTabPage != null) {
-                var new_mouse_in = GetItemAtLocation (e.Location);
-
-                if (new_mouse_in == mouse_in_item)
-                    return;
-
-                // Clear out the old item
-                mouse_in_item?.FireEvent (e, ItemEventType.MouseLeave);
-
-                mouse_in_item = new_mouse_in;
-
-                // Fire events on new item
-                mouse_in_item?.FireEvent (e, ItemEventType.MouseEnter);
-                mouse_in_item?.FireEvent (e, ItemEventType.MouseMove);
-            }
-        }
-
-        /// <inheritdoc/>
-        protected override void OnMouseUp (MouseEventArgs e)
-        {
-            base.OnMouseUp (e);
-
-            if (SelectedTabPage != null) {
-                var item = GetItemAtLocation (e.Location);
-                item?.FireEvent (e, ItemEventType.MouseUp);
-            }
+            SetHover (GetItemAtLocation (e.Location));
         }
 
         /// <inheritdoc/>
@@ -161,6 +121,34 @@ namespace Modern.Forms
         /// Raised when the value of the SelectedTabPageIndex property changes.
         /// </summary>
         public event EventHandler? SelectedTabPageIndexChanged;
+
+        // Sets the specified item (or none) as the active hover.
+        private void SetHover (MenuItem? item)
+        {
+            if (item == mouse_in_item)
+                return;
+
+            // Clear any existing hovers
+            if (item is null || item != mouse_in_item) {
+                if (mouse_in_item != null) {
+                    mouse_in_item.Hovered = false;
+                    Invalidate (mouse_in_item.Bounds);
+                    mouse_in_item = null;
+                }
+
+                if (item == null)
+                    return;
+            }
+
+            mouse_in_item = item;
+
+            if (item.Hovered || !item.Enabled)
+                return;
+
+            item.Hovered = true;
+
+            Invalidate (item.Bounds);
+        }
 
         /// <summary>
         /// Gets or sets a value indicating if the ribbon tabs are shown.

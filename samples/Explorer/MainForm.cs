@@ -76,7 +76,7 @@ namespace Explore
 
         private void ThemeButton_Clicked (object sender, EventArgs args)
         {
-            var item = sender as RibbonItem;
+            var item = sender as MenuItem;
 
             Theme.FormBackgroundColor = SKColors.White;
             Theme.NeutralGray = new SKColor (240, 240, 240);

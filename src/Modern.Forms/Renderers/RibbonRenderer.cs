@@ -36,7 +36,7 @@ namespace Modern.Forms.Renderers
             e.Canvas.DrawLine (group.Bounds.Right - 1, group.Bounds.Top + 4, group.Bounds.Right - 1, group.Bounds.Bottom - 4, Theme.BorderGray);
         }
 
-        protected virtual void RenderItem (Ribbon control, RibbonTabPage tabPage, RibbonItemGroup group, RibbonItem item, PaintEventArgs e)
+        protected virtual void RenderItem (Ribbon control, RibbonTabPage tabPage, RibbonItemGroup group, MenuItem item, PaintEventArgs e)
         {
             var canvas = e.Canvas;
             var padding = e.LogicalToDeviceUnits (item.Padding);
@@ -65,6 +65,19 @@ namespace Modern.Forms.Renderers
 
                 canvas.Restore ();
             }
+        }
+
+        public virtual Size GetPreferredItemSize (Ribbon control, MenuItem item, Size proposedSize)
+        {
+            //if (item is MenuSeparatorItem msi)
+            //    return GetPreferredSeparatorItemSize (control, msi, proposedSize);
+
+            var padding = control.LogicalToDeviceUnits (6);
+            var font_size = control.LogicalToDeviceUnits (Theme.RibbonItemFontSize);
+            var proposed_size = control.LogicalToDeviceUnits (new Size (40, 30));
+            var text_size = (int)Math.Round (TextMeasurer.MeasureText (item.Text ?? string.Empty, Theme.UIFont, font_size, proposed_size).Width);
+
+            return new Size (Math.Max (text_size + padding, control.LogicalToDeviceUnits (MINIMUM_ITEM_SIZE)), 0);
         }
 
         // TODO: This should not be done during the paint process

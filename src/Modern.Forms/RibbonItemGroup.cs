@@ -17,7 +17,7 @@ namespace Modern.Forms
         /// </summary>
         internal RibbonItemGroup (RibbonTabPage owner)
         {
-            Items = new RibbonItemCollection (this);
+            Items = new MenuItemCollection (new MenuRootItem (owner.Owner));
             Owner = owner;
         }
 
@@ -48,7 +48,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the collection of ribbon items contained by this group.
         /// </summary>
-        public RibbonItemCollection Items { get; }
+        public MenuItemCollection Items { get; }
 
         /// <summary>
         /// Gets the amount of spacing to leave between instances of this group.

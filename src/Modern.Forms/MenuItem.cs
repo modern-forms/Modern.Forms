@@ -77,6 +77,9 @@ namespace Modern.Forms
             if (owner is MenuDropDown mdd && renderer is MenuDropDownRenderer mdd_renderer)
                 return mdd_renderer.GetPreferredItemSize (mdd, this, proposedSize);
 
+            if (owner is Ribbon rb && renderer is RibbonRenderer rb_renderer)
+                return rb_renderer.GetPreferredItemSize (rb, this, proposedSize);
+
             return proposedSize;
         }
 

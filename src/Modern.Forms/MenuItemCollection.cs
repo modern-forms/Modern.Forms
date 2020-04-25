@@ -20,16 +20,9 @@ namespace Modern.Forms
             return item;
         }
 
-        public MenuItem Add (string text, SKBitmap? image = null)
+        public MenuItem Add (string text, SKBitmap? image = null, EventHandler<MouseEventArgs>? onClick = null)
         {
-            var item = new MenuItem {
-                Text = text,
-                Image = image
-            };
-
-            Add (item);
-
-            return item;
+            return Add (new MenuItem (text, image, onClick));
         }
 
         protected override void InsertItem (int index, MenuItem item)
