@@ -22,6 +22,7 @@ namespace Modern.Forms
         private int selection_end = -1;
         private int max_length = int.MaxValue;
         private bool multiline = false;
+        private char? password_char;
         private int width = -1;
         private SKTypeface font = Theme.UIFont;
         private int font_size = Theme.FontSize;
@@ -111,7 +112,9 @@ namespace Modern.Forms
             return true;
         }
 
-        public string DisplayText => text.Length > 0 ? text : placeholder;
+        public string DisplayText => text.Length == 0 ? placeholder :
+                                     password_char.HasValue ? new string (password_char.Value, text.Length) : 
+                                     text;
 
         public bool Enabled {
             get => enabled;
@@ -299,6 +302,17 @@ namespace Modern.Forms
             }
 
             return false;
+        }
+
+        public char? PasswordCharacter {
+            get => password_char;
+            set {
+                if (password_char != value) {
+                    password_char = value;
+                    cached_text_block = null;
+                    Invalidate ();
+                }
+            }
         }
 
         public string Placeholder {

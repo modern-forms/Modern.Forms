@@ -293,6 +293,14 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Gets or sets a character to display instead of the actual text.
+        /// </summary>
+        public char? PasswordCharacter {
+            get => document.PasswordCharacter;
+            set => document.PasswordCharacter = value;
+        }
+
+        /// <summary>
         /// Inserts any text on the clipboard into the TextBox.
         /// </summary>
         public void Paste ()
