@@ -103,6 +103,19 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Scales size by specified factor.
+        /// </summary>
+        internal Size ScaleSize (Size startSize, float x, float y)
+        {
+            var size = startSize;
+
+            size.Width = (int)Math.Round ((float)size.Width * x);
+            size.Height = (int)Math.Round ((float)size.Height * y);
+
+            return size;
+        }
+
+        /// <summary>
         /// Shows the drop down at the specified location.
         /// </summary>
         public virtual void Show (Point location)
