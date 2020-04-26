@@ -1,18 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// An EventArgs class with a generic Value parameter.
+    /// </summary>
     public class EventArgs<T> : EventArgs
     {
-        public T Value { get; }
-
+        /// <summary>
+        /// Initializes a new instance of the EventArgs class.
+        /// </summary>
         public EventArgs (T value)
         {
             Value = value;
         }
+
+        /// <summary>
+        /// Gets the value of the event argument.
+        /// </summary>
+        public T Value { get; }
     }
 }
