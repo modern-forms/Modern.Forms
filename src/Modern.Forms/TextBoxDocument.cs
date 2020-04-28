@@ -93,7 +93,7 @@ namespace Modern.Forms
 
                 SetCursorToCharIndex (current_caret.PreviousCodePointIndex);
 
-                RemoveText (cursor_index - 1, 1);
+                RemoveText (cursor_index, 1);
 
                 return true;
             }
