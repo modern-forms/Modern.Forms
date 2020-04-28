@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class to manage rendering.
+    /// </summary>
     public static class RenderManager
     {
         private static readonly Dictionary<Type, Renderer> renderers = new Dictionary<Type, Renderer> ();
@@ -36,11 +39,17 @@ namespace Modern.Forms.Renderers
             SetRenderer<TreeView> (new TreeViewRenderer ());
         }
 
+        /// <summary>
+        /// Gets a renderer of the requested type.
+        /// </summary>
         public static T? GetRenderer<T> () where T : Renderer
         {
             return renderers.Values.OfType<T> ().FirstOrDefault ();
         }
 
+        /// <summary>
+        /// Gets a renderer for the requested control.
+        /// </summary>
         public static T? GetRenderer<T> (Control control) where T : Renderer
         {
             var type = (Type?)control.GetType ();
@@ -56,13 +65,19 @@ namespace Modern.Forms.Renderers
             throw new InvalidOperationException ($"No renderer found for type {typeof (T).FullName}");
         }
 
+        /// <summary>
+        /// Renders the specified control.
+        /// </summary>
         public static void Render<T> (T control, PaintEventArgs e) where T : Control
         {
             var renderer = GetRenderer<Renderer> (control);
             renderer?.Render (control, e);
         }
 
-        public static void SetRenderer<T> (Renderer renderer)
+        /// <summary>
+        /// Registers a renderer for a control class.
+        /// </summary>
+        public static void SetRenderer<T> (Renderer renderer) where T : Control
         {
             if (renderer.Type != typeof (T))
                 throw new InvalidOperationException ($"Invalid renderer for type {typeof (T).FullName}");

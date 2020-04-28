@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a collection of Controls.
+    /// </summary>
     public class ControlCollection : Collection<Control>
     {
         private readonly List<Control> implicit_controls = new List<Control> ();
@@ -16,12 +18,18 @@ namespace Modern.Forms
             this.parent = parent;
         }
 
+        /// <summary>
+        /// Adds the Control to the collection.
+        /// </summary>
         public T Add<T> (T item) where T : Control
         {
             base.Add (item);
             return item;
         }
 
+        /// <summary>
+        /// Efficiently add multiple Controls to the collection.
+        /// </summary>
         public void AddRange (params Control[] controls)
         {
             parent.SuspendLayout ();
@@ -32,6 +40,7 @@ namespace Modern.Forms
             parent.ResumeLayout (true);
         }
 
+        /// <inheritdoc/>
         protected override void InsertItem (int index, Control item)
         {
             base.InsertItem (index, item);
@@ -40,6 +49,7 @@ namespace Modern.Forms
             parent.PerformLayout ();
         }
 
+        /// <inheritdoc/>
         protected override void RemoveItem (int index)
         {
             var item = this[index];
@@ -49,7 +59,8 @@ namespace Modern.Forms
             item.SetParentInternal (null);
             parent.PerformLayout ();
         }
-        
+
+        /// <inheritdoc/>
         protected override void SetItem (int index, Control item)
         {
             var old_item = this.ElementAtOrDefault (index);

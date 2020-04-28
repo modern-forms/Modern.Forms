@@ -32,6 +32,7 @@ namespace Modern.Forms
         /// </summary>
         public TabPage Add (string text) => Add (new TabPage (text));
 
+        /// <inheritdoc/>
         protected override void InsertItem (int index, TabPage item)
         {
             base.InsertItem (index, item);
@@ -41,6 +42,7 @@ namespace Modern.Forms
             tab_strip.Tabs.Insert (index, item.TabStripItem);
         }
 
+        /// <inheritdoc/>
         protected override void RemoveItem (int index)
         {
             base.RemoveItem (index);
@@ -49,6 +51,7 @@ namespace Modern.Forms
             tab_strip.Tabs.RemoveAt (index);
         }
 
+        /// <inheritdoc/>
         protected override void SetItem (int index, TabPage item)
         {
             base.SetItem (index, item);

@@ -8,7 +8,7 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
-    public class ControlAdapter : ScrollableControl
+    internal class ControlAdapter : ScrollableControl
     {
         private Control? selected_control;
 

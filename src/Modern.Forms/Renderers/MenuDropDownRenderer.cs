@@ -3,8 +3,12 @@ using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a MenuDropDown.
+    /// </summary>
     public class MenuDropDownRenderer : Renderer<MenuDropDown>
     {
+        /// <inheritdoc/>
         protected override void Render (MenuDropDown control, PaintEventArgs e)
         {
             foreach (var item in control.Items)
@@ -14,6 +18,9 @@ namespace Modern.Forms.Renderers
                     RenderItem (control, item, e);
         }
 
+        /// <summary>
+        /// Renders a MenuItem.
+        /// </summary>
         protected virtual void RenderItem (MenuDropDown control, MenuItem item, PaintEventArgs e)
         {
             // Background
@@ -43,6 +50,9 @@ namespace Modern.Forms.Renderers
             }
         }
 
+        /// <summary>
+        /// Renders a MenuSeparatorItem.
+        /// </summary>
         protected virtual void RenderMenuSeparatorItem (MenuDropDown control, MenuSeparatorItem item, PaintEventArgs e)
         {
             // Background
@@ -55,6 +65,9 @@ namespace Modern.Forms.Renderers
             e.Canvas.DrawLine (item.Bounds.X + padding.Top, center.Y, item.Bounds.Right - padding.Right, center.Y, item.Enabled ? Theme.RibbonItemHighlightColor : Theme.DisabledTextColor, thickness);
         }
 
+        /// <summary>
+        /// Gets the preferred size of a MenuItem.
+        /// </summary>
         public virtual Size GetPreferredItemSize (MenuDropDown control, MenuItem item, Size proposedSize)
         {
             if (item is MenuSeparatorItem msi)
@@ -67,6 +80,9 @@ namespace Modern.Forms.Renderers
             return new Size ((int)Math.Round (text_size.Width, 0, MidpointRounding.AwayFromZero) + padding.Horizontal + control.LogicalToDeviceUnits (70), (int)Math.Round (text_size.Height, 0, MidpointRounding.AwayFromZero) + control.LogicalToDeviceUnits (8));
         }
 
+        /// <summary>
+        /// Gets the preferred size of a MenuSeparatorItem.
+        /// </summary>
         protected virtual Size GetPreferredSeparatorItemSize (MenuDropDown control, MenuSeparatorItem item, Size proposedSize)
         {
             var padding = control.LogicalToDeviceUnits (item.Padding.Vertical);

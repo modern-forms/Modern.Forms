@@ -41,6 +41,8 @@ namespace Modern.Forms
 
         protected override System.Drawing.Size DefaultSize => new System.Drawing.Size (1080, 720);
 
+        public Control? GetNextControl (Control? start, bool forward = true) => adapter.GetNextControl (start, forward);
+
         public SKBitmap? Image {
             get => TitleBar.Image;
             set {

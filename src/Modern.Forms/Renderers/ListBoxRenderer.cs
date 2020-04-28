@@ -3,8 +3,12 @@ using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a ListBox.
+    /// </summary>
     public class ListBoxRenderer : Renderer<ListBox>
     {
+        /// <inheritdoc/>
         protected override void Render (ListBox control, PaintEventArgs e)
         {
             for (var i = control.FirstVisibleIndex; i < Math.Min (control.Items.Count, control.FirstVisibleIndex + control.VisibleItemCount + 1); i++) {
@@ -15,6 +19,9 @@ namespace Modern.Forms.Renderers
             }
         }
 
+        /// <summary>
+        /// Renders a ListBox item.
+        /// </summary>
         protected virtual void RenderItem (ListBox control, object item, int index, Rectangle bounds, PaintEventArgs e)
         {
             // Draw selected background

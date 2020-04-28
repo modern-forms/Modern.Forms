@@ -1,16 +1,22 @@
 ﻿using System;
-using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a TabStrip.
+    /// </summary>
     public class TabStripRenderer : Renderer<TabStrip>
     {
+        /// <inheritdoc/>
         protected override void Render (TabStrip control, PaintEventArgs e)
         {
             foreach (var item in control.Tabs)
                 RenderItem (control, item, e);
         }
 
+        /// <summary>
+        /// Renders a TabStripItem.
+        /// </summary>
         protected virtual void RenderItem (TabStrip control, TabStripItem item, PaintEventArgs e)
         {
             if (item.Selected)

@@ -25,6 +25,7 @@ namespace Modern.Forms
             return Add (new MenuItem (text, image, onClick));
         }
 
+        /// <inheritdoc/>
         protected override void InsertItem (int index, MenuItem item)
         {
             base.InsertItem (index, item);
@@ -32,6 +33,7 @@ namespace Modern.Forms
             item.Parent = owner;
         }
 
+        /// <inheritdoc/>
         protected override void RemoveItem (int index)
         {
             var item = this[index];
@@ -41,6 +43,7 @@ namespace Modern.Forms
             item.Parent = null;
         }
 
+        /// <inheritdoc/>
         protected override void SetItem (int index, MenuItem item)
         {
             var old_item = this.ElementAtOrDefault (index);

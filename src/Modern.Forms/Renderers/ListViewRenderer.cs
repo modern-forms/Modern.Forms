@@ -3,14 +3,21 @@ using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a ListView.
+    /// </summary>
     public class ListViewRenderer : Renderer<ListView>
     {
+        /// <inheritdoc/>
         protected override void Render (ListView control, PaintEventArgs e)
         {
             foreach (var item in control.Items)
                 RenderItem (control, item, e);
         }
 
+        /// <summary>
+        /// Renders a ListViewItem.
+        /// </summary>
         protected virtual void RenderItem (ListView control, ListViewItem item, PaintEventArgs e)
         {
             if (item.Selected)

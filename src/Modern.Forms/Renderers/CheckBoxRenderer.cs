@@ -3,11 +3,21 @@ using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a CheckBox.
+    /// </summary>
     public class CheckBoxRenderer : Renderer<CheckBox>
     {
-        protected const int GLYPH_SIZE = 15;          // Size of the checkbox glyph
-        protected const int GLYPH_TEXT_PADDING = 4;   // Padding between glyph and text
+        /// <summary>
+        /// Size of the checkbox glyph.
+        /// </summary>
+        protected const int GLYPH_SIZE = 15;
+        /// <summary>
+        /// Padding between glyph and text.
+        /// </summary>
+        protected const int GLYPH_TEXT_PADDING = 4;
 
+        /// <inheritdoc/>
         protected override void Render (CheckBox control, PaintEventArgs e)
         {
             var box_size = e.LogicalToDeviceUnits (GLYPH_SIZE);

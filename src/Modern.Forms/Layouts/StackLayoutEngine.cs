@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Modern.Forms
 {
-    public class StackLayoutEngine
+    internal class StackLayoutEngine
     {
         public static StackLayoutEngine Horizontal = new StackLayoutEngine (Orientation.Horizontal);
         public static StackLayoutEngine HorizontalExpand = new StackLayoutEngine (Orientation.Horizontal, true);

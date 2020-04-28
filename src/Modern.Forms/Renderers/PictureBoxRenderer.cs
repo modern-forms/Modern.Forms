@@ -4,8 +4,12 @@ using SkiaSharp;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a PictureBox.
+    /// </summary>
     public class PictureBoxRenderer : Renderer<PictureBox>
     {
+        /// <inheritdoc/>
         protected override void Render (PictureBox control, PaintEventArgs e)
         {
             if (control.Image != null) {

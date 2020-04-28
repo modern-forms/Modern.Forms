@@ -37,6 +37,7 @@ namespace Modern.Forms
             }
         }
 
+        /// <inheritdoc/>
         protected override void OnCollectionChanged (NotifyCollectionChangedEventArgs e)
         {
             base.OnCollectionChanged (e);

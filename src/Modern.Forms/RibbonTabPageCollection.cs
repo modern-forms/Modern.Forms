@@ -34,6 +34,7 @@ namespace Modern.Forms
             return item;
         }
 
+        /// <inheritdoc/>
         protected override void InsertItem (int index, RibbonTabPage item)
         {
             base.InsertItem (index, item);
@@ -44,6 +45,7 @@ namespace Modern.Forms
             owner.Invalidate ();
         }
 
+        /// <inheritdoc/>
         protected override void RemoveItem (int index)
         {
             base.RemoveItem (index);
@@ -53,6 +55,7 @@ namespace Modern.Forms
             owner.Invalidate ();
         }
 
+        /// <inheritdoc/>
         protected override void SetItem (int index, RibbonTabPage item)
         {
             base.SetItem (index, item);

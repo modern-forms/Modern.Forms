@@ -4,12 +4,25 @@ using System.Linq;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a TreeView.
+    /// </summary>
     public class TreeViewRenderer : Renderer<TreeView>
     {
+        /// <summary>
+        /// Size of each indent level.
+        /// </summary>
         protected const int INDENT_SIZE = 18;
+        /// <summary>
+        /// Size of item image.
+        /// </summary>
         protected const int IMAGE_SIZE = 16;
+        /// <summary>
+        /// Size of dropdown glyph.
+        /// </summary>
         protected const int GLYPH_SIZE = 10;
 
+        /// <inheritdoc/>
         protected override void Render (TreeView control, PaintEventArgs e)
         {
             e.Canvas.Save ();
@@ -23,6 +36,9 @@ namespace Modern.Forms.Renderers
             e.Canvas.Restore ();
         }
 
+        /// <summary>
+        /// Renders a TreeViewItem.
+        /// </summary>
         protected virtual void RenderItem (TreeView control, TreeViewItem item, PaintEventArgs e)
         {
             var background_color = item.Selected ? Theme.RibbonItemHighlightColor : Theme.LightNeutralGray;
@@ -51,7 +67,10 @@ namespace Modern.Forms.Renderers
             e.Canvas.DrawText (item.Text.Trim (), Theme.UIFont, e.LogicalToDeviceUnits (Theme.FontSize), text_bounds, foreground_color, ContentAlignment.MiddleLeft, maxLines: 1);
         }
 
-        internal Rectangle GetGlyphBounds (TreeView control, TreeViewItem item)
+        /// <summary>
+        /// Gets the bounds of the dropdown glyph.
+        /// </summary>
+        public virtual Rectangle GetGlyphBounds (TreeView control, TreeViewItem item)
         {
             if (!control.ShowDropdownGlyph)
                 return Rectangle.Empty;
@@ -64,7 +83,10 @@ namespace Modern.Forms.Renderers
             return glyph_bounds;
         }
 
-        protected Rectangle GetImageBounds (TreeView control, TreeViewItem item, PaintEventArgs e)
+        /// <summary>
+        /// Gets the bounds of the item image.
+        /// </summary>
+        protected virtual Rectangle GetImageBounds (TreeView control, TreeViewItem item, PaintEventArgs e)
         {
             if (!control.ShowItemImages || item.Image is null)
                 return Rectangle.Empty;
@@ -75,7 +97,10 @@ namespace Modern.Forms.Renderers
             return DrawingExtensions.CenterSquare (image_area, e.LogicalToDeviceUnits (IMAGE_SIZE));
         }
 
-        protected Rectangle GetTextBounds (TreeView control, TreeViewItem item, PaintEventArgs e)
+        /// <summary>
+        /// Gets the bounds of the item text.
+        /// </summary>
+        protected virtual Rectangle GetTextBounds (TreeView control, TreeViewItem item, PaintEventArgs e)
         {
             var show_glyph = control.ShowDropdownGlyph;
             var show_image = control.ShowItemImages;
@@ -89,8 +114,14 @@ namespace Modern.Forms.Renderers
             return new Rectangle (used_bounds.Right + padding, item.Bounds.Top, item.Bounds.Right - used_bounds.Right - padding, item.Bounds.Height);
         }
 
-        protected int GetIndentStart (TreeView control, TreeViewItem item) => item.Bounds.Left + item.IndentLevel * control.LogicalToDeviceUnits (INDENT_SIZE) + 2;
+        /// <summary>
+        /// Gets the left start of the item bounds, accounting for indent level.
+        /// </summary>
+        protected virtual int GetIndentStart (TreeView control, TreeViewItem item) => item.Bounds.Left + item.IndentLevel * control.LogicalToDeviceUnits (INDENT_SIZE) + 2;
 
-        protected bool GetShouldDrawDropdownGlyph (TreeView control, TreeViewItem item) => control.ShowDropdownGlyph && (item.HasChildren || (control.VirtualMode && item.items == null));
+        /// <summary>
+        /// Gets if the item should draw a dropdown glyph.
+        /// </summary>
+        protected virtual bool GetShouldDrawDropdownGlyph (TreeView control, TreeViewItem item) => control.ShowDropdownGlyph && (item.HasChildren || (control.VirtualMode && item.items == null));
     }
 }

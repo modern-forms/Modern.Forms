@@ -13,11 +13,13 @@ namespace Avalonia
     static class AvaloniaGlobals
     {
         public static IRuntimePlatform RuntimePlatform { get; }
-        public static IPlatformThreadingInterface PlatformThreadingInterface { get; private set; }
-        public static IWindowingPlatform WindowingInterface { get; private set; }
-        public static IStandardCursorFactory StandardCursorFactory { get; private set; }
-        public static ISystemDialogImpl SystemDialogImplementation { get; private set; }
-        public static IClipboard ClipboardInterface { get; private set; }
+
+        // These are always initialized to non-null but not in the constructor so the compiler doesn't see them.
+        public static IPlatformThreadingInterface PlatformThreadingInterface { get; private set; } = default!;
+        public static IWindowingPlatform WindowingInterface { get; private set; } = default!;
+        public static IStandardCursorFactory StandardCursorFactory { get; private set; } = default!;
+        public static ISystemDialogImpl SystemDialogImplementation { get; private set; } = default!;
+        public static IClipboard ClipboardInterface { get; private set; } = default!;
 
         static AvaloniaGlobals ()
         {

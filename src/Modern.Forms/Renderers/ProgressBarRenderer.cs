@@ -2,8 +2,12 @@
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a ProgressBar.
+    /// </summary>
     public class ProgressBarRenderer : Renderer<ProgressBar>
     {
+        /// <inheritdoc/>
         protected override void Render (ProgressBar control, PaintEventArgs e)
         {
             // Prevent divide by zero

@@ -31,6 +31,7 @@ namespace Modern.Forms
             return item;
         }
 
+        /// <inheritdoc/>
         protected override void InsertItem (int index, RibbonItemGroup item)
         {
             base.InsertItem (index, item);
@@ -38,6 +39,7 @@ namespace Modern.Forms
             item.Owner = owner;
         }
 
+        /// <inheritdoc/>
         protected override void SetItem (int index, RibbonItemGroup item)
         {
             base.SetItem (index, item);

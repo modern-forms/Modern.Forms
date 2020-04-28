@@ -30,7 +30,7 @@ namespace Modern.Forms
         public virtual ControlStyle CurrentStyle => Style;
 
         internal IWindowBaseImpl window;
-        public ControlAdapter adapter;
+        internal ControlAdapter adapter;
 
         private DateTime last_click_time;
         private Point last_click_point;

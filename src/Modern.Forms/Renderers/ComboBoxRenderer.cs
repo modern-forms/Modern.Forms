@@ -3,10 +3,17 @@ using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a ComboBox.
+    /// </summary>
     public class ComboBoxRenderer : Renderer<ComboBox>
     {
-        protected const int GLYPH_SIZE = 15;    // Size of the drop down glyph
+        /// <summary>
+        /// Size of the drop down glyph.
+        /// </summary>
+        protected const int GLYPH_SIZE = 15;
 
+        /// <inheritdoc/>
         protected override void Render (ComboBox control, PaintEventArgs e)
         {
             // Draw the text of the selected item

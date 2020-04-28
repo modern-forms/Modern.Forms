@@ -3,11 +3,21 @@ using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a Ribbon.
+    /// </summary>
     public class RibbonRenderer : Renderer<Ribbon>
     {
+        /// <summary>
+        /// Size of a ribbon item image.
+        /// </summary>
         protected const int IMAGE_SIZE = 32;
+        /// <summary>
+        /// Minimum size of a ribbon item.
+        /// </summary>
         protected const int MINIMUM_ITEM_SIZE = 40;
 
+        /// <inheritdoc/>
         protected override void Render (Ribbon control, PaintEventArgs e)
         {
             var selected_tab = control.SelectedTabPage;
@@ -16,6 +26,9 @@ namespace Modern.Forms.Renderers
                 RenderTabPage (control, selected_tab, e);
         }
 
+        /// <summary>
+        /// Renders a RibbonTabPage.
+        /// </summary>
         protected virtual void RenderTabPage (Ribbon control, RibbonTabPage tabPage, PaintEventArgs e)
         {
             LayoutTabPage (tabPage);
@@ -23,10 +36,13 @@ namespace Modern.Forms.Renderers
             e.Canvas.FillRectangle (tabPage.Bounds, Theme.NeutralGray);
 
             foreach (var group in tabPage.Groups)
-                RenderTabPageGroup (control, tabPage, group, e);
+                RenderItemGroup (control, tabPage, group, e);
         }
 
-        protected virtual void RenderTabPageGroup (Ribbon control, RibbonTabPage tabPage, RibbonItemGroup group, PaintEventArgs e)
+        /// <summary>
+        /// Renders a RibbonItemGroup.
+        /// </summary>
+        protected virtual void RenderItemGroup (Ribbon control, RibbonTabPage tabPage, RibbonItemGroup group, PaintEventArgs e)
         {
             // Draw each ribbon item
             foreach (var item in group.Items)
@@ -39,6 +55,9 @@ namespace Modern.Forms.Renderers
             e.Canvas.DrawLine (group.Bounds.Right - 1, group.Bounds.Top + 4, group.Bounds.Right - 1, group.Bounds.Bottom - 4, Theme.BorderGray);
         }
 
+        /// <summary>
+        /// Renders a MenuItem.
+        /// </summary>
         protected virtual void RenderItem (Ribbon control, RibbonTabPage tabPage, RibbonItemGroup group, MenuItem item, PaintEventArgs e)
         {
             var canvas = e.Canvas;
@@ -66,6 +85,9 @@ namespace Modern.Forms.Renderers
             }
         }
 
+        /// <summary>
+        /// Renders a MenuSeparatorItem.
+        /// </summary>
         protected virtual void RenderMenuSeparatorItem (Ribbon control, RibbonTabPage tabPage, RibbonItemGroup group, MenuSeparatorItem item, PaintEventArgs e)
         {
             // Background
@@ -78,6 +100,9 @@ namespace Modern.Forms.Renderers
             e.Canvas.DrawLine (center.X, item.Bounds.Y + padding.Top, center.X, item.Bounds.Bottom - padding.Bottom, item.Enabled ? Theme.RibbonItemHighlightColor : Theme.DisabledTextColor, thickness);
         }
 
+        /// <summary>
+        /// Gets the preferred size of a MenuItem.
+        /// </summary>
         public virtual Size GetPreferredItemSize (Ribbon control, MenuItem item, Size proposedSize)
         {
             if (item is MenuSeparatorItem msi)
@@ -91,6 +116,9 @@ namespace Modern.Forms.Renderers
             return new Size (Math.Max (text_size + padding, control.LogicalToDeviceUnits (MINIMUM_ITEM_SIZE)), 0);
         }
 
+        /// <summary>
+        /// Gets the preferred size of a MenuSeparatorItem.
+        /// </summary>
         protected virtual Size GetPreferredSeparatorItemSize (Ribbon control, MenuSeparatorItem item, Size proposedSize)
         {
             var padding = control.LogicalToDeviceUnits (6);
@@ -99,6 +127,9 @@ namespace Modern.Forms.Renderers
             return new Size (thickness + padding, proposedSize.Height);
         }
 
+        /// <summary>
+        /// Performs a layout of the tab page's items.
+        /// </summary>
         // TODO: This should not be done during the paint process
         protected void LayoutTabPage (RibbonTabPage tabPage) => tabPage.LayoutItems ();
     }

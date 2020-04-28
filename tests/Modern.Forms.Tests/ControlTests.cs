@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Xunit;
 
 namespace Modern.Forms.Tests
@@ -129,8 +129,7 @@ namespace Modern.Forms.Tests
             //     - Button 3
             //   - Button 4
 
-            var form = new Form ();
-            var f = new ControlAdapter (form);
+            var f = new Form ();
 
             var b1 = new Button { Text = "Button 1" };
             var b2 = new Button { Text = "Button 2" };
@@ -150,7 +149,6 @@ namespace Modern.Forms.Tests
             f.Controls.Add (b4);
 
             // Button 1 as "this"
-            Assert.Null (b1.GetNextControl (f, true));
             Assert.Null (b1.GetNextControl (b1, true));
             Assert.Null (b1.GetNextControl (p1, true));
             Assert.Null (b1.GetNextControl (b2, true));
@@ -159,7 +157,6 @@ namespace Modern.Forms.Tests
             Assert.Null (b1.GetNextControl (b4, true));
 
             // Panel 1 as "this"
-            Assert.Equal ("Button 2", p1.GetNextControl (f, true).Text);
             Assert.Equal ("Button 2", p1.GetNextControl (b1, true).Text);
             Assert.Equal ("Button 2", p1.GetNextControl (p1, true).Text);
             Assert.Null (p1.GetNextControl (b2, true));
@@ -168,7 +165,6 @@ namespace Modern.Forms.Tests
             Assert.Equal ("Button 2", p1.GetNextControl (b4, true).Text);
 
             // Form as "this"
-            Assert.Equal ("Button 1", f.GetNextControl (f, true).Text);
             Assert.Equal ("Panel 1", f.GetNextControl (b1, true).Text);
             Assert.Equal ("Button 2", f.GetNextControl (p1, true).Text);
             Assert.Equal ("UserControl 1", f.GetNextControl (b2, true).Text);

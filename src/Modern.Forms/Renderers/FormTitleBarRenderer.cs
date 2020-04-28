@@ -3,12 +3,25 @@ using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a ComboBox.
+    /// </summary>
     public class FormTitleBarRenderer : Renderer<FormTitleBar>
     {
+        /// <summary>
+        /// Amount of padding to use for min/max/close buttons.
+        /// </summary>
         protected const int BUTTON_PADDING = 10;
+        /// <summary>
+        /// Size of the min/max/close buttons.
+        /// </summary>
         protected const int BUTTON_SIZE = 46;
+        /// <summary>
+        /// Size of the displayed icon.
+        /// </summary>
         protected const int FORM_ICON_SIZE = 16;
 
+        /// <inheritdoc/>
         protected override void Render (FormTitleBar control, PaintEventArgs e)
         {
             // Form icon
@@ -51,9 +64,11 @@ namespace Modern.Forms.Renderers
 
             var close_glyph_bounds = DrawingExtensions.CenterSquare (close_button_bounds, e.LogicalToDeviceUnits (BUTTON_PADDING));
             ControlPaint.DrawCloseGlyph (e, close_glyph_bounds);
-
         }
 
+        /// <summary>
+        /// Get the bounds of the close button.
+        /// </summary>
         public virtual Rectangle GetCloseButtonBounds (FormTitleBar control)
         {
             var button_width = GetScaledButtonWidth (control);
@@ -61,8 +76,14 @@ namespace Modern.Forms.Renderers
             return new Rectangle (control.ScaledWidth - button_width, 0, button_width, control.ScaledHeight);
         }
 
+        /// <summary>
+        /// Gets the bounds of the icon.
+        /// </summary>
         public virtual Rectangle GetIconBounds (FormTitleBar control) => new Rectangle (0, 0, control.ScaledHeight, control.ScaledHeight);
 
+        /// <summary>
+        /// Gets the bounds of the maximize button.
+        /// </summary>
         public virtual Rectangle GetMaximizeButtonBounds (FormTitleBar control)
         {
             var button_width = GetScaledButtonWidth (control);
@@ -70,6 +91,9 @@ namespace Modern.Forms.Renderers
             return control.AllowMaximize ? new Rectangle (control.ScaledWidth - (button_width * 2), 0, button_width, control.ScaledHeight) : Rectangle.Empty;
         }
 
+        /// <summary>
+        /// Gets the bounds of the minimize button.
+        /// </summary>
         public virtual Rectangle GetMinimizeButtonBounds (FormTitleBar control)
         {
             var button_width = GetScaledButtonWidth (control);
@@ -83,8 +107,14 @@ namespace Modern.Forms.Renderers
             return Rectangle.Empty;
         }
 
+        /// <summary>
+        /// Gets the scaled width of the min/max/close buttons.
+        /// </summary>
         public virtual int GetScaledButtonWidth (FormTitleBar control) => control.LogicalToDeviceUnits (BUTTON_SIZE);
 
+        /// <summary>
+        /// Gets the bounds of the title area.
+        /// </summary>
         public virtual Rectangle GetTitleBounds (FormTitleBar control)
         {
             var x = control.Image == null ? 0 : GetIconBounds (control).Right;

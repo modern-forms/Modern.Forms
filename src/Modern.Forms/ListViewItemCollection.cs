@@ -37,6 +37,7 @@ namespace Modern.Forms
             return item;
         }
 
+        /// <inheritdoc/>
         protected override void ClearItems ()
         {
             foreach (var item in Items)
@@ -47,6 +48,7 @@ namespace Modern.Forms
             owner.Invalidate ();
         }
 
+        /// <inheritdoc/>
         protected override void InsertItem (int index, ListViewItem item)
         {
             base.InsertItem (index, item);
@@ -55,6 +57,7 @@ namespace Modern.Forms
             owner.Invalidate ();
         }
 
+        /// <inheritdoc/>
         protected override void RemoveItem (int index)
         {
             var item = this[index];
@@ -65,6 +68,7 @@ namespace Modern.Forms
             owner.Invalidate ();
         }
 
+        /// <inheritdoc/>
         protected override void SetItem (int index, ListViewItem item)
         {
             var old_item = this.ElementAtOrDefault (index);

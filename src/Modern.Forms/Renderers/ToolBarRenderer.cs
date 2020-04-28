@@ -3,8 +3,12 @@ using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a ToolBar.
+    /// </summary>
     public class ToolBarRenderer : Renderer<ToolBar>
     {
+        /// <inheritdoc/>
         protected override void Render (ToolBar control, PaintEventArgs e)
         {
             foreach (var item in control.Items)
@@ -14,6 +18,9 @@ namespace Modern.Forms.Renderers
                     RenderItem (control, item, e);
         }
 
+        /// <summary>
+        /// Renders a MenuItem.
+        /// </summary>
         protected virtual void RenderItem (ToolBar control, MenuItem item, PaintEventArgs e)
         {
             // Background
@@ -51,6 +58,9 @@ namespace Modern.Forms.Renderers
             }
         }
 
+        /// <summary>
+        /// Renders a MenuSeparatorItem.
+        /// </summary>
         protected virtual void RenderMenuSeparatorItem (ToolBar control, MenuSeparatorItem item, PaintEventArgs e)
         {
             // Background
@@ -63,6 +73,9 @@ namespace Modern.Forms.Renderers
             e.Canvas.DrawLine (center.X, item.Bounds.Top + padding.Top + thickness, center.X, item.Bounds.Bottom - padding.Bottom - thickness, item.Enabled ? Theme.RibbonItemHighlightColor : Theme.DisabledTextColor, thickness);
         }
 
+        /// <summary>
+        /// Gets the preferred size of a MenuItem.
+        /// </summary>
         public virtual Size GetPreferredItemSize (ToolBar control, MenuItem item, Size proposedSize)
         {
             if (item is MenuSeparatorItem msi)
@@ -81,6 +94,9 @@ namespace Modern.Forms.Renderers
             return new Size (width, item.Bounds.Height);
         }
 
+        /// <summary>
+        /// Gets the preferred size of a MenuSeparatorItem.
+        /// </summary>
         protected virtual Size GetPreferredSeparatorItemSize (ToolBar control, MenuSeparatorItem item, Size proposedSize)
         {
             var padding = control.LogicalToDeviceUnits (item.Padding.Horizontal);

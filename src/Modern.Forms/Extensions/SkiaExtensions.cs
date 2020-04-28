@@ -4,6 +4,9 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// A collection of extension methods to facilitate working with Skia.
+    /// </summary>
     public static class SkiaExtensions
     {
         private static readonly SKColorFilter disabled_matrix = SKColorFilter.CreateColorMatrix (new float[]
@@ -14,72 +17,46 @@ namespace Modern.Forms
                     0,     0,     0,     1, 0
                 });
 
+        /// <summary>
+        /// Clips a canvas to the specified rectangle.
+        /// </summary>
         public static void Clip (this SKCanvas canvas, Rectangle rectangle) => canvas.ClipRect (rectangle.ToSKRect ());
 
-        public static void DrawLine (this SKCanvas canvas, float x1, float y1, float x2, float y2, SKColor color, int thickness = 1)
-        {
-            using var paint = new SKPaint { Color = color, StrokeWidth = thickness };
+        /// <summary>
+        /// Draws a control's background.
+        /// </summary>
+        public static void DrawBackground (this SKCanvas canvas, ControlStyle style) =>
+            canvas.Clear (style.GetBackgroundColor ());
 
-            canvas.DrawLine (x1, y1, x2, y2, paint);
+        /// <summary>
+        /// Draws a bitmap.
+        /// </summary>
+        public static void DrawBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect, bool disabled = false)
+        {
+            using var paint = new SKPaint { FilterQuality = SKFilterQuality.High };
+
+            if (disabled)
+                paint.ColorFilter = disabled_matrix;
+
+            canvas.DrawBitmap (bitmap, rect.ToSKRect (), paint);
         }
 
-        public static void FillRectangle (this SKCanvas canvas, Rectangle rectangle, SKColor color)
+        /// <summary>
+        /// Draws a bitmap.
+        /// </summary>
+        public static void DrawBitmap (this SKCanvas canvas, SKBitmap bitmap, float x, float y, bool disabled = false)
         {
-            using var paint = new SKPaint { Color = color };
+            using var paint = new SKPaint { FilterQuality = SKFilterQuality.High };
 
-            canvas.DrawRect (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, paint);
+            if (disabled)
+                paint.ColorFilter = disabled_matrix;
+
+            canvas.DrawBitmap (bitmap, x, y, paint);
         }
 
-        public static void FillRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color)
-        {
-            using var paint = new SKPaint { Color = color };
-
-            canvas.DrawRect (x, y, width, height, paint);
-        }
-
-        public static void DrawRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int strokeWidth = 1)
-        {
-            using var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth };
-
-            canvas.DrawRect (x, y, width, height, paint);
-        }
-
-        public static void DrawRectangle (this SKCanvas canvas, Rectangle rectangle, SKColor color, int strokeWidth = 1)
-            => DrawRectangle (canvas, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, color, strokeWidth);
-
-        public static void DrawCircle (this SKCanvas canvas, int x, int y, int radius, SKColor color, int strokeWidth = 1)
-        {
-            using var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth, IsAntialias = true };
-
-            canvas.DrawCircle (x, y, radius, paint);
-        }
-
-        public static void FillCircle (this SKCanvas canvas, int x, int y, int radius, SKColor color)
-        {
-            using var paint = new SKPaint { Color = color, IsAntialias = true };
-
-            canvas.DrawCircle (x, y, radius, paint);
-        }
-
-        //public static void DrawRoundedRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int rx = 3, int ry = 3, float strokeWidth = 1)
-        //{
-        //    using var paint = new SKPaint {
-        //        Color = color,
-        //        IsStroke = true,
-        //        IsAntialias = true,
-        //        LcdRenderText = true,
-        //        StrokeWidth = 1f,
-        //        SubpixelText = true,
-        //        DeviceKerningEnabled = true,
-        //        FilterQuality = SKFilterQuality.High,
-        //        HintingLevel = SKPaintHinting.Full,
-        //        IsAutohinted = true,
-        //        TextAlign = SKTextAlign.Center
-        //    };
-
-        //    canvas.DrawRoundRect (x + .5f, y + .5f, width, height, rx, ry, paint);
-        //}
-
+        /// <summary>
+        /// Draws a control's border.
+        /// </summary>
         public static void DrawBorder (this SKCanvas canvas, Rectangle bounds, ControlStyle style)
         {
             // Left Border
@@ -105,6 +82,7 @@ namespace Modern.Forms
                 var bottom_offset = style.Border.Bottom.GetWidth () / 2f;
                 canvas.DrawLine (0, bounds.Height - bottom_offset, bounds.Width, bounds.Height - bottom_offset, style.Border.Bottom.GetColor (), style.Border.Bottom.GetWidth ());
             }
+
             //if (CurrentStyle.BorderRadius > 0) { }
             ////canvas.DrawRoundedRectangle (1, 1, Width - (CurrentStyle.BorderWidth * 2), Height - (CurrentStyle.BorderWidth * 2), CurrentStyle.BorderColor, CurrentStyle.BorderRadius, CurrentStyle.BorderRadius, .5f);
             //else {
@@ -113,51 +91,89 @@ namespace Modern.Forms
             //}
         }
 
-        public static void DrawBackground(this SKCanvas canvas, ControlStyle style) =>
-            canvas.Clear (style.GetBackgroundColor ());
-
-        public static void DrawBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect, bool disabled = false)
+        /// <summary>
+        /// Draws an unfilled circle.
+        /// </summary>
+        public static void DrawCircle (this SKCanvas canvas, int x, int y, int radius, SKColor color, int strokeWidth = 1)
         {
-            if (disabled) {
-                DrawDisabledBitmap (canvas, bitmap, rect);
-                return;
-            }
+            using var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth, IsAntialias = true };
 
-            using var paint = new SKPaint { FilterQuality = SKFilterQuality.High };
-            canvas.DrawBitmap (bitmap, rect.ToSKRect (), paint);
+            canvas.DrawCircle (x, y, radius, paint);
         }
 
-        public static void DrawBitmap (this SKCanvas canvas, SKBitmap bitmap, float x, float y, bool disabled = false)
+        /// <summary>
+        /// Draws a line.
+        /// </summary>
+        public static void DrawLine (this SKCanvas canvas, float x1, float y1, float x2, float y2, SKColor color, int thickness = 1)
         {
-            if (disabled) {
-                DrawDisabledBitmap (canvas, bitmap, x, y);
-                return;
-            }
+            using var paint = new SKPaint { Color = color, StrokeWidth = thickness };
 
-            using var paint = new SKPaint { FilterQuality = SKFilterQuality.High };
-            canvas.DrawBitmap (bitmap, x, y, paint);
+            canvas.DrawLine (x1, y1, x2, y2, paint);
         }
 
-        public static void DrawDisabledBitmap (this SKCanvas canvas, SKBitmap bitmap, Rectangle rect)
+        /// <summary>
+        /// Draws an unfilled rectangle.
+        /// </summary>
+        public static void DrawRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int strokeWidth = 1)
         {
-            using var paint = new SKPaint { FilterQuality = SKFilterQuality.High, ColorFilter = disabled_matrix };
+            using var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth };
 
-            canvas.DrawBitmap (bitmap, rect.ToSKRect (), paint);
+            canvas.DrawRect (x, y, width, height, paint);
         }
 
-        public static void DrawDisabledBitmap (this SKCanvas canvas, SKBitmap bitmap, float x, float y)
-        {
-            using var paint = new SKPaint { FilterQuality = SKFilterQuality.High, ColorFilter = disabled_matrix };
+        /// <summary>
+        /// Draws an unfilled rectangle.
+        /// </summary>
+        public static void DrawRectangle (this SKCanvas canvas, Rectangle rectangle, SKColor color, int strokeWidth = 1)
+            => DrawRectangle (canvas, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, color, strokeWidth);
 
-            canvas.DrawBitmap (bitmap, x, y, paint);
+        //public static void DrawRoundedRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int rx = 3, int ry = 3, float strokeWidth = 1)
+        //{
+        //    using var paint = new SKPaint {
+        //        Color = color,
+        //        IsStroke = true,
+        //        IsAntialias = true,
+        //        LcdRenderText = true,
+        //        StrokeWidth = 1f,
+        //        SubpixelText = true,
+        //        DeviceKerningEnabled = true,
+        //        FilterQuality = SKFilterQuality.High,
+        //        HintingLevel = SKPaintHinting.Full,
+        //        IsAutohinted = true,
+        //        TextAlign = SKTextAlign.Center
+        //    };
+        //    canvas.DrawRoundRect (x + .5f, y + .5f, width, height, rx, ry, paint);
+        //}
+
+        /// <summary>
+        /// Draws a filled circle.
+        /// </summary>
+        public static void FillCircle (this SKCanvas canvas, int x, int y, int radius, SKColor color)
+        {
+            using var paint = new SKPaint { Color = color, IsAntialias = true };
+
+            canvas.DrawCircle (x, y, radius, paint);
         }
 
-        public static SKRect ToSKRect (this Rectangle rect) => new SKRect (rect.X, rect.Y, rect.Right, rect.Bottom);
+        /// <summary>
+        /// Draws a filled rectangle.
+        /// </summary>
+        public static void FillRectangle (this SKCanvas canvas, Rectangle rectangle, SKColor color)
+            => FillRectangle (canvas, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, color);
 
-        public static SKSize ToSKSize (this Size size) => new SKSize (size.Width, size.Height);
+        /// <summary>
+        /// Draws a filled rectangle.
+        /// </summary>
+        public static void FillRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color)
+        {
+            using var paint = new SKPaint { Color = color };
 
-        public static Rectangle ToRectangle (this SKRect rect) => new Rectangle ((int)rect.Left, (int)rect.Top, (int)rect.Width, (int)rect.Height);
+            canvas.DrawRect (x, y, width, height, paint);
+        }
 
+        /// <summary>
+        /// Convers an SKImage to a Bitmap.
+        /// </summary>
         public static Bitmap ToBitmap (this SKImage skiaImage)
         {
             // TODO: maybe keep the same color types where we can, instead of just going to the platform default
@@ -172,10 +188,28 @@ namespace Modern.Forms
             return bitmap;
         }
 
+        /// <summary>
+        /// Convers an SKBitmap to a Bitmap.
+        /// </summary>
         public static Bitmap ToBitmap (this SKBitmap skiaBitmap)
         {
             using (var image = SKImage.FromPixels (skiaBitmap.PeekPixels ()))
                 return ToBitmap (image);
         }
+
+        /// <summary>
+        /// Converts an SKRect to a Rectangle.
+        /// </summary>
+        public static Rectangle ToRectangle (this SKRect rect) => new Rectangle ((int)rect.Left, (int)rect.Top, (int)rect.Width, (int)rect.Height);
+
+        /// <summary>
+        /// Converts a Rectangle to an SKRect.
+        /// </summary>
+        public static SKRect ToSKRect (this Rectangle rect) => new SKRect (rect.X, rect.Y, rect.Right, rect.Bottom);
+
+        /// <summary>
+        /// Converts a Size to an SKSize.
+        /// </summary>
+        public static SKSize ToSKSize (this Size size) => new SKSize (size.Width, size.Height);
     }
 }

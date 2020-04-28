@@ -3,8 +3,12 @@ using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a Menu.
+    /// </summary>
     public class MenuRenderer : Renderer<Menu>
     {
+        /// <inheritdoc/>
         protected override void Render (Menu control, PaintEventArgs e)
         {
             foreach (var item in control.Items)
@@ -14,6 +18,9 @@ namespace Modern.Forms.Renderers
                     RenderItem (control, item, e);
         }
 
+        /// <summary>
+        /// Renders a MenuItem.
+        /// </summary>
         protected virtual void RenderItem (Menu control, MenuItem item, PaintEventArgs e)
         {
             // Background
@@ -27,6 +34,9 @@ namespace Modern.Forms.Renderers
             e.Canvas.DrawText (item.Text, Theme.UIFont, font_size, item.Bounds, font_color, ContentAlignment.MiddleCenter);
         }
 
+        /// <summary>
+        /// Renders a MenuSeparatorItem.
+        /// </summary>
         protected virtual void RenderMenuSeparatorItem (Menu control, MenuSeparatorItem item, PaintEventArgs e)
         {
             // Background
@@ -39,6 +49,9 @@ namespace Modern.Forms.Renderers
             e.Canvas.DrawLine (center.X, item.Bounds.Top + padding.Top, center.X, item.Bounds.Bottom - padding.Bottom, item.Enabled ? Theme.RibbonItemHighlightColor : Theme.DisabledTextColor, thickness);
         }
 
+        /// <summary>
+        /// Gets the preferred size of a MenuItem.
+        /// </summary>
         public virtual Size GetPreferredItemSize (Menu control, MenuItem item, Size proposedSize)
         {
             if (item is MenuSeparatorItem msi)
@@ -51,6 +64,9 @@ namespace Modern.Forms.Renderers
             return new Size (text_size + padding, item.Bounds.Height);
         }
 
+        /// <summary>
+        /// Gets the preferred size of a MenuSeparatorItem.
+        /// </summary>
         protected virtual Size GetPreferredSeparatorItemSize (Menu control, MenuSeparatorItem item, Size proposedSize)
         {
             var padding = control.LogicalToDeviceUnits (item.Padding.Horizontal);

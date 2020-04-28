@@ -3,8 +3,12 @@ using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {
+    /// <summary>
+    /// Represents a class that can render a RadioButton.
+    /// </summary>
     public class RadioButtonRenderer : Renderer<RadioButton>
     {
+        /// <inheritdoc/>
         protected override void Render (RadioButton control, PaintEventArgs e)
         {
             var x = e.LogicalToDeviceUnits (11);
