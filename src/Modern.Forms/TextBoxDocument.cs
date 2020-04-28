@@ -25,9 +25,7 @@ namespace Modern.Forms
         private char? password_char;
         private int width = -1;
         private SKTypeface font = Theme.UIFont;
-        private int font_size = Theme.FontSize;
         private TextAlignment alignment = TextAlignment.Left;
-        private SKColor font_color = Theme.DarkTextColor;
         private SKColor placeholder_font_color = Theme.DisabledTextColor;
         private SKColor selection_color = new SKColor (153, 201, 239);
 
@@ -138,28 +136,6 @@ namespace Modern.Forms
             }
         }
 
-        public SKColor FontColor {
-            get => font_color;
-            set {
-                if (font_color != value) {
-                    font_color = value;
-                    cached_text_block = null;
-                    Invalidate ();
-                }
-            }
-        }
-
-        public int FontSize {
-            get => font_size;
-            set {
-                if (font_size != value) {
-                    font_size = value;
-                    cached_text_block = null;
-                    Invalidate ();
-                }
-            }
-        }
-
         public HitTestResult GetCharIndexFromPosition (int x, int y)
         {
             var hit = GetTextBlock ().HitTest (x, y);
@@ -176,10 +152,10 @@ namespace Modern.Forms
 
             var max_size = multiline ? new Size (width, int.MaxValue) : TextMeasurer.MaxSize;
             var color = !Enabled ? Theme.DisabledTextColor :
-                        Text.HasValue () ? font_color : 
+                        Text.HasValue () ? textbox.CurrentStyle.GetForegroundColor () : 
                                 placeholder_font_color;
 
-            return cached_text_block = TextMeasurer.CreateTextBlock (DisplayText, font, font_size, max_size, alignment, color, MaxLines);
+            return cached_text_block = TextMeasurer.CreateTextBlock (DisplayText, font, textbox.CurrentFontSize, max_size, alignment, color, MaxLines);
         }
 
         public bool InsertText (string str)
@@ -260,7 +236,7 @@ namespace Modern.Forms
 
                     // Multiline - Go up one line
                     if (multiline)
-                        new_index = GetCharIndexFromPosition ((int)current_caret.CaretXCoord, (int)current_caret.CaretRectangle.MidY - FontSize).ClosestCodePointIndex;
+                        new_index = GetCharIndexFromPosition ((int)current_caret.CaretXCoord, (int)current_caret.CaretRectangle.MidY - textbox.CurrentFontSize).ClosestCodePointIndex;
                     // Single line - Go left one character
                     else
                         new_index = current_caret.PreviousCodePointIndex;
@@ -288,7 +264,7 @@ namespace Modern.Forms
 
                     // Multiline - Go down one line
                     if (multiline)
-                        new_index = GetCharIndexFromPosition ((int)current_caret.CaretXCoord, (int)current_caret.CaretRectangle.MidY + FontSize).ClosestCodePointIndex;
+                        new_index = GetCharIndexFromPosition ((int)current_caret.CaretXCoord, (int)current_caret.CaretRectangle.MidY + textbox.CurrentFontSize).ClosestCodePointIndex;
                     // Single line - Go left one character
                     else
                         new_index = current_caret.NextCodePointIndex;

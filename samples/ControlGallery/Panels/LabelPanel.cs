@@ -20,6 +20,7 @@ namespace ControlGallery.Panels
             };
 
             lbl1.Style.Border.Width = 1;
+            lbl1.Style.ForegroundColor = SKColors.Red;
 
             Controls.Add (lbl1);
 
