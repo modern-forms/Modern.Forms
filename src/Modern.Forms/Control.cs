@@ -11,7 +11,7 @@ namespace Modern.Forms
     public class Control : ILayoutable, IDisposable
     {
         private AnchorStyles anchor_style = AnchorStyles.Top | AnchorStyles.Left;
-        private AutoSizeMode auto_size_mode;
+        //private AutoSizeMode auto_size_mode;
         private SKBitmap? back_buffer;
         private ControlBehaviors behaviors;
         private Rectangle bounds;

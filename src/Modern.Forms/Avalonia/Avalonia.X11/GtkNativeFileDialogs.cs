@@ -1,4 +1,5 @@
 ﻿#nullable disable
+#pragma warning disable CS0618
 
 using System;
 using System.Collections.Generic;

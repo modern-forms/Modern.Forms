@@ -50,25 +50,25 @@ namespace Avalonia.Input
             protected set;
         }
 
-        /// <summary>
-        /// Captures mouse input to the specified control.
-        /// </summary>
-        /// <param name="control">The control.</param>
-        /// <remarks>
-        /// When an element captures the mouse, it receives mouse input whether the cursor is 
-        /// within the control's bounds or not. The current mouse capture control is exposed
-        /// by the <see cref="Captured"/> property.
-        /// </remarks>
+        ///// <summary>
+        ///// Captures mouse input to the specified control.
+        ///// </summary>
+        ///// <param name="control">The control.</param>
+        ///// <remarks>
+        ///// When an element captures the mouse, it receives mouse input whether the cursor is 
+        ///// within the control's bounds or not. The current mouse capture control is exposed
+        ///// by the <see cref="Captured"/> property.
+        ///// </remarks>
         //public void Capture(IInputElement control)
         //{
         //    _pointer.Capture(control);
         //}
 
-        /// <summary>
-        /// Gets the mouse position relative to a control.
-        /// </summary>
-        /// <param name="relativeTo">The control.</param>
-        /// <returns>The mouse position in the control's coordinates.</returns>
+        ///// <summary>
+        ///// Gets the mouse position relative to a control.
+        ///// </summary>
+        ///// <param name="relativeTo">The control.</param>
+        ///// <returns>The mouse position in the control's coordinates.</returns>
         //public Point GetPosition(IVisual relativeTo)
         //{
         //    //Contract.Requires<ArgumentNullException>(relativeTo != null);
