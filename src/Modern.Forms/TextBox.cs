@@ -212,7 +212,7 @@ namespace Modern.Forms
 
             // Printable characters (except backspace)
             if (e.KeyChar >= 32 && e.KeyChar != 127) {
-                if (document.InsertText ((e.KeyChar).ToString ()))
+                if (document.InsertText (e.Text))
                     ScrollToCaret ();
             }
         }

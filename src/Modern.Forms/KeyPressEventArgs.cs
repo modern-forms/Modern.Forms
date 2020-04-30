@@ -32,9 +32,10 @@ namespace Modern.Forms
     {
         private readonly Keys key_data;
 
-        public KeyPressEventArgs (char keyChar, Keys keyData = Keys.None)
+        public KeyPressEventArgs (string text, Keys keyData = Keys.None)
         {
-            KeyChar = keyChar;
+            Text = text;
+            KeyChar = text[0];
             Handled = false;
             key_data = keyData;
         }
@@ -42,6 +43,8 @@ namespace Modern.Forms
         public bool Handled { get; set; }
 
         public char KeyChar { get; set; }
+
+        public string Text { get; set; }
 
         public bool Alt => key_data.HasFlag (Keys.Alt);
 
