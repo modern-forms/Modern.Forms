@@ -60,7 +60,7 @@ namespace Avalonia.Skia
 
         public int Version { get; private set; } = 1;
 
-        /// <inheritdoc />
+        ///// <inheritdoc />
         //public void Draw(DrawingContextImpl context, SKRect sourceRect, SKRect destRect, SKPaint paint)
         //{
         //    lock (_lock)
@@ -73,7 +73,7 @@ namespace Avalonia.Skia
             _bitmap.Dispose();
         }
 
-        /// <inheritdoc />
+        ///// <inheritdoc />
         //public void Save(Stream stream)
         //{
         //    using (var image = GetSnapshot())
@@ -82,7 +82,7 @@ namespace Avalonia.Skia
         //    }
         //}
 
-        /// <inheritdoc />
+        ///// <inheritdoc />
         //public void Save(string fileName)
         //{
         //    using (var image = GetSnapshot())

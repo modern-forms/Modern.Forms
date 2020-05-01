@@ -10,7 +10,7 @@ namespace Modern.Forms
     /// </summary>
     public abstract class MenuBase : Control
     {
-        protected MenuItem root_item;
+        private readonly MenuItem root_item;
 
         /// <summary>
         /// Initializes a new instance of the MenuBase class.

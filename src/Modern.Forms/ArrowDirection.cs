@@ -1,4 +1,4 @@
-//
+﻿//
 // ArrowDirection.cs
 //
 // Permission is hereby granted, free of charge, to any person obtaining
@@ -26,14 +26,31 @@
 //	Jonathan Pobst (monkey@jpobst.com)
 //
 
-
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Specifies an arrow direction.
+    /// </summary>
     public enum ArrowDirection
     {
+        /// <summary>
+        /// The arrow is pointing left.
+        /// </summary>
         Left = 0,
+
+        /// <summary>
+        /// The arrow is pointing up.
+        /// </summary>
         Up = 1,
+
+        /// <summary>
+        /// The arrow is pointing right.
+        /// </summary>
         Right = 16,
+
+        /// <summary>
+        /// The arrow is pointing down.
+        /// </summary>
         Down = 17
     }
 }

@@ -121,7 +121,7 @@ namespace Modern.Forms
         public virtual void Show (Point location)
         {
             if (popup == null) {
-                popup = new PopupWindow (root_item.GetTopMenu ()?.FindForm ());
+                popup = new PopupWindow (GetTopLevelMenu ()?.FindForm ());
                 popup.Controls.Add (this);
             }
 

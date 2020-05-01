@@ -374,11 +374,11 @@ namespace Avalonia
             return (rect.X < Right) && (X < rect.Right) && (rect.Y < Bottom) && (Y < rect.Bottom);
         }
 
-        /// <summary>
-        /// Returns the axis-aligned bounding box of a transformed rectangle.
-        /// </summary>
-        /// <param name="matrix">The transform.</param>
-        /// <returns>The bounding box</returns>
+        ///// <summary>
+        ///// Returns the axis-aligned bounding box of a transformed rectangle.
+        ///// </summary>
+        ///// <param name="matrix">The transform.</param>
+        ///// <returns>The bounding box</returns>
         //public Rect TransformToAABB(Matrix matrix)
         //{
         //    ReadOnlySpan<Point> points = stackalloc Point[4]
@@ -496,11 +496,11 @@ namespace Avalonia
                 _height);
         }
 
-        /// <summary>
-        /// Parses a <see cref="Rect"/> string.
-        /// </summary>
-        /// <param name="s">The string.</param>
-        /// <returns>The parsed <see cref="Rect"/>.</returns>
+        ///// <summary>
+        ///// Parses a <see cref="Rect"/> string.
+        ///// </summary>
+        ///// <param name="s">The string.</param>
+        ///// <returns>The parsed <see cref="Rect"/>.</returns>
         //public static Rect Parse(string s)
         //{
         //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid Rect."))

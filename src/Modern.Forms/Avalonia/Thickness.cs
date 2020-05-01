@@ -198,11 +198,11 @@ namespace Avalonia
                 size.Height - (thickness.Top + thickness.Bottom));
         }
 
-        /// <summary>
-        /// Parses a <see cref="Thickness"/> string.
-        /// </summary>
-        /// <param name="s">The string.</param>
-        /// <returns>The <see cref="Thickness"/>.</returns>
+        ///// <summary>
+        ///// Parses a <see cref="Thickness"/> string.
+        ///// </summary>
+        ///// <param name="s">The string.</param>
+        ///// <returns>The <see cref="Thickness"/>.</returns>
         //public static Thickness Parse(string s)
         //{
         //    const string exceptionMessage = "Invalid Thickness.";

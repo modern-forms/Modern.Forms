@@ -153,11 +153,11 @@ namespace Avalonia
             return new Size(size._width - toSubtract._width, size._height - toSubtract._height);
         }
 
-        /// <summary>
-        /// Parses a <see cref="Size"/> string.
-        /// </summary>
-        /// <param name="s">The string.</param>
-        /// <returns>The <see cref="Size"/>.</returns>
+        ///// <summary>
+        ///// Parses a <see cref="Size"/> string.
+        ///// </summary>
+        ///// <param name="s">The string.</param>
+        ///// <returns>The <see cref="Size"/>.</returns>
         //public static Size Parse(string s)
         //{
         //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid Size."))

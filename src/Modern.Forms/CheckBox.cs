@@ -60,6 +60,7 @@ namespace Modern.Forms
         /// <inheritdoc/>
         protected override Cursor DefaultCursor => Cursors.Hand;
 
+        /// <inheritdoc/>
         protected override Size DefaultSize => new Size (104, 24);
 
         /// <summary>

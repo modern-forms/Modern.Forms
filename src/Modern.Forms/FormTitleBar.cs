@@ -163,11 +163,34 @@ namespace Modern.Forms
         /// </summary>
         public enum FormTitleBarElement
         {
+            /// <summary>
+            /// No element. Not used.
+            /// </summary>
             None,
+
+            /// <summary>
+            /// The title portion of the titlebar. Basically anything that isn't another element.
+            /// </summary>
             Title,
+
+            /// <summary>
+            /// The icon of the titlebar.
+            /// </summary>
             Icon,
+
+            /// <summary>
+            /// The maximize button of the titlebar.
+            /// </summary>
             Maximize,
+
+            /// <summary>
+            /// The minimize button of the titlebar.
+            /// </summary>
             Minimize,
+
+            /// <summary>
+            /// The close button of the titlebar.
+            /// </summary>
             Close
         }
     }

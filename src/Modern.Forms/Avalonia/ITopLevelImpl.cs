@@ -64,10 +64,10 @@ namespace Avalonia.Platform
         /// </summary>
         Action<double> ScalingChanged { get; set; }
 
-        /// <summary>
-        /// Creates a new renderer for the toplevel.
-        /// </summary>
-        /// <param name="root">The toplevel.</param>
+        ///// <summary>
+        ///// Creates a new renderer for the toplevel.
+        ///// </summary>
+        ///// <param name="root">The toplevel.</param>
         //IRenderer CreateRenderer(IRenderRoot root);
 
         /// <summary>

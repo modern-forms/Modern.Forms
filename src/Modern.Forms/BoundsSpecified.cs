@@ -1,44 +1,59 @@
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-// 
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
-// Copyright (c) 2004 Novell, Inc.
-//
-// Authors:
-//	Peter Bartok	pbartok@novell.com
-//
-
-// COMPLETE
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    ///  Specifies the bounds of the control to use when defining a control's size
+    ///  and position.
+    /// </summary>
     [Flags]
     public enum BoundsSpecified
     {
-        None = 0x00000000,
-        X = 0x00000001,
-        Y = 0x00000002,
-        Location = 0x00000003,
-        Width = 0x00000004,
-        Height = 0x00000008,
-        Size = 0x0000000c,
-        All = 0x0000000f
+        /// <summary>
+        ///  Specifies the left edge of the control is defined.
+        /// </summary>
+        X = 0x1,
+
+        /// <summary>
+        ///  Specifies the top edge of the control of the control is defined.
+        /// </summary>
+        Y = 0x2,
+
+        /// <summary>
+        ///  Specifies the width of the control is defined.
+        /// </summary>
+        Width = 0x4,
+
+        /// <summary>
+        ///  Specifies the height of the control is defined.
+        /// </summary>
+        Height = 0x8,
+
+        /// <summary>
+        ///  Both <see cref='X'/> and <see cref='Y'/> coordinates of the
+        ///  control are defined.
+        /// </summary>
+        Location = X | Y,
+
+        /// <summary>
+        ///  Both <see cref='Control.Width'/> and <see cref='Control.Height'/>
+        ///  property values of the control are defined.
+        /// </summary>
+        Size = Width | Height,
+
+        /// <summary>
+        ///  Both <see cref='Control.Location'/> and <see cref='Control.Size'/>
+        ///  property values are defined.
+        /// </summary>
+        All = Location | Size,
+
+        /// <summary>
+        ///  No bounds are specified.
+        /// </summary>
+        None = 0,
     }
 }

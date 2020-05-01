@@ -160,12 +160,12 @@ namespace Avalonia
         /// <returns>Points having its coordinates divided</returns>
         public static Point operator /(Point p, double k) => new Point(p.X / k, p.Y / k);
 
-        /// <summary>
-        /// Applies a matrix to a point.
-        /// </summary>
-        /// <param name="point">The point.</param>
-        /// <param name="matrix">The matrix.</param>
-        /// <returns>The resulting point.</returns>
+        ///// <summary>
+        ///// Applies a matrix to a point.
+        ///// </summary>
+        ///// <param name="point">The point.</param>
+        ///// <param name="matrix">The matrix.</param>
+        ///// <returns>The resulting point.</returns>
         //public static Point operator *(Point point, Matrix matrix)
         //{
         //    return new Point(
@@ -173,11 +173,11 @@ namespace Avalonia
         //        (point.X * matrix.M12) + (point.Y * matrix.M22) + matrix.M32);
         //}
 
-        /// <summary>
-        /// Parses a <see cref="Point"/> string.
-        /// </summary>
-        /// <param name="s">The string.</param>
-        /// <returns>The <see cref="Point"/>.</returns>
+        ///// <summary>
+        ///// Parses a <see cref="Point"/> string.
+        ///// </summary>
+        ///// <param name="s">The string.</param>
+        ///// <returns>The <see cref="Point"/>.</returns>
         //public static Point Parse(string s)
         //{
         //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid Point."))
@@ -235,11 +235,11 @@ namespace Avalonia
             return string.Format(CultureInfo.InvariantCulture, "{0}, {1}", _x, _y);
         }
 
-        /// <summary>
-        /// Transforms the point by a matrix.
-        /// </summary>
-        /// <param name="transform">The transform.</param>
-        /// <returns>The transformed point.</returns>
+        ///// <summary>
+        ///// Transforms the point by a matrix.
+        ///// </summary>
+        ///// <param name="transform">The transform.</param>
+        ///// <returns>The transformed point.</returns>
         //public Point Transform(Matrix transform)
         //{
         //    var x = X;

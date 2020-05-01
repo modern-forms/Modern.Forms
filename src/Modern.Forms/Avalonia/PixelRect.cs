@@ -266,11 +266,11 @@ namespace Avalonia
             return (rect.X < Right) && (X < rect.Right) && (rect.Y < Bottom) && (Y < rect.Bottom);
         }
         
-        /// <summary>
-        /// Translates the rectangle by an offset.
-        /// </summary>
-        /// <param name="offset">The offset.</param>
-        /// <returns>The translated rectangle.</returns>
+        ///// <summary>
+        ///// Translates the rectangle by an offset.
+        ///// </summary>
+        ///// <param name="offset">The offset.</param>
+        ///// <returns>The translated rectangle.</returns>
         //public PixelRect Translate(PixelVector offset)
         //{
         //    return new PixelRect(Position + offset, Size);
@@ -429,11 +429,11 @@ namespace Avalonia
                 Height);
         }
 
-        /// <summary>
-        /// Parses a <see cref="PixelRect"/> string.
-        /// </summary>
-        /// <param name="s">The string.</param>
-        /// <returns>The parsed <see cref="PixelRect"/>.</returns>
+        ///// <summary>
+        ///// Parses a <see cref="PixelRect"/> string.
+        ///// </summary>
+        ///// <param name="s">The string.</param>
+        ///// <returns>The parsed <see cref="PixelRect"/>.</returns>
         //public static PixelRect Parse(string s)
         //{
         //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid PixelRect."))

@@ -1,4 +1,5 @@
 ﻿#nullable disable
+#pragma warning disable CS0414
 
 // Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
@@ -30,14 +31,14 @@ namespace Avalonia.Input
             _pointer = pointer ?? new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true);
         }
         
-        /// <summary>
-        /// Gets the control that is currently capturing by the mouse, if any.
-        /// </summary>
-        /// <remarks>
-        /// When an element captures the mouse, it receives mouse input whether the cursor is 
-        /// within the control's bounds or not. To set the mouse capture, call the 
-        /// <see cref="Capture"/> method.
-        /// </remarks>
+        ///// <summary>
+        ///// Gets the control that is currently capturing by the mouse, if any.
+        ///// </summary>
+        ///// <remarks>
+        ///// When an element captures the mouse, it receives mouse input whether the cursor is 
+        ///// within the control's bounds or not. To set the mouse capture, call the 
+        ///// <see cref="Capture"/> method.
+        ///// </remarks>
         //[Obsolete("Use IPointer instead")]
         //public IInputElement Captured => _pointer.Captured;
 

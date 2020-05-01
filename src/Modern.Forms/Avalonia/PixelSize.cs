@@ -67,11 +67,11 @@ namespace Avalonia
             return !(left == right);
         }
 
-        /// <summary>
-        /// Parses a <see cref="PixelSize"/> string.
-        /// </summary>
-        /// <param name="s">The string.</param>
-        /// <returns>The <see cref="PixelSize"/>.</returns>
+        ///// <summary>
+        ///// Parses a <see cref="PixelSize"/> string.
+        ///// </summary>
+        ///// <param name="s">The string.</param>
+        ///// <returns>The <see cref="PixelSize"/>.</returns>
         //public static PixelSize Parse(string s)
         //{
         //    using (var tokenizer = new StringTokenizer(s, CultureInfo.InvariantCulture, exceptionMessage: "Invalid PixelSize."))

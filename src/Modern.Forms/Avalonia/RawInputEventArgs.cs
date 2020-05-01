@@ -1,4 +1,5 @@
 ﻿#nullable disable
+#pragma warning disable CS1574
 
 // Copyright (c) The Avalonia Project. All rights reserved.
 // Licensed under the MIT license. See licence.md file in the project root for full license information.
@@ -38,9 +39,9 @@ namespace Avalonia.Input.Raw
         /// </summary>
         public IInputDevice Device { get; }
 
-        /// <summary>
-        /// Gets the root from which the event originates.
-        /// </summary>
+        ///// <summary>
+        ///// Gets the root from which the event originates.
+        ///// </summary>
         //public IInputRoot Root { get; }
 
         /// <summary>

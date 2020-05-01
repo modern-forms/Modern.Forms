@@ -4,8 +4,14 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Contains methods for drawing elements of controls.
+    /// </summary>
     public static class ControlPaint
     {
+        /// <summary>
+        /// Draws an arrow glyph, as seen on ComboBoxes and TreeView dropdowns.
+        /// </summary>
         public static void DrawArrowGlyph (PaintEventArgs e, Rectangle rectangle, SKColor color, ArrowDirection direction)
         {
             var lines = e.LogicalToDeviceUnits (4);
@@ -50,6 +56,9 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Draws a CheckBox glyph.
+        /// </summary>
         public static void DrawCheckBox (PaintEventArgs e, Rectangle rectangle, CheckState state, bool disabled = false)
         {
             var color = disabled ? Theme.DisabledTextColor
@@ -81,22 +90,35 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Draws a close glyph, as seen on FormTitleBar.
+        /// </summary>
         public static void DrawCloseGlyph (PaintEventArgs e, Rectangle rectangle)
         {
             e.Canvas.DrawLine (rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom, Theme.LightTextColor);
             e.Canvas.DrawLine (rectangle.X, rectangle.Bottom, rectangle.Right, rectangle.Y, Theme.LightTextColor);
         }
 
+        /// <summary>
+        /// Draws a maximize glyph, as seen on FormTitleBar.
+        /// </summary>
         public static void DrawMaximizeGlyph (PaintEventArgs e, Rectangle rectangle)
         {
             e.Canvas.DrawRectangle (rectangle, Theme.LightTextColor);
         }
 
+        /// <summary>
+        /// Draws a minimize glyph, as seen on FormTitleBar.
+        /// </summary>
         public static void DrawMinimizeGlyph (PaintEventArgs e, Rectangle rectangle)
         {
             e.Canvas.DrawLine (rectangle.X, rectangle.Y, rectangle.Right, rectangle.Y, Theme.LightTextColor);
         }
 
+
+        /// <summary>
+        /// Draws a RadioButton glyph.
+        /// </summary>
         public static void DrawRadioButton (PaintEventArgs e, Point origin, CheckState state, bool disabled = false)
         {
             var outer_radius = e.LogicalToDeviceUnits (8);

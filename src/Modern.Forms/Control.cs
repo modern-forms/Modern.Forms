@@ -232,7 +232,7 @@ namespace Modern.Forms
                 style.BackgroundColor = Theme.NeutralGray;
                 style.Font = Theme.UIFont;
                 style.FontSize = Theme.FontSize;
-                style.Border.Radius = 0;
+                //style.Border.Radius = 0;
                 style.Border.Color = Theme.BorderGray;
                 style.Border.Width = 0;
             });
@@ -484,7 +484,7 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Marks the control as needing to be redrawn.
+        /// Marks the entire control as needing to be redrawn.
         /// </summary>
         public void Invalidate () => Invalidate (Bounds);
 

@@ -8,9 +8,9 @@ using System.IO;
 
 namespace Avalonia.Platform
 {
-    /// <summary>
-    /// Defines the platform-specific interface for a <see cref="Avalonia.Media.Imaging.Bitmap"/>.
-    /// </summary>
+    ///// <summary>
+    ///// Defines the platform-specific interface for a <see cref="Avalonia.Media.Imaging.Bitmap"/>.
+    ///// </summary>
     internal interface IBitmapImpl : IDisposable
     {
         /// <summary>
@@ -28,16 +28,16 @@ namespace Avalonia.Platform
         /// </summary>
         int Version { get; }
 
-        /// <summary>
-        /// Saves the bitmap to a file.
-        /// </summary>
-        /// <param name="fileName">The filename.</param>
+        ///// <summary>
+        ///// Saves the bitmap to a file.
+        ///// </summary>
+        ///// <param name="fileName">The filename.</param>
         //void Save(string fileName);
 
-        /// <summary>
-        /// Saves the bitmap to a stream in png format.
-        /// </summary>
-        /// <param name="stream">The stream.</param>
+        ///// <summary>
+        ///// Saves the bitmap to a stream in png format.
+        ///// </summary>
+        ///// <param name="stream">The stream.</param>
         //void Save(Stream stream);
     }
 }
