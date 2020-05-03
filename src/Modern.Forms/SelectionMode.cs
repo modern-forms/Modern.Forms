@@ -4,6 +4,9 @@
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Specifies indicators to indicate the selection mode of a list.
+    /// </summary>
     public enum SelectionMode
     {
         /// <summary>

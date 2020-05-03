@@ -29,8 +29,14 @@ using System.Drawing;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents the amount of spacing between a control's edges and its content.
+    /// </summary>
     public struct Padding
     {
+        /// <summary>
+        /// Initializes a new instance of the Padding class with the specified padding for all sides.
+        /// </summary>
         public Padding (int all)
         {
             Left = all;
@@ -39,6 +45,9 @@ namespace Modern.Forms
             Bottom = all;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the Padding class with the specified padding for each side.
+        /// </summary>
         public Padding (int left, int top, int right, int bottom)
         {
             Left = left;
@@ -47,32 +56,25 @@ namespace Modern.Forms
             Bottom = bottom;
         }
 
-        public static readonly Padding Empty = new Padding (0);
-
+        /// <summary>
+        /// Gets or sets the amount of padding for all sides. If all sides are not the same, -1 is returned.
+        /// </summary>
         public int All {
             get => (Left != Top) || (Left != Right) || (Left != Bottom) ? -1 : Top;
             set => Left = Top = Right = Bottom = value;
         }
 
+        /// <summary>
+        /// Gets or sets the amount of padding on the bottom.
+        /// </summary>
         public int Bottom { get; set; }
 
-        public int Horizontal => Left + Right;
+        /// <summary>
+        /// Represents padding with all sides set to 0.
+        /// </summary>
+        public static readonly Padding Empty = new Padding (0);
 
-        public int Left { get; set; }
-
-        public int Right { get; set; }
-
-        public Size Size => new Size (Horizontal, Vertical);
-
-        public int Top { get; set; }
-
-        public int Vertical => Top + Bottom;
-
-        public static Padding Add (Padding p1, Padding p2)
-        {
-            return p1 + p2;
-        }
-
+        /// <inheritdoc/>
         public override bool Equals (object? other)
         {
             if (other is Padding other_aux) {
@@ -85,24 +87,45 @@ namespace Modern.Forms
             return false;
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode () => Top ^ Bottom ^ Left ^ Right;
 
-        public static Padding operator + (Padding p1, Padding p2)
-        {
-            return new Padding (p1.Left + p2.Left, p1.Top + p2.Top, p1.Right + p2.Right, p1.Bottom + p2.Bottom);
-        }
+        /// <summary>
+        /// Gets the total amount of horizontal padding.
+        /// </summary>
+        public int Horizontal => Left + Right;
 
+        /// <summary>
+        /// Gets or sets the amount of padding on the left side.
+        /// </summary>
+        public int Left { get; set; }
+
+        /// <summary>
+        /// Gets or sets the amount of padding on the right side.
+        /// </summary>
+        public int Right { get; set; }
+
+        /// <summary>
+        /// Gets or sets the amount of padding on the top.
+        /// </summary>
+        public int Top { get; set; }
+
+        /// <inheritdoc/>
+        public override string ToString () => $"{{Left={Left},Top={Top},Right={Right},Bottom={Bottom}}}";
+
+        /// <summary>
+        /// Gets the total amount of vertical padding.
+        /// </summary>
+        public int Vertical => Top + Bottom;
+
+        /// <summary>
+        /// Implements the == operator to determine if 2 Padding objects are the same.
+        /// </summary>
         public static bool operator == (Padding p1, Padding p2) => p1.Equals (p2);
 
+        /// <summary>
+        /// Implements the != operator to determine if 2 Padding objects are not the same.
+        /// </summary>
         public static bool operator != (Padding p1, Padding p2) => !p1.Equals (p2);
-
-        public static Padding operator - (Padding p1, Padding p2)
-        {
-            return new Padding (p1.Left - p2.Left, p1.Top - p2.Top, p1.Right - p2.Right, p1.Bottom - p2.Bottom);
-        }
-
-        public static Padding Subtract (Padding p1, Padding p2) => p1 - p2;
-
-        public override string ToString () => $"{{Left={Left},Top={Top},Right={Right},Bottom={Bottom}}}";
     }
 }

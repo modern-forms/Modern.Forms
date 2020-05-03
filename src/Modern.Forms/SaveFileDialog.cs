@@ -3,11 +3,21 @@ using System.Threading.Tasks;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a class for a file save dialog.
+    /// </summary>
     public class SaveFileDialog : FileDialog
     {
+        /// <summary>
+        /// Gets or sets the default save extension. For example: "txt".
+        /// </summary>
         public string? DefaultExtension { get; set; }
 
-        public async Task<DialogResult> ShowDialog (Window window)
+        /// <summary>
+        /// Shows the dialog to the user.
+        /// </summary>
+        /// <param name="owner">The window that owns this dialog.</param>
+        public async Task<DialogResult> ShowDialog (Window owner)
         {
             var dialog = new Avalonia.Controls.SaveFileDialog {
                 DefaultExtension = DefaultExtension,
@@ -17,7 +27,7 @@ namespace Modern.Forms
                 Filters = filters
             };
 
-            var file = await dialog.ShowAsync (window.window);
+            var file = await dialog.ShowAsync (owner.window);
 
             FileNames.Clear ();
 

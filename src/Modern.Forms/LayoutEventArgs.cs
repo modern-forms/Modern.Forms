@@ -1,4 +1,4 @@
-// Permission is hereby granted, free of charge, to any person obtaining
+﻿// Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
 // "Software"), to deal in the Software without restriction, including
 // without limitation the rights to use, copy, modify, merge, publish,
@@ -29,24 +29,42 @@ using System.ComponentModel;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    ///  Provides data for the Layout event.
+    /// </summary>
     public sealed class LayoutEventArgs : EventArgs
     {
+        /// <summary>
+        ///  Initializes a new instance of the LayoutEventArgs class.
+        /// </summary>
         public LayoutEventArgs (Control? affectedControl, string affectedProperty)
         {
             AffectedControl = affectedControl;
             AffectedProperty = affectedProperty;
         }
 
+        /// <summary>
+        ///  Initializes a new instance of the LayoutEventArgs class.
+        /// </summary>
         public LayoutEventArgs (IComponent? affectedComponent, string affectedProperty)
         {
             AffectedComponent = affectedComponent;
             AffectedProperty = affectedProperty;
         }
 
+        /// <summary>
+        /// Gets the component affected by this layout event.
+        /// </summary>
         public IComponent? AffectedComponent { get; }
 
+        /// <summary>
+        /// Gets the control affected by this layout event.
+        /// </summary>
         public Control? AffectedControl { get; }
 
+        /// <summary>
+        /// Gets the property affected by this layout event.
+        /// </summary>
         public string AffectedProperty { get; }
     }
 }

@@ -5,6 +5,9 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a collection of ListViewItems.
+    /// </summary>
     public class ListViewItemCollection : Collection<ListViewItem>
     {
         private readonly ListView owner;
@@ -14,6 +17,9 @@ namespace Modern.Forms
             this.owner = owner;
         }
 
+        /// <summary>
+        /// Adds a new ListViewItem to the collection with the specified text.
+        /// </summary>
         public ListViewItem Add (string text)
         {
             var item = new ListViewItem {
@@ -25,6 +31,9 @@ namespace Modern.Forms
             return item;
         }
 
+        /// <summary>
+        /// Adds a new ListViewItem to the collection with the specified text and image.
+        /// </summary>
         public ListViewItem Add (string text, SKBitmap image)
         {
             var item = new ListViewItem {

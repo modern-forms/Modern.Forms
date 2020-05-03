@@ -5,6 +5,9 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a collection of MenuItems.
+    /// </summary>
     public class MenuItemCollection : Collection<MenuItem>
     {
         private readonly MenuItem owner;
@@ -14,12 +17,18 @@ namespace Modern.Forms
             this.owner = owner;
         }
 
+        /// <summary>
+        /// Adds the MenuItem to the collection.
+        /// </summary>
         public T Add<T> (T item) where T : MenuItem
         {
             base.Add (item);
             return item;
         }
 
+        /// <summary>
+        /// Adds a new MenuItem to the collection with the specified text, image, and Click handler.
+        /// </summary>
         public MenuItem Add (string text, SKBitmap? image = null, EventHandler<MouseEventArgs>? onClick = null)
         {
             return Add (new MenuItem (text, image, onClick));

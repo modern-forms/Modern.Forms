@@ -142,7 +142,7 @@ namespace Modern.Forms.Tests
             p1.Controls.Add (b2);
             f.Controls.Add (p1);
 
-            var uc1 = new UserControl { Text = "UserControl 1", Top = 60, Height = 30 };
+            var uc1 = new Control { Text = "UserControl 1", Top = 60, Height = 30 };
             uc1.Controls.Add (b3);
             f.Controls.Add (uc1);
 

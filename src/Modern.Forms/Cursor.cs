@@ -5,6 +5,9 @@ using Avalonia.Input;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a mouse cursor.
+    /// </summary>
     public class Cursor
     {
         internal Avalonia.Input.Cursor cursor;
@@ -14,6 +17,9 @@ namespace Modern.Forms
             cursor = new Avalonia.Input.Cursor (type);
         }
 
+        /// <summary>
+        /// The default cursor provided by the operating system.
+        /// </summary>
         public static Cursor Default => Cursors.Arrow;
     }
 }

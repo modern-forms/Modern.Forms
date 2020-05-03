@@ -7,6 +7,9 @@ using System.Linq;
 namespace Modern.Forms
 {
     // TODO: Update selected indexes when adding/removing items
+    /// <summary>
+    /// Represents a collection of items for ListBox.
+    /// </summary>
     public class ListBoxItemCollection : ObservableCollection<object>
     {
         private readonly ListBox owner;
@@ -17,6 +20,9 @@ namespace Modern.Forms
             this.owner = owner;
         }
 
+        /// <summary>
+        /// Adds a collection of items to the collection.
+        /// </summary>
         public void AddRange (params object[] items)
         {
             owner.SuspendLayout ();

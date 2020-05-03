@@ -5,11 +5,17 @@ using System.Linq;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Represents a popup dialog used to inform the user of a message.
+    /// </summary>
     public class MessageBoxForm : Form
     {
         private readonly Button ok_button;
         private readonly TextBox label;
 
+        /// <summary>
+        /// Initializes a new instance of the MessageBoxForm class.
+        /// </summary>
         public MessageBoxForm ()
         {
             StartPosition = FormStartPosition.CenterParent;
@@ -41,6 +47,9 @@ namespace Modern.Forms
             ok_button.Click += (o, e) => Close ();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the MessageBoxForm class with the specified title and message.
+        /// </summary>
         public MessageBoxForm (string title, string message) : this ()
         {
             Text = title;
@@ -63,8 +72,12 @@ namespace Modern.Forms
             ok_button.Left = (int)((Size.Width - ok_button.Width) / 2);
         }
 
+        /// <inheritdoc/>
         protected override Size DefaultSize => new Size (400, 200);
 
+        /// <summary>
+        /// Gets or sets the message of the dialog.
+        /// </summary>
         public string Message {
             get => label.Text;
             set {
