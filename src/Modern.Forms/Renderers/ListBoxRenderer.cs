@@ -26,7 +26,7 @@ namespace Modern.Forms.Renderers
         {
             // Draw selected background
             if (control.Items.SelectedIndexes.Contains (index))
-                e.Canvas.FillRectangle (bounds, Theme.RibbonItemHighlightColor);
+                e.Canvas.FillRectangle (bounds, Theme.ItemHighlightColor);
 
             // Draw hover background
             else if (control.ShowHover && control.Items.HoveredIndex == index)

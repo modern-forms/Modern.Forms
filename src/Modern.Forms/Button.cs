@@ -37,8 +37,8 @@ namespace Modern.Forms
         /// </summary>
         public new static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle,
             (style) => {
-                style.BackgroundColor = Theme.RibbonTabHighlightColor;
-                style.Border.Color = Theme.RibbonColor;
+                style.BackgroundColor = Theme.HighlightColor;
+                style.Border.Color = Theme.PrimaryColor;
                 style.ForegroundColor = Theme.LightTextColor;
             });
 

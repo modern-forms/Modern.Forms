@@ -218,11 +218,29 @@ namespace Modern.Forms
 
         private int LogicalToDeviceUnits (int value) => TreeView?.LogicalToDeviceUnits (value) ?? value;
 
+        /// <summary>
+        /// Elements of a TreeViewItem.
+        /// </summary>
         protected internal enum TreeViewItemElement
         {
+            /// <summary>
+            /// No element.
+            /// </summary>
             None,
+
+            /// <summary>
+            /// The glyph (dropdown arrow) of the TreeViewItem.
+            /// </summary>
             Glyph,
+
+            /// <summary>
+            /// The image of the TreeViewItem.
+            /// </summary>
             Image,
+
+            /// <summary>
+            /// The text of the TreeViewItem.
+            /// </summary>
             Text
         }
     }

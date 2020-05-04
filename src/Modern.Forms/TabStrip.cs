@@ -24,7 +24,7 @@ namespace Modern.Forms
         /// <inheritdoc/>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
-                style.BackgroundColor = Theme.RibbonColor;
+                style.BackgroundColor = Theme.PrimaryColor;
             });
 
         // Returns the tab at the specified location.

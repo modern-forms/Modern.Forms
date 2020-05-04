@@ -25,8 +25,6 @@ namespace Modern.Forms
         /// Transforms a horizontal or vertical integer coordinate from logical to device units
         /// by scaling it up  for current DPI and rounding to nearest integer value
         /// </summary>
-        /// <param name="value">value in logical units</param>
-        /// <returns>value in device units</returns>
         public static int LogicalToDeviceUnits (int value, int devicePixels)
         {
             if (devicePixels == 0)
@@ -40,8 +38,6 @@ namespace Modern.Forms
         /// Returns a new Size with the input's
         /// dimensions converted from logical units to device units.
         /// </summary>
-        /// <param name="logicalSize">Size in logical units</param>
-        /// <returns>Size in device units</returns>
         public static Size LogicalToDeviceUnits (Size logicalSize, int deviceDpi)
         {
             return new Size (LogicalToDeviceUnits (logicalSize.Width, deviceDpi),
@@ -52,8 +48,6 @@ namespace Modern.Forms
         /// Returns a new Padding with the input's
         /// dimensions converted from logical units to device units.
         /// </summary>
-        /// <param name="logicalPadding">Padding in logical units</param>
-        /// <returns>Padding in device units</returns>
         public static Padding LogicalToDeviceUnits (Padding logicalPadding, int deviceDpi)
         {
             return new Padding (LogicalToDeviceUnits (logicalPadding.Left, deviceDpi),

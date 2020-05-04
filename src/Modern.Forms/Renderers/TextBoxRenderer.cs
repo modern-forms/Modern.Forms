@@ -30,7 +30,7 @@ namespace Modern.Forms.Renderers
 
             if (control.Selected) {
                 var caret = TextMeasurer.GetCursorLocation (block, GetTextOrigin (control), GetCursorIndex (control), GetCurrentFontSize (control));
-                e.Canvas.DrawRectangle (caret, Theme.DarkTextColor);
+                e.Canvas.DrawRectangle (caret, Theme.PrimaryTextColor);
             }
 
             e.Canvas.Restore ();

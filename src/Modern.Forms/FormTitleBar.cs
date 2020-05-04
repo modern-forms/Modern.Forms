@@ -37,7 +37,7 @@ namespace Modern.Forms
 
         /// <inheritdoc/>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-           (style) => style.BackgroundColor = Theme.RibbonColor);
+           (style) => style.BackgroundColor = Theme.PrimaryColor);
 
         /// <summary>
         /// Gets the element at the specified location.

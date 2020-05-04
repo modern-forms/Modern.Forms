@@ -79,6 +79,6 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the computed foreground color.
         /// </summary>
-        public SKColor GetForegroundColor () => ForegroundColor ?? _parent?.GetForegroundColor () ?? Theme.DarkTextColor;
+        public SKColor GetForegroundColor () => ForegroundColor ?? _parent?.GetForegroundColor () ?? Theme.PrimaryTextColor;
     }
 }

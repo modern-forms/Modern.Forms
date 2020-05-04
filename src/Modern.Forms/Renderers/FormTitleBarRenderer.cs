@@ -39,7 +39,7 @@ namespace Modern.Forms.Renderers
                 var minimize_button_bounds = GetMinimizeButtonBounds (control);
 
                 if (control.HoverElement == FormTitleBar.FormTitleBarElement.Minimize)
-                    e.Canvas.FillRectangle (minimize_button_bounds, Theme.RibbonTabHighlightColor);
+                    e.Canvas.FillRectangle (minimize_button_bounds, Theme.HighlightColor);
 
                 var min_glyph_bounds = DrawingExtensions.CenterRectangle (minimize_button_bounds, e.LogicalToDeviceUnits (new Size (BUTTON_PADDING, 1)));
                 ControlPaint.DrawMinimizeGlyph (e, min_glyph_bounds);
@@ -50,7 +50,7 @@ namespace Modern.Forms.Renderers
                 var maximize_button_bounds = GetMaximizeButtonBounds (control);
 
                 if (control.HoverElement == FormTitleBar.FormTitleBarElement.Maximize)
-                    e.Canvas.FillRectangle (maximize_button_bounds, Theme.RibbonTabHighlightColor);
+                    e.Canvas.FillRectangle (maximize_button_bounds, Theme.HighlightColor);
 
                 var max_glyph_bounds = DrawingExtensions.CenterSquare (maximize_button_bounds, e.LogicalToDeviceUnits (BUTTON_PADDING));
                 ControlPaint.DrawMaximizeGlyph (e, max_glyph_bounds);

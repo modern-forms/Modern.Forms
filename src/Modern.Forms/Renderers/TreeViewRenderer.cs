@@ -41,8 +41,8 @@ namespace Modern.Forms.Renderers
         /// </summary>
         protected virtual void RenderItem (TreeView control, TreeViewItem item, PaintEventArgs e)
         {
-            var background_color = item.Selected ? Theme.RibbonItemHighlightColor : Theme.LightNeutralGray;
-            var foreground_color = control.Enabled ? Theme.DarkTextColor : Theme.DisabledTextColor;
+            var background_color = item.Selected ? Theme.ItemHighlightColor : Theme.LightNeutralGray;
+            var foreground_color = control.Enabled ? Theme.PrimaryTextColor : Theme.DisabledTextColor;
 
             e.Canvas.FillRectangle (item.Bounds, background_color);
 

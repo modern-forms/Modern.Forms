@@ -21,7 +21,7 @@ namespace Modern.Forms.Renderers
         protected virtual void RenderItem (ListView control, ListViewItem item, PaintEventArgs e)
         {
             if (item.Selected)
-                e.Canvas.FillRectangle (item.Bounds, Theme.RibbonItemHighlightColor);
+                e.Canvas.FillRectangle (item.Bounds, Theme.ItemHighlightColor);
 
             var image_size = e.LogicalToDeviceUnits (32);
             var image_area = new Rectangle (item.Bounds.Left, item.Bounds.Top, item.Bounds.Width, item.Bounds.Width);
@@ -32,14 +32,14 @@ namespace Modern.Forms.Renderers
                 e.Canvas.DrawBitmap (item.Image, image_bounds);
 
             if (!string.IsNullOrWhiteSpace (item.Text)) {
-                var font_size = e.LogicalToDeviceUnits (Theme.RibbonItemFontSize);
+                var font_size = e.LogicalToDeviceUnits (Theme.ItemFontSize);
 
                 e.Canvas.Save ();
                 e.Canvas.Clip (item.Bounds);
 
                 var text_bounds = new Rectangle (item.Bounds.Left, image_bounds.Bottom + e.LogicalToDeviceUnits (3), item.Bounds.Width, item.Bounds.Bottom - image_bounds.Bottom - e.LogicalToDeviceUnits (3));
 
-                e.Canvas.DrawText (item.Text, Theme.UIFont, font_size, text_bounds, Theme.DarkTextColor, ContentAlignment.MiddleCenter);
+                e.Canvas.DrawText (item.Text, Theme.UIFont, font_size, text_bounds, Theme.PrimaryTextColor, ContentAlignment.MiddleCenter);
 
                 e.Canvas.Restore ();
             }

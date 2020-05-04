@@ -6,6 +6,9 @@ using SkiaSharp;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    /// Provides a repository of color resources.
+    /// </summary>
     public static class Theme
     {
         private static int suspend_count = 0;
@@ -13,19 +16,17 @@ namespace Modern.Forms
 
         private static readonly Dictionary<string, object> values = new Dictionary<string, object> ();
 
-        public static event EventHandler? ThemeChanged;
-
         static Theme ()
         {
-            values[nameof (RibbonColor)] = new SKColor (16, 110, 190);
-            values[nameof (DarkTextColor)] = SKColors.Black;
+            values[nameof (PrimaryColor)] = new SKColor (16, 110, 190);
+            values[nameof (PrimaryTextColor)] = SKColors.Black;
             values[nameof (DisabledTextColor)] = new SKColor (190, 190, 190);
             values[nameof (LightTextColor)] = SKColors.White;
             values[nameof (FormBackgroundColor)] = new SKColor (240, 240, 240);
             values[nameof (FormCloseHighlightColor)] = new SKColor (232, 17, 35);
-            values[nameof (RibbonTabHighlightColor)] = new SKColor (42, 138, 208);
-            values[nameof (RibbonItemHighlightColor)] = new SKColor (198, 198, 198);
-            values[nameof (RibbonItemSelectedColor)] = new SKColor (176, 176, 176);
+            values[nameof (HighlightColor)] = new SKColor (42, 138, 208);
+            values[nameof (ItemHighlightColor)] = new SKColor (198, 198, 198);
+            values[nameof (ItemSelectedColor)] = new SKColor (176, 176, 176);
             values[nameof (DarkNeutralGray)] = new SKColor (225, 225, 225);
             values[nameof (NeutralGray)] = new SKColor (240, 240, 240);
             values[nameof (LightNeutralGray)] = new SKColor (251, 251, 251);
@@ -33,103 +34,45 @@ namespace Modern.Forms
 
             values[nameof (UIFont)] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
             values[nameof (FontSize)] = 14;
-            values[nameof (RibbonItemFontSize)] = 12;
+            values[nameof (ItemFontSize)] = 12;
         }
 
-        public static SKColor RibbonColor {
-            get => GetValue<SKColor> (nameof (RibbonColor));
-            set => SetValue (nameof (RibbonColor), value);
-        }
-
-        public static SKColor DarkTextColor {
-            get => GetValue<SKColor> (nameof (DarkTextColor));
-            set => SetValue (nameof (DarkTextColor), value);
-        }
-
-        public static SKColor DisabledTextColor {
-            get => GetValue<SKColor> (nameof (DisabledTextColor));
-            set => SetValue (nameof (DisabledTextColor), value);
-        }
-
-        public static SKColor LightTextColor {
-            get => GetValue<SKColor> (nameof (LightTextColor));
-            set => SetValue (nameof (LightTextColor), value);
-        }
-
-        public static SKColor FormBackgroundColor {
-            get => GetValue<SKColor> (nameof (FormBackgroundColor));
-            set => SetValue (nameof (FormBackgroundColor), value);
-        }
-
-        public static SKColor FormCloseHighlightColor {
-            get => GetValue<SKColor> (nameof (FormCloseHighlightColor));
-            set => SetValue (nameof (FormCloseHighlightColor), value);
-        }
-
-        public static SKColor RibbonTabHighlightColor {
-            get => GetValue<SKColor> (nameof (RibbonTabHighlightColor));
-            set => SetValue (nameof (RibbonTabHighlightColor), value);
-        }
-
-        public static SKColor RibbonItemHighlightColor {
-            get => GetValue<SKColor> (nameof (RibbonItemHighlightColor));
-            set => SetValue (nameof (RibbonItemHighlightColor), value);
-        }
-
-        public static SKColor RibbonItemSelectedColor {
-            get => GetValue<SKColor> (nameof (RibbonItemSelectedColor));
-            set => SetValue (nameof (RibbonItemSelectedColor), value);
-        }
-
-        public static SKColor DarkNeutralGray {
-            get => GetValue<SKColor> (nameof (DarkNeutralGray));
-            set => SetValue (nameof (DarkNeutralGray), value);
-        }
-
-        public static SKColor NeutralGray {
-            get => GetValue<SKColor> (nameof (NeutralGray));
-            set => SetValue (nameof (NeutralGray), value);
-        }
-
-        public static SKColor LightNeutralGray {
-            get => GetValue<SKColor> (nameof (LightNeutralGray));
-            set => SetValue (nameof (LightNeutralGray), value);
-        }
-
-        public static SKColor BorderGray {
-            get => GetValue<SKColor> (nameof (BorderGray));
-            set => SetValue (nameof (BorderGray), value);
-        }
-
-        public static SKTypeface UIFont {
-            get => GetValue<SKTypeface> (nameof (UIFont));
-            set => SetValue (nameof (UIFont), value);
-        }
-
-        public static int FontSize {
-            get => GetValue<int> (nameof (FontSize));
-            set => SetValue (nameof (FontSize), value);
-        }
-
-        public static int RibbonItemFontSize {
-            get => GetValue<int> (nameof (RibbonItemFontSize));
-            set => SetValue (nameof (RibbonItemFontSize), value);
-        }
-
-        private static T GetValue<T> (string name) => (T)values[name];
-
-        private static void SetValue (string key, object value)
-        {
-            values[key] = value;
-
-            RaiseThemeChanged ();
-        }
-
+        /// <summary>
+        /// Pause raising ThemeChanged for better performance if changing many Theme elements.
+        /// Resume with EndUpdate ().
+        /// </summary>
         public static void BeginUpdate ()
         {
             suspend_count++;
         }
 
+        /// <summary>
+        /// A darker gray used as the default control border color.
+        /// </summary>
+        public static SKColor BorderGray {
+            get => GetValue<SKColor> (nameof (BorderGray));
+            set => SetValue (nameof (BorderGray), value);
+        }
+
+        /// <summary>
+        /// A darker gray generally used for showing an item is currently pressed.
+        /// </summary>
+        public static SKColor DarkNeutralGray {
+            get => GetValue<SKColor> (nameof (DarkNeutralGray));
+            set => SetValue (nameof (DarkNeutralGray), value);
+        }
+
+        /// <summary>
+        /// The color used for disabled text.
+        /// </summary>
+        public static SKColor DisabledTextColor {
+            get => GetValue<SKColor> (nameof (DisabledTextColor));
+            set => SetValue (nameof (DisabledTextColor), value);
+        }
+
+        /// <summary>
+        /// Resume raising the ThemeChanged event after pausing with BeginUpdate ().
+        /// </summary>
         public static void EndUpdate ()
         {
             if (suspend_count == 0)
@@ -141,6 +84,104 @@ namespace Modern.Forms
                 RaiseThemeChanged ();
         }
 
+        /// <summary>
+        /// The default font size used by control.
+        /// </summary>
+        public static int FontSize {
+            get => GetValue<int> (nameof (FontSize));
+            set => SetValue (nameof (FontSize), value);
+        }
+
+        /// <summary>
+        /// The background color of a form.
+        /// </summary>
+        public static SKColor FormBackgroundColor {
+            get => GetValue<SKColor> (nameof (FormBackgroundColor));
+            set => SetValue (nameof (FormBackgroundColor), value);
+        }
+
+        /// <summary>
+        /// The color used to draw a form's close button when highlighted.
+        /// </summary>
+        public static SKColor FormCloseHighlightColor {
+            get => GetValue<SKColor> (nameof (FormCloseHighlightColor));
+            set => SetValue (nameof (FormCloseHighlightColor), value);
+        }
+
+        private static T GetValue<T> (string name) => (T)values[name];
+
+        /// <summary>
+        /// The color used for highlighted elements, like hovered tabs or buttons.
+        /// </summary>
+        public static SKColor HighlightColor {
+            get => GetValue<SKColor> (nameof (HighlightColor));
+            set => SetValue (nameof (HighlightColor), value);
+        }
+
+        /// <summary>
+        /// A smaller font size generally used for lists of items.
+        /// </summary>
+        public static int ItemFontSize {
+            get => GetValue<int> (nameof (ItemFontSize));
+            set => SetValue (nameof (ItemFontSize), value);
+        }
+
+        /// <summary>
+        /// The color used for a highlighted item's background.
+        /// </summary>
+        public static SKColor ItemHighlightColor {
+            get => GetValue<SKColor> (nameof (ItemHighlightColor));
+            set => SetValue (nameof (ItemHighlightColor), value);
+        }
+
+        /// <summary>
+        /// The color used for a selected item's background.
+        /// </summary>
+        public static SKColor ItemSelectedColor {
+            get => GetValue<SKColor> (nameof (ItemSelectedColor));
+            set => SetValue (nameof (ItemSelectedColor), value);
+        }
+
+        /// <summary>
+        /// A lighter gray used primarily used as the background of list items.
+        /// </summary>
+        public static SKColor LightNeutralGray {
+            get => GetValue<SKColor> (nameof (LightNeutralGray));
+            set => SetValue (nameof (LightNeutralGray), value);
+        }
+
+        /// <summary>
+        /// A lighter text color, often used when an element is selected with a darker background.
+        /// </summary>
+        public static SKColor LightTextColor {
+            get => GetValue<SKColor> (nameof (LightTextColor));
+            set => SetValue (nameof (LightTextColor), value);
+        }
+
+        /// <summary>
+        /// A neutral gray used as the default background of controls.
+        /// </summary>
+        public static SKColor NeutralGray {
+            get => GetValue<SKColor> (nameof (NeutralGray));
+            set => SetValue (nameof (NeutralGray), value);
+        }
+
+        /// <summary>
+        /// The primary color for elements such as the title bar, tabs, checkboxes and radio button glyph.
+        /// </summary>
+        public static SKColor PrimaryColor {
+            get => GetValue<SKColor> (nameof (PrimaryColor));
+            set => SetValue (nameof (PrimaryColor), value);
+        }
+
+        /// <summary>
+        /// The primary text color.
+        /// </summary>
+        public static SKColor PrimaryTextColor {
+            get => GetValue<SKColor> (nameof (PrimaryTextColor));
+            set => SetValue (nameof (PrimaryTextColor), value);
+        }
+
         private static void RaiseThemeChanged ()
         {
             if (suspend_count > 0) {
@@ -150,6 +191,27 @@ namespace Modern.Forms
 
             ThemeChanged?.Invoke (null, EventArgs.Empty);
             suspended_raise_waiting = false;
+        }
+
+        private static void SetValue (string key, object value)
+        {
+            values[key] = value;
+
+            RaiseThemeChanged ();
+        }
+
+        /// <summary>
+        /// Raised when a theme color is changed. Controls listen
+        /// for this event to know when to repaint themselves.
+        /// </summary>
+        public static event EventHandler? ThemeChanged;
+
+        /// <summary>
+        /// The default font used by controls.
+        /// </summary>
+        public static SKTypeface UIFont {
+            get => GetValue<SKTypeface> (nameof (UIFont));
+            set => SetValue (nameof (UIFont), value);
         }
     }
 }

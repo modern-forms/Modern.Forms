@@ -22,10 +22,10 @@ namespace Modern.Forms.Renderers
             if (item.Selected)
                 e.Canvas.FillRectangle (item.Bounds, Theme.NeutralGray);
             else if (item.Hovered && item.Enabled)
-                e.Canvas.FillRectangle (item.Bounds, Theme.RibbonTabHighlightColor);
+                e.Canvas.FillRectangle (item.Bounds, Theme.HighlightColor);
 
             var font_color = !item.Enabled ? Theme.DisabledTextColor:
-                             item.Selected ? Theme.RibbonColor 
+                             item.Selected ? Theme.PrimaryColor 
                                            : Theme.LightTextColor;
 
             var font_size = e.LogicalToDeviceUnits (Theme.FontSize);

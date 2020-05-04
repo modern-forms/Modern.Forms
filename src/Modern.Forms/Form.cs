@@ -51,7 +51,7 @@ namespace Modern.Forms
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
          (style) => {
              style.BackgroundColor = Theme.FormBackgroundColor;
-             style.Border.Color = Theme.RibbonColor;
+             style.Border.Color = Theme.PrimaryColor;
              style.Border.Width = 1;
          });
 

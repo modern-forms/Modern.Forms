@@ -19,7 +19,7 @@ namespace Modern.Forms.Renderers
             var filled_pixels = (int)(percent * client_area.Width);
 
             if (filled_pixels > 0)
-                e.Canvas.FillRectangle (client_area.X, client_area.Y, filled_pixels, client_area.Height, control.Enabled ? Theme.RibbonColor : Theme.DisabledTextColor);
+                e.Canvas.FillRectangle (client_area.X, client_area.Y, filled_pixels, client_area.Height, control.Enabled ? Theme.PrimaryColor : Theme.DisabledTextColor);
         }
     }
 }

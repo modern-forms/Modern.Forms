@@ -1,63 +1,76 @@
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-// 
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
-// Copyright (c) 2004-2005 Novell, Inc.
-//
-// Authors:
-//	Peter Bartok	pbartok@novell.com
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
 
 using System;
 
 namespace Modern.Forms
 {
+    /// <summary>
+    ///  Provides data for the ScrollBar.Scroll event.
+    /// </summary>
     public class ScrollEventArgs : EventArgs
     {
-        public ScrollEventArgs (ScrollEventType type, int newValue) :
-            this (type, -1, newValue, ScrollOrientation.HorizontalScroll)
+        /// <summary>
+        ///  Initializes a new instance of the ScrollEventArgs class.
+        /// </summary>
+        public ScrollEventArgs (ScrollEventType type, int newValue)
         {
+            Type = type;
+            NewValue = newValue;
+            OldValue = -1;
         }
 
-        public ScrollEventArgs (ScrollEventType type, int oldValue, int newValue) :
-            this (type, oldValue, newValue, ScrollOrientation.HorizontalScroll)
+        /// <summary>
+        ///  Initializes a new instance of the ScrollEventArgs class.
+        /// </summary>
+        public ScrollEventArgs (ScrollEventType type, int newValue, ScrollOrientation scroll)
         {
+            Type = type;
+            NewValue = newValue;
+            ScrollOrientation = scroll;
+            OldValue = -1;
         }
 
-        public ScrollEventArgs (ScrollEventType type, int newValue, ScrollOrientation scroll) :
-            this (type, -1, newValue, scroll)
+        /// <summary>
+        ///  Initializes a new instance of the ScrollEventArgs class.
+        /// </summary>
+        public ScrollEventArgs (ScrollEventType type, int oldValue, int newValue)
         {
+            Type = type;
+            NewValue = newValue;
+            OldValue = oldValue;
         }
 
-
+        /// <summary>
+        ///  Initializes a new instance of the ScrollEventArgs class.
+        /// </summary>
         public ScrollEventArgs (ScrollEventType type, int oldValue, int newValue, ScrollOrientation scroll)
         {
+            Type = type;
             NewValue = newValue;
             OldValue = oldValue;
             ScrollOrientation = scroll;
-            Type = type;
         }
 
+        /// <summary>
+        ///  Specifies the type of scroll event that occurred.
+        /// </summary>
+        public ScrollEventType Type { get; }
+
+        /// <summary>
+        ///  Specifies the new location of the scroll box within the scroll bar.
+        /// </summary>
         public int NewValue { get; set; }
 
+        /// <summary>
+        ///  Specifies the last position  within the scroll bar.
+        /// </summary>
         public int OldValue { get; }
 
+        /// <summary>
+        ///  Specifies the type of scroll event that occurred.
+        /// </summary>
         public ScrollOrientation ScrollOrientation { get; }
-
-        public ScrollEventType Type { get; }
     }
 }

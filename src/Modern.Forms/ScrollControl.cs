@@ -6,15 +6,19 @@ using System.Text;
 namespace Modern.Forms
 {
     // TODO: Need to unify this with ScrollableControl
+    /// <summary>
+    /// Represents a control that can scroll.
+    /// </summary>
     public class ScrollControl : Control
     {
-        private int scroll_x = 0;
-        private int scroll_y = 0;
         private ScrollBars scroll_bars;
         private readonly HorizontalScrollBar hscrollbar;
         private readonly VerticalScrollBar vscrollbar;
         private readonly SizeGrip sizegrip;
 
+        /// <summary>
+        /// Initializes a new instance of the ScrollControl class.
+        /// </summary>
         public ScrollControl ()
         {
             sizegrip = Controls.AddImplicitControl (
@@ -38,18 +42,15 @@ namespace Modern.Forms
                 });
         }
 
-        public ScrollBars ScrollBars {
-            get => scroll_bars;
-            set {
-                if (scroll_bars != value) {
-                    scroll_bars = value;
+        /// <inheritdoc/>
+        protected override void OnMouseWheel (MouseEventArgs e)
+        {
+            base.OnMouseWheel (e);
 
-                    hscrollbar.Visible = value.In (ScrollBars.Horizontal, ScrollBars.Both);
-                    vscrollbar.Visible = value.In (ScrollBars.Vertical, ScrollBars.Both);
-                }
-            }
+            vscrollbar.RaiseMouseWheel (e);
         }
 
+        /// <inheritdoc/>
         public override Rectangle PaddedClientRectangle {
             get {
                 var client_rect = ClientRectangle;
@@ -69,13 +70,24 @@ namespace Modern.Forms
             }
         }
 
-        protected override void OnMouseWheel (MouseEventArgs e)
-        {
-            base.OnMouseWheel (e);
+        /// <summary>
+        /// Gets or sets which scrollbars should be visible.
+        /// </summary>
+        public ScrollBars ScrollBars {
+            get => scroll_bars;
+            set {
+                if (scroll_bars != value) {
+                    scroll_bars = value;
 
-            vscrollbar.RaiseMouseWheel (e);
+                    hscrollbar.Visible = value.In (ScrollBars.Horizontal, ScrollBars.Both);
+                    vscrollbar.Visible = value.In (ScrollBars.Vertical, ScrollBars.Both);
+                }
+            }
         }
 
+        /// <summary>
+        /// Gets the control's vertical scrollbar.
+        /// </summary>
         public VerticalScrollBar VerticalScrollBar => vscrollbar;
     }
 }

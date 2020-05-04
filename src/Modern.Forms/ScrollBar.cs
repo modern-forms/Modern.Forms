@@ -14,20 +14,19 @@ namespace Modern.Forms
         private int minimum = 0;
         private int current_value = 0;
         private int small_change = 1;
+        private bool thumb_pressed;
+        private int thumbclick_offset;		        // Position of the last button-down event relative to the thumb edge
+        
+        private readonly bool vertical;
 
-        protected bool vertical;
-        protected internal int thumb_drag_position;     // Current pixel of the midpoint of the thumb drag 
-        protected bool thumb_pressed;
-        protected int thumbclick_offset;		        // Position of the last button-down event relative to the thumb edge
-
-        protected const int thumb_min_size = 8;
-        protected const int thumb_notshown_size = 40;
+        internal int thumb_drag_position;     // Current pixel of the midpoint of the thumb drag 
 
         /// <summary>
         /// Initializes a new instance of the ScrollBar class.
         /// </summary>
-        protected ScrollBar ()
+        protected ScrollBar (bool vertical = false)
         {
+            this.vertical = vertical;
             TabStop = false;
         }
 
@@ -137,7 +136,7 @@ namespace Modern.Forms
         // Retrieves the effective track bounds from the renderer.
         private Rectangle GetEffectiveTrackBounds () => RenderManager.GetRenderer<ScrollBarRenderer> ()!.GetEffectiveTrackBounds (this);
 
-        protected ScrollBarElement GetElementAtLocation (Point location)
+        private ScrollBarElement GetElementAtLocation (Point location)
         {
             var renderer = RenderManager.GetRenderer<ScrollBarRenderer> ()!;
 
@@ -269,7 +268,7 @@ namespace Modern.Forms
         }
 
         // Updates ScrollBar value from a thumb drag position.
-        protected void UpdateFromPoint (int pixel)
+        private void UpdateFromPoint (int pixel)
         {
             if (thumb_drag_position == pixel)
                 return;
@@ -300,7 +299,7 @@ namespace Modern.Forms
         }
 
         // Updates thumb drag position from a ScrollBar value.
-        protected void UpdateFromValue (int value)
+        private void UpdateFromValue (int value)
         {
             value = Math.Max (value, minimum);
             value = Math.Min (value, maximum);
@@ -325,7 +324,7 @@ namespace Modern.Forms
             OnValueChanged (EventArgs.Empty);
         }
 
-        protected enum ScrollBarElement
+        private enum ScrollBarElement
         {
             None,
             DecrementArrow,

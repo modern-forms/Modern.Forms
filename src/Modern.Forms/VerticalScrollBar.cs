@@ -11,9 +11,8 @@ namespace Modern.Forms
         /// <summary>
         /// Initializes a new instance of the VerticalScrollBar class.
         /// </summary>
-        public VerticalScrollBar ()
+        public VerticalScrollBar () : base (true)
         {
-            vertical = true;
         }
 
         /// <inheritdoc/>

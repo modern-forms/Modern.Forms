@@ -62,7 +62,7 @@ namespace Modern.Forms
         public static void DrawCheckBox (PaintEventArgs e, Rectangle rectangle, CheckState state, bool disabled = false)
         {
             var color = disabled ? Theme.DisabledTextColor
-                            : state == CheckState.Checked && !disabled ? Theme.RibbonColor
+                            : state == CheckState.Checked && !disabled ? Theme.PrimaryColor
                             : Theme.BorderGray;
             var unit_1 = e.LogicalToDeviceUnits (1);
 
@@ -124,13 +124,13 @@ namespace Modern.Forms
             var outer_radius = e.LogicalToDeviceUnits (8);
             var inner_radius = e.LogicalToDeviceUnits (5);
             var border_color = disabled ? Theme.DisabledTextColor :
-                               state == CheckState.Checked ? Theme.RibbonColor : 
+                               state == CheckState.Checked ? Theme.PrimaryColor : 
                                Theme.BorderGray;
 
             e.Canvas.DrawCircle (origin.X, origin.Y, outer_radius, border_color, e.LogicalToDeviceUnits (1));
 
             if (state == CheckState.Checked)
-                e.Canvas.FillCircle (origin.X, origin.Y, inner_radius, disabled ? Theme.DisabledTextColor : Theme.RibbonColor);
+                e.Canvas.FillCircle (origin.X, origin.Y, inner_radius, disabled ? Theme.DisabledTextColor : Theme.PrimaryColor);
         }
     }
 }

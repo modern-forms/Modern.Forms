@@ -228,7 +228,7 @@ namespace Modern.Forms
         /// </summary>
         public static ControlStyle DefaultStyle = new ControlStyle (null,
             (style) => {
-                style.ForegroundColor = Theme.DarkTextColor;
+                style.ForegroundColor = Theme.PrimaryTextColor;
                 style.BackgroundColor = Theme.NeutralGray;
                 style.Font = Theme.UIFont;
                 style.FontSize = Theme.FontSize;
