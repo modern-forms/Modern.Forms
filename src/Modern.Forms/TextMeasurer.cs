@@ -41,7 +41,7 @@ namespace Modern.Forms
                 if (tb.MeasuredWidth <= maxSize.Width || ellipsis)
                     tb.MaxWidth = maxSize.Width;
             } else if (maxLines.GetValueOrDefault () == 0) {
-                if (tb.Lines.Last ().Runs.Count > 1 && !ellipsis)
+                if (tb.Lines.LastOrDefault ()?.Runs.Count > 1 && !ellipsis)
                     tb.MaxHeight *= 2;
             }
 
