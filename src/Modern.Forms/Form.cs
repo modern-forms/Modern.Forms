@@ -12,6 +12,7 @@ namespace Modern.Forms
     /// </summary>
     public class Form : Window, ICloseable
     {
+        private bool show_focus_cues;
         private string text = string.Empty;
         private bool use_system_decorations;
 
@@ -77,6 +78,19 @@ namespace Modern.Forms
         /// Displays the window to the user modally, preventing interaction with other windows until closed.
         /// </summary>
         public void ShowDialog (Form parent) => ShowDialog (parent.Window);
+
+        /// <summary>
+        /// Gets a value indicating a focus rectangle should be drawn on the selected control.
+        /// </summary>
+        public bool ShowFocusCues {
+            get => show_focus_cues;
+            internal set {
+                if (show_focus_cues != value) {
+                    show_focus_cues = value;
+                    Invalidate ();
+                }
+            }
+        }
 
         /// <inheritdoc/>
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);

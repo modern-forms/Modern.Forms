@@ -361,6 +361,8 @@ namespace Modern.Forms
             return Parent?.FindWindow ();
         }
 
+        public bool Focused => Selected;
+
         /// <summary>
         /// Releases the back buffer.
         /// </summary>
@@ -1044,6 +1046,9 @@ namespace Modern.Forms
             if (this is ControlAdapter adapter) {
                 // Tab
                 if (e.KeyChar == 9) {
+                    if (adapter.FindForm () is Form f)
+                        f.ShowFocusCues = true;
+
                     SelectNextControl (adapter.SelectedControl, !e.Shift, true, true, true);
                     e.Handled = true;
                     return;
@@ -1446,6 +1451,11 @@ namespace Modern.Forms
             var rect = GetScaledBounds (new Rectangle (x, y, width, height), new SizeF (1 / ScaleFactor.Width, 1 / ScaleFactor.Height), BoundsSpecified.All);
             SetBoundsCore (rect.X, rect.Y, rect.Width, rect.Height, BoundsSpecified.None);
         }
+
+        /// <summary>
+        /// Gets a value indicating a focus rectangle should be drawn on the selected control.
+        /// </summary>
+        public bool ShowFocusCues => FindForm ()?.ShowFocusCues == true;
 
         /// <summary>
         /// Gets or sets the unscaled size of the control.

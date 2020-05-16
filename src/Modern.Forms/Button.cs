@@ -55,6 +55,18 @@ namespace Modern.Forms
             RenderManager.Render (this, e);
         }
 
+        /// <inheritdoc/>
+        protected override void OnKeyUp (KeyEventArgs e)
+        {
+            if (e.KeyCode.In (Keys.Space, Keys.Enter)) {
+                PerformClick ();
+                e.Handled = true;
+                return;
+            }
+
+            base.OnKeyUp (e);
+        }
+
         /// <summary>
         /// Generates a Click event for the Button.
         /// </summary>

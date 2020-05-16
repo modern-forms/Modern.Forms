@@ -29,9 +29,16 @@ namespace Modern.Forms.Renderers
 
             ControlPaint.DrawCheckBox (e, box_bounds, control.CheckState, !control.Enabled);
 
+            var text_bounds = new Rectangle (box_bounds.Right + glyph_padding, 0, control.ScaledWidth - box_bounds.Right - glyph_padding, control.ScaledHeight);
+
+            // Draw the focus rectangle
+            if (control.Selected && control.ShowFocusCues) {
+                var focus_bounds = new Rectangle (box_bounds.Right, 0, text_bounds.Width + glyph_padding, text_bounds.Height);
+                e.Canvas.DrawFocusRectangle (focus_bounds, e.LogicalToDeviceUnits (3));
+            }
+
             // Draw the text
             if (control.Text.HasValue ()) {
-                var text_bounds = new Rectangle (box_bounds.Right + glyph_padding, 0, control.ScaledWidth - box_bounds.Right - glyph_padding, control.ScaledHeight);
                 e.Canvas.DrawText (control.Text, text_bounds, control, ContentAlignment.MiddleLeft);
             }
         }

@@ -100,6 +100,18 @@ namespace Modern.Forms
         }
 
         /// <inheritdoc/>
+        protected override void OnKeyUp (KeyEventArgs e)
+        {
+            if (e.KeyCode.In (Keys.Space, Keys.Enter)) {
+                OnClick (new MouseEventArgs (MouseButtons.Left, 1, 0, 0, Point.Empty));
+                e.Handled = true;
+                return;
+            }
+
+            base.OnKeyUp (e);
+        }
+
+        /// <inheritdoc/>
         protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);

@@ -102,6 +102,23 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Draws a focus rectangle.
+        /// </summary>
+        public static void DrawFocusRectangle (this SKCanvas canvas, int x, int y, int width, int height, int inset = 0)
+        {
+            var effect = SKPathEffect.CreateDash (new[] { 1f, 1f }, 0);
+            using var paint = new SKPaint { Color = SKColors.DarkGray, IsStroke = true, StrokeWidth = 1, PathEffect = effect };
+
+            canvas.DrawRect (x + inset, y + inset, width - (2 * inset) - 1, height - (2 * inset) - 1, paint);
+        }
+
+        /// <summary>
+        /// Draws an focus rectangle.
+        /// </summary>
+        public static void DrawFocusRectangle (this SKCanvas canvas, Rectangle rectangle, int inset = 0)
+            => DrawFocusRectangle (canvas, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, inset);
+
+        /// <summary>
         /// Draws a line.
         /// </summary>
         public static void DrawLine (this SKCanvas canvas, float x1, float y1, float x2, float y2, SKColor color, int thickness = 1)

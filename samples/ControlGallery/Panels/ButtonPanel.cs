@@ -11,15 +11,15 @@ namespace ControlGallery.Panels
     {
         public ButtonPanel ()
         {
-            var b = new Button {
+            var b = Controls.Add (new Button {
                 Text = "OK",
                 Left = 100,
                 Top = 100,
                 Width = 100,
                 Height = 30
-            };
+            });
 
-            Controls.Add (b);
+            b.Click += (o, e) => b.Text = "Clicked";
 
             var b2 = new Button {
                 Text = "OK",

@@ -10,6 +10,9 @@ namespace Modern.Forms.Renderers
         /// <inheritdoc/>
         protected override void Render (Button control, PaintEventArgs e)
         {
+            if (control.Selected && control.ShowFocusCues)
+                e.Canvas.DrawFocusRectangle (control.ClientRectangle, e.LogicalToDeviceUnits (3));
+
             e.Canvas.DrawText (control.Text, control.PaddedClientRectangle, control, control.TextAlign);
         }
     }
