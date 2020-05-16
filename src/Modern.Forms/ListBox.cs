@@ -53,6 +53,18 @@ namespace Modern.Forms
                 style.Border.Width = 1;
             });
 
+        private void EnsureItemVisible (int index)
+        {
+            // If there aren't enough items to need scrolling, things are good
+            if (VisibleItemCount >= Items.Count)
+                return;
+
+            if (index < FirstVisibleIndex)
+                FirstVisibleIndex = index;
+            else if (index >= FirstVisibleIndex + VisibleItemCount)
+                FirstVisibleIndex = index - VisibleItemCount + 1;
+        }
+
         /// <summary>
         /// Gets or sets the index of the first visible item.
         /// </summary>
@@ -127,6 +139,128 @@ namespace Modern.Forms
         private int NeededHeightForItems => ScaledItemHeight * Items.Count;
 
         /// <inheritdoc/>
+        protected override void OnKeyUp (KeyEventArgs e)
+        {
+            // In "None" mode, the focus goes up and down
+            // In "MultiSimple" mode, the focus goes up and down, and space selects or deselects
+            if (selection_mode.In (SelectionMode.None, SelectionMode.MultiSimple)) {
+                if (e.KeyCode.In (Keys.Down, Keys.Right)) {
+                    if (Items.FocusedIndex < Items.Count - 1) {
+                        Items.FocusedIndex++;
+                        EnsureItemVisible (Items.FocusedIndex);
+                        e.Handled = true;
+                        return;
+                    }
+                }
+
+                if (e.KeyCode.In (Keys.Up, Keys.Left)) {
+                    if (Items.FocusedIndex > 0) {
+                        Items.FocusedIndex--;
+                        EnsureItemVisible (Items.FocusedIndex);
+                        e.Handled = true;
+                        return;
+                    }
+                }
+
+                if (e.KeyCode == Keys.Space && selection_mode == SelectionMode.MultiSimple) {
+                    Items.ToggleSelectedIndex (Items.FocusedIndex);
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            // In "One" mode, the selection goes up and down
+            // In "MultiExtended" mode, the selection goes up and down, and SHIFT adds or subtracts to a contiguous selection
+            if (selection_mode.In (SelectionMode.One, SelectionMode.MultiExtended)) {
+
+                if (selection_mode == SelectionMode.MultiExtended && e.Shift) {
+                    // Find contiguous selection index is part of
+                    // - If at top or bottom, add or subtract based towards or away from selection
+                    // - If not in contiguous, or middle of contiguous, or more than one contiguous: start new selection, adding item in direction
+                    var (start, end) = Items.GetSingleContiguousSelection ();
+
+                    if (start == -1 || (start != Items.FocusedIndex && end != Items.FocusedIndex)) {
+                        // No existing selection, make a new one
+                        SelectedIndex = Items.FocusedIndex;
+
+                        if (e.KeyCode.In (Keys.Down, Keys.Right) && SelectedIndex < Items.Count - 1) {
+                            Items.AddSelectedIndex (SelectedIndex + 1, false);
+                            EnsureItemVisible (Items.FocusedIndex);
+                            e.Handled = true;
+                            return;
+                        }
+
+                        if (e.KeyCode.In (Keys.Up, Keys.Left) && SelectedIndex > 0) {
+                            Items.AddSelectedIndex (SelectedIndex - 1, false);
+                            EnsureItemVisible (Items.FocusedIndex);
+                            e.Handled = true;
+                            return;
+                        }
+                    } else {
+                        // At the top and moving up, add to top of the selection
+                        if (start == Items.FocusedIndex && e.KeyCode.In (Keys.Up, Keys.Left)) {
+                            if (Items.FocusedIndex > 0) {
+                                Items.AddSelectedIndex (start - 1, false);
+                                EnsureItemVisible (Items.FocusedIndex);
+                            }
+                            e.Handled = true;
+                            return;
+                        }
+
+                        // At the top and moving down, remove from top of the selection
+                        if (start == Items.FocusedIndex && start != end && e.KeyCode.In (Keys.Down, Keys.Right)) {
+                            Items.RemoveSelectedIndex (start);
+                            Items.FocusedIndex++;
+                            EnsureItemVisible (Items.FocusedIndex);
+                            e.Handled = true;
+                            return;
+                        }
+
+                        // At the bottom and moving down, add to bottom of the selection
+                        if (end == Items.FocusedIndex && e.KeyCode.In (Keys.Down, Keys.Right)) {
+                            if (Items.FocusedIndex < Items.Count - 1) {
+                                Items.AddSelectedIndex (end + 1, false);
+                                EnsureItemVisible (Items.FocusedIndex);
+                            }
+                            e.Handled = true;
+                            return;
+                        }
+
+                        // At the bottom and moving up, remove from bottom of the selection
+                        if (end == Items.FocusedIndex && start != end && e.KeyCode.In (Keys.Up, Keys.Left)) {
+                            Items.RemoveSelectedIndex (end);
+                            Items.FocusedIndex--;
+                            EnsureItemVisible (Items.FocusedIndex);
+                            e.Handled = true;
+                            return;
+                        }
+                    }
+                }
+
+                if (e.KeyCode.In (Keys.Down, Keys.Right)) {
+                    if (SelectedIndex < Items.Count - 1) {
+                        SelectedIndex = Items.FocusedIndex + 1;
+                        EnsureItemVisible (Items.FocusedIndex);
+                        e.Handled = true;
+                        return;
+                    }
+                }
+
+
+                if (e.KeyCode.In (Keys.Up, Keys.Left)) {
+                    if (SelectedIndex > 0) {
+                        SelectedIndex = Items.FocusedIndex - 1;
+                        EnsureItemVisible (Items.FocusedIndex);
+                        e.Handled = true;
+                        return;
+                    }
+                }
+            }
+
+            base.OnKeyUp (e);
+        }
+
+        /// <inheritdoc/>
         protected override void OnMouseDown (MouseEventArgs e)
         {
             base.OnMouseDown (e);
@@ -140,30 +274,24 @@ namespace Modern.Forms
                 return;
 
             switch (SelectionMode) {
+                case SelectionMode.None:
+                    Items.FocusedIndex = index;
+                    break;
+
                 case SelectionMode.One:
                     SelectedIndex = index;
                     break;
 
                 case SelectionMode.MultiSimple:
-                    if (Items.SelectedIndexes.Contains (index))
-                        Items.SelectedIndexes.Remove (index);
-                    else
-                        Items.SelectedIndexes.Add (index);
-
-                    Invalidate ();
-
+                    Items.ToggleSelectedIndex (index);
                     break;
+
                 case SelectionMode.MultiExtended:
                     // TODO: Shift
 
                     // When Control is held we treat this like MultiSimple
                     if (e.Control) {
-                        if (Items.SelectedIndexes.Contains (index))
-                            Items.SelectedIndexes.Remove (index);
-                        else
-                            Items.SelectedIndexes.Add (index);
-
-                        Invalidate ();
+                        Items.ToggleSelectedIndex (index);
                         break;
                     }
 
@@ -172,6 +300,8 @@ namespace Modern.Forms
 
                     break;
             }
+
+            EnsureItemVisible (index);
         }
 
         /// <inheritdoc/>
@@ -240,7 +370,7 @@ namespace Modern.Forms
                 if (SelectionMode == SelectionMode.None)
                     throw new ArgumentException ("Cannot call this method if SelectionMode is SelectionMode.None");
 
-                if (Items.SelectedIndex != value) {
+                if (Items.SelectedIndex != value || Items.SelectedIndexes.Count > 1) {
                     Items.SelectedIndex = value;
                     OnSelectedIndexChanged (EventArgs.Empty);
 
@@ -263,7 +393,7 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Gets all currently select items.
+        /// Gets all currently selected items.
         /// </summary>
         public IEnumerable<object> SelectedItems => Items.SelectedItems;
 

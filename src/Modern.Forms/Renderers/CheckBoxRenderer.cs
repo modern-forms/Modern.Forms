@@ -38,9 +38,8 @@ namespace Modern.Forms.Renderers
             }
 
             // Draw the text
-            if (control.Text.HasValue ()) {
+            if (control.Text.HasValue ())
                 e.Canvas.DrawText (control.Text, text_bounds, control, ContentAlignment.MiddleLeft);
-            }
         }
     }
 }

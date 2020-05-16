@@ -22,6 +22,8 @@ namespace ControlGallery.Panels
             listbox1.Items.Add (new TestBlah { Text = "B Option" });
             listbox1.Items.Add (new TestBlah { Text = "D Option" });
             listbox1.Items.Add (new TestBlah { Text = "C Option" });
+            listbox1.Items.Add (new TestBlah { Text = "E Option" });
+            listbox1.Items.Add (new TestBlah { Text = "F Option" });
 
             listbox1.SelectionMode = SelectionMode.None;
 
@@ -38,6 +40,8 @@ namespace ControlGallery.Panels
             listbox3.Items.Add ("B Option");
             listbox3.Items.Add ("D Option");
             listbox3.Items.Add ("C Option");
+            listbox3.Items.Add ("E Option");
+            listbox3.Items.Add ("F Option");
 
             listbox3.SelectedIndex = 1;
             listbox3.SelectionMode = SelectionMode.One;
@@ -55,6 +59,8 @@ namespace ControlGallery.Panels
             listbox2.Items.Add ("B Option");
             listbox2.Items.Add ("D Option");
             listbox2.Items.Add ("C Option");
+            listbox2.Items.Add ("E Option");
+            listbox2.Items.Add ("F Option");
 
             listbox2.SelectionMode = SelectionMode.MultiSimple;
 
@@ -71,6 +77,8 @@ namespace ControlGallery.Panels
             listbox4.Items.Add (new TestBlah { Text = "B Option" });
             listbox4.Items.Add (new TestBlah { Text = "D Option" });
             listbox4.Items.Add (new TestBlah { Text = "C Option" });
+            listbox4.Items.Add (new TestBlah { Text = "E Option" });
+            listbox4.Items.Add (new TestBlah { Text = "F Option" });
 
             listbox4.SelectedIndex = 2;
             listbox4.SelectionMode = SelectionMode.MultiExtended;
@@ -103,6 +111,9 @@ namespace ControlGallery.Panels
 
             Controls.Add (new Label { Text = "Disabled", Left = 200, Top = 395, Width = 200 });
             Controls.Add (new ListBox { Left = 200, Top = 420, Enabled = false }).Items.AddRange (fruits);
+
+            Controls.Add (new Label { Text = "No Items", Left = 200, Top = 525, Width = 200 });
+            Controls.Add (new ListBox { Left = 200, Top = 550 });
         }
 
         public class TestBlah

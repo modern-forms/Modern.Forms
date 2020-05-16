@@ -17,6 +17,14 @@ namespace Modern.Forms.Renderers
 
                 RenderItem (control, item, i, bounds, e);
             }
+
+            // If there are no items we still may need to draw a focus rectangle
+            if (control.Items.Count == 0 && control.Selected && control.ShowFocusCues) {
+                var client = control.ClientRectangle;
+                client.Height = control.ScaledItemHeight;
+
+                e.Canvas.DrawFocusRectangle (client, 1);
+            }
         }
 
         /// <summary>
@@ -31,6 +39,10 @@ namespace Modern.Forms.Renderers
             // Draw hover background
             else if (control.ShowHover && control.Items.HoveredIndex == index)
                 e.Canvas.FillRectangle (bounds, Theme.NeutralGray);
+
+            // Draw focus rectangle
+            if (control.Selected && control.ShowFocusCues && control.Items.FocusedIndex == index)
+                e.Canvas.DrawFocusRectangle (bounds, 1);
 
             // This fixes text positioning for partially shown items
             bounds.Height = control.ScaledItemHeight;

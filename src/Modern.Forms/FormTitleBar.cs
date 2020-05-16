@@ -20,6 +20,7 @@ namespace Modern.Forms
             Dock = DockStyle.Top;
 
             SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
+            SetControlBehavior (ControlBehaviors.Selectable, false);
         }
 
         /// <summary>
