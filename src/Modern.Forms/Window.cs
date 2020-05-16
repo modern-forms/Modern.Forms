@@ -291,19 +291,19 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (rbu_e);
                         break;
                     case RawPointerEventType.LeaveWindow:
-                        var lw_e = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var lw_e = new MouseEventArgs (me.InputModifiers.ToMouseButtons (), 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseLeave (lw_e);
                         break;
                     case RawPointerEventType.Move:
                         if (Resizeable && HandleMouseMove ((int)me.Position.X, (int)me.Position.Y))
                             return;
 
-                        var mea = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                        var mea = new MouseEventArgs (me.InputModifiers.ToMouseButtons (), 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseMove (mea);
                         break;
                     case RawPointerEventType.Wheel:
                         if (me is RawMouseWheelEventArgs raw) {
-                            var we = new MouseEventArgs (MouseButtons.None, 0, (int)me.Position.X, (int)me.Position.Y, new System.Drawing.Point ((int)raw.Delta.X, (int)raw.Delta.Y), keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
+                            var we = new MouseEventArgs (me.InputModifiers.ToMouseButtons (), 0, (int)me.Position.X, (int)me.Position.Y, new System.Drawing.Point ((int)raw.Delta.X, (int)raw.Delta.Y), keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                             adapter.RaiseMouseWheel (we);
                         }
                         break;
