@@ -269,6 +269,16 @@ namespace Modern.Forms
                     }
                 }
 
+                // If any direction is pressed and nothing is selected, select the item with focus.
+                // This is generally used to select the first item when you tab into an listbox
+                // with nothing currently selected.
+                if (e.KeyCode.In (Keys.Down, Keys.Right, Keys.Up, Keys.Left) && SelectedIndex == -1) {
+                    SelectedIndex = Items.FocusedIndex;
+                    EnsureItemVisible (Items.FocusedIndex);
+                    e.Handled = true;
+                    return;
+                }
+
                 if (e.KeyCode.In (Keys.Down, Keys.Right)) {
                     if (SelectedIndex < Items.Count - 1) {
                         SelectedIndex = Items.FocusedIndex + 1;

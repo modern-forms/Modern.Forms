@@ -361,6 +361,9 @@ namespace Modern.Forms
             return Parent?.FindWindow ();
         }
 
+        /// <summary>
+        /// Gets whether this control currently has keyboard focus.
+        /// </summary>
         public bool Focused => Selected;
 
         /// <summary>

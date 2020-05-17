@@ -11,6 +11,7 @@ namespace Modern.Forms
     {
         private PopupWindow? popup;
         private readonly ListBox popup_listbox;
+        private bool suppress_popup_close;
 
         /// <summary>
         /// Initializes a new instance of the ComboBox class.
@@ -93,7 +94,9 @@ namespace Modern.Forms
         private void ListBox_SelectedIndexChanged (object? sender, EventArgs e)
         {
             if (popup_listbox.SelectedIndex > -1) {
-                DroppedDown = false;
+                if (!suppress_popup_close)
+                    DroppedDown = false;
+
                 Invalidate ();
 
                 OnSelectedIndexChanged (e);
@@ -127,6 +130,35 @@ namespace Modern.Forms
         protected virtual void OnDropDownOpened (EventArgs e) => DropDownOpened?.Invoke (this, e);
 
         /// <inheritdoc/>
+        protected override void OnKeyUp (KeyEventArgs e)
+        {
+            // Alt+Up/Down toggles the dropdown
+            if (e.Alt && e.KeyCode.In (Keys.Up, Keys.Down)) {
+                DroppedDown = !DroppedDown;
+                e.Handled = true;
+                return;
+            }
+
+            // If dropdown is shown, Esc/Enter will close it
+            if (e.KeyCode.In (Keys.Escape, Keys.Enter) && DroppedDown) {
+                DroppedDown = false;
+                e.Handled = true;
+                return;
+            }
+
+            // If you mouse click an item we automatically close the dropdown,
+            // we don't want that behavior when using the keyboard.
+            suppress_popup_close = true;
+            popup_listbox.RaiseKeyUp (e);
+            suppress_popup_close = false;
+
+            if (e.Handled)
+                return;
+
+            base.OnKeyUp (e);
+        }
+
+        /// <inheritdoc/>
         protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);
@@ -143,16 +175,16 @@ namespace Modern.Forms
         /// Gets or sets the index of the currently selected item.  Returns -1 if no item is selected.
         /// </summary>
         public int SelectedIndex {
-            get => Items.SelectedIndex;
-            set => Items.SelectedIndex = value;
+            get => popup_listbox.SelectedIndex;
+            set => popup_listbox.SelectedIndex = value;
         }
 
         /// <summary>
         /// Gets or sets the currently selected item, if any.
         /// </summary>
         public object? SelectedItem {
-            get => Items.SelectedItem;
-            set => Items.SelectedItem = value;
+            get => popup_listbox.SelectedItem;
+            set => popup_listbox.SelectedItem = value;
         }
 
         /// <summary>

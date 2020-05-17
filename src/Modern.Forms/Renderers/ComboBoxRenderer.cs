@@ -16,9 +16,17 @@ namespace Modern.Forms.Renderers
         /// <inheritdoc/>
         protected override void Render (ComboBox control, PaintEventArgs e)
         {
+            var text_area = GetTextArea (control, e);
+            var unit_3 = e.LogicalToDeviceUnits (3);
+
+            if (control.Selected && control.ShowFocusCues) {
+                var focus_bounds = new Rectangle (text_area.Left - unit_3, text_area.Top, text_area.Width + unit_3, text_area.Height);
+                e.Canvas.DrawFocusRectangle (focus_bounds, unit_3);
+            }
+
             // Draw the text of the selected item
             if (control.Items.SelectedItem != null)
-                e.Canvas.DrawText (control.Items.SelectedItem.ToString ()!, GetTextArea (control, e), control, ContentAlignment.MiddleLeft, maxLines: 1);
+                e.Canvas.DrawText (control.Items.SelectedItem.ToString ()!, text_area, control, ContentAlignment.MiddleLeft, maxLines: 1);
 
             // Draw the drop down glyph
             var button_bounds = GetDropDownButtonArea (control, e);
