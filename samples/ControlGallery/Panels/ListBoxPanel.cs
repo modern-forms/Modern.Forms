@@ -73,12 +73,12 @@ namespace ControlGallery.Panels
                 Top = 420
             };
 
-            listbox4.Items.Add (new TestBlah { Text = "A Option" });
-            listbox4.Items.Add (new TestBlah { Text = "B Option" });
-            listbox4.Items.Add (new TestBlah { Text = "D Option" });
-            listbox4.Items.Add (new TestBlah { Text = "C Option" });
-            listbox4.Items.Add (new TestBlah { Text = "E Option" });
-            listbox4.Items.Add (new TestBlah { Text = "F Option" });
+            listbox4.Items.Add (new TestBlah { Text = "Apple" });
+            listbox4.Items.Add (new TestBlah { Text = "Banana" });
+            listbox4.Items.Add (new TestBlah { Text = "Cactus" });
+            listbox4.Items.Add (new TestBlah { Text = "Cherry" });
+            listbox4.Items.Add (new TestBlah { Text = "Cranberry" });
+            listbox4.Items.Add (new TestBlah { Text = "Donut" });
 
             listbox4.SelectedIndex = 2;
             listbox4.SelectionMode = SelectionMode.MultiExtended;

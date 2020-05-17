@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using Modern.Forms.Renderers;
 
 namespace Modern.Forms
@@ -63,6 +64,37 @@ namespace Modern.Forms
                 FirstVisibleIndex = index;
             else if (index >= FirstVisibleIndex + VisibleItemCount)
                 FirstVisibleIndex = index - VisibleItemCount + 1;
+        }
+
+        /// <summary>
+        /// Finds the index of the next item after startIndex that begins with the specified string. This search is case-insensitive.
+        /// </summary>
+        public int FindString (string s, int startIndex = -1)
+        {
+            if (s is null || Items.Count == 0)
+                return -1;
+
+            if (startIndex < -1 || startIndex >= Items.Count)
+                throw new ArgumentOutOfRangeException (nameof (startIndex));
+
+            // We actually look for matches AFTER the start index
+            startIndex = (startIndex == Items.Count - 1) ? 0 : startIndex + 1;
+            var current = startIndex;
+
+            while (true) {
+                var item = Items[current]?.ToString ();
+
+                if (string.Compare (s, 0, item, 0, s.Length, true, CultureInfo.CurrentCulture) == 0)
+                    return current;
+
+                current++;
+
+                if (current == Items.Count)
+                    current = 0;
+
+                if (current == startIndex)
+                    return -1;
+            }
         }
 
         /// <summary>
@@ -250,6 +282,17 @@ namespace Modern.Forms
                 if (e.KeyCode.In (Keys.Up, Keys.Left)) {
                     if (SelectedIndex > 0) {
                         SelectedIndex = Items.FocusedIndex - 1;
+                        EnsureItemVisible (Items.FocusedIndex);
+                        e.Handled = true;
+                        return;
+                    }
+                }
+
+                if (char.IsLetterOrDigit ((char)e.KeyCode)) {
+                    var index = FindString (((char)e.KeyCode).ToString (), SelectedIndex);
+
+                    if (index >= 0) {
+                        SelectedIndex = index;
                         EnsureItemVisible (Items.FocusedIndex);
                         e.Handled = true;
                         return;
