@@ -27,6 +27,31 @@ namespace Modern.Forms
                 style.BackgroundColor = Theme.PrimaryColor;
             });
 
+        private int FindNextTab (int startIndex, bool forward, bool wrap)
+        {
+            if (forward) {
+                for (var i = startIndex + 1; i < Tabs.Count; i++)
+                    if (Tabs[i].Enabled)
+                        return i;
+                if (wrap) {
+                    for (var i = 0; i < startIndex; i++)
+                        if (Tabs[i].Enabled)
+                            return i;
+                }
+            } else {
+                for (var i = startIndex - 1; i >= 0; i--)
+                    if (Tabs[i].Enabled)
+                        return i;
+                if (wrap) {
+                    for (var i = Tabs.Count - 1; i > startIndex; i--)
+                        if (Tabs[i].Enabled)
+                            return i;
+                }
+            }
+
+            return -1;
+        }
+
         // Returns the tab at the specified location.
         private TabStripItem? GetTabAtLocation (Point location) => Tabs.FirstOrDefault (tp => tp.Bounds.Contains (location));
 
@@ -46,6 +71,41 @@ namespace Modern.Forms
             // This does a null check
             if (clicked_tab?.Enabled == true)
                 SelectedTab = clicked_tab;
+        }
+
+        /// <inheritdoc/>
+        protected override void OnKeyDown (KeyEventArgs e)
+        {
+            // Left and right select the next tab, no wrapping
+            // Ctrl-Tab and Ctrl-Shift-Tab select the next tab, with wrapping
+            // Ctrl-PageUp and Ctrl-PageDown select the next tab, with wrapping
+            if (e.KeyCode == Keys.Right || (e.KeyCode == Keys.Tab && e.Control && !e.Shift) || (e.KeyCode == Keys.PageDown && e.Control)) {
+                SelectNextTab (true, false, (e.KeyCode == Keys.Tab && e.Control && !e.Shift) || (e.KeyCode == Keys.PageDown && e.Control));
+                e.Handled = true;
+                return;
+            }
+
+            if (e.KeyCode == Keys.Left || (e.KeyCode == Keys.Tab && e.Control && e.Shift) || (e.KeyCode == Keys.PageUp && e.Control)) {
+                SelectNextTab (false, false, (e.KeyCode == Keys.Tab && e.Control && e.Shift) || (e.KeyCode == Keys.PageUp && e.Control));
+                e.Handled = true;
+                return;
+            }
+
+            // End selects the last tab
+            if (e.KeyCode == Keys.End) {
+                SelectNextTab (true, true, false);
+                e.Handled = true;
+                return;
+            }
+
+            // Home selects the first tab
+            if (e.KeyCode == Keys.Home) {
+                SelectNextTab (false, true, false);
+                e.Handled = true;
+                return;
+            }
+
+            base.OnKeyDown (e);
         }
 
         /// <inheritdoc/>
@@ -85,6 +145,36 @@ namespace Modern.Forms
         /// Raised when the selected tab changes.
         /// </summary>
         public event EventHandler? SelectedTabChanged;
+
+        private void SelectNextTab (bool forward, bool end, bool wrap)
+        {
+            if (!end) {
+                var index = FindNextTab (SelectedIndex, forward, wrap);
+
+                if (index != -1)
+                    SelectedIndex = index;
+
+                return;
+            }
+
+            if (forward) {
+                var index = FindNextTab (Tabs.Count, false, false);
+
+                if (index != -1)
+                    SelectedIndex = index;
+
+                return;
+            }
+
+            if (!forward) {
+                var index = FindNextTab (-1, true, false);
+
+                if (index != -1)
+                    SelectedIndex = index;
+
+                return;
+            }
+        }
 
         /// <inheritdoc/>
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);

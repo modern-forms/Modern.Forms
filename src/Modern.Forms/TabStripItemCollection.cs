@@ -9,6 +9,7 @@ namespace Modern.Forms
     public class TabStripItemCollection : Collection<TabStripItem>
     {
         private readonly TabStrip owner;
+        private int focused_index = 0;
         private int hovered_index = -1;
         private int selected_index = -1;
 
@@ -32,6 +33,16 @@ namespace Modern.Forms
         /// Adds a new TabStripItem to the collection with the specified text.
         /// </summary>
         public TabStripItem Add (string text) => Add (new TabStripItem { Text = text });
+
+        internal int FocusedIndex {
+            get => focused_index;
+            set {
+                if (focused_index != value) {
+                    focused_index = value;
+                    owner.Invalidate ();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the index of the tab the mouse is currently hovered over.
@@ -92,8 +103,10 @@ namespace Modern.Forms
                 if (value < -1 || value >= Count)
                     throw new ArgumentOutOfRangeException ("Index out of range");
 
-                if (selected_index != value)
+                if (selected_index != value) {
                     selected_index = value;
+                    focused_index = value;
+                }
             }
         }
 

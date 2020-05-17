@@ -24,6 +24,10 @@ namespace Modern.Forms.Renderers
             else if (item.Hovered && item.Enabled)
                 e.Canvas.FillRectangle (item.Bounds, Theme.HighlightColor);
 
+            // Draw focus rectangle
+            if (control.Selected && control.ShowFocusCues && control.Tabs.FocusedIndex == control.Tabs.IndexOf (item))
+                e.Canvas.DrawFocusRectangle (item.Bounds, e.LogicalToDeviceUnits (1));
+
             var font_color = !item.Enabled ? Theme.DisabledTextColor:
                              item.Selected ? Theme.PrimaryColor 
                                            : Theme.LightTextColor;
