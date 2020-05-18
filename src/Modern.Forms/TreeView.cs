@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using Modern.Forms.Renderers;
 
@@ -13,6 +14,7 @@ namespace Modern.Forms
     {
         private readonly TreeViewItem root_item;
         private int top_index = 0;
+        private TreeViewItem selected_item;
         private bool show_dropdown_glyph = true;
         private bool show_item_images = true;
         private bool virtual_mode;
@@ -26,6 +28,8 @@ namespace Modern.Forms
             root_item = new TreeViewItem (this) {
                 Expanded = true
             };
+
+            selected_item = root_item;
 
             vscrollbar = Controls.AddImplicitControl (new VerticalScrollBar {
                 Minimum = 0,
@@ -54,13 +58,74 @@ namespace Modern.Forms
         /// <inheritdoc/>
         protected override Size DefaultSize => new Size (250, 500);
 
+        internal void EnsureItemVisible (TreeViewItem item)
+        {
+            // Make sure all parent are expanded so this node is shown
+            var parent = item.Parent;
+
+            while (parent != null && parent != root_item) {
+                parent.Expand ();
+                parent = parent.Parent;
+            }
+
+            var all_items = root_item.GetVisibleItems ().Skip (1).ToList ();
+
+            if (all_items.Count <= VisibleItemCount)
+                return;
+
+            var index = all_items.IndexOf (item);
+
+            if (index < top_index) {
+                top_index = index;
+                vscrollbar.Value = top_index;
+                return;
+            }
+
+            if (index >= top_index + VisibleItemCount - 1) {
+               // top_index = index - (VisibleItemCount - 1);
+                vscrollbar.Value = index - (VisibleItemCount - 1);
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Finds the index of the next item after startIndex that begins with the specified string. This search is case-insensitive.
+        /// </summary>
+        private TreeViewItem? FindString (string s, TreeViewItem startItem)
+        {
+            var all_items = GetVisibleItems ().ToList ();
+            var start_index = all_items.IndexOf (startItem);
+
+            if (s is null || all_items.Count == 0)
+                return null;
+
+            // We actually look for matches AFTER the start index
+            start_index = (start_index == all_items.Count - 1) ? 0 : start_index + 1;
+            var current = start_index;
+
+            while (true) {
+                var item = all_items[current];
+
+                if (string.Compare (s, 0, item.Text, 0, s.Length, true, CultureInfo.CurrentCulture) == 0)
+                    return item;
+
+                current++;
+
+                if (current == all_items.Count)
+                    current = 0;
+
+                if (current == start_index)
+                    return null;
+            }
+        }
+
         /// <summary>
         /// Returns the TreeViewItem at the specified location.
         /// </summary>
         public TreeViewItem? GetItemAtLocation (Point location) => root_item.GetVisibleItems ().FirstOrDefault (tp => tp.Bounds.Contains (location));
 
         // Enumerates through every visible TreeViewItem. Note items may not be in the currently shown part.
-        internal IEnumerable<TreeViewItem> GetVisibleItems () => root_item.GetVisibleItems ().Skip (1 + top_index);
+        internal IEnumerable<TreeViewItem> GetVisibleItems (bool skipOffscreen = false) => root_item.GetVisibleItems ().Skip (1 + (skipOffscreen ? top_index : 0));
 
         /// <summary>
         /// Gets the collection of items contained by this TreeView.
@@ -151,6 +216,134 @@ namespace Modern.Forms
         protected virtual void OnItemSelected (EventArgs<TreeViewItem> e) => ItemSelected?.Invoke (this, e);
 
         /// <inheritdoc/>
+        protected override void OnKeyDown (KeyEventArgs e)
+        {
+            // PERF: Anything using GetVisibleItems () could probably be written more efficiently
+            // Down moves down one visible node
+            if (e.KeyCode == Keys.Down) {
+                var all = GetVisibleItems ().ToList ();
+                var index = all.IndexOf (selected_item);
+
+                if (index + 1 < all.Count)
+                    SelectedItem = all[index + 1];
+
+                e.Handled = true;
+                return;
+            }
+
+            // Up moves up one visible node
+            if (e.KeyCode == Keys.Up) {
+                var all = GetVisibleItems ().ToList ();
+                var index = all.IndexOf (selected_item);
+
+                if (index > 0)
+                    SelectedItem = all[index - 1];
+
+                e.Handled = true;
+                return;
+            }
+
+            // Home moves to first expanded node
+            if (e.KeyCode == Keys.End) {
+                var all = GetVisibleItems ().ToList ();
+
+                if (all.Count == 0)
+                    return;
+
+                SelectedItem = all.Last ();
+
+                e.Handled = true;
+                return;
+            }
+
+            // End moves to last expanded node
+            if (e.KeyCode == Keys.Home) {
+                var all = GetVisibleItems ().ToList ();
+
+                if (all.Count == 0)
+                    return;
+
+                SelectedItem = all.First ();
+
+                e.Handled = true;
+                return;
+            }
+
+            // PgDown moves down by amount of visible nodes
+            if (e.KeyCode == Keys.PageDown) {
+                var all = GetVisibleItems ().ToList ();
+
+                if (all.Count == 0)
+                    return;
+
+                var index = all.IndexOf (selected_item);
+                var new_index = Math.Min (index + VisibleItemCount - 1, all.Count - 1);
+
+                SelectedItem = all[new_index];
+
+                e.Handled = true;
+                return;
+            }
+
+            // PgUp moves up by amount of visible nodes
+            if (e.KeyCode == Keys.PageUp) {
+                var all = GetVisibleItems ().ToList ();
+
+                if (all.Count == 0)
+                    return;
+
+                var index = all.IndexOf (selected_item);
+                var new_index = Math.Max (index - (VisibleItemCount - 1), 0);
+
+                SelectedItem = all[new_index];
+
+                e.Handled = true;
+                return;
+            }
+
+            // Right when HasChildren expands node (if needed) and selects first child
+            if (e.KeyCode == Keys.Right) {
+                selected_item.Expand ();
+
+                if (selected_item.HasChildren)
+                    SelectedItem = selected_item.Items.First ();
+
+                e.Handled = true;
+                return;
+            }
+
+            // Left with expanded children collapses children
+            if (e.KeyCode == Keys.Left && selected_item.HasChildren && selected_item.Expanded) {
+                selected_item.Collapse ();
+                e.Handled = true;
+                return;
+            }
+
+            // Left with no children or collapsed selects parent
+            if (e.KeyCode == Keys.Left && !selected_item.Expanded) {
+                if (selected_item.Parent is TreeViewItem parent && parent != root_item)
+                    SelectedItem = parent;
+
+                e.Handled = true;
+                return;
+            }
+
+            // First letter toggles between all expanded nodes
+            if (char.IsLetterOrDigit ((char)e.KeyCode)) {
+                var item = FindString (((char)e.KeyCode).ToString (), selected_item);
+
+                if (item != null) {
+                    SelectedItem = item;
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            // TODO: If checkboxes, space toggles checkbox
+            base.OnKeyDown (e);
+        }
+
+        /// <inheritdoc/>
         protected override void OnMouseWheel (MouseEventArgs e)
         {
             base.OnMouseWheel (e);
@@ -176,22 +369,20 @@ namespace Modern.Forms
         /// Gets or sets the currently selected TreeViewItem.
         /// </summary>
         public TreeViewItem SelectedItem {
-            get => root_item.GetAllItems ().FirstOrDefault (i => i.Selected);
+            get => selected_item;
             set {
                 // Don't allow user to unselect items
                 if (value is null)
                     return;
 
-                var current_selection = SelectedItem;
+                var current_selection = selected_item;
 
                 if (current_selection == value)
                     return;
 
-                if (current_selection != null)
-                    current_selection.Selected = false;
+                selected_item = value;
 
-                value.Selected = true;
-
+                EnsureItemVisible (value);
                 Invalidate ();
 
                 OnItemSelected (new EventArgs<TreeViewItem> (value));

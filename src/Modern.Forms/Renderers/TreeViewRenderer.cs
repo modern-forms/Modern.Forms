@@ -30,7 +30,7 @@ namespace Modern.Forms.Renderers
 
             var visible_item_count = control.ScaledHeight / control.ScaledItemHeight;
 
-            foreach (var item in control.GetVisibleItems ().Take (visible_item_count + 1))
+            foreach (var item in control.GetVisibleItems (true).Take (visible_item_count + 1))
                 RenderItem (control, item, e);
 
             e.Canvas.Restore ();
@@ -41,10 +41,14 @@ namespace Modern.Forms.Renderers
         /// </summary>
         protected virtual void RenderItem (TreeView control, TreeViewItem item, PaintEventArgs e)
         {
-            var background_color = item.Selected ? Theme.ItemHighlightColor : Theme.LightNeutralGray;
+            var is_selected = item == control.SelectedItem;
+            var background_color = is_selected ? Theme.ItemHighlightColor : Theme.LightNeutralGray;
             var foreground_color = control.Enabled ? Theme.PrimaryTextColor : Theme.DisabledTextColor;
 
             e.Canvas.FillRectangle (item.Bounds, background_color);
+
+            if (is_selected && control.Focused && control.ShowFocusCues)
+                e.Canvas.DrawFocusRectangle (item.Bounds, e.LogicalToDeviceUnits (1));
 
             if (control.ShowDropdownGlyph == true) {
                 var glyph_bounds = GetGlyphBounds (control, item);

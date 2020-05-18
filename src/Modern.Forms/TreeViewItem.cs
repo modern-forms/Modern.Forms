@@ -47,9 +47,48 @@ namespace Modern.Forms
         public Rectangle Bounds { get; private set; }
 
         /// <summary>
+        /// Hides this item's children.
+        /// </summary>
+        public void Collapse ()
+        {
+            // Don't let the root_item be collapsed
+            if (expanded && tree_view is null) {
+                expanded = false;
+                Invalidate ();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a context menu to display when the item is right-clicked.
         /// </summary>
         public ContextMenu? ContextMenu { get; set; }
+
+        /// <summary>
+        /// Ensure this item is visible, expanding items and scrolling the view as needed.
+        /// </summary>
+        public void EnsureVisible ()
+        {
+            tree_view?.EnsureItemVisible (this);
+        }
+
+        /// <summary>
+        /// Shows this item's children.
+        /// </summary>
+        public void Expand ()
+        {
+            TreeView?.OnBeforeExpand (new EventArgs<TreeViewItem> (this));
+
+            // If no nodes were added, don't actually expand
+            // Note this also calls Items, which creates the collection, denoting that an
+            // Expand has been called and we don't need to draw the dropdown glyph anymore
+            if (tree_view == null && Items.Count == 0) {
+                Invalidate ();
+                return;
+            }
+
+            expanded = true;
+            Invalidate ();
+        }
 
         /// <summary>
         /// Gets or sets a value indicating this node is showing its child nodes.
@@ -58,16 +97,9 @@ namespace Modern.Forms
             get => expanded;
             set {
                 if (value)
-                    TreeView?.OnBeforeExpand (new EventArgs<TreeViewItem> (this));
-
-                // If no nodes were added, don't actually expand
-                // Note this also calls Items, which creates the collection, denoting that an
-                // Expand has been called and we don't need to draw the dropdown glyph anymore
-                if (tree_view == null && value && Items.Count == 0)
-                    value = false;
-
-                expanded = value;
-                Invalidate ();
+                    Expand ();
+                else
+                    Collapse ();
             }
         }
 
@@ -177,14 +209,39 @@ namespace Modern.Forms
         public Padding Margin => Padding.Empty;
 
         /// <summary>
+        /// Retrives the next sibling of this item.
+        /// </summary>
+        public TreeViewItem? NextItem ()
+        {
+            if (Parent is TreeViewItem parent) {
+                var index = Parent.Items.IndexOf (this);
+
+                if (parent.Items.Count > index + 1)
+                    return parent.Items[index + 1];
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// The parent item that contains this item.
         /// </summary>
         public TreeViewItem? Parent { get; internal set; }
 
         /// <summary>
-        /// Gets or sets a value indicating this item is currently selected.
+        /// Retrives the previous sibling of this item.
         /// </summary>
-        public bool Selected { get; set; }
+        public TreeViewItem? PreviousItem ()
+        {
+            if (Parent is TreeViewItem parent) {
+                var index = Parent.Items.IndexOf (this);
+
+                if (index > 0)
+                    return parent.Items[index - 1];
+            }
+
+            return null;
+        }
 
         /// <summary>
         /// Sets the bounding box of the tab. This is internal API and should not be called.
