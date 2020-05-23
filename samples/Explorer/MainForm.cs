@@ -18,7 +18,7 @@ namespace Explore
             foreach (var drive in DriveInfo.GetDrives ().Where (d => d.IsReady))
                 tree.Items.Add ($"{drive.Name.Trim ('\\')} - {drive.VolumeLabel}", ImageLoader.Get ("drive.png")).Tag = drive.Name;
 
-            tree.Items.First ().Selected = true;
+            tree.SelectedItem = tree.Items.First ();
 
             // Select the first available drive
             SetSelectedDirectory ((string)tree.Items.First ().Tag);

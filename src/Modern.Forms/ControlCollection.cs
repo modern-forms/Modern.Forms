@@ -91,6 +91,12 @@ namespace Modern.Forms
             parent.ResumeLayout (true);
         }
 
-        internal IEnumerable<Control> GetAllControls () => this.Concat (implicit_controls);
+        internal IEnumerable<Control> GetAllControls (bool includeImplicit = true)
+        {
+            if (includeImplicit)
+                return this.Concat (implicit_controls);
+
+            return this;
+        }
     }
 }

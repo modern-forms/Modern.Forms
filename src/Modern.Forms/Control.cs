@@ -391,58 +391,163 @@ namespace Modern.Forms
             return back_buffer;
         }
 
+        internal virtual Control? GetFirstChildControlInTabOrder (bool forward, bool includeImplicit)
+        {
+            Control? found = null;
+
+            var controls = Controls.GetAllControls (includeImplicit).ToArray ();
+
+            if (forward) {
+                for (var c = 0; c < controls.Length; c++) {
+                    if (found == null || found.TabIndex > controls[c].TabIndex)
+                        found = controls[c];
+                }
+            } else {
+                // Cycle through the controls in reverse z-order looking for the one with the highest
+                // tab index.
+                for (var c = controls.Length - 1; c >= 0; c--) {
+                    if (found == null || found.TabIndex < controls[c].TabIndex)
+                        found = controls[c];
+                }
+            }
+
+            return found;
+        }
+
         /// <summary>
         /// Gets the next control in tab order.
         /// </summary>
         /// <param name="start">The control to start from.</param>
         /// <param name="forward">True to get the next control, false to get the previous control.</param>
         public Control? GetNextControl (Control? start, bool forward = true)
+            => GetNextControl (start, forward, false);
+
+        // Ported from MS Winforms
+        private Control? GetNextControl (Control? start, bool forward, bool includeImplicit)
         {
-            if (Controls.Count == 0)
-                return null;
+            if (start is null || !Contains (start))
+                start = this;
 
-            // Ignore start control if it isn't our child/grandchild
-            if (start != null && !Contains (start))
-                start = null;
+            if (forward) {
+                if (start.Controls.GetAllControls (includeImplicit).Count () > 0 && (start == this || !IsFocusManagingContainerControl (start))) {
+                    var found = start.GetFirstChildControlInTabOrder (true, includeImplicit);
 
-            // If the start control is the only control, return null
-            if (start != null && Controls.Count == 1)
-                return null;
+                    if (found != null)
+                        return found;
+                }
 
-            // See if we need recurse into the start control
-            var child_control = start?.GetNextControl (start, forward);
+                while (start != this) {
+                    var target_index = start.TabIndex;
+                    var hit_control = false;
+                    Control? found = null;
 
-            if (child_control != null)
-                return child_control;
+                    var p = start.Parent;
 
-            // If this is a grandchild, we need to give the parent a chance to move next
-            while (start?.Parent != null && start?.Parent != this) {
-                var old_start = start;
-                start = start?.Parent;
+                    // Cycle through the controls in z-order looking for the one with the next highest
+                    // tab index.  Because there can be dups, we have to start with the existing tab index and
+                    // remember to exclude the current control.
+                    var parent_controls = p?.Controls.GetAllControls (includeImplicit).ToArray ();
+                    var parent_control_count = parent_controls?.Length ?? 0;
 
-                var child_control2 = start?.GetNextControl (old_start, forward);
+                    for (var c = 0; c < parent_control_count; c++) {
+                        // The logic for this is a bit lengthy, so I have broken it into separate
+                        // clauses:
 
-                if (child_control2 != null)
-                    return child_control2;
+                        // We are not interested in ourself.
+                        if (parent_controls![c] != start) {
+
+                            // We are interested in controls with >= tab indexes to ctl.  We must include those
+                            // controls with equal indexes to account for duplicate indexes.
+                            if (parent_controls![c].TabIndex >= target_index) {
+                                // Check to see if this control replaces the "best match" we've already found.
+                                if (found is null || found.TabIndex > parent_controls![c].TabIndex) {
+                                    // Finally, check to make sure that if this tab index is the same as ctl,
+                                    // that we've already encountered ctl in the z-order.  If it isn't the same,
+                                    // than we're more than happy with it.
+                                    if (parent_controls![c].TabIndex != target_index || hit_control)
+                                        found = parent_controls![c];
+                                }
+                            }
+                        } else {
+                            // We track when we have encountered "ctl".  We never want to select ctl again, but
+                            // we want to know when we've seen it in case we find another control with the same tab index.
+                            hit_control = true;
+                        }
+                    }
+
+                    if (found != null)
+                        return found;
+
+                    start = start.Parent!;
+                }
+            } else {
+
+                if (start != this) {
+                    var target_index = start.TabIndex;
+                    var hit_control = false;
+                    Control? found = null;
+
+                    var p = start.Parent;
+
+                    // Cycle through the controls in reverse z-order looking for the next lowest tab index.  We must
+                    // start with the same tab index as ctl, because there can be dups.
+                    var parent_controls = p?.Controls.GetAllControls (includeImplicit).ToArray ();
+                    var parent_control_count = parent_controls?.Length ?? 0;
+
+                    for (var c = parent_control_count - 1; c >= 0; c--) {
+                        // The logic for this is a bit lengthy, so I have broken it into separate
+                        // clauses:
+
+                        // We are not interested in ourself.
+                        if (parent_controls![c] != start) {
+                            // We are interested in controls with <= tab indexes to ctl.  We must include those
+                            // controls with equal indexes to account for duplicate indexes.
+                            if (parent_controls![c].TabIndex <= target_index) {
+                                // Check to see if this control replaces the "best match" we've already found.
+                                if (found is null || found.TabIndex < parent_controls![c].TabIndex) {
+                                    // Finally, check to make sure that if this tab index is the same as ctl,
+                                    // that we've already encountered ctl in the z-order.  If it isn't the same,
+                                    // than we're more than happy with it.
+                                    if (parent_controls![c].TabIndex != target_index || hit_control)
+                                        found = parent_controls![c];
+                                }
+                            }
+                        } else {
+                            // We track when we have encountered "ctl".  We never want to select ctl again, but
+                            // we want to know when we've seen it in case we find another control with the same tab index.
+                            hit_control = true;
+                        }
+                    }
+
+                    // If we were unable to find a control we should return the control's parent.  
+                    // However, if that parent is us, return NULL.
+                    if (found != null)
+                        start = found;
+                    else
+                        return p == this ? null : p;
+                }
+
+                // We found a control.  Walk into this control to find the proper sub control within it to select.
+                var control_controls = start.Controls.GetAllControls (includeImplicit).ToArray ();
+
+                while (control_controls.Length > 0 && (start == this || !IsFocusManagingContainerControl (start))) {
+                    var found = start.GetFirstChildControlInTabOrder (false, includeImplicit);
+
+                    if (found != null) {
+                        start = found;
+                        control_controls = start.Controls.GetAllControls (includeImplicit).ToArray ();
+                    } else {
+                        break;
+                    }
+                }
+
             }
+            return start == this ? null : start;
+        }
 
-            // Build an array sorted by TabIndex then element order (OrderBy is stable)
-            var array = Controls.OrderBy (c => c.TabIndex).ToList ();
-
-            // If we don't have a start control, just return the first or last control
-            if (start == null)
-                return forward ? array[0] : array[array.Count - 1];
-
-            var start_index = array.IndexOf (start);
-
-            // Find the "next" control in the array
-            if (forward && start_index + 1 < array.Count)
-                return array[start_index + 1];
-
-            if (!forward && start_index > 0)
-                return array[start_index - 1];
-
-            return null;
+        private static bool IsFocusManagingContainerControl (Control ctl)
+        {
+            return false;// ((ctl._controlStyle & ControlStyles.ContainerControl) == ControlStyles.ContainerControl && ctl is IContainerControl);
         }
 
         /// <summary>
@@ -1366,7 +1471,7 @@ namespace Modern.Forms
             c = start;
 
             do {
-                c = GetNextControl (c, forward);
+                c = GetNextControl (c, forward, true);
 
                 if (c is null) {
                     if (wrap) {
