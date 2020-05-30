@@ -92,6 +92,15 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Moves this control to the front zorder.
+        /// </summary>
+        public void BringToFront ()
+        {
+            if (parent != null)
+                parent.Controls.SetChildIndex (this, 0);
+        }
+
+        /// <summary>
         /// Gets a value indicating the control can receive focus.
         /// </summary>
         public bool CanSelect {
@@ -586,11 +595,29 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Raised when the control receives focus.
+        /// </summary>
+        public event EventHandler? GotFocus;
+
+        /// <summary>
+        /// Gets a value indicating if control contains any child controls.
+        /// </summary>
+        public bool HasChildren => Controls.Count > 0;
+
+        /// <summary>
         /// Gets or sets the unscaled height of the control.
         /// </summary>
         public int Height {
             get => bounds.Height;
             set => SetBounds (bounds.X, bounds.Y, bounds.Width, value, BoundsSpecified.Height);
+        }
+
+        /// <summary>
+        /// Hide this control from the user.
+        /// </summary>
+        public void Hide ()
+        {
+            Visible = false;
         }
 
         /// <summary>
@@ -790,6 +817,11 @@ namespace Modern.Forms
         /// Raises the EnabledChanged event.
         /// </summary>
         protected virtual void OnEnabledChanged (EventArgs e) => EnabledChanged?.Invoke (this, e);
+
+        /// <summary>
+        /// Raises the GotFocus event.
+        /// </summary>
+        protected virtual void OnGotFocus (EventArgs e) => GotFocus?.Invoke (this, e);
 
         /// <summary>
         /// Raises the KeyDown event.
@@ -1439,6 +1471,8 @@ namespace Modern.Forms
 
             Selected = true;
 
+            OnGotFocus (EventArgs.Empty);
+
             var adapter = FindAdapter ();
 
             if (adapter != null)
@@ -1490,6 +1524,15 @@ namespace Modern.Forms
             } while (c != start);
 
             return false;
+        }
+
+        /// <summary>
+        /// Sends this control to the back of the zorder.
+        /// </summary>
+        public void SendToBack ()
+        {
+            if (parent != null)
+                parent.Controls.SetChildIndex (this, parent.Controls.Count);
         }
 
         /// <summary>
@@ -1558,6 +1601,14 @@ namespace Modern.Forms
         {
             var rect = GetScaledBounds (new Rectangle (x, y, width, height), new SizeF (1 / ScaleFactor.Width, 1 / ScaleFactor.Height), BoundsSpecified.All);
             SetBoundsCore (rect.X, rect.Y, rect.Width, rect.Height, BoundsSpecified.None);
+        }
+
+        /// <summary>
+        /// Shows this control to the user.
+        /// </summary>
+        public void Show ()
+        {
+            Visible = true;
         }
 
         /// <summary>

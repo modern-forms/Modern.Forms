@@ -60,6 +60,22 @@ namespace Modern.Forms
             parent.PerformLayout ();
         }
 
+        /// <summary>
+        /// Moves a child control in this collection to a new location.
+        /// </summary>
+        public void SetChildIndex (Control item, int newIndex)
+        {
+            var index = IndexOf (item);
+
+            if (index == -1)
+                throw new ArgumentException ("'item' does not belong to this collection");
+
+            base.RemoveItem (index);
+            base.InsertItem (newIndex, item);
+
+            parent.PerformLayout ();
+        }
+
         /// <inheritdoc/>
         protected override void SetItem (int index, Control item)
         {

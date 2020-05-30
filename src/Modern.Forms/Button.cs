@@ -93,5 +93,8 @@ namespace Modern.Forms
                 }
             }
         }
+
+        /// <inheritdoc/>
+        public override string? ToString () => $"{base.ToString ()}, Text: {Text}";
     }
 }
