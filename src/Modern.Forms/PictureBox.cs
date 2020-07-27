@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Modern.Forms.Renderers;
 using SkiaSharp;
 
@@ -42,6 +43,7 @@ namespace Modern.Forms
                     IsErrored = false;
 
                     UpdateSize ();
+                    Invalidate ();
                 }
             }
         }
@@ -71,7 +73,7 @@ namespace Modern.Forms
         }
 
         // Load image from path or URL and display it.
-        private void LoadInternal (string? url)
+        private async void LoadInternal (string? url)
         {
             if (image_location == url)
                 return;
@@ -86,11 +88,12 @@ namespace Modern.Forms
 
             try {
                 if (url.Contains ("://"))
-                    Image = SKBitmap.Decode (Client.GetStreamAsync (url).Result);
+                    Image = SKBitmap.Decode (await Client.GetStreamAsync (url));
                 else
                     Image = SKBitmap.Decode (url);
             } catch (Exception) {
                 IsErrored = true;
+                Invalidate ();
             }
         }
 
