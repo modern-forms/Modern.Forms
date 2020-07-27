@@ -28,11 +28,11 @@ jobs:
       if: runner.os != 'Linux'
       run: dotnet test --configuration Release
 
-    - name: Build with dotnet
+    - name: Package NuGet
       if: runner.os == 'Windows'
       run: dotnet pack src\Modern.Forms\Modern.Forms.csproj --configuration Release
 
-    - name: Upload artifact
+    - name: Upload NuGet
       uses: actions/upload-artifact@v1.0.0
       if: runner.os == 'Windows'
       with:
