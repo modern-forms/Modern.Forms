@@ -89,7 +89,7 @@ namespace Modern.Forms
                 var block = GetTextBlock ();
                 var current_caret = block.GetCaretInfo (cursor_index);
 
-                SetCursorToCharIndex (current_caret.PreviousCodePointIndex);
+                //SetCursorToCharIndex (current_caret.PreviousCodePointIndex);
 
                 RemoveText (cursor_index, 1);
 
@@ -223,12 +223,12 @@ namespace Modern.Forms
                     // Home - Go to the beginning of the current line
                     else if (end)
                         new_index = block.HitTest (0, current_caret.CaretRectangle.MidY).ClosestCodePointIndex;
-                    // Ctrol-Left - Go left one word
+                    // Ctrl-Left - Go left one word
                     else if (wholeWord)
-                        new_index =  TextMeasurer.FindNextSeparator (text, cursor_index, false);
+                        new_index = TextMeasurer.FindNextSeparator (text, cursor_index, false);
                     // Left - Go left one character
                     else
-                        new_index = current_caret.PreviousCodePointIndex;
+                        new_index = block.CaretIndicies.ElementAt (Math.Max (cursor_index - 1, 0));
 
                     break;
 
@@ -239,7 +239,7 @@ namespace Modern.Forms
                         new_index = GetCharIndexFromPosition ((int)current_caret.CaretXCoord, (int)current_caret.CaretRectangle.MidY - textbox.CurrentFontSize).ClosestCodePointIndex;
                     // Single line - Go left one character
                     else
-                        new_index = current_caret.PreviousCodePointIndex;
+                        new_index = block.CaretIndicies.ElementAt (Math.Max (cursor_index - 1, 0));
 
                     break;
 
@@ -256,7 +256,7 @@ namespace Modern.Forms
                         new_index = TextMeasurer.FindNextSeparator (text, cursor_index, true);
                     // Right - Go right one character
                     else
-                        new_index = current_caret.NextCodePointIndex;
+                        new_index = block.CaretIndicies.ElementAt (Math.Min (cursor_index + 1, block.CaretIndicies.Count - 1));
 
                     break;
 
@@ -267,7 +267,7 @@ namespace Modern.Forms
                         new_index = GetCharIndexFromPosition ((int)current_caret.CaretXCoord, (int)current_caret.CaretRectangle.MidY + textbox.CurrentFontSize).ClosestCodePointIndex;
                     // Single line - Go left one character
                     else
-                        new_index = current_caret.NextCodePointIndex;
+                        new_index = block.CaretIndicies.ElementAt (Math.Min (cursor_index + 1, block.CaretIndicies.Count - 1));
 
                     break;
             }
