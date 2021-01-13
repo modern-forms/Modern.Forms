@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -19,13 +19,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HarfBuzzSharp" Version="2.6.1.6" />
-    <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="2.6.1.6" />
+    <PackageReference Include="HarfBuzzSharp" Version="2.6.1.7" />
+    <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="2.6.1.7" />
     <PackageReference Include="Modern.Forms.Mac.Backend" Version="0.0.5" />
-    <PackageReference Include="SkiaSharp" Version="2.80.1" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.80.1" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
-    <PackageReference Include="Topten.RichTextKit" Version="0.2.125" />
+    <PackageReference Include="SkiaSharp" Version="2.80.2" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.80.2" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+    <PackageReference Include="Topten.RichTextKit" Version="0.3.134" />
   </ItemGroup>
 
 </Project>
