@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Text;
 using ControlGallery.Panels;
 using Modern.Forms;
+using SkiaSharp;
 
 namespace ControlGallery
 {
     public class MainForm : Form
     {
         private Panel current_panel;
+        private TreeView tree;
 
         public MainForm ()
         {
-            var tree = new TreeView {
+            tree = new TreeView {
                 Dock = DockStyle.Left,
                 ShowDropdownGlyph = false
             };
@@ -24,6 +26,7 @@ namespace ControlGallery
             tree.Items.Add ("CheckBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ComboBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("FileDialogs", ImageLoader.Get ("button.png"));
+            tree.Items.Add ("FormPaint", ImageLoader.Get ("button.png"));
             tree.Items.Add ("Label", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ListBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ListView", ImageLoader.Get ("button.png"));
@@ -123,6 +126,22 @@ namespace ControlGallery
             }
 
             return null;
+        }
+
+        protected override void OnPaint (PaintEventArgs e)
+        {
+            base.OnPaint (e);
+
+            if (tree.SelectedItem.Text == "FormPaint")
+                e.Canvas.FillRectangle (300, 50, 100, 100, SKColors.Red);
+        }
+
+        protected override void OnPaintBackground (PaintEventArgs e)
+        {
+            base.OnPaintBackground (e);
+
+            if (tree.SelectedItem.Text == "FormPaint")
+                e.Canvas.Clear (SKColors.Green);
         }
     }
 }

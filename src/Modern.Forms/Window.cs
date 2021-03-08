@@ -41,7 +41,7 @@ namespace Modern.Forms
             adapter = new ControlAdapter (this);
 
             window.Input = OnInput;
-            window.Paint = OnPaint;
+            window.Paint = DoPaint;
             window.Resized = OnResize;
             window.Closed = () => Closed?.Invoke (this, EventArgs.Empty);
             window.Deactivated = () => {
@@ -326,7 +326,7 @@ namespace Modern.Forms
             }
         }
 
-        private void OnPaint (Rect r)
+        private void DoPaint (Rect r)
         {
             var skia_framebuffer = window.Surfaces.OfType<IFramebufferPlatformSurface> ().First ();
 
@@ -341,13 +341,30 @@ namespace Modern.Forms
             using var surface = SKSurface.Create (framebufferImageInfo, framebuffer.Address, framebuffer.RowBytes);
 
             var e = new PaintEventArgs (framebufferImageInfo, surface.Canvas, Scaling);
-            e.Canvas.DrawBackground (CurrentStyle);
+            OnPaintBackground (e);
             e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, (int)scaled_client_size.Width, (int)scaled_client_size.Height), CurrentStyle);
+            OnPaint (e);
 
             e.Canvas.ClipRect (new SKRect (scaled_display_rect.Left, scaled_display_rect.Top, scaled_display_rect.Width + 1, scaled_display_rect.Height + 1));
 
             adapter.RaisePaintBackground (e);
             adapter.RaisePaint (e);
+        }
+
+        /// <summary>
+        /// Paints the Form.
+        /// </summary>
+        /// <param name="e">A PaintEventArgs that contains the event data.</param>
+        protected virtual void OnPaint (PaintEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Paints the Form's background.
+        /// </summary>
+        protected virtual void OnPaintBackground (PaintEventArgs e)
+        {
+            e.Canvas.DrawBackground (CurrentStyle);
         }
 
         private void OnResize (Size size)
