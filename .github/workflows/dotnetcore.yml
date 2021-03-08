@@ -25,7 +25,7 @@ jobs:
       run: dotnet build --configuration Release      
       
     - name: Test with dotnet
-      if: runner.os != 'Linux'
+      if: runner.os == 'Windows'
       run: dotnet test --configuration Release
 
     - name: Package NuGet
