@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -77,6 +78,16 @@ namespace Modern.Forms
         /// </summary>
         public void Close () 
         {
+            // If we just Dispose the window, WM_CLOSE will never get called so OnClosing will not get called
+            if (this is Form f) {
+                var args = new CancelEventArgs ();
+
+                f.OnClosing (args);
+
+                if (args.Cancel)
+                    return;
+            }
+
             // If this was a dialog box we need to reactivate the parent
             if (!(dialog_parent is null)) {
                 dialog_parent.Activate ();

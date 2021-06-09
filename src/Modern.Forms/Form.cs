@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -25,6 +26,14 @@ namespace Modern.Forms
 
             Resizeable = true;
             Window.SetSystemDecorations (false);
+
+            Window.Closing = () => {
+                var args = new CancelEventArgs ();
+
+                OnClosing (args);
+
+                return args.Cancel;
+            };
         }
 
         /// <summary>
@@ -42,6 +51,11 @@ namespace Modern.Forms
             get => TitleBar.AllowMinimize;
             set => TitleBar.AllowMinimize = value;
         }
+
+        /// <summary>
+        /// Raised before the form is closed, allowing close to be programatically canceled.
+        /// </summary>
+        public event EventHandler<CancelEventArgs>? Closing;
 
         /// <inheritdoc/>
         protected override System.Drawing.Size DefaultSize => new System.Drawing.Size (1080, 720);
@@ -72,6 +86,14 @@ namespace Modern.Forms
                 TitleBar.Image = value;
                 Window.SetIcon (value);
             }
+        }
+
+        /// <summary>
+        /// Raises the Closing event.
+        /// </summary>
+        public virtual void OnClosing (CancelEventArgs e)
+        {
+            Closing?.Invoke (this, e);
         }
 
         /// <summary>
