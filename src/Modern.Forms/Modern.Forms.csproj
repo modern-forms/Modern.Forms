@@ -24,8 +24,8 @@
     <PackageReference Include="Modern.Forms.Mac.Backend" Version="0.0.5" />
     <PackageReference Include="SkiaSharp" Version="2.80.2" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.80.2" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
-    <PackageReference Include="Topten.RichTextKit" Version="0.3.134" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="Topten.RichTextKit" Version="0.4.139" />
   </ItemGroup>
 
 </Project>

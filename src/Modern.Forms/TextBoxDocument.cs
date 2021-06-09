@@ -87,7 +87,7 @@ namespace Modern.Forms
 
             if (!forward && !AtBeginning) {
                 var block = GetTextBlock ();
-                var current_caret = block.GetCaretInfo (cursor_index);
+                var current_caret = block.GetCaretInfo (new CaretPosition (cursor_index));
 
                 //SetCursorToCharIndex (current_caret.PreviousCodePointIndex);
 
@@ -212,7 +212,7 @@ namespace Modern.Forms
 
             var new_index = -1;
             var block = GetTextBlock ();
-            var current_caret = block.GetCaretInfo (cursor_index);
+            var current_caret = block.GetCaretInfo (new CaretPosition (cursor_index));
             
             switch (direction) {
                 case ArrowDirection.Left:

@@ -38,8 +38,7 @@ namespace Modern.Forms
             var options = CreateOptions ();
 
             if (selectionStart >= 0 && selectionEnd >= 0 && selectionStart != selectionEnd) {
-                options.SelectionStart = selectionStart;
-                options.SelectionEnd = selectionEnd;
+                options.Selection = new TextRange (selectionStart, selectionEnd);
                 options.SelectionColor = selectionColor ?? SKColors.Blue;
             }
 
@@ -59,8 +58,7 @@ namespace Modern.Forms
             var options = CreateOptions ();
 
             if (!selection.IsEmpty ()) {
-                options.SelectionStart = selection.Start;
-                options.SelectionEnd = selection.End;
+                options.Selection = new TextRange (selection.Start, selection.End);
                 options.SelectionColor = selection.Color;
             }
 

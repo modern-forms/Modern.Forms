@@ -84,7 +84,7 @@ namespace Modern.Forms
             var tb = CreateTextBlock (text, font, fontSize, bounds.Size, GetTextAlign (alignment), maxLines: maxLines);
 
             try {
-                var caret_rect = tb.GetCaretInfo (codePoint).CaretRectangle;
+                var caret_rect = tb.GetCaretInfo (new CaretPosition (codePoint)).CaretRectangle;
 
                 // We need to offset the caret to client bounds
                 var vertical = GetVerticalAlign (alignment);
@@ -111,7 +111,7 @@ namespace Modern.Forms
                 return new Rectangle (location.X, location.Y + 1, 0, fontSize + 2);
 
             try {
-                var caret_rect = block.GetCaretInfo (codePoint).CaretRectangle;
+                var caret_rect = block.GetCaretInfo (new CaretPosition (codePoint)).CaretRectangle;
 
                 return new Rectangle (location.X + (int)caret_rect.Left, location.Y + (int)caret_rect.Top + 1, (int)caret_rect.Width, (int)caret_rect.Height - 2);
             } catch (ArgumentOutOfRangeException) {
