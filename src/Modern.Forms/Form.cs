@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Platform;
+using Modern.WindowKit;
+using Modern.WindowKit.Controls;
+using Modern.WindowKit.Input;
+using Modern.WindowKit.Platform;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -25,7 +25,7 @@ namespace Modern.Forms
             TitleBar = Controls.AddImplicitControl (new FormTitleBar ());
 
             Resizeable = true;
-            Window.SetSystemDecorations (false);
+            Window.SetSystemDecorations (SystemDecorations.None);
 
             Window.Closing = () => {
                 var args = new CancelEventArgs ();
@@ -151,7 +151,7 @@ namespace Modern.Forms
                     use_system_decorations = value;
                     TitleBar.Visible = !use_system_decorations;
                     Style.Border.Width = use_system_decorations ? 0 : 1;
-                    Window.SetSystemDecorations (value);
+                    Window.SetSystemDecorations (value ? SystemDecorations.Full : SystemDecorations.None);
                 }
             }
         }

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Platform.Surfaces;
-using Avalonia.Input;
-using Avalonia.Input.Raw;
-using Avalonia.Platform;
-using Avalonia.Skia;
-using Avalonia.Win32.Input;
+using Modern.WindowKit;
+using Modern.WindowKit.Controls;
+using Modern.WindowKit.Controls.Platform.Surfaces;
+using Modern.WindowKit.Input;
+using Modern.WindowKit.Input.Raw;
+using Modern.WindowKit.Platform;
+using Modern.WindowKit.Skia;
+using Modern.WindowKit.Win32.Input;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -58,7 +58,7 @@ namespace Modern.Forms
         /// <summary>
         /// Begins dragging the window to move it.
         /// </summary>
-        public void BeginMoveDrag () => window.BeginMoveDrag (new Avalonia.Input.PointerPressedEventArgs ());
+        public void BeginMoveDrag () => window.BeginMoveDrag (new Modern.WindowKit.Input.PointerPressedEventArgs ());
 
         /// <summary>
         /// The bounds of the Window.
@@ -394,11 +394,11 @@ namespace Modern.Forms
             } else if (e is RawKeyEventArgs ke) {
                 switch (ke.Type) {
                     case RawKeyEventType.KeyDown:
-                        var kd_e = new KeyEventArgs (KeyInterop.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
+                        var kd_e = new KeyEventArgs (WindowKitExtensions.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
                         adapter.RaiseKeyDown (kd_e);
                         break;
                     case RawKeyEventType.KeyUp:
-                        var ku_e = new KeyEventArgs (KeyInterop.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
+                        var ku_e = new KeyEventArgs (WindowKitExtensions.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
                         adapter.RaiseKeyUp (ku_e);
                         break;
                 }
@@ -516,7 +516,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the current scale factor of the window.
         /// </summary>
-        public double Scaling => window.Scaling;
+        public double Scaling => window.RenderScaling;
 
         internal Screens Screens => new Screens (window!.Screen);
 
@@ -596,7 +596,7 @@ namespace Modern.Forms
         /// </summary>
         public System.Drawing.Size Size {
             get => new System.Drawing.Size ((int)window.ClientSize.Width, (int)window.ClientSize.Height);
-            set => window.Resize (new Avalonia.Size (value.Width, value.Height));
+            set => window.Resize (new Modern.WindowKit.Size (value.Width, value.Height));
         }
 
         /// <summary>

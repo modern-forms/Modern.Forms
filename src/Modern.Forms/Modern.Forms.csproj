@@ -28,4 +28,8 @@
     <PackageReference Include="Topten.RichTextKit" Version="0.4.139" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Modern.WindowKit\src\Modern.WindowKit\Modern.WindowKit.csproj" />
+  </ItemGroup>
+
 </Project>

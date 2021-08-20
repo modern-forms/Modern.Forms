@@ -39,7 +39,7 @@ namespace Modern.Forms
                 return;
 
             var text = document.SelectedText;
-            AsyncHelper.RunSync (() => Avalonia.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
+            AsyncHelper.RunSync (() => Modern.WindowKit.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
         }
 
         // The scaled height of the current font.
@@ -54,7 +54,7 @@ namespace Modern.Forms
                 return;
 
             var text = document.SelectedText;
-            AsyncHelper.RunSync (() => Avalonia.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
+            AsyncHelper.RunSync (() => Modern.WindowKit.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
 
             document.DeleteSelection ();
         }
@@ -308,7 +308,7 @@ namespace Modern.Forms
             if (document.ReadOnly)
                 return;
 
-            var text = AsyncHelper.RunSync (() => Avalonia.AvaloniaGlobals.ClipboardInterface.GetTextAsync ());
+            var text = AsyncHelper.RunSync (() => Modern.WindowKit.AvaloniaGlobals.ClipboardInterface.GetTextAsync ());
 
             if (!string.IsNullOrEmpty (text) && document.InsertText (text))
                     ScrollToCaret ();

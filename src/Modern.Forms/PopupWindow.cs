@@ -1,5 +1,5 @@
 ﻿using System;
-using Avalonia;
+using Modern.WindowKit;
 
 namespace Modern.Forms
 {
@@ -13,7 +13,7 @@ namespace Modern.Forms
         /// <summary>
         /// Initializes a new instance of the PopupWindow class.
         /// </summary>
-        public PopupWindow (Form? parentForm) : base (AvaloniaGlobals.WindowingInterface.CreatePopup ())
+        public PopupWindow (Form? parentForm) : base (AvaloniaGlobals.WindowingInterface.CreatePopup (parentForm?.window))
         {
             StartPosition = FormStartPosition.Manual;
 

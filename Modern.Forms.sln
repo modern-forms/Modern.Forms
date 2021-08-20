@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modern.Forms.Tests", "tests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{8A6441CB-3BFB-429B-B282-EC30F637589E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modern.WindowKit", "..\Modern.WindowKit\src\Modern.WindowKit\Modern.WindowKit.csproj", "{177CD106-F03F-4C02-809F-812C3F994C48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,10 @@ Global
 		{988C5E0E-0EC4-4F0F-8BB6-4AD3DE96A41C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{988C5E0E-0EC4-4F0F-8BB6-4AD3DE96A41C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{988C5E0E-0EC4-4F0F-8BB6-4AD3DE96A41C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{177CD106-F03F-4C02-809F-812C3F994C48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{177CD106-F03F-4C02-809F-812C3F994C48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{177CD106-F03F-4C02-809F-812C3F994C48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{177CD106-F03F-4C02-809F-812C3F994C48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -73,6 +73,10 @@ CopyFile ("Avalonia.Visuals/Thickness.cs", "Thickness.cs");
 CopyFile ("Avalonia.Visuals/Vector.cs", "Vector.cs");
 CopyFile ("Avalonia.Controls/WindowEdge.cs", "WindowEdge.cs");
 CopyFile ("Avalonia.Controls/WindowState.cs", "WindowState.cs");
+CopyFile ("Avalonia.Input/Platform/ICursorFactory.cs", "ICursorFactory.cs");
+CopyFile ("Avalonia.Input/Platform/ICursorImpl.cs", "ICursorImpl.cs");
+CopyFile ("Avalonia.Controls/WindowTransparencyLevel.cs", "WindowTransparencyLevel.cs");
+CopyFile ("Avalonia.Controls/AcrylicPlatformCompensationLevels.cs", "AcrylicPlatformCompensationLevels.cs");
 
 // Mac Backend
 CopyFile ("Avalonia.Native/AvaloniaNativePlatform.cs", "Avalonia.Mac/AvaloniaNativePlatform.cs");
@@ -144,6 +148,8 @@ var mfmb_dir = Path.Combine ("..", "..", "Modern.Forms.Mac.Backend");
 DirectoryCopy (Path.Combine (native_dir, "inc"), Path.Combine (mfmb_dir, "inc"), true);
 DirectoryCopy (Path.Combine (native_dir, "src"), Path.Combine (mfmb_dir, "src"), true);
 
+CopyFile ("Avalonia.Native/avn.idl", "../../../../Modern.Forms.Mac.Backend/src/avn.idl");
+
 private void CopyFile (string src, string dst)
 {
     var full_src = Path.Combine (avalonia_path, src);
@@ -199,7 +205,7 @@ private void CopyFile (string src, string dst)
     text = text.Replace ("internal readonly struct Point", "public readonly struct Point");
     text = text.Replace ("internal readonly struct Vector", "public readonly struct Vector");
 
-    var dest_lines = CommentDiffs (text, full_dst);
+    var dest_lines = File.Exists (full_dst) ? CommentDiffs (text, full_dst) : new[] { text };
     File.WriteAllLines (full_dst, dest_lines, Encoding.UTF8);
 }
 

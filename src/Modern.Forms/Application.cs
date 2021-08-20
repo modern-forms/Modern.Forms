@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
-using Avalonia.Threading;
+using Modern.WindowKit;
+using Modern.WindowKit.Threading;
 
 namespace Modern.Forms
 {

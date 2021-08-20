@@ -19,7 +19,7 @@ namespace Modern.Forms
         /// <param name="owner">The window that owns this dialog.</param>
         public async Task<DialogResult> ShowDialog (Window owner)
         {
-            var dialog = new Avalonia.Controls.OpenFolderDialog {
+            var dialog = new Modern.WindowKit.Controls.OpenFolderDialog {
                 Directory = InitialDirectory,
                 Title = Title,
             };

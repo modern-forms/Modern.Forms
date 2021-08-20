@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using Avalonia.Platform;
+using Modern.WindowKit.Platform;
 using SkiaSharp;
 
 namespace Modern.Forms
