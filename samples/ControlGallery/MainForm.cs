@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using ControlGallery.Panels;
 using Modern.Forms;
@@ -142,6 +143,12 @@ namespace ControlGallery
 
             if (tree.SelectedItem.Text == "FormPaint")
                 e.Canvas.Clear (SKColors.Green);
+        }
+
+        public override void OnClosing (CancelEventArgs e)
+        {
+            //e.Cancel = true;
+            base.OnClosing (e);
         }
     }
 }

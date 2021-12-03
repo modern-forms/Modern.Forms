@@ -31,6 +31,8 @@ namespace Modern.Forms
 
         public Window ParentForm { get; }
 
+        public void DoPaint (PaintEventArgs e) => OnPaint (e);
+
         protected override void OnPaint (PaintEventArgs e)
         {
             // We have this special version for the Adapter because it is

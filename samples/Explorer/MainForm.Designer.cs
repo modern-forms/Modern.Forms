@@ -28,7 +28,7 @@ namespace Explore
             tree.ItemSelected += Tree_ItemSelected;
 
             // RibbonControl
-            ribbon = Controls.Add (new Ribbon ());
+            ribbon = Controls.Add (new Ribbon { Dock = DockStyle.Top });
 
             var home_tab = ribbon.TabPages.Add ("Home");
 

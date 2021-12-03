@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -11,6 +12,7 @@ namespace Modern.Forms
     /// <summary>
     /// Represents a top-level window to display to the user.
     /// </summary>
+    [Designer ($"Modern.Forms.Design.FormDocumentDesigner, Designer", typeof (IRootDesigner))]
     public class Form : Window, ICloseable
     {
         private bool show_focus_cues;
@@ -94,6 +96,14 @@ namespace Modern.Forms
         public virtual void OnClosing (CancelEventArgs e)
         {
             Closing?.Invoke (this, e);
+        }
+
+        /// <summary>
+        /// Triggers the form to layout its children.
+        /// </summary>
+        public void PerformLayout ()
+        {
+            adapter.PerformLayout ();
         }
 
         /// <summary>

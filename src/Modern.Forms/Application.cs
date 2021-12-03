@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Avalonia.Threading;
 
+[assembly: InternalsVisibleTo ("Designer")]
 namespace Modern.Forms
 {
     /// <summary>

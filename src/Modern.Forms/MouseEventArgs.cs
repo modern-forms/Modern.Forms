@@ -83,5 +83,7 @@ namespace Modern.Forms
         /// Gets whether the Shift modifier key was also pressed.
         /// </summary>
         public bool Shift => key_data.HasFlag (Keys.Shift);
+
+        public static MouseEventArgs Empty = new MouseEventArgs (MouseButtons.None, 0, 0, 0, Point.Empty);
     }
 }

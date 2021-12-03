@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using SkiaSharp;
@@ -8,7 +10,7 @@ namespace Modern.Forms
     /// <summary>
     /// Represents the base class for all Controls.
     /// </summary>
-    public class Control : ILayoutable, IDisposable
+    public class Control : Component, ILayoutable, IDisposable
     {
         private AnchorStyles anchor_style = AnchorStyles.Top | AnchorStyles.Left;
         //private AutoSizeMode auto_size_mode;
@@ -86,7 +88,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the unscaled bounds of the control.
         /// </summary>
-        public Rectangle Bounds {
+        public virtual Rectangle Bounds {
             get => bounds;
             set => SetBounds (value.Left, value.Top, value.Width, value.Height);
         }
@@ -275,7 +277,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets which side the control is docked to.
         /// </summary>
-        public DockStyle Dock {
+        public virtual DockStyle Dock {
             get => dock_style;
             set {
                 if (value != DockStyle.None)
@@ -305,6 +307,8 @@ namespace Modern.Forms
         /// Raised when the Dock property is changed.
         /// </summary>
         public event EventHandler? DockChanged;
+
+        public void DoPaint (PaintEventArgs e) => OnPaint (e);
 
         /// <summary>
         /// Raised when this control is double-clicked.
@@ -607,7 +611,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the unscaled height of the control.
         /// </summary>
-        public int Height {
+        public virtual int Height {
             get => bounds.Height;
             set => SetBounds (bounds.X, bounds.Y, bounds.Width, value, BoundsSpecified.Height);
         }
@@ -633,8 +637,12 @@ namespace Modern.Forms
         {
             is_dirty = true;
 
+            Invalidated?.Invoke (this, EventArgs.Empty);
+
             FindWindow ()?.Invalidate (rectangle);
         }
+
+        public event EventHandler Invalidated;
 
         /// <summary>
         /// Is the mouse currently over the control.
@@ -894,7 +902,12 @@ namespace Modern.Forms
         /// <summary>
         /// Raises the MouseMove event.
         /// </summary>
-        protected virtual void OnMouseMove (MouseEventArgs e) => MouseMove?.Invoke (this, e);
+        protected virtual void OnMouseMove (MouseEventArgs e)
+        {
+            FindForm ()?.SetCursor (Cursor);
+
+            MouseMove?.Invoke (this, e);
+        }
 
         /// <summary>
         /// Raises the MouseUp event.
@@ -1207,6 +1220,9 @@ namespace Modern.Forms
         /// </summary>
         internal void RaiseMouseDown (MouseEventArgs e)
         {
+            if (OnPreviewMouseDown (e))
+                return;
+
             var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
@@ -1270,6 +1286,9 @@ namespace Modern.Forms
         /// </summary>
         internal void RaiseMouseMove (MouseEventArgs e)
         {
+            if (OnPreviewMouseMove (e))
+                return;
+
             // If something has the mouse captured, they get all the events
             var captured = Controls.GetAllControls ().LastOrDefault (c => c.Capture);
 
@@ -1301,11 +1320,20 @@ namespace Modern.Forms
                 OnMouseMove (e);
         }
 
+        protected virtual bool OnPreviewMouseMove (MouseEventArgs e) => false;
+
+        protected virtual bool OnPreviewMouseDown (MouseEventArgs e) => false;
+
+        protected virtual bool OnPreviewMouseUp (MouseEventArgs e) => false;
+
         /// <summary>
         /// Finds the correct control and calls its OnMouseUp method.
         /// </summary>
         internal void RaiseMouseUp (MouseEventArgs e)
         {
+            if (OnPreviewMouseUp (e))
+                return;
+
             // If something has the mouse captured, they get all the events
             var captured = Controls.GetAllControls ().LastOrDefault (c => c.Capture);
 
@@ -1619,7 +1647,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the unscaled size of the control.
         /// </summary>
-        public Size Size {
+        public virtual Size Size {
             get => bounds.Size;
             set => SetBounds (bounds.X, bounds.Y, value.Width, value.Height, BoundsSpecified.Size);
         }
@@ -1760,7 +1788,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the unscaled width of the control.
         /// </summary>
-        public int Width {
+        public virtual int Width {
             get => bounds.Width;
             set => SetBounds (bounds.X, bounds.Y, value, bounds.Height, BoundsSpecified.Width);
         }

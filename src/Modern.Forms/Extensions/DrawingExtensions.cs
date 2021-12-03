@@ -6,7 +6,7 @@ namespace Modern.Forms
     /// <summary>
     /// A collection of extension methods to facilitate drawing operations.
     /// </summary>
-    public static class DrawingExtensions
+    static class DrawingExtensions
     {
         /// <summary>
         /// Centers a rectangle inside a larger rectangle.

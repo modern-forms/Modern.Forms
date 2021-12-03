@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,6 +10,7 @@ using Avalonia.Input.Raw;
 using Avalonia.Platform;
 using Avalonia.Skia;
 using Avalonia.Win32.Input;
+using Avalonia.Win32.Interop;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -16,7 +18,7 @@ namespace Modern.Forms
     /// <summary>
     /// Represents the base class for windows, like Form and PopupWindow
     /// </summary>
-    public abstract class Window
+    public abstract class Window : Component
     {
         private const int DOUBLE_CLICK_TIME = 500;
         private const int DOUBLE_CLICK_MOVEMENT = 4;
@@ -40,16 +42,18 @@ namespace Modern.Forms
         {
             this.window = window;
             adapter = new ControlAdapter (this);
-
+            
             window.Input = OnInput;
             window.Paint = DoPaint;
             window.Resized = OnResize;
             window.Closed = () => Closed?.Invoke (this, EventArgs.Empty);
+
             window.Deactivated = () => {
                 // If we're clicking off the form, deactivate any active menus
                 Application.ActiveMenu?.Deactivate ();
                 Deactivated?.Invoke (this, EventArgs.Empty);
             };
+
             window.Resize (new Size (DefaultSize.Width, DefaultSize.Height));
         }
 
@@ -254,6 +258,7 @@ namespace Modern.Forms
                 }
             }
         }
+        private bool client_captured;
 
         private void OnInput (RawInputEventArgs e)
         {
@@ -262,6 +267,8 @@ namespace Modern.Forms
                     case RawPointerEventType.LeftButtonDown:
                         if (Resizeable && HandleMouseDown ((int)me.Position.X, (int)me.Position.Y))
                             return;
+                        UnmanagedMethods.SetCapture (window.Handle.Handle);
+                        client_captured = true;
 
                         var lbd_e = new MouseEventArgs (MouseButtons.Left, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseDown (lbd_e);
@@ -274,6 +281,9 @@ namespace Modern.Forms
 
                         adapter.RaiseClick (lbu_e);
                         adapter.RaiseMouseUp (lbu_e);
+
+                        UnmanagedMethods.ReleaseCapture ();
+                        client_captured = false;
                         break;
                     case RawPointerEventType.MiddleButtonDown:
                         var mbd_e = new MouseEventArgs (MouseButtons.Middle, 1, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
@@ -302,13 +312,17 @@ namespace Modern.Forms
                         adapter.RaiseMouseUp (rbu_e);
                         break;
                     case RawPointerEventType.LeaveWindow:
+                        //Debug.WriteLine ("mouse leave");
                         var lw_e = new MouseEventArgs (me.InputModifiers.ToMouseButtons (), 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseLeave (lw_e);
                         break;
                     case RawPointerEventType.Move:
-                        if (Resizeable && HandleMouseMove ((int)me.Position.X, (int)me.Position.Y))
-                            return;
+                        //Debug.WriteLine ($"Window mouse move: {me.Position}");
 
+                        if (me.Position.X > 1500)
+                            Console.WriteLine ();
+                        if (!client_captured && Resizeable && HandleMouseMove ((int)me.Position.X, (int)me.Position.Y))
+                            return;
                         var mea = new MouseEventArgs (me.InputModifiers.ToMouseButtons (), 0, (int)me.Position.X, (int)me.Position.Y, System.Drawing.Point.Empty, keyData: KeyEventArgs.FromInputModifiers (me.InputModifiers));
                         adapter.RaiseMouseMove (mea);
                         break;
@@ -525,6 +539,8 @@ namespace Modern.Forms
         /// Gets or sets whether the window is displayed to the user.
         /// </summary>
         public bool Visible { get; private set; }
+
+        public System.Drawing.Size MinimumFormSize { get; set; } = new System.Drawing.Size (50, 30);
 
         private enum WindowElement
         {
