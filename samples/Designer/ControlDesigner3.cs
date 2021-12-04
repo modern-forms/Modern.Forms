@@ -11,13 +11,13 @@ using SkiaSharp;
 
 namespace Designer
 {
-    public class ControlDesigner : Control
+    public class ControlDesigner3 : Control
     {
         private readonly Control control;
 
         private bool is_selected;
 
-        public ControlDesigner (Control control)
+        public ControlDesigner3 (Control control)
         {
             //control.Dock = DockStyle.Fill;
             this.control = control;

@@ -18,7 +18,7 @@ namespace Modern.Forms
     /// <summary>
     /// Represents the base class for windows, like Form and PopupWindow
     /// </summary>
-    public abstract class Window : Component
+    public abstract class Window : Component, IVisual
     {
         private const int DOUBLE_CLICK_TIME = 500;
         private const int DOUBLE_CLICK_MOVEMENT = 4;
@@ -62,6 +62,13 @@ namespace Modern.Forms
         /// </summary>
         public void BeginMoveDrag () => window.BeginMoveDrag (new Avalonia.Input.PointerPressedEventArgs ());
 
+        public System.Drawing.Rectangle Bounds { 
+            get {
+                return new System.Drawing.Rectangle (Location, Size);
+            } 
+            set { }
+        }
+
         private MouseEventArgs BuildMouseClickArgs (MouseButtons buttons, Point point, Keys keyData)
         {
             var click_count = 1;
@@ -76,6 +83,8 @@ namespace Modern.Forms
 
             return e;
         }
+
+        public bool Capture { get; set; }
 
         /// <summary>
         /// Closes and destroys the window.
@@ -138,6 +147,8 @@ namespace Modern.Forms
         /// Gets the unscaled bounds of the form not including borders.
         /// </summary>
         public System.Drawing.Rectangle DisplayRectangle => new System.Drawing.Rectangle (CurrentStyle.Border.Left.GetWidth (), CurrentStyle.Border.Top.GetWidth (), (int)window.ClientSize.Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth (), (int)window.ClientSize.Height - CurrentStyle.Border.Top.GetWidth () - CurrentStyle.Border.Bottom.GetWidth ());
+
+        public bool Enabled { get; set; }
 
         private WindowElement GetElementAtLocation (int x, int y)
         {

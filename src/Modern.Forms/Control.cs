@@ -10,7 +10,8 @@ namespace Modern.Forms
     /// <summary>
     /// Represents the base class for all Controls.
     /// </summary>
-    public class Control : Component, ILayoutable, IDisposable
+    [Designer ($"Modern.Forms.Design.ControlDesigner, Designer")]
+    public class Control : Component, ILayoutable, IDisposable, IVisual
     {
         private AnchorStyles anchor_style = AnchorStyles.Top | AnchorStyles.Left;
         //private AutoSizeMode auto_size_mode;
@@ -642,7 +643,7 @@ namespace Modern.Forms
             FindWindow ()?.Invalidate (rectangle);
         }
 
-        public event EventHandler Invalidated;
+        public event EventHandler? Invalidated;
 
         /// <summary>
         /// Is the mouse currently over the control.
@@ -961,6 +962,11 @@ namespace Modern.Forms
             // The ControlAdapter itself should not have a background/border
             if (this is ControlAdapter)
                 return;
+
+            if (behaviors.HasFlag (ControlBehaviors.Transparent)) {
+                e.Canvas.Clear ();
+                return;
+            }
 
             e.Canvas.DrawBackground (CurrentStyle);
             e.Canvas.DrawBorder (ScaledBounds, CurrentStyle);

@@ -13,44 +13,46 @@ namespace Modern.Forms.Design
     {
         private readonly Point center;
         private readonly Cursor? cursor;
+        private readonly bool _isPrimary;
 
-        public SelectionDirection Direction { get; }
+        public GrabHandleGlyphType Direction { get; }
         public override Rectangle Bounds => new Rectangle (center.X - 2, center.Y - 2, 6, 6);
 
-        public GrabHandleGlyph (Rectangle controlBounds, SelectionDirection direction)
+        public GrabHandleGlyph (Rectangle controlBounds, GrabHandleGlyphType direction, Behavior? behavior, bool primarySelection) : base (behavior)
         {
             Direction = direction;
+            _isPrimary = primarySelection;
 
             switch (direction) {
-                case SelectionDirection.TopLeft:
+                case GrabHandleGlyphType.UpperLeft:
                     center = new Point (controlBounds.X - 3, controlBounds.Y - 3);
                     cursor = Cursors.TopLeftCorner;
                     break;
-                case SelectionDirection.TopMiddle:
+                case GrabHandleGlyphType.MiddleTop:
                     center = new Point (controlBounds.X + (controlBounds.Width / 2), controlBounds.Y - 3);
                     cursor = Cursors.TopSide;
                     break;
-                case SelectionDirection.TopRight:
+                case GrabHandleGlyphType.UpperRight:
                     center = new Point (controlBounds.Right + 2, controlBounds.Y - 3);
                     cursor = Cursors.TopRightCorner;
                     break;
-                case SelectionDirection.CenterLeft:
+                case GrabHandleGlyphType.MiddleLeft:
                     center = new Point (controlBounds.X - 3, controlBounds.Y + (controlBounds.Height / 2));
                     cursor = Cursors.LeftSide;
                     break;
-                case SelectionDirection.CenterRight:
+                case GrabHandleGlyphType.MiddleRight:
                     center = new Point (controlBounds.Right + 2, controlBounds.Y + (controlBounds.Height / 2));
                     cursor = Cursors.RightSide;
                     break;
-                case SelectionDirection.BottomLeft:
+                case GrabHandleGlyphType.LowerLeft:
                     center = new Point (controlBounds.X - 3, controlBounds.Bottom + 2);
                     cursor = Cursors.BottomLeftCorner;
                     break;
-                case SelectionDirection.BottomMiddle:
+                case GrabHandleGlyphType.MiddleBottom:
                     center = new Point (controlBounds.X + (controlBounds.Width / 2), controlBounds.Bottom + 2);
                     cursor = Cursors.BottomSide;
                     break;
-                case SelectionDirection.BottomRight:
+                case GrabHandleGlyphType.LowerRight:
                     center = new Point (controlBounds.Right + 2, controlBounds.Bottom + 2);
                     cursor = Cursors.BottomRightCorner;
                     break;
@@ -83,9 +85,9 @@ namespace Modern.Forms.Design
         public Size GetNewSize (Rectangle currentBounds, Size minimumSize, Point point)
         {
             return Direction switch {
-                SelectionDirection.CenterRight => new Size (Math.Max (point.X - currentBounds.Left, minimumSize.Width), currentBounds.Height - 1),
-                SelectionDirection.BottomMiddle => new Size (currentBounds.Width - 1, Math.Max (point.Y - currentBounds.Top, minimumSize.Height)),//new Size (bounds.Width, bounds.Height + (point.Y - resizeAnchor.Y)),
-                SelectionDirection.BottomRight => new Size (Math.Max (point.X - currentBounds.Left, minimumSize.Width), Math.Max (point.Y - currentBounds.Top, minimumSize.Height)),
+                GrabHandleGlyphType.MiddleRight => new Size (Math.Max (point.X - currentBounds.Left, minimumSize.Width), currentBounds.Height - 1),
+                GrabHandleGlyphType.MiddleBottom => new Size (currentBounds.Width - 1, Math.Max (point.Y - currentBounds.Top, minimumSize.Height)),//new Size (bounds.Width, bounds.Height + (point.Y - resizeAnchor.Y)),
+                GrabHandleGlyphType.LowerRight => new Size (Math.Max (point.X - currentBounds.Left, minimumSize.Width), Math.Max (point.Y - currentBounds.Top, minimumSize.Height)),
                 _ => throw new NotImplementedException ()
             };
         }
@@ -98,14 +100,14 @@ namespace Modern.Forms.Design
             var bottom = Math.Max (point.Y, currentBounds.Top + minimumSize.Height);
 
             return Direction switch {
-                SelectionDirection.TopLeft => Rectangle.FromLTRB (left, top, currentBounds.Right, currentBounds.Bottom),
-                SelectionDirection.TopMiddle => Rectangle.FromLTRB (currentBounds.Left, top, currentBounds.Right, currentBounds.Bottom),
-                SelectionDirection.TopRight => Rectangle.FromLTRB (currentBounds.Left, top, right, currentBounds.Bottom),
-                SelectionDirection.CenterLeft => Rectangle.FromLTRB (left, currentBounds.Top, currentBounds.Right, currentBounds.Bottom),
-                SelectionDirection.CenterRight => Rectangle.FromLTRB (currentBounds.Left, currentBounds.Top, right, currentBounds.Bottom),
-                SelectionDirection.BottomLeft => Rectangle.FromLTRB (left, currentBounds.Top, currentBounds.Right, bottom),
-                SelectionDirection.BottomMiddle => Rectangle.FromLTRB (currentBounds.Left, currentBounds.Top, currentBounds.Right, bottom),
-                SelectionDirection.BottomRight => Rectangle.FromLTRB (currentBounds.Left, currentBounds.Top, right, bottom),
+                GrabHandleGlyphType.UpperLeft => Rectangle.FromLTRB (left, top, currentBounds.Right, currentBounds.Bottom),
+                GrabHandleGlyphType.MiddleTop => Rectangle.FromLTRB (currentBounds.Left, top, currentBounds.Right, currentBounds.Bottom),
+                GrabHandleGlyphType.UpperRight => Rectangle.FromLTRB (currentBounds.Left, top, right, currentBounds.Bottom),
+                GrabHandleGlyphType.MiddleLeft => Rectangle.FromLTRB (left, currentBounds.Top, currentBounds.Right, currentBounds.Bottom),
+                GrabHandleGlyphType.MiddleRight => Rectangle.FromLTRB (currentBounds.Left, currentBounds.Top, right, currentBounds.Bottom),
+                GrabHandleGlyphType.LowerLeft => Rectangle.FromLTRB (left, currentBounds.Top, currentBounds.Right, bottom),
+                GrabHandleGlyphType.MiddleBottom => Rectangle.FromLTRB (currentBounds.Left, currentBounds.Top, currentBounds.Right, bottom),
+                GrabHandleGlyphType.LowerRight => Rectangle.FromLTRB (currentBounds.Left, currentBounds.Top, right, bottom),
                 _ => throw new NotImplementedException ()
             };
         }

@@ -36,7 +36,7 @@ namespace Modern.Forms.Design
 
             // Configure our default services
             //ServiceCreatorCallback callback = new ServiceCreatorCallback (OnCreateService);
-            //ServiceContainer.AddService (typeof (ISelectionService), callback);
+            ServiceContainer.AddService (typeof (ISelectionService), new SelectionService (ServiceContainer));
             //ServiceContainer.AddService (typeof (IExtenderProviderService), callback);
             //ServiceContainer.AddService (typeof (IExtenderListService), callback);
             //ServiceContainer.AddService (typeof (ITypeDescriptorFilterService), callback);
@@ -90,7 +90,7 @@ namespace Modern.Forms.Design
             }
 
             // Create the designer host.  We need the host so we can begin the loading process.
-            //_loadErrors = null;
+            _loadErrors = null;
             _host.BeginLoad (loader);
         }
 

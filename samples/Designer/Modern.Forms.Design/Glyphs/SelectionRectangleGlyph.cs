@@ -12,7 +12,7 @@ namespace Modern.Forms.Design
     {
         public override Rectangle Bounds { get; }
 
-        public SelectionRectangleGlyph (Rectangle controlBounds)
+        public SelectionRectangleGlyph (Rectangle controlBounds) : base (null)
         {
             Bounds = controlBounds;
         }

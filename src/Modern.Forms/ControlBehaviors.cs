@@ -19,6 +19,7 @@ namespace Modern.Forms
         /// <summary>
         /// The control can receive focus.
         /// </summary>
-        Selectable = 4
+        Selectable = 4,
+        Transparent = 8
     }
 }

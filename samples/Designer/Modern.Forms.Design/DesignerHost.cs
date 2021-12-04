@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Modern.Forms.Design
 {
-    public class DesignerHost : Container, IDesignerLoaderHost2
+    public class DesignerHost : Container, IDesignerLoaderHost2, IComponentChangeService
     {
         private readonly DesignSurface _surface; // the owning designer surface.
         private readonly EventHandlerList _events; // event list
@@ -28,7 +28,7 @@ namespace Modern.Forms.Design
         private bool _ignoreErrorsDuringReload;
         private bool _canReloadWithErrors;
 
-        private static readonly Type[] s_defaultServices = new Type[] { typeof (IDesignerHost), typeof (IContainer), typeof (IDesignerLoaderHost2) /*, typeof (IComponentChangeService)*/ };
+        private static readonly Type[] s_defaultServices = new Type[] { typeof (IDesignerHost), typeof (IContainer), typeof (IDesignerLoaderHost2), typeof (IComponentChangeService) };
 
         // IDesignerHost events
         private static readonly object s_eventActivated = new object (); // Designer has been activated
@@ -74,6 +74,82 @@ namespace Modern.Forms.Design
                     }
                 }
             //}
+        }
+
+        /// <summary>
+        ///  Adds an event handler for the System.ComponentModel.Design.IComponentChangeService.ComponentAdded event.
+        /// </summary>
+        event ComponentEventHandler IComponentChangeService.ComponentAdded {
+            add => _events.AddHandler (s_eventComponentAdded, value);
+            remove => _events.RemoveHandler (s_eventComponentAdded, value);
+        }
+
+        /// <summary>
+        ///  Adds an event handler for the System.ComponentModel.Design.IComponentChangeService.ComponentAdding event.
+        /// </summary>
+        event ComponentEventHandler IComponentChangeService.ComponentAdding {
+            add => _events.AddHandler (s_eventComponentAdding, value);
+            remove => _events.RemoveHandler (s_eventComponentAdding, value);
+        }
+
+        /// <summary>
+        ///  Adds an event handler for the System.ComponentModel.Design.IComponentChangeService.ComponentChanged event.
+        /// </summary>
+        event ComponentChangedEventHandler IComponentChangeService.ComponentChanged {
+            add => _events.AddHandler (s_eventComponentChanged, value);
+            remove => _events.RemoveHandler (s_eventComponentChanged, value);
+        }
+
+        /// <summary>
+        ///  Adds an event handler for the System.ComponentModel.Design.IComponentChangeService.ComponentChanging event.
+        /// </summary>
+        event ComponentChangingEventHandler IComponentChangeService.ComponentChanging {
+            add => _events.AddHandler (s_eventComponentChanging, value);
+            remove => _events.RemoveHandler (s_eventComponentChanging, value);
+        }
+
+        /// <summary>
+        ///  Adds an event handler for the System.ComponentModel.Design.IComponentChangeService.OnComponentRemoved event.
+        /// </summary>
+        event ComponentEventHandler IComponentChangeService.ComponentRemoved {
+            add => _events.AddHandler (s_eventComponentRemoved, value);
+            remove => _events.RemoveHandler (s_eventComponentRemoved, value);
+        }
+
+        /// <summary>
+        ///  Adds an event handler for the System.ComponentModel.Design.IComponentChangeService.OnComponentRemoving event.
+        /// </summary>
+        event ComponentEventHandler IComponentChangeService.ComponentRemoving {
+            add => _events.AddHandler (s_eventComponentRemoving, value);
+            remove => _events.RemoveHandler (s_eventComponentRemoving, value);
+        }
+
+        /// <summary>
+        ///  Adds an event handler for the System.ComponentModel.Design.IComponentChangeService.OnComponentRename event.
+        /// </summary>
+        event ComponentRenameEventHandler IComponentChangeService.ComponentRename {
+            add => _events.AddHandler (s_eventComponentRename, value);
+            remove => _events.RemoveHandler (s_eventComponentRename, value);
+        }
+
+        /// <summary>
+        ///  Announces to the component change service that a particular component has changed.
+        /// </summary>
+        void IComponentChangeService.OnComponentChanged (object component, MemberDescriptor member, object oldValue, object newValue)
+        {
+            if (!((IDesignerHost)this).Loading) {
+                (_events[s_eventComponentChanged] as ComponentChangedEventHandler)?.Invoke (this, new ComponentChangedEventArgs (component, member, oldValue, newValue));
+            }
+        }
+
+        /// <summary>
+        ///  Announces to the component change service that a particular component is changing.
+        /// </summary>
+        void IComponentChangeService.OnComponentChanging (object component, MemberDescriptor member)
+        {
+            if (!((IDesignerHost)this).Loading) {
+                (_events[s_eventComponentChanging] as ComponentChangingEventHandler)?.Invoke (this, new ComponentChangingEventArgs (component, member));
+            }
         }
 
         /// <summary>

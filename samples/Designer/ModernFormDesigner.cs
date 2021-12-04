@@ -28,17 +28,24 @@ namespace Designer
             //TypeDescriptor.GetProperties (designed_form)["Size"].SetValue (designed_form, new System.Drawing.Size (800, 600));
             designed_form.Text = "Test Form";
 
-            var button = new Button { Text = "Button1", Height = 80, Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
+            var button = (Button)host.CreateComponent (typeof (Button), "button1");
+
+            button.Text = "Button1";
+            button.Left = 25;
+            button.Height = 80;
+            button.Top = 40;
+            //var button = new Button { Text = "Button1", Height = 80, Anchor = AnchorStyles.Top | AnchorStyles.Left };
             button.Style.BackgroundColor = SKColors.Red;
 
-            var checkbox = new CheckBox { Top = 130 };
-
+            var checkbox = (CheckBox)host.CreateComponent (typeof (CheckBox), "cb1");
+            checkbox.Top = 130;
+            checkbox.Left = 25;
             designed_form.Controls.Add (button);
             designed_form.Controls.Add (checkbox);
 
             // Design frame
             var design_frame = (Control)design_surface.View;
-            design_frame.Dock = DockStyle.Fill;
+            //design_frame.Dock = DockStyle.Fill;
             Controls.Add (design_frame);
 
         }

@@ -16,9 +16,9 @@ namespace Designer
             //var form = CreateDesignedForm ();
             var form = new Explore.MainForm ();
 
-            var designer = new FormDocumentDesigner (form);
+            //var designer = new FormDocumentDesigner (form);
 
-            var surface = Controls.Add (new DesignerFrame (designer) { Dock = DockStyle.Fill });
+            //var surface = Controls.Add (new DesignerFrame (designer) { Dock = DockStyle.Fill });
 
         }
 

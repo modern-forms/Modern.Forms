@@ -56,52 +56,53 @@ namespace Modern.Forms.Design
 
         private static IEnumerable<ResizeAdornment> GetResizeAdornments (Rectangle rectangle, bool resizeOnly)
         {
-            yield return new ResizeAdornment (SelectionDirection.BottomRight, new Point (rectangle.Right + 2, rectangle.Bottom + 2));
+            yield return new ResizeAdornment (GrabHandleGlyphType.LowerRight, new Point (rectangle.Right + 2, rectangle.Bottom + 2));
 
             if (!resizeOnly) {
-                yield return new ResizeAdornment (SelectionDirection.TopLeft, new Point (rectangle.X - 3, rectangle.Y - 3));
-                yield return new ResizeAdornment (SelectionDirection.BottomLeft, new Point (rectangle.X - 3, rectangle.Bottom + 2));
-                yield return new ResizeAdornment (SelectionDirection.TopRight, new Point (rectangle.Right + 2, rectangle.Y - 3));
+                yield return new ResizeAdornment (GrabHandleGlyphType.UpperLeft, new Point (rectangle.X - 3, rectangle.Y - 3));
+                yield return new ResizeAdornment (GrabHandleGlyphType.LowerLeft, new Point (rectangle.X - 3, rectangle.Bottom + 2));
+                yield return new ResizeAdornment (GrabHandleGlyphType.UpperRight, new Point (rectangle.Right + 2, rectangle.Y - 3));
             }
 
             if (rectangle.Height > 15) {
-                yield return new ResizeAdornment (SelectionDirection.CenterRight, new Point (rectangle.Right + 2, rectangle.Y + (rectangle.Height / 2)));
+                yield return new ResizeAdornment (GrabHandleGlyphType.MiddleRight, new Point (rectangle.Right + 2, rectangle.Y + (rectangle.Height / 2)));
                 
                 if (!resizeOnly)
-                    yield return new ResizeAdornment (SelectionDirection.CenterLeft, new Point (rectangle.X - 3, rectangle.Y + (rectangle.Height / 2)));
+                    yield return new ResizeAdornment (GrabHandleGlyphType.MiddleLeft, new Point (rectangle.X - 3, rectangle.Y + (rectangle.Height / 2)));
             }
 
             if (rectangle.Width > 15) {
-                yield return new ResizeAdornment (SelectionDirection.BottomMiddle, new Point (rectangle.X + (rectangle.Width / 2), rectangle.Bottom + 2));
+                yield return new ResizeAdornment (GrabHandleGlyphType.MiddleBottom, new Point (rectangle.X + (rectangle.Width / 2), rectangle.Bottom + 2));
                 
                 if (!resizeOnly)
-                    yield return new ResizeAdornment (SelectionDirection.TopMiddle, new Point (rectangle.X + (rectangle.Width / 2), rectangle.Y - 3));
+                    yield return new ResizeAdornment (GrabHandleGlyphType.MiddleTop, new Point (rectangle.X + (rectangle.Width / 2), rectangle.Y - 3));
             }
         }
 
         public static IEnumerable<GrabHandleGlyph> GetGrabHandleGlyphs (Rectangle rectangle, bool resizeOnly)
         {
-            yield return new GrabHandleGlyph (rectangle, SelectionDirection.BottomRight);
+            //yield return new GrabHandleGlyph (rectangle, GrabHandleGlyphType.LowerRight);
 
-            if (!resizeOnly) {
-                yield return new GrabHandleGlyph (rectangle, SelectionDirection.TopLeft);
-                yield return new GrabHandleGlyph (rectangle, SelectionDirection.BottomLeft);
-                yield return new GrabHandleGlyph (rectangle, SelectionDirection.TopRight);
-            }
+            //if (!resizeOnly) {
+            //    yield return new GrabHandleGlyph (rectangle, GrabHandleGlyphType.UpperLeft);
+            //    yield return new GrabHandleGlyph (rectangle, GrabHandleGlyphType.LowerLeft);
+            //    yield return new GrabHandleGlyph (rectangle, GrabHandleGlyphType.UpperRight);
+            //}
 
-            if (rectangle.Height > 15) {
-                yield return new GrabHandleGlyph (rectangle, SelectionDirection.CenterRight);
+            //if (rectangle.Height > 15) {
+            //    yield return new GrabHandleGlyph (rectangle, GrabHandleGlyphType.MiddleRight);
 
-                if (!resizeOnly)
-                    yield return new GrabHandleGlyph (rectangle, SelectionDirection.CenterLeft);
-            }
+            //    if (!resizeOnly)
+            //        yield return new GrabHandleGlyph (rectangle, GrabHandleGlyphType.MiddleLeft);
+            //}
 
-            if (rectangle.Width > 15) {
-                yield return new GrabHandleGlyph (rectangle, SelectionDirection.BottomMiddle);
+            //if (rectangle.Width > 15) {
+            //    yield return new GrabHandleGlyph (rectangle, GrabHandleGlyphType.MiddleBottom);
 
-                if (!resizeOnly)
-                    yield return new GrabHandleGlyph (rectangle, SelectionDirection.TopMiddle);
-            }
+            //    if (!resizeOnly)
+            //        yield return new GrabHandleGlyph (rectangle, GrabHandleGlyphType.MiddleTop);
+            //}
+            yield break;
         }
     }
 }

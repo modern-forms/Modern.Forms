@@ -8,14 +8,37 @@ using Modern.Forms;
 
 namespace Modern.Forms.Design
 {
+    /// <summary>
+    ///  A Glyph represents a single UI entity managed by an Adorner.  A Glyph
+    ///  does not have an HWnd - and is rendered on the BehaviorService's
+    ///  AdornerWindow control.  Each Glyph can have a Behavior associated with
+    ///  it - the idea here is that a successfully Hit-Tested Glyph has the
+    ///  opportunity to 'push' a new/different Behavior onto the BehaviorService's
+    ///  BehaviorStack.  Note that all Glyphs really do is paint and hit test.
+    /// </summary>
     public abstract class Glyph
     {
+        private Behavior _behavior;
+
+        /// <summary>
+        ///  Glyph's default constructor takes a Behavior.
+        /// </summary>
+        protected Glyph (Behavior behavior)
+        {
+            _behavior = behavior;
+        }
+
+        /// <summary>
+        ///  This read-only property will return the Behavior associated with
+        ///  this Glyph.  The Behavior can be null.
+        /// </summary>
+        public virtual Behavior Behavior => _behavior;
+
         /// <summary>
         ///  This read-only property will return the Bounds associated with
         ///  this Glyph.  The Bounds can be empty.
         /// </summary>
         public virtual Rectangle Bounds => throw new NotImplementedException ();
-
 
         /// <summary>
         ///  Abstract method that forces Glyph implementations to provide
@@ -25,7 +48,6 @@ namespace Modern.Forms.Design
         ///  the BehaviorService to simply ignore it.
         /// </summary>
         public abstract Cursor? GetHitTest (Point p);
-
 
         /// <summary>
         ///  Abstract method that forces Glyph implementations to provide

@@ -25,12 +25,19 @@ namespace Designer
             var root = (Form)host.RootComponent;
             TypeDescriptor.GetProperties (root)["Name"].SetValue (root, "Form1");
             root.Text = "Form1";
-
+            
             var component = host.CreateComponent (typeof (Button), "button1");
             var button1 = (Button)component;
             button1.Text = "button1";
             button1.Location = new Point (8, 8);
             root.Controls.Add (button1);
+
+            var b = new Button {
+                Text = "not designed",
+                Location = new Point (78, 78)
+            };
+
+            root.Controls.Add (b);
 
             var timer1 = (Timer)host.CreateComponent (typeof (Timer), "timer1");
             timer1.Interval = 2000;
