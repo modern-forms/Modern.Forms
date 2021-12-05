@@ -46,15 +46,43 @@ namespace Modern.Forms.Design
 
         protected override void OnMouseDown (MouseEventArgs e)
         {
-            var loc = new Point (e.X - 15, e.Y + 15);
+            var loc = new Point (e.X - 15, e.Y - 15);
 
-            _behaviorService.PropagateHitTest (loc);
+            var prop = _behaviorService.PropagateHitTest (loc);
+            var md = _behaviorService.OnMouseDown (e.Button, loc);
 
-             if (_behaviorService.OnMouseDown (e.Button, loc))
+            if (md)
                 return;
+
+             //if ()
+             //   return;
 
 
             DesignerFrame.design_adapter.DoMouseDown (e);
+        }
+
+        protected override void OnMouseMove (MouseEventArgs e)
+        {
+            var loc = new Point (e.X - 15, e.Y - 15);
+
+            var prop = _behaviorService.PropagateHitTest (loc);
+
+            if (_behaviorService.OnMouseMove (e.Button, loc))
+                return;
+
+            DesignerFrame.design_adapter.DoMouseMove (e);
+        }
+
+        protected override void OnMouseUp (MouseEventArgs e)
+        {
+            var loc = new Point (e.X - 15, e.Y - 15);
+
+            var prop = _behaviorService.PropagateHitTest (loc);
+
+            if (_behaviorService.OnMouseUp (e.Button))
+                return;
+
+            DesignerFrame.design_adapter.DoMouseUp (e);
         }
     }
 }

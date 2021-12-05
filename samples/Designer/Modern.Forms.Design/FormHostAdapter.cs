@@ -48,7 +48,10 @@ namespace Modern.Forms.Design
 
 
         internal void DoMouseDown (MouseEventArgs e) => OnMouseDown (e);
+        internal void DoMouseMove (MouseEventArgs e) => OnMouseMove (e);
+        internal void DoMouseUp (MouseEventArgs e) => OnMouseUp (e);
 
+        bool is_dragging = false;
 
         protected override void OnMouseDown (MouseEventArgs e)
         {
@@ -66,6 +69,51 @@ namespace Modern.Forms.Design
             }
 
             designer.OnMouseDragBegin (e.X - 15, e.Y - 15);
+            is_dragging = true;
+        }
+
+        protected override void OnMouseMove (MouseEventArgs e)
+        {
+            if (!is_dragging)
+                return;
+
+            var loc = new Point (e.X - 15, e.Y - 15);
+
+            var control = GetControlAtLocation (loc);
+
+            if (control is not null) {
+                var host = designer.GetService<IDesignerHost> ();
+
+                if (host.GetDesigner (control) is ControlDesigner cd) {
+                    cd.OnMouseDragMove (e.X - 15, e.Y - 15);
+                    return;
+                }
+            }
+
+            designer.OnMouseDragMove (e.X - 15, e.Y - 15);
+        }
+
+        protected override void OnMouseUp (MouseEventArgs e)
+        {
+            if (!is_dragging)
+                return;
+
+            var loc = new Point (e.X - 15, e.Y - 15);
+
+            var control = GetControlAtLocation (loc);
+
+            if (control is not null) {
+                var host = designer.GetService<IDesignerHost> ();
+
+                if (host.GetDesigner (control) is ControlDesigner cd) {
+                    cd.OnMouseDragEnd (false);
+                    return;
+                }
+            }
+
+            designer.OnMouseDragEnd (false);
+
+            is_dragging = false;
         }
 
         protected override void OnPaint (PaintEventArgs e)

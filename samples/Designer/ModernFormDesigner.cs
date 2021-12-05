@@ -34,6 +34,7 @@ namespace Designer
             button.Left = 25;
             button.Height = 80;
             button.Top = 40;
+
             //var button = new Button { Text = "Button1", Height = 80, Anchor = AnchorStyles.Top | AnchorStyles.Left };
             button.Style.BackgroundColor = SKColors.Red;
 

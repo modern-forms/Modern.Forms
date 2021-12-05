@@ -18,12 +18,12 @@ namespace Modern.Forms.Design
     /// </summary>
     public abstract class Glyph
     {
-        private Behavior _behavior;
+        private Behavior? _behavior;
 
         /// <summary>
         ///  Glyph's default constructor takes a Behavior.
         /// </summary>
-        protected Glyph (Behavior behavior)
+        protected Glyph (Behavior? behavior)
         {
             _behavior = behavior;
         }
@@ -32,7 +32,7 @@ namespace Modern.Forms.Design
         ///  This read-only property will return the Behavior associated with
         ///  this Glyph.  The Behavior can be null.
         /// </summary>
-        public virtual Behavior Behavior => _behavior;
+        public virtual Behavior? Behavior => _behavior;
 
         /// <summary>
         ///  This read-only property will return the Bounds associated with

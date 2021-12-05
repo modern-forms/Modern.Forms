@@ -9,7 +9,7 @@ using SkiaSharp;
 
 namespace Modern.Forms.Design
 {
-    public class GrabHandleGlyph : Glyph
+    internal class GrabHandleGlyph : SelectionGlyphBase
     {
         private readonly Point center;
         private readonly Cursor? cursor;

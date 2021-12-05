@@ -33,9 +33,13 @@ namespace Modern.Forms.Design
         /// </summary>
         public BehaviorServiceAdornerCollection Adorners { get; }
 
+        internal bool CancelDrag { get; set; }
+
         public void Dispose ()
         {
         }
+
+        internal bool Dragging { get; private set; }
 
         private Behavior GetAppropriateBehavior (Glyph g)
         {
@@ -129,6 +133,20 @@ namespace Modern.Forms.Design
         internal bool OnMouseDown (MouseButtons button, Point mouseLoc)
             => GetAppropriateBehavior (_hitTestedGlyph)?.OnMouseDown (_hitTestedGlyph, button, mouseLoc) ?? false;
 
+        internal bool OnMouseMove (MouseButtons button, Point mouseLoc)
+        {
+            // Hook mouse events (if we haven't already) for MouseHover
+           // HookMouseEvent ();
+            return GetAppropriateBehavior (_hitTestedGlyph)?.OnMouseMove (_hitTestedGlyph, button, mouseLoc) ?? false;
+        }
+
+        internal bool OnMouseUp (MouseButtons button)
+        {
+            //_dragEnterReplies.Clear ();
+            _validDragArgs = null;
+            return GetAppropriateBehavior (_hitTestedGlyph)?.OnMouseUp (_hitTestedGlyph, button) ?? false;
+        }
+
         internal bool PropagateHitTest (Point pt)
         {
             for (int i = Adorners.Count - 1; i >= 0; i--) {
@@ -202,6 +220,29 @@ namespace Modern.Forms.Design
             if (_captureBehavior != null && _captureBehavior != behavior) {
                 OnLoseCapture ();
             }
+        }
+
+        /// <summary>
+        ///  Pushes a Behavior object onto the BehaviorStack and assigns mouse capture to the behavior.
+        ///  This is often done through hit-tested Glyph.  If a behavior calls this the behavior's OnLoseCapture
+        ///  will be called if mouse capture is lost.
+        /// </summary>
+        public void PushCaptureBehavior (Behavior behavior)
+        {
+            PushBehavior (behavior);
+            _captureBehavior = behavior;
+            _adornerWindow.Capture = true;
+
+            // VSWhidbey #373836. Since we are now capturing all mouse messages, we might miss some WM_MOUSEACTIVATE
+            // which would have activated the app. So if the DialogOwnerWindow (e.g. VS) is not the active window,
+            // let's activate it here.
+            //IUIService uiService = (IUIService)_serviceProvider.GetService (typeof (IUIService));
+            //if (uiService != null) {
+            //    IWin32Window hwnd = uiService.GetDialogOwnerWindow ();
+            //    if (hwnd != null && hwnd.Handle != IntPtr.Zero && hwnd.Handle != User32.GetActiveWindow ()) {
+            //        User32.SetActiveWindow (hwnd.Handle);
+            //    }
+            //}
         }
 
         private void SetAppropriateCursor (Cursor cursor)

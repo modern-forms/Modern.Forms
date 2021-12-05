@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
@@ -13,14 +14,18 @@ namespace Modern.Forms.Design
     {
         private IDesignerHost _host;                        // the host for our designer
         private ResizeBehavior _resizeBehavior;             // the standard behavior for our selection glyphs - demand created
+        private BehaviorService _behaviorService;           // we cache this 'cause we use it so often
 
         protected static readonly Point InvalidPoint = new Point (int.MinValue, int.MinValue);
 
         // Transient values that are used during mouse drags
         private Point _mouseDragLast = InvalidPoint;        // the last position of the mouse during a drag.
-        //private bool _mouseDragMoved;                       // has the mouse been moved during this drag?
-        //private int _lastMoveScreenX;
-        //private int _lastMoveScreenY;
+        private bool _mouseDragMoved;                       // has the mouse been moved during this drag?
+                                                            //private int _lastMoveScreenX;
+                                                            //private int _lastMoveScreenY;
+        private bool _ctrlSelect;                           // if the CTRL key was down at the mouse down
+
+        protected BehaviorService BehaviorService => _behaviorService ??= GetService<BehaviorService> ();
 
         /// <summary>
         ///  Retrieves the control we're designing.
@@ -47,9 +52,9 @@ namespace Modern.Forms.Design
         protected virtual ControlBodyGlyph GetControlGlyph (GlyphSelectionType selectionType)
         {
             // get the right cursor for this component
-            //OnSetCursor ();
+            Cursor cursor = OnSetCursor ();
             //Cursor cursor = Cursor.Current;
-            Cursor cursor = Cursor.Default;
+            //Cursor cursor = Cursor.Default;
 
             // get the correctly translated bounds  // TODO
             //Rectangle translatedBounds = BehaviorService.ControlRectInAdornerWindow (Control);
@@ -166,20 +171,20 @@ namespace Modern.Forms.Design
                     glyphs.Add (new GrabHandleGlyph (translatedBounds, GrabHandleGlyphType.MiddleRight, StandardBehavior, primarySelection));
                 }
 
-                // the four resizeable border glyphs
-                //glyphs.Add (new SelectionBorderGlyph (translatedBounds, rules, SelectionBorderGlyphType.Top, StandardBehavior));
-                //glyphs.Add (new SelectionBorderGlyph (translatedBounds, rules, SelectionBorderGlyphType.Bottom, StandardBehavior));
-                //glyphs.Add (new SelectionBorderGlyph (translatedBounds, rules, SelectionBorderGlyphType.Left, StandardBehavior));
-                //glyphs.Add (new SelectionBorderGlyph (translatedBounds, rules, SelectionBorderGlyphType.Right, StandardBehavior));
+            // the four resizeable border glyphs
+            glyphs.Add (new SelectionBorderGlyph (translatedBounds, rules, SelectionBorderGlyphType.Top, StandardBehavior));
+            glyphs.Add (new SelectionBorderGlyph (translatedBounds, rules, SelectionBorderGlyphType.Bottom, StandardBehavior));
+            glyphs.Add (new SelectionBorderGlyph (translatedBounds, rules, SelectionBorderGlyphType.Left, StandardBehavior));
+            glyphs.Add (new SelectionBorderGlyph (translatedBounds, rules, SelectionBorderGlyphType.Right, StandardBehavior));
 
-                // enable the designeractionpanel for this control if it needs one
-                //if (TypeDescriptor.GetAttributes (Component).Contains (DesignTimeVisibleAttribute.Yes)
-                //    && _behaviorService.DesignerActionUI != null) {
-                //    Glyph dapGlyph = _behaviorService.DesignerActionUI.GetDesignerActionGlyph (Component);
-                //    if (dapGlyph != null) {
-                //        glyphs.Insert (0, dapGlyph); // we WANT to be in front of the other UI
-                //    }
-                //}
+            // enable the designeractionpanel for this control if it needs one
+            //if (TypeDescriptor.GetAttributes (Component).Contains (DesignTimeVisibleAttribute.Yes)
+            //    && _behaviorService.DesignerActionUI != null) {
+            //    Glyph dapGlyph = _behaviorService.DesignerActionUI.GetDesignerActionGlyph (Component);
+            //    if (dapGlyph != null) {
+            //        glyphs.Insert (0, dapGlyph); // we WANT to be in front of the other UI
+            //    }
+            //}
             //}
 
             return glyphs;
@@ -293,6 +298,165 @@ namespace Modern.Forms.Design
             //}
 
             Control.Capture = true;
+        }
+
+        /// <summary>
+        ///  Called at the end of a drag operation.  This either commits or rolls back the drag.
+        /// </summary>
+        internal virtual void OnMouseDragEnd (bool cancel)
+        {
+            _mouseDragLast = InvalidPoint;
+            Control.Capture = false;
+
+            if (!_mouseDragMoved) {
+                // ParentControlDesigner.Dispose depends on cancel having this behavior.
+                if (!cancel) {
+                    ISelectionService selectionService = GetService<ISelectionService> ();
+                    bool shiftSelect = false;// (Control.ModifierKeys & Keys.Shift) != 0;
+                    if (!shiftSelect &&
+                        (_ctrlSelect
+                            || (selectionService != null && !selectionService.GetComponentSelected (Component)))) {
+                        selectionService?.SetSelectedComponents (new object[] { Component }, SelectionTypes.Primary);
+                        _ctrlSelect = false;
+                    }
+                }
+
+                return;
+            }
+
+            _mouseDragMoved = false;
+            _ctrlSelect = false;
+
+            // And now finish the drag.
+            if (BehaviorService != null && BehaviorService.Dragging && cancel) {
+                BehaviorService.CancelDrag = true;
+            }
+
+            // Leave this here in case we are doing a ComponentTray drag
+            //_selectionUIService ??= GetService<ISelectionUIService> ();
+
+            //if (_selectionUIService is null) {
+            //    return;
+            //}
+
+            // We must check to ensure that UI service is still in drag mode.  It is possible that the user hit escape,
+            // which will cancel drag mode.
+            //if (_selectionUIService.Dragging) {
+            //    _selectionUIService.EndDrag (cancel);
+            //}
+        }
+
+        /// <summary>
+        ///  Called for each movement of the mouse. This will check to see if a drag operation is in progress. If so,
+        ///  it will pass the updated drag dimensions on to the selection UI service.
+        /// </summary>
+        public virtual void OnMouseDragMove (int x, int y)
+        {
+            if (!_mouseDragMoved) {
+                Size minDrag = System.Windows.Forms.SystemInformation.DragSize;
+                Size minDblClick = System.Windows.Forms.SystemInformation.DoubleClickSize;
+                minDrag.Width = Math.Max (minDrag.Width, minDblClick.Width);
+                minDrag.Height = Math.Max (minDrag.Height, minDblClick.Height);
+
+                // we have to make sure the mouse moved farther than the minimum drag distance before we actually start the drag
+                if (_mouseDragLast == InvalidPoint ||
+                    (Math.Abs (_mouseDragLast.X - x) < minDrag.Width &&
+                     Math.Abs (_mouseDragLast.Y - y) < minDrag.Height)) {
+                    return;
+                } else {
+                    _mouseDragMoved = true;
+
+                    // we're on the move, so we're not in a ctrlSelect
+                    _ctrlSelect = false;
+                }
+            }
+
+            // Make sure the component is selected
+            // But only select it if it is not already the primary selection, and we want to toggle the current primary selection.
+            ISelectionService selectionService = GetService<ISelectionService> ();
+            if (selectionService != null && !Component.Equals (selectionService.PrimarySelection)) {
+                selectionService.SetSelectedComponents (new object[] { Component }, SelectionTypes.Primary | SelectionTypes.Toggle);
+            }
+
+            if (BehaviorService != null && selectionService != null) {
+                // create our list of controls-to-drag
+                ArrayList dragControls = new ArrayList ();
+                ICollection selComps = selectionService.GetSelectedComponents ();
+
+                // must identify a required parent to avoid dragging mixes of children
+                Control requiredParent = null;
+                foreach (IComponent comp in selComps) {
+                    if (comp is Control control) {
+                        if (requiredParent is null) {
+                            requiredParent = control.Parent;
+                        } else if (!requiredParent.Equals (control.Parent)) {
+                            continue;//mixed selection of different parents - don't add this
+                        }
+
+                        if (_host.GetDesigner (comp) is ControlDesigner des && (des.SelectionRules & SelectionRules.Moveable) != 0) {
+                            dragControls.Add (comp);
+                        }
+                    }
+                }
+
+                // if we have controls-to-drag, create our new behavior and start the drag/drop operation
+                //if (dragControls.Count > 0) {
+                //    using Graphics adornerGraphics = BehaviorService.AdornerWindowGraphics;
+                //    DropSourceBehavior dsb = new DropSourceBehavior (dragControls, Control.Parent, _mouseDragLast);
+                //    BehaviorService.DoDragDrop (dsb);
+                //}
+            }
+
+            _mouseDragLast = InvalidPoint;
+            _mouseDragMoved = false;
+        }
+
+        /// <summary>
+        ///  Called each time the cursor needs to be set.
+        /// </summary>
+        /// <remarks>
+        /// The ControlDesigner behavior here will set the cursor to one of three things:
+        ///
+        ///  1.  If the toolbox service has a tool selected, it will allow the toolbox service to set the cursor.
+        ///  2.  If the selection UI service shows a locked selection, or if there is no location property on the
+        ///  control, then the default arrow will be set.
+        ///  3.  Otherwise, the four headed arrow will be set to indicate that the component can be clicked and moved.
+        ///  4.  If the user is currently dragging a component, the crosshair cursor will be used instead of the four
+        ///  headed arrow.
+        /// </remarks>
+        protected virtual Cursor OnSetCursor ()
+        {
+            //if (Control.Dock != DockStyle.None) {
+            //    Cursor.Current = Cursors.Default;
+            //    return;
+            //}
+
+            //_toolboxService ??= GetService<IToolboxService> ();
+
+            //if (_toolboxService != null && _toolboxService.SetCursor ()) {
+            //    return;
+            //}
+
+            //if (!_locationChecked) {
+            //    _locationChecked = true;
+            //    try {
+            //        _hasLocation = TypeDescriptor.GetProperties (Component)["Location"] != null;
+            //    } catch {
+            //    }
+            //}
+
+            //if (!_hasLocation) {
+            //    Cursor.Current = Cursor.Default;
+            //    return;
+            //}
+
+            //if (Locked) {
+            //    Cursor.Current = Cursor.Default;
+            //    return;
+            //}
+
+            //Cursor.Current = Cursors.SizeAll;
+            return Cursors.SizeAll;
         }
 
         /// <summary>

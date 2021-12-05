@@ -83,5 +83,39 @@ namespace Modern.Forms.Design
                 return false;
             }
         }
+
+        /// <summary>
+        ///  When any MouseMove message enters the BehaviorService's AdornerWindow (mousemove, ncmousemove) it is
+        ///  first passed here, to the top-most Behavior in the BehaviorStack.  Returning 'true' from this method
+        ///  signifies that the Message was 'handled' by the Behavior and should not continue to be processed.
+        /// </summary>
+        public virtual bool OnMouseMove (Glyph? g, MouseButtons button, Point mouseLoc)
+        {
+            if (_callParentBehavior && GetNextBehavior != null) {
+                return GetNextBehavior.OnMouseMove (g, button, mouseLoc);
+            } else if (GetGlyphBehavior (g) is Behavior behavior) {
+                return behavior.OnMouseMove (g, button, mouseLoc);
+            } else {
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///  When any MouseUp message enters the BehaviorService's AdornerWindow
+        ///  (nclbuttonupown, lbuttonup, rbuttonup, nclrbuttonup) it is first
+        ///  passed here, to the top-most Behavior in the BehaviorStack.  Returning
+        ///  'true' from this function signifies that the Message was 'handled' by
+        ///  the Behavior and should not continue to be processed.
+        /// </summary>
+        public virtual bool OnMouseUp (Glyph? g, MouseButtons button)
+        {
+            if (_callParentBehavior && GetNextBehavior != null) {
+                return GetNextBehavior.OnMouseUp (g, button);
+            } else if (GetGlyphBehavior (g) is Behavior behavior) {
+                return behavior.OnMouseUp (g, button);
+            } else {
+                return false;
+            }
+        }
     }
 }
