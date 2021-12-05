@@ -53,7 +53,7 @@ namespace Modern.Forms
         /// <summary>
         /// Hides the drop down.
         /// </summary>
-        public void Hide ()
+        public new void Hide ()
         {
             popup?.Hide ();
         }

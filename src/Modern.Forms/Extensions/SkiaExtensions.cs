@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.Versioning;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -195,6 +196,7 @@ namespace Modern.Forms
         /// <summary>
         /// Convers an SKImage to a Bitmap.
         /// </summary>
+        [SupportedOSPlatform ("windows")]
         public static Bitmap ToBitmap (this SKImage skiaImage)
         {
             // TODO: maybe keep the same color types where we can, instead of just going to the platform default
@@ -212,6 +214,7 @@ namespace Modern.Forms
         /// <summary>
         /// Convers an SKBitmap to a Bitmap.
         /// </summary>
+        [SupportedOSPlatform ("windows")]
         public static Bitmap ToBitmap (this SKBitmap skiaBitmap)
         {
             using (var image = SKImage.FromPixels (skiaBitmap.PeekPixels ()))

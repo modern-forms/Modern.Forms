@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
@@ -918,6 +919,7 @@ namespace Avalonia.Win32
             }
         }
 
+        [SupportedOSPlatform ("windows")]
         public void SetIcon (SkiaSharp.SKBitmap icon)
         {
             if (icon == null) {
