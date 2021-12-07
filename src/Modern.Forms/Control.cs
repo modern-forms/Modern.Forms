@@ -635,7 +635,14 @@ namespace Modern.Forms
             is_dirty = true;
 
             FindWindow ()?.Invalidate (rectangle);
+
+            OnInvalidated (new EventArgs<Rectangle> (rectangle));
         }
+
+        /// <summary>
+        /// Raised when the Control is invalidated.
+        /// </summary>
+        public event EventHandler<EventArgs<Rectangle>> Invalidated;
 
         /// <summary>
         /// Is the mouse currently over the control.
@@ -823,6 +830,11 @@ namespace Modern.Forms
         /// Raises the GotFocus event.
         /// </summary>
         protected virtual void OnGotFocus (EventArgs e) => GotFocus?.Invoke (this, e);
+
+        /// <summary>
+        /// Raises the Invalidated event.
+        /// </summary>
+        protected virtual void OnInvalidated (EventArgs<Rectangle> e) => Invalidated?.Invoke (this, e);
 
         /// <summary>
         /// Raises the KeyDown event.
