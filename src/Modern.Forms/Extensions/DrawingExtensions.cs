@@ -28,6 +28,8 @@ namespace Modern.Forms
         public static Point GetCenter (this Rectangle rectangle)
             => new Point (rectangle.Left + ((rectangle.Right - rectangle.Left) / 2),  rectangle.Top + ((rectangle.Bottom - rectangle.Top) / 2));
 
+        internal static Avalonia.Size ToAvaloniaSize (this Size size) => new Avalonia.Size (size.Width, size.Height);
+
         internal static Avalonia.PixelPoint ToPixelPoint (this Point point) => new Avalonia.PixelPoint (point.X, point.Y);
     }
 }

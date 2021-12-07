@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using SkiaSharp;
@@ -8,7 +9,7 @@ namespace Modern.Forms
     /// <summary>
     /// Represents the base class for all Controls.
     /// </summary>
-    public class Control : ILayoutable, IDisposable
+    public class Control : Component, ILayoutable, IDisposable
     {
         private AnchorStyles anchor_style = AnchorStyles.Top | AnchorStyles.Left;
         //private AutoSizeMode auto_size_mode;
@@ -275,7 +276,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets which side the control is docked to.
         /// </summary>
-        public DockStyle Dock {
+        public virtual DockStyle Dock {
             get => dock_style;
             set {
                 if (value != DockStyle.None)

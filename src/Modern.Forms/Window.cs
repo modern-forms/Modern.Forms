@@ -16,7 +16,7 @@ namespace Modern.Forms
     /// <summary>
     /// Represents the base class for windows, like Form and PopupWindow
     /// </summary>
-    public abstract class Window
+    public abstract class Window : Component
     {
         private const int DOUBLE_CLICK_TIME = 500;
         private const int DOUBLE_CLICK_MOVEMENT = 4;
@@ -31,6 +31,8 @@ namespace Modern.Forms
         private Point last_click_point;
         private Cursor? current_cursor;
         private IWindowImpl? dialog_parent;
+        private System.Drawing.Size minimum_size;
+        private System.Drawing.Size maximum_size;
         internal bool shown;
 
         /// <summary>
@@ -57,6 +59,17 @@ namespace Modern.Forms
         /// Begins dragging the window to move it.
         /// </summary>
         public void BeginMoveDrag () => window.BeginMoveDrag (new Avalonia.Input.PointerPressedEventArgs ());
+
+        /// <summary>
+        /// The bounds of the Window.
+        /// </summary>
+        public System.Drawing.Rectangle Bounds {
+            get => new System.Drawing.Rectangle (Location, Size);
+            set {
+                Location = value.Location;
+                Size = value.Size;
+            }
+        }
 
         private MouseEventArgs BuildMouseClickArgs (MouseButtons buttons, Point point, Keys keyData)
         {
@@ -255,6 +268,65 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Gets or sets the maximum size of the Window
+        /// </summary>
+        public System.Drawing.Size MaximumSize {
+            get => maximum_size;
+            set {
+                if (maximum_size != value) {
+                    maximum_size = value;
+
+                    // Don't let MinimumSize be larger than MaximumSize
+                    if (!minimum_size.IsEmpty && !maximum_size.IsEmpty)
+                        minimum_size = new System.Drawing.Size (Math.Min (minimum_size.Width, maximum_size.Width), Math.Min (minimum_size.Height, maximum_size.Height));
+
+                    window.SetMinMaxSize (minimum_size.ToAvaloniaSize (), maximum_size.ToAvaloniaSize ());
+
+                    // Keep form size within new limits
+                    var size = Size;
+                    if (!value.IsEmpty && (size.Width > value.Width || size.Height > value.Height))
+                        Size = new System.Drawing.Size (Math.Min (size.Width, value.Width), Math.Min (size.Height, value.Height));
+
+                    OnMaximumSizeChanged (EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the minimum size of the Window
+        /// </summary>
+        public System.Drawing.Size MinimumSize {
+            get => minimum_size;
+            set {
+                if (minimum_size != value) {
+                    minimum_size = value;
+                    window.SetMinMaxSize (minimum_size.ToAvaloniaSize (), maximum_size.ToAvaloniaSize ());
+
+                    // Don't let MaximumSize be smaller than MinimumSize
+                    if (!minimum_size.IsEmpty && !maximum_size.IsEmpty)
+                        maximum_size = new System.Drawing.Size (Math.Max (minimum_size.Width, maximum_size.Width), Math.Max (minimum_size.Height, maximum_size.Height));
+
+                    // Keep form size within new limits
+                    var size = Size;
+                    if (size.Width < value.Width || size.Height < value.Height)
+                        Size = new System.Drawing.Size (Math.Max (size.Width, value.Width), Math.Max (size.Height, value.Height));
+
+                    OnMinimumSizeChanged (EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Raised when the MaximumSize property is changed.
+        /// </summary>
+        public event EventHandler MaximumSizeChanged;
+
+        /// <summary>
+        /// Raised when the MinimumSize property is changed.
+        /// </summary>
+        public event EventHandler MinimumSizeChanged;
+
         private void OnInput (RawInputEventArgs e)
         {
             if (e is RawPointerEventArgs me) {
@@ -360,6 +432,22 @@ namespace Modern.Forms
 
             adapter.RaisePaintBackground (e);
             adapter.RaisePaint (e);
+        }
+
+        /// <summary>
+        /// Raises the MaximumSizeChanged event.
+        /// </summary>
+        protected virtual void OnMaximumSizeChanged (EventArgs e)
+        {
+            MaximumSizeChanged?.Invoke (this, e);
+        }
+
+        /// <summary>
+        /// Raises the MinimumSizeChanged event.
+        /// </summary>
+        protected virtual void OnMinimumSizeChanged (EventArgs e)
+        {
+            MinimumSizeChanged?.Invoke (this, e);
         }
 
         /// <summary>
