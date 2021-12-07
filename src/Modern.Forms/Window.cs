@@ -320,12 +320,12 @@ namespace Modern.Forms
         /// <summary>
         /// Raised when the MaximumSize property is changed.
         /// </summary>
-        public event EventHandler MaximumSizeChanged;
+        public event EventHandler? MaximumSizeChanged;
 
         /// <summary>
         /// Raised when the MinimumSize property is changed.
         /// </summary>
-        public event EventHandler MinimumSizeChanged;
+        public event EventHandler? MinimumSizeChanged;
 
         private void OnInput (RawInputEventArgs e)
         {

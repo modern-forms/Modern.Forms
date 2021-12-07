@@ -642,7 +642,7 @@ namespace Modern.Forms
         /// <summary>
         /// Raised when the Control is invalidated.
         /// </summary>
-        public event EventHandler<EventArgs<Rectangle>> Invalidated;
+        public event EventHandler<EventArgs<Rectangle>>? Invalidated;
 
         /// <summary>
         /// Is the mouse currently over the control.
@@ -1790,8 +1790,10 @@ namespace Modern.Forms
         /// <summary>
         /// Disposes unmanaged resources used by the control.
         /// </summary>
-        protected virtual void Dispose (bool disposing)
+        protected override void Dispose (bool disposing)
         {
+            base.Dispose (disposing);
+
             if (!disposedValue) {
                 FreeBackBuffer ();
 
@@ -1808,15 +1810,6 @@ namespace Modern.Forms
         ~Control ()
         {
             Dispose (false);
-        }
-
-        /// <summary>
-        /// Disposes unmanaged resources used by the control. This code added to correctly implement the disposable pattern.
-        /// </summary>
-        public void Dispose ()
-        {
-            Dispose (true);
-            GC.SuppressFinalize (this);
         }
         #endregion
     }
