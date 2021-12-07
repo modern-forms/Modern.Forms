@@ -21,6 +21,22 @@ namespace ControlGallery.Panels
             
             var padded = Controls.Add (new TextBox { Text = "With Padding", Left = 200, Top = 10, Width = 150, Padding = new Padding (5) });
             padded.Style.ForegroundColor = SKColors.Red;
+
+            Controls.Add (new Adorner { Left = 304, Top = 196, Width = 10, Height = 10 });
+        }
+
+        public class Adorner : Control
+        {
+            public Adorner ()
+            {
+                SetControlBehavior (ControlBehaviors.Transparent);
+                SetControlBehavior (ControlBehaviors.Selectable, false);
+            }
+
+            protected override void OnPaint (PaintEventArgs e)
+            {
+                e.Canvas.FillCircle (Width / 2, Height / 2, Width / 2, SKColors.Red);
+            }
         }
     }
 }

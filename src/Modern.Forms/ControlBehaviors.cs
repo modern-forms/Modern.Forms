@@ -12,13 +12,20 @@ namespace Modern.Forms
         /// The control should be redrawn when the mouse is over it.
         /// </summary>
         Hoverable = 1,
+
         /// <summary>
         /// The control should be redrawn when the Text property changes.
         /// </summary>
         InvalidateOnTextChanged = 2,
+
         /// <summary>
         /// The control can receive focus.
         /// </summary>
-        Selectable = 4
+        Selectable = 4,
+
+        /// <summary>
+        /// The control's background is transparent.
+        /// </summary>
+        Transparent = 8
     }
 }

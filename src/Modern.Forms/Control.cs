@@ -950,6 +950,12 @@ namespace Modern.Forms
             if (this is ControlAdapter)
                 return;
 
+            // Transparent controls should not draw a background or border
+            if (behaviors.HasFlag (ControlBehaviors.Transparent)) {
+                e.Canvas.Clear ();
+                return;
+            }
+
             e.Canvas.DrawBackground (CurrentStyle);
             e.Canvas.DrawBorder (ScaledBounds, CurrentStyle);
         }
