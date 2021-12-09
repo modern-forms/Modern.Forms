@@ -11,7 +11,7 @@ namespace ControlGallery.Panels
             Controls.Add (new TextBox { Text = "Option 1", Left = 10, Top = 10, Width = 150, Placeholder = "Type Here" });
             Controls.Add (new TextBox { Left = 10, Top = 50, Width = 150, Placeholder = "Type Here" });
             Controls.Add (new TextBox { Left = 10, Top = 90, Width = 150, Text = "Read Only", ReadOnly = true });
-            Controls.Add (new TextBox { Left = 10, Top = 130, Width = 300, Height = 56, Text = "Not\nMultiline" });
+            Controls.Add (new TextBox { Left = 10, Top = 130, Width = 300, Height = 56, Text = "Not\nMultiline" }).Style.Border.Radius = 3;
             
             var multi = Controls.Add (new TextBox { Left = 10, Top = 200, Width = 300, Height = 100, Text = "The quick brown fox\njumped over the lazy\ndogs.", MultiLine = true });
             multi.Style.FontSize = 16;

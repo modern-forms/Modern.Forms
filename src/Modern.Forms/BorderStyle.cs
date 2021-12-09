@@ -9,8 +9,8 @@ namespace Modern.Forms
     {
         private readonly BorderStyle? _parent;
 
-        private SKColor color;
-        private int width;
+        private SKColor? color;
+        private int? width;
 
         /// <summary>
         /// Initializes a new instance of the BorderStyle class.
@@ -33,7 +33,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the color of all sides of the border.
         /// </summary>
-        public SKColor Color {
+        public SKColor? Color {
             get => color;
             set {
                 color = value;
@@ -44,14 +44,30 @@ namespace Modern.Forms
             }
         }
 
-        //public int GetRadius () => Radius ?? _parent?.GetRadius () ?? 0;
+        /// <summary>
+        /// Gets the computed radius for all border corners.
+        /// </summary>
+        public SKColor GetColor () => Color ?? _parent?.GetColor () ?? SKColor.Empty;
+
+        /// <summary>
+        /// Gets the computed radius for all border corners.
+        /// </summary>
+        public int GetRadius () => Radius ?? _parent?.GetRadius () ?? 0;
+
+        /// <summary>
+        /// Gets the computed width for all border.
+        /// </summary>
+        public int GetWidth () => Width ?? _parent?.GetWidth () ?? 0;
 
         /// <summary>
         /// Gets the styles for the left border.
         /// </summary>
         public BorderSideStyle Left { get; }
 
-        //public int? Radius { get; set; }
+        /// <summary>
+        /// Gets or sets the radius for all border corners.
+        /// </summary>
+        public int? Radius { get; set; }
 
         /// <summary>
         /// Gets the styles for the right border.
@@ -66,7 +82,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the width of all sides of the border.
         /// </summary>
-        public int Width {
+        public int? Width {
             get => width;
             set {
                 width = value;

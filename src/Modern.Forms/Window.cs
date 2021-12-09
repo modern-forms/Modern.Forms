@@ -463,7 +463,7 @@ namespace Modern.Forms
         /// </summary>
         protected virtual void OnPaintBackground (PaintEventArgs e)
         {
-            e.Canvas.DrawBackground (CurrentStyle);
+            e.Canvas.DrawBackground (Bounds, CurrentStyle);
         }
 
         private void OnResize (Size size)

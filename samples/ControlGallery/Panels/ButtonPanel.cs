@@ -43,13 +43,13 @@ namespace ControlGallery.Panels
             b3.Style.BackgroundColor = new SKColor (243, 246, 248);
             b3.Style.Border.Color = new SKColor (204, 206, 208);
             b3.Style.ForegroundColor = new SKColor (36, 41, 46);
-            //b3.Style.Border.Radius = 3;
+            b3.Style.Border.Radius = 3;
             b3.Style.Border.Width = 1;
 
             b3.StyleHover.BackgroundColor = new SKColor (230, 235, 241);
             b3.StyleHover.Border.Color = new SKColor (165, 168, 172);
             b3.StyleHover.ForegroundColor = new SKColor (36, 41, 46);
-            //b3.StyleHover.Border.Radius = 3;
+            b3.StyleHover.Border.Radius = 3;
 
             Controls.Add (b3);
 
@@ -62,13 +62,13 @@ namespace ControlGallery.Panels
             b4.Style.BackgroundColor = new SKColor (40, 167, 69);
             b4.Style.Border.Color = new SKColor (46, 172, 77);
             b4.Style.ForegroundColor = new SKColor (255, 255, 255);
-            //b4.Style.Border.Radius = 3;
+            b4.Style.Border.Radius = 3;
             b4.Style.Border.Width = 1;
 
             b4.StyleHover.BackgroundColor = new SKColor (38, 159, 66);
             b4.StyleHover.Border.Color = new SKColor (36, 115, 58);
             b4.StyleHover.ForegroundColor = new SKColor (255, 255, 255);
-            //b4.StyleHover.Border.Radius = 3;
+            b4.StyleHover.Border.Radius = 3;
 
             Controls.Add (b4);
 

@@ -26,8 +26,18 @@ namespace Modern.Forms
         /// <summary>
         /// Draws a control's background.
         /// </summary>
-        public static void DrawBackground (this SKCanvas canvas, ControlStyle style) =>
+        public static void DrawBackground (this SKCanvas canvas, Rectangle bounds, ControlStyle style)
+        {
+            var radius = style.Border.GetRadius ();
+
+            if (radius > 0) {
+                canvas.Clear (SKColors.Transparent);
+                canvas.FillRoundedRectangle (0, 0, bounds.Width - style.Border.GetWidth (), bounds.Height - style.Border.GetWidth (), style.GetBackgroundColor (), radius, radius, style.Border.GetWidth ());
+                return;
+            }
+
             canvas.Clear (style.GetBackgroundColor ());
+        }
 
         /// <summary>
         /// Draws a bitmap.
@@ -60,6 +70,14 @@ namespace Modern.Forms
         /// </summary>
         public static void DrawBorder (this SKCanvas canvas, Rectangle bounds, ControlStyle style)
         {
+            // If using border radius, currently all border sides are drawn, and all are the same color
+            var radius = style.Border.GetRadius ();
+
+            if (radius > 0) {
+                canvas.DrawRoundedRectangle (0, 0, bounds.Width - style.Border.GetWidth (), bounds.Height - style.Border.GetWidth (), style.Border.GetColor (), radius, radius, style.Border.GetWidth ());
+                return;
+            }
+
             // Left Border
             if (style.Border.Left.GetWidth () > 0) {
                 var left_offset = style.Border.Left.GetWidth () / 2f;
@@ -83,13 +101,6 @@ namespace Modern.Forms
                 var bottom_offset = style.Border.Bottom.GetWidth () / 2f;
                 canvas.DrawLine (0, bounds.Height - bottom_offset, bounds.Width, bounds.Height - bottom_offset, style.Border.Bottom.GetColor (), style.Border.Bottom.GetWidth ());
             }
-
-            //if (CurrentStyle.BorderRadius > 0) { }
-            ////canvas.DrawRoundedRectangle (1, 1, Width - (CurrentStyle.BorderWidth * 2), Height - (CurrentStyle.BorderWidth * 2), CurrentStyle.BorderColor, CurrentStyle.BorderRadius, CurrentStyle.BorderRadius, .5f);
-            //else {
-            //    //canvas.DrawRectangle (0, 0, Width - CurrentStyle.BorderWidth, Height - CurrentStyle.BorderWidth, CurrentStyle.BorderColor, CurrentStyle.BorderWidth);
-            //    canvas.DrawBorder (Bounds, CurrentStyle);
-            //}
         }
 
         /// <summary>
@@ -149,23 +160,20 @@ namespace Modern.Forms
         public static void DrawRectangle (this SKCanvas canvas, Rectangle rectangle, SKColor color, int strokeWidth = 1)
             => DrawRectangle (canvas, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, color, strokeWidth);
 
-        //public static void DrawRoundedRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int rx = 3, int ry = 3, float strokeWidth = 1)
-        //{
-        //    using var paint = new SKPaint {
-        //        Color = color,
-        //        IsStroke = true,
-        //        IsAntialias = true,
-        //        LcdRenderText = true,
-        //        StrokeWidth = 1f,
-        //        SubpixelText = true,
-        //        DeviceKerningEnabled = true,
-        //        FilterQuality = SKFilterQuality.High,
-        //        HintingLevel = SKPaintHinting.Full,
-        //        IsAutohinted = true,
-        //        TextAlign = SKTextAlign.Center
-        //    };
-        //    canvas.DrawRoundRect (x + .5f, y + .5f, width, height, rx, ry, paint);
-        //}
+        /// <summary>
+        /// Draws an unfilled rectangle with rounded corners.
+        /// </summary>
+        public static void DrawRoundedRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int rx = 3, int ry = 3, float strokeWidth = 1)
+        {
+            using var paint = new SKPaint {
+                Color = color,
+                IsStroke = true,
+                IsAntialias = true,
+                StrokeWidth = strokeWidth
+            };
+
+            canvas.DrawRoundRect (x + .5f, y + .5f, width, height, rx, ry, paint);
+        }
 
         /// <summary>
         /// Draws a filled circle.
@@ -191,6 +199,22 @@ namespace Modern.Forms
             using var paint = new SKPaint { Color = color };
 
             canvas.DrawRect (x, y, width, height, paint);
+        }
+
+        /// <summary>
+        /// Draws a filled rectangle with rounded corners.
+        /// </summary>
+        public static void FillRoundedRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int rx = 3, int ry = 3, float strokeWidth = 1)
+        {
+            using var paint = new SKPaint {
+                Color = color,
+                IsStroke = false,
+                IsAntialias = true,
+                StrokeWidth = strokeWidth
+            };
+            var r = new SKRoundRect ();
+
+            canvas.DrawRoundRect (x + .5f, y + .5f, width, height, rx, ry, paint);
         }
 
         /// <summary>
