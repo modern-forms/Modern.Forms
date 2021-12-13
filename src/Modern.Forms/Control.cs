@@ -47,7 +47,7 @@ namespace Modern.Forms
 
             bounds = new Rectangle (Point.Empty, DefaultSize);
 
-            behaviors = ControlBehaviors.Selectable;
+            behaviors = ControlBehaviors.Selectable | ControlBehaviors.ReceivesMouseEvents;
 
             Cursor = DefaultCursor;
 
@@ -401,6 +401,11 @@ namespace Modern.Forms
             return back_buffer;
         }
 
+        /// <summary>
+        /// Gets behavior flag value.
+        /// </summary>
+        protected internal bool GetControlBehavior (ControlBehaviors behavior) => behaviors.HasFlag (behavior);
+
         internal virtual Control? GetFirstChildControlInTabOrder (bool forward, bool includeImplicit)
         {
             Control? found = null;
@@ -647,7 +652,7 @@ namespace Modern.Forms
         /// <summary>
         /// Is the mouse currently over the control.
         /// </summary>
-        private bool IsHovering { get; set; }
+        public bool IsHovering { get; private set; }
 
         /// <summary>
         /// Raised when the user presses down a key.
@@ -1154,7 +1159,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.GetControlBehavior (ControlBehaviors.ReceivesMouseEvents) && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseClick (TranslateMouseEvents (e, child));
@@ -1175,7 +1180,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.GetControlBehavior (ControlBehaviors.ReceivesMouseEvents) && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseDoubleClick (TranslateMouseEvents (e, child));
@@ -1226,7 +1231,7 @@ namespace Modern.Forms
         /// </summary>
         internal void RaiseMouseDown (MouseEventArgs e)
         {
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.GetControlBehavior (ControlBehaviors.ReceivesMouseEvents) && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseDown (TranslateMouseEvents (e, child));
@@ -1262,7 +1267,7 @@ namespace Modern.Forms
         /// </summary>
         internal void RaiseMouseEnter (MouseEventArgs e)
         {
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.GetControlBehavior (ControlBehaviors.ReceivesMouseEvents) && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseEnter (TranslateMouseEvents (e, child));
@@ -1297,7 +1302,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.GetControlBehavior (ControlBehaviors.ReceivesMouseEvents) && c.ScaledBounds.Contains (e.Location));
 
             if (current_mouse_in != null && current_mouse_in != child) {
                 current_mouse_in.RaiseMouseLeave (e);
@@ -1333,7 +1338,7 @@ namespace Modern.Forms
                 return;
             }
 
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.GetControlBehavior (ControlBehaviors.ReceivesMouseEvents) && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseUp (TranslateMouseEvents (e, child));
@@ -1350,7 +1355,7 @@ namespace Modern.Forms
         /// </summary>
         internal void RaiseMouseWheel (MouseEventArgs e)
         {
-            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.ScaledBounds.Contains (e.Location));
+            var child = Controls.GetAllControls ().LastOrDefault (c => c.Visible && c.GetControlBehavior (ControlBehaviors.ReceivesMouseEvents) && c.ScaledBounds.Contains (e.Location));
 
             if (child != null)
                 child.RaiseMouseWheel (TranslateMouseEvents (e, child));
@@ -1593,13 +1598,14 @@ namespace Modern.Forms
         /// <summary>
         /// Sets behavior flags.
         /// </summary>
-        protected void SetControlBehavior (ControlBehaviors behavior, bool value = true)
+        protected internal void SetControlBehavior (ControlBehaviors behavior, bool value = true)
         {
             if (value)
                 behaviors |= behavior;
             else
                 behaviors &= ~behavior;
         }
+
         /// <summary>
         /// Used to break a StackOverflow circular reference
         /// </summary>

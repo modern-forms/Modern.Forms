@@ -26,6 +26,12 @@ namespace Modern.Forms
         /// <summary>
         /// The control's background is transparent.
         /// </summary>
-        Transparent = 8
+        Transparent = 8,
+
+        /// <summary>
+        /// The control receives mouse events. If not, mouse events will go
+        /// to control(s) behind it.
+        /// </summary>
+        ReceivesMouseEvents = 16
     }
 }
