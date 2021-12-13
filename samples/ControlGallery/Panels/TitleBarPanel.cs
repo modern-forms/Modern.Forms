@@ -9,11 +9,17 @@ namespace ControlGallery.Panels
     {
         public TitleBarPanel ()
         {
-            var titlebar = new FormTitleBar {
-                Text = "Test Text!"
-            };
+            var titlebar = Controls.Add (new FormTitleBar {
+                Text = "Test Text!",
+                 Image = ImageLoader.Get ("swatches.png")
+            });
 
-            Controls.Add (titlebar);
+            titlebar.Controls.Add (
+                new TextBox {
+                    Placeholder = "Search",
+                    Dock = DockStyle.Left
+                }
+            );
         }
     }
 }

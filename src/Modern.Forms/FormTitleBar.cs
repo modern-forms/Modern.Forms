@@ -10,7 +10,12 @@ namespace Modern.Forms
     /// </summary>
     public class FormTitleBar : Control
     {
-        private SKBitmap? image;
+        private readonly TitleBarButton minimize_button;
+        private readonly TitleBarButton maximize_button;
+        private readonly TitleBarButton close_button;
+        private readonly PictureBox form_image;
+        
+        private bool show_image = true;
 
         /// <summary>
         /// Initializes a new instance of the FormTitleBar class.
@@ -21,17 +26,58 @@ namespace Modern.Forms
 
             SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
             SetControlBehavior (ControlBehaviors.Selectable, false);
+
+            minimize_button = Controls.AddImplicitControl (new TitleBarButton (TitleBarButton.TitleBarButtonGlyph.Minimize));
+            minimize_button.Click += (o, e) => {
+                var form_min = FindForm ();
+
+                if (form_min != null)
+                    form_min.WindowState = FormWindowState.Minimized;
+            };
+
+            maximize_button = Controls.AddImplicitControl (new TitleBarButton (TitleBarButton.TitleBarButtonGlyph.Maximize));
+            maximize_button.Click += (o, e) => {
+                var form = FindForm ();
+
+                if (form != null)
+                    form.WindowState = form.WindowState == FormWindowState.Maximized ? FormWindowState.Normal : FormWindowState.Maximized;
+            };
+
+            close_button = Controls.AddImplicitControl (new TitleBarButton (TitleBarButton.TitleBarButtonGlyph.Close));
+            close_button.Click += (o, e) => { FindForm ()?.Close (); };
+
+            form_image = Controls.AddImplicitControl (new PictureBox {
+                Width = DefaultSize.Height,
+                Dock = DockStyle.Left,
+                Visible = false,
+                SizeMode = PictureBoxSizeMode.CenterImage
+            });
+
+            form_image.Style.BackgroundColor = SKColors.Transparent;
+            form_image.SetControlBehavior (ControlBehaviors.ReceivesMouseEvents, false);
         }
 
         /// <summary>
         /// Gets or sets whenther the Maximize button is shown.
         /// </summary>
-        public bool AllowMaximize { get; set; } = true;
+        public bool AllowMaximize {
+            get => maximize_button.Visible;
+            set {
+                maximize_button.Visible = value;
+                Invalidate (); // TODO: Shouldn't be necessary, should automatically be triggered
+            }
+        }
 
         /// <summary>
         /// Gets or sets whether the Minimize button is shown.
         /// </summary>
-        public bool AllowMinimize { get; set; } = true;
+        public bool AllowMinimize {
+            get => minimize_button.Visible;
+            set {
+                minimize_button.Visible = value;
+                Invalidate (); // TODO: Shouldn't be necessary, should automatically be triggered
+            }
+        }
 
         /// <inheritdoc/>
         protected override Size DefaultSize => new Size (600, 34);
@@ -41,68 +87,17 @@ namespace Modern.Forms
            (style) => style.BackgroundColor = Theme.PrimaryColor);
 
         /// <summary>
-        /// Gets the element at the specified location.
-        /// </summary>
-        public FormTitleBarElement GetElementAtLocation (Point location)
-        {
-            var renderer = RenderManager.GetRenderer<FormTitleBarRenderer> ()!;
-
-            if (renderer.GetCloseButtonBounds (this).Contains (location))
-                return FormTitleBarElement.Close;
-            if (Image != null && renderer.GetIconBounds (this).Contains (location))
-                return FormTitleBarElement.Icon;
-            if (AllowMaximize && renderer.GetMaximizeButtonBounds (this).Contains (location))
-                return FormTitleBarElement.Maximize;
-            if (AllowMinimize && renderer.GetMinimizeButtonBounds (this).Contains (location))
-                return FormTitleBarElement.Minimize;
-
-            return FormTitleBarElement.Title;
-        }
-
-        /// <summary>
-        /// The element the mouse pointer is currently hovering over, if any.
-        /// </summary>
-        public FormTitleBarElement HoverElement { get; private set; }
-
-        /// <summary>
         /// Gets or sets the image used as the upper-left icon of the titlebar.
         /// </summary>
         public SKBitmap? Image {
-            get => image;
+            get => form_image.Image;
             set {
-                if (image != value) {
-                    image = value;
+                if (form_image.Image != value) {
+                    form_image.Image = value;
+
+                    form_image.Visible = form_image.Image is not null && show_image;
                     Invalidate ();
                 }
-            }
-        }
-
-        /// <inheritdoc/>
-        protected override void OnClick (MouseEventArgs e)
-        {
-            base.OnClick (e);
-
-            switch (GetElementAtLocation (e.Location)) {
-                case FormTitleBarElement.Maximize:
-                    var form_max = FindForm ();
-
-                    if (form_max != null)
-                        form_max.WindowState = form_max.WindowState == FormWindowState.Maximized ? FormWindowState.Normal : FormWindowState.Maximized;
-
-                    break;
-                case FormTitleBarElement.Minimize:
-                    var form_min = FindForm ();
-
-                    if (form_min != null)
-                        form_min.WindowState = FormWindowState.Minimized;
-
-                    break;
-                case FormTitleBarElement.Close:
-                    FindForm ()?.Close ();
-
-                    break;
-                default:
-                    break;
             }
         }
 
@@ -111,27 +106,9 @@ namespace Modern.Forms
         {
             base.OnMouseDown (e);
 
-            if (GetElementAtLocation (e.Location).In (FormTitleBarElement.Title, FormTitleBarElement.Icon)) {
-                // We won't get a MouseUp from the system for this, so don't capture the mouse
-                Capture = false;
-                FindForm ()?.BeginMoveDrag ();
-            }
-        }
-
-        /// <inheritdoc/>
-        protected override void OnMouseLeave (EventArgs e)
-        {
-            base.OnMouseLeave (e);
-
-            SetHover (FormTitleBarElement.None);
-        }
-
-        /// <inheritdoc/>
-        protected override void OnMouseMove (MouseEventArgs e)
-        {
-            base.OnMouseMove (e);
-
-            SetHover (GetElementAtLocation (e.Location));
+            // We won't get a MouseUp from the system for this, so don't capture the mouse
+            Capture = false;
+            FindForm ()?.BeginMoveDrag ();
         }
 
         /// <inheritdoc/>
@@ -142,57 +119,79 @@ namespace Modern.Forms
             RenderManager.Render (this, e);
         }
 
-        // Update the element that the mouse is currently hovered over
-        private void SetHover (FormTitleBarElement element)
+        /// <inheritdoc/>
+        protected override void OnSizeChanged (EventArgs e)
         {
-            if (element.In (FormTitleBarElement.Icon, FormTitleBarElement.Title))
-                element = FormTitleBarElement.None;
+            base.OnSizeChanged (e);
 
-            if (HoverElement == element)
-                return;
+            // Keep our form image a square
+            form_image.Width = Height;
+        }
 
-            HoverElement = element;
-
-            Invalidate ();
+        /// <summary>
+        /// Specifies whether the Form's Image should be shown in the left corner.
+        /// </summary>
+        public bool ShowImage {
+            get => show_image;
+            set {
+                if (show_image != value) {
+                    show_image = value;
+                    form_image.Visible = value && form_image is not null;
+                    Invalidate (); // TODO: Shouldn't be required
+                }
+            }
         }
 
         /// <inheritdoc/>
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        /// <summary>
-        /// Elements of a FormTitleBar.
-        /// </summary>
-        public enum FormTitleBarElement
+        internal class TitleBarButton : Button
         {
-            /// <summary>
-            /// No element. Not used.
-            /// </summary>
-            None,
+            protected const int BUTTON_PADDING = 10;
 
-            /// <summary>
-            /// The title portion of the titlebar. Basically anything that isn't another element.
-            /// </summary>
-            Title,
+            private TitleBarButtonGlyph glyph;
 
-            /// <summary>
-            /// The icon of the titlebar.
-            /// </summary>
-            Icon,
+            public TitleBarButton (TitleBarButtonGlyph glyph)
+            {
+                this.glyph = glyph;
+                Width = 46;
+                Dock = DockStyle.Right;
 
-            /// <summary>
-            /// The maximize button of the titlebar.
-            /// </summary>
-            Maximize,
+                Style.BackgroundColor = SKColors.Transparent;
+                Style.Border.Width = 0;
+                StyleHover.Border.Width = 0;
+            }
 
-            /// <summary>
-            /// The minimize button of the titlebar.
-            /// </summary>
-            Minimize,
+            protected override void OnPaint (PaintEventArgs e)
+            {
+                base.OnPaint (e);
 
-            /// <summary>
-            /// The close button of the titlebar.
-            /// </summary>
-            Close
+                if (IsHovering)
+                    e.Canvas.Clear (glyph == TitleBarButtonGlyph.Close ? Theme.FormCloseHighlightColor : Theme.HighlightColor);
+
+                var glyph_bounds = glyph == TitleBarButtonGlyph.Minimize ?
+                    DrawingExtensions.CenterRectangle (DisplayRectangle, e.LogicalToDeviceUnits (new Size (BUTTON_PADDING, 1))) :
+                    DrawingExtensions.CenterSquare (DisplayRectangle, e.LogicalToDeviceUnits (BUTTON_PADDING));
+
+                switch (glyph) {
+                    case TitleBarButtonGlyph.Close:
+                        ControlPaint.DrawCloseGlyph (e, glyph_bounds);
+                        break;
+                    case TitleBarButtonGlyph.Minimize:
+                        ControlPaint.DrawMinimizeGlyph (e, glyph_bounds);
+                        break;
+                    case TitleBarButtonGlyph.Maximize:
+                        ControlPaint.DrawMaximizeGlyph (e, glyph_bounds);
+                        break;
+                }
+            }
+
+            public enum TitleBarButtonGlyph
+            {
+                Close,
+                Minimize,
+                Maximize
+            }
         }
     }
 }
