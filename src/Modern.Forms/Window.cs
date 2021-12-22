@@ -466,7 +466,7 @@ namespace Modern.Forms
             e.Canvas.DrawBackground (Bounds, CurrentStyle);
         }
 
-        private void OnResize (Size size)
+        private void OnResize (Size size, PlatformResizeReason reason)
         {
             adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, ScaledSize.Width, ScaledSize.Height);
         }
@@ -566,7 +566,7 @@ namespace Modern.Forms
             OnVisibleChanged (EventArgs.Empty);
 
             SetWindowStartupLocation ();
-            window.Show ();
+            window.Show (true, false);
 
             if (!shown) {
                 shown = true;

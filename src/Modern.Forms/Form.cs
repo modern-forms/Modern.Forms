@@ -26,6 +26,7 @@ namespace Modern.Forms
 
             Resizeable = true;
             Window.SetSystemDecorations (SystemDecorations.None);
+            Window.SetExtendClientAreaToDecorationsHint (true);
 
             Window.Closing = () => {
                 var args = new CancelEventArgs ();
@@ -152,6 +153,7 @@ namespace Modern.Forms
                     TitleBar.Visible = !use_system_decorations;
                     Style.Border.Width = use_system_decorations ? 0 : 1;
                     Window.SetSystemDecorations (value ? SystemDecorations.Full : SystemDecorations.None);
+                    Window.SetExtendClientAreaToDecorationsHint (!value);
                 }
             }
         }
