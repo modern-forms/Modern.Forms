@@ -29,7 +29,7 @@ Ensure the following properties are set:
 ```
 <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
 </PropertyGroup>
 ```
@@ -37,7 +37,7 @@ Ensure the following properties are set:
 Add a NuGet reference to `Modern.Forms`:
 ```
 <ItemGroup>
-    <PackageReference Include="Modern.Forms" Version="0.1.0" />
+    <PackageReference Include="Modern.Forms" Version="0.2.0" />
 </ItemGroup>
 ```
 

@@ -2,7 +2,7 @@
 
 *** **This framework is currently in its early stages. It is not intended for production use.** ***
 
-Modern.Forms is a cross-platform spiritual successor to Winforms for .NET Core 3.1+, supporting Windows, Mac, and Linux.
+Modern.Forms is a cross-platform spiritual successor to Winforms for .NET 6, supporting Windows, Mac, and Linux.
 
 **This is accomplished with:**
 
@@ -31,7 +31,7 @@ The goal is to create a spiritual successor to Winforms that is:
 The quickest way to see Modern.Forms in action is through our `ModernDecompiler` sample application, 
 which allows you to decompile .NET assemblies. ([Source Code](https://github.com/modern-forms/ModernDecompile))
 
-From a Windows, Mac, or Linux command line with .NET Core 3.1+ installed:
+From a Windows, Mac, or Linux command line with .NET 6 installed:
 ```
 dotnet tool install --global ModernDecompile
 decompile
@@ -56,4 +56,4 @@ To create your own Modern.Forms application, see [Getting Started](docs/getting-
 
 ## Build Status
 
-![.NET Core](https://github.com/modern-forms/Modern.Forms/workflows/.NET%20Core/badge.svg)
+![.NET Build](https://github.com/modern-forms/Modern.Forms/workflows/.NET%20Core/badge.svg)

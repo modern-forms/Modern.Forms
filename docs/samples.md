@@ -7,7 +7,7 @@
 #### Windows
 
 * Clone this repository
-* Install .NET Core 3.1+
+* Install .NET 6
   * https://dotnet.microsoft.com/download/dotnet-core
 * Open `Modern.Forms.sln` in Visual Studio 2019
 * Ensure `Explore` is set as the Startup project
@@ -18,7 +18,7 @@
 #### Ubuntu 19.04 AMD64
 
 * Clone this repository
-* Install .NET Core 3.1+
+* Install .NET 6
   * https://dotnet.microsoft.com/download/dotnet-core
 * Navigate to `samples/Explorer`
 * Run `dotnet run`
@@ -28,7 +28,7 @@
 #### Mac OSX
 
 * Clone this repository
-* Install .NET Core 3.1+
+* Install .NET 6
   * https://dotnet.microsoft.com/download/dotnet-core
 * Navigate to `samples/Explorer`
 * Run `dotnet run`
