@@ -281,7 +281,7 @@ namespace Modern.Forms
                     if (!minimum_size.IsEmpty && !maximum_size.IsEmpty)
                         minimum_size = new System.Drawing.Size (Math.Min (minimum_size.Width, maximum_size.Width), Math.Min (minimum_size.Height, maximum_size.Height));
 
-                    //window.SetMinMaxSize (minimum_size.ToAvaloniaSize (), maximum_size.ToAvaloniaSize ());
+                    window.SetMinMaxSize (minimum_size.ToAvaloniaSize (), maximum_size.ToAvaloniaSize ());
 
                     // Keep form size within new limits
                     var size = Size;
@@ -301,7 +301,7 @@ namespace Modern.Forms
             set {
                 if (minimum_size != value) {
                     minimum_size = value;
-                    //window.SetMinMaxSize (minimum_size.ToAvaloniaSize (), maximum_size.ToAvaloniaSize ());
+                    window.SetMinMaxSize (minimum_size.ToAvaloniaSize (), maximum_size.ToAvaloniaSize ());
 
                     // Don't let MaximumSize be smaller than MinimumSize
                     if (!minimum_size.IsEmpty && !maximum_size.IsEmpty)
