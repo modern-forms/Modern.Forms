@@ -19,7 +19,7 @@ namespace ControlGallery.Panels
             };
 
             foreach (var drive in DriveInfo.GetDrives ().Where (d => d.IsReady)) {
-                var tvi = CreateDirectoryNode (drive.Name);
+                var tvi = CreateDirectoryNode (drive.Name, 1);
 
                 tvi.Text = $"{drive.Name.Trim ('\\')} - {drive.VolumeLabel}";
                 tvi.Image = ImageLoader.Get ("drive.png");
@@ -64,13 +64,16 @@ namespace ControlGallery.Panels
             virtual_mode.CheckedChanged += (o, e) => tree.VirtualMode = virtual_mode.Checked;
         }
 
-        private TreeViewItem CreateDirectoryNode (string path)
+        private TreeViewItem CreateDirectoryNode (string path, int level)
         {
             var tvi = new TreeViewItem (Path.GetFileName (path)) { Image = ImageLoader.Get ("folder.png") };
 
+            if (level > 3)
+                return tvi;
+
             try {
                 foreach (var dir in Directory.EnumerateDirectories (path).Take (max_dirs))
-                    tvi.Items.Add (CreateDirectoryNode (dir));
+                    tvi.Items.Add (CreateDirectoryNode (dir, level + 1));
             } catch (Exception) {
 
             }
