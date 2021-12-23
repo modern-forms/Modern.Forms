@@ -31,7 +31,7 @@ namespace Modern.Forms
 
             FileNames.Clear ();
 
-            if (file != null)
+            if (file is not null)
                 FileNames.Add (file);
 
             return FileNames.Count > 0 ? DialogResult.OK : DialogResult.Cancel;
