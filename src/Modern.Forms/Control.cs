@@ -352,7 +352,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the Form that the control is parented to.
         /// </summary>
-        public Form? FindForm ()
+        public virtual Form? FindForm ()
         {
             if (this is ControlAdapter adapter && adapter.ParentForm is Form f)
                 return f;
@@ -799,7 +799,7 @@ namespace Modern.Forms
         protected virtual void OnClick (MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right && ContextMenu != null) {
-                ContextMenu.Show (PointToScreen (e.Location));
+                ContextMenu.Show (this, PointToScreen (e.Location));
                 return;
             }
 

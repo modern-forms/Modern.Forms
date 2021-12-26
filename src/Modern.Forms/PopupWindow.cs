@@ -13,7 +13,7 @@ namespace Modern.Forms
         /// <summary>
         /// Initializes a new instance of the PopupWindow class.
         /// </summary>
-        public PopupWindow (Form? parentForm) : base (AvaloniaGlobals.WindowingInterface.CreatePopup (parentForm?.window))
+        public PopupWindow (Form parentForm) : base (parentForm.window.CreatePopup ())
         {
             StartPosition = FormStartPosition.Manual;
 
