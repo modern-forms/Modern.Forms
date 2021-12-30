@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using Modern.Forms.Renderers;
+using Modern.WindowKit.Input.Platform;
 using Topten.RichTextKit;
 
 namespace Modern.Forms
@@ -39,7 +40,7 @@ namespace Modern.Forms
                 return;
 
             var text = document.SelectedText;
-            AsyncHelper.RunSync (() => Modern.WindowKit.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
+            AsyncHelper.RunSync (() => Modern.WindowKit.AvaloniaGlobals.GetRequiredService<IClipboard> ().SetTextAsync (text));
         }
 
         // The scaled height of the current font.
@@ -54,7 +55,7 @@ namespace Modern.Forms
                 return;
 
             var text = document.SelectedText;
-            AsyncHelper.RunSync (() => Modern.WindowKit.AvaloniaGlobals.ClipboardInterface.SetTextAsync (text));
+            AsyncHelper.RunSync (() => Modern.WindowKit.AvaloniaGlobals.GetRequiredService<IClipboard> ().SetTextAsync (text));
 
             document.DeleteSelection ();
         }
@@ -308,7 +309,7 @@ namespace Modern.Forms
             if (document.ReadOnly)
                 return;
 
-            var text = AsyncHelper.RunSync (() => Modern.WindowKit.AvaloniaGlobals.ClipboardInterface.GetTextAsync ());
+            var text = AsyncHelper.RunSync (() => Modern.WindowKit.AvaloniaGlobals.GetRequiredService<IClipboard> ().GetTextAsync ());
 
             if (!string.IsNullOrEmpty (text) && document.InsertText (text))
                     ScrollToCaret ();

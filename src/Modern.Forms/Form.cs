@@ -20,7 +20,7 @@ namespace Modern.Forms
         /// <summary>
         /// Initializes a new instance of the Form class.
         /// </summary>
-        public Form () : base (AvaloniaGlobals.WindowingInterface.CreateWindow ())
+        public Form () : base (AvaloniaGlobals.GetRequiredService<IWindowingPlatform> ().CreateWindow ())
         {
             TitleBar = Controls.AddImplicitControl (new FormTitleBar ());
 
