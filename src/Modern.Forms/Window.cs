@@ -418,7 +418,7 @@ namespace Modern.Forms
             var framebufferImageInfo = new SKImageInfo (framebuffer.Size.Width, framebuffer.Size.Height,
                 framebuffer.Format.ToSkColorType (), framebuffer.Format == PixelFormat.Rgb565 ? SKAlphaType.Opaque : SKAlphaType.Premul);
 
-            var scaled_client_size = window.ScaledClientSize;
+            var scaled_client_size = ScaledClientSize;
             var scaled_display_rect = ScaledDisplayRectangle;
 
             using var surface = SKSurface.Create (framebufferImageInfo, framebuffer.Address, framebuffer.RowBytes);
@@ -503,15 +503,17 @@ namespace Modern.Forms
         /// </summary>
         public bool Resizeable { get; set; }
 
+        private System.Drawing.Size ScaledClientSize => new System.Drawing.Size ((int)(window.ClientSize.Width * window.RenderScaling), (int)(window.ClientSize.Height * window.RenderScaling));
+
         /// <summary>
         /// Gets the scaled bounds of the form not including borders.
         /// </summary>
-        public System.Drawing.Rectangle ScaledDisplayRectangle => new System.Drawing.Rectangle (CurrentStyle.Border.Left.GetWidth (), CurrentStyle.Border.Top.GetWidth (), (int)window.ScaledClientSize.Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth (), (int)window.ScaledClientSize.Height - CurrentStyle.Border.Top.GetWidth () - CurrentStyle.Border.Bottom.GetWidth ());
+        public System.Drawing.Rectangle ScaledDisplayRectangle => new System.Drawing.Rectangle (CurrentStyle.Border.Left.GetWidth (), CurrentStyle.Border.Top.GetWidth (), (int)ScaledClientSize.Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth (), (int)ScaledClientSize.Height - CurrentStyle.Border.Top.GetWidth () - CurrentStyle.Border.Bottom.GetWidth ());
 
         /// <summary>
         /// Gets or sets the scaled size of the window.
         /// </summary>
-        public System.Drawing.Size ScaledSize => new System.Drawing.Size ((int)window.ScaledClientSize.Width, (int)window.ScaledClientSize.Height);
+        public System.Drawing.Size ScaledSize => new System.Drawing.Size ((int)ScaledClientSize.Width, (int)ScaledClientSize.Height);
 
         /// <summary>
         /// Gets the current scale factor of the window.
