@@ -17,7 +17,7 @@ namespace Modern.Forms
         /// Shows the dialog to the user.
         /// </summary>
         /// <param name="owner">The window that owns this dialog.</param>
-        public async Task<DialogResult> ShowDialog (Window owner)
+        public async Task<DialogResult> ShowDialog (Form owner)
         {
             var dialog = new Modern.WindowKit.Controls.OpenFolderDialog {
                 Directory = InitialDirectory,
