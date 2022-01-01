@@ -12,7 +12,7 @@ namespace Modern.Forms
     {
         private Control? selected_control;
 
-        public ControlAdapter (Window parent)
+        public ControlAdapter (WindowBase parent)
         {
             ParentForm = parent;
             SetControlBehavior (ControlBehaviors.Selectable, false);
@@ -29,7 +29,7 @@ namespace Modern.Forms
             }
         }
 
-        public Window ParentForm { get; }
+        public WindowBase ParentForm { get; }
 
         protected override void OnPaint (PaintEventArgs e)
         {

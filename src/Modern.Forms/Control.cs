@@ -363,9 +363,9 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the Window that the control is parented to. (Different from FindForm because it may return a PopupWindow.)
         /// </summary>
-        internal Window? FindWindow ()
+        internal WindowBase? FindWindow ()
         {
-            if (this is ControlAdapter adapter && adapter.ParentForm is Window w)
+            if (this is ControlAdapter adapter && adapter.ParentForm is WindowBase w)
                 return w;
 
             return Parent?.FindWindow ();

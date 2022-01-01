@@ -7,7 +7,7 @@ namespace Modern.Forms
     /// <summary>
     /// Represents a popup window used for things like ComboBoxes and context menus.
     /// </summary>
-    public class PopupWindow : Window
+    public class PopupWindow : WindowBase
     {
         private readonly Form parent_form;
 
@@ -66,6 +66,11 @@ namespace Modern.Forms
 
             Show (parent_form.PointToScreen (new Point (pos.X + x, pos.Y + y)));
         }
+
+        /// <summary>
+        /// Gets or sets the unscaled size of the window.
+        /// </summary>
+        public new Size Size { get; set; }
 
         /// <summary>
         /// Gets the ControlStyle properties for this instance of the Control.
