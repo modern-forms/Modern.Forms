@@ -566,6 +566,23 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Gets the position of the Control relative to the Form. (Differs from normal when
+        /// the Control is parented to other controls.
+        /// </summary>
+        internal Point GetPositionInForm ()
+        {
+            var p = Location;
+            var parent = Parent;
+
+            while (parent is not null && parent is not ControlAdapter) {
+                p.Offset (parent.Location.X, parent.Location.Y);
+                parent = parent.Parent;
+            }
+
+            return p;
+        }
+
+        /// <summary>
         /// Gets the size the control would prefer to be.
         /// </summary>
         /// <param name="proposedSize">A size the layout engine is proposing for the control.</param>

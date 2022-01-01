@@ -490,7 +490,16 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Converts a point from window coordinates to monitor coordinates.
+        /// Converts a point from screen coordinates to window coordinates.
+        /// </summary>
+        public System.Drawing.Point PointToClient (System.Drawing.Point point)
+        {
+            var pt = window.PointToClient (new PixelPoint (point.X, point.Y));
+            return new System.Drawing.Point ((int)pt.X, (int)pt.Y);
+        }
+
+        /// <summary>
+        /// Converts a point from window coordinates to screen coordinates.
         /// </summary>
         public System.Drawing.Point PointToScreen (System.Drawing.Point point)
         {

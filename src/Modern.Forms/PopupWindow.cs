@@ -1,5 +1,6 @@
-﻿using System;
-using Modern.WindowKit;
+﻿using System.Drawing;
+using Modern.WindowKit.Controls.Primitives.PopupPositioning;
+using Modern.WindowKit.Platform;
 
 namespace Modern.Forms
 {
@@ -8,7 +9,7 @@ namespace Modern.Forms
     /// </summary>
     public class PopupWindow : Window
     {
-        private readonly Form? parent_form;
+        private readonly Form parent_form;
 
         /// <summary>
         /// Initializes a new instance of the PopupWindow class.
@@ -18,18 +19,53 @@ namespace Modern.Forms
             StartPosition = FormStartPosition.Manual;
 
             parent_form = parentForm;
-
-            if (parent_form != null)
-                parent_form.Deactivated += (o, e) => Hide ();
+            parent_form.Deactivated += (o, e) => Hide ();
         }
 
         /// <inheritdoc/>
-        protected override System.Drawing.Size DefaultSize => new System.Drawing.Size (100, 100);
+        protected override Size DefaultSize => new Size (100, 100);
 
         /// <summary>
         /// Gets the default style for all controls of this type.
         /// </summary>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
+
+        private IPopupImpl PopupImpl => (IPopupImpl)window;
+
+        /// <summary>
+        /// Show the PopupWindow at the specified screen coordinates
+        /// </summary>
+        public void Show (int x, int y)
+        {
+            var point = parent_form.PointToClient (new Point (x, y));
+
+            var ppp = new PopupPositionerParameters {
+                AnchorRectangle = new WindowKit.Rect (point.X, point.Y, 1, 1),
+                Anchor = PopupAnchor.TopLeft,
+                Gravity = PopupGravity.BottomRight,
+                ConstraintAdjustment = PopupPositionerConstraintAdjustment.All,
+                Size = Size.ToAvaloniaSize ()
+            };
+
+            PopupImpl.PopupPositioner.Update (ppp);
+
+            Show ();
+        }
+
+        /// <summary>
+        /// Show the PopupWindow at the specified screen coordinates
+        /// </summary>
+        public void Show (Point screenLocation) => Show (screenLocation.X, screenLocation.Y);
+
+        /// <summary>
+        /// Show the PopupWindow at the specified coordinates relative to the provided Control
+        /// </summary>
+        public void Show (Control control, int x, int y)
+        {
+            var pos = control.GetPositionInForm ();
+
+            Show (parent_form.PointToScreen (new Point (pos.X + x, pos.Y + y)));
+        }
 
         /// <summary>
         /// Gets the ControlStyle properties for this instance of the Control.
