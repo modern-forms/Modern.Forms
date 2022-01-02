@@ -56,4 +56,4 @@ To create your own Modern.Forms application, see [Getting Started](docs/getting-
 
 ## Build Status
 
-![.NET Build](https://github.com/modern-forms/Modern.Forms/workflows/.NET%20Core/badge.svg)
+[![.NET Build](https://github.com/modern-forms/Modern.Forms/actions/workflows/dotnet.yml/badge.svg)](https://github.com/modern-forms/Modern.Forms/actions/workflows/dotnet.yml)
