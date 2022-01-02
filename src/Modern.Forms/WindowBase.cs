@@ -177,6 +177,9 @@ namespace Modern.Forms
         private void OnInput (RawInputEventArgs e)
         {
             if (e is RawPointerEventArgs me) {
+                // TODO: How do we want to handle this for real
+                me.Position *= window.RenderScaling;
+
                 switch (me.Type) {
                     case RawPointerEventType.LeftButtonDown:
                         if (Resizeable && HandleMouseDown ((int)me.Position.X, (int)me.Position.Y))
