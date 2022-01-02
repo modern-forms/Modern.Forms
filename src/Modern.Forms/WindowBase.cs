@@ -258,6 +258,10 @@ namespace Modern.Forms
 
         private void DoPaint (Rect r)
         {
+            // Mac tries to give us paints before the Form constructor completes
+            if (!shown)
+                return;
+
             var skia_framebuffer = window.Surfaces.OfType<IFramebufferPlatformSurface> ().First ();
 
             using var framebuffer = skia_framebuffer.Lock ();
