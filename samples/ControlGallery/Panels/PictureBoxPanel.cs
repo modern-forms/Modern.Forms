@@ -40,7 +40,7 @@ namespace ControlGallery.Panels
             Controls.Add (new Label { Left = 340, Top = 5, Text = "Zoom" });
         }
 
-        private void AddPictureBox (int left, int top, PictureBoxSizeMode mode, string url = null, SKBitmap image = null, bool enabled = true)
+        private void AddPictureBox (int left, int top, PictureBoxSizeMode mode, string? url = null, SKBitmap? image = null, bool enabled = true)
         {
             var pb = new PictureBox {
                 Left = left,
