@@ -7,7 +7,7 @@ using Modern.WindowKit.Input;
 
 namespace Modern.Forms
 {
-    public static class WindowKitExtensions
+    internal static class WindowKitExtensions
     {
         public static Keys AddModifiers (Keys keys, RawInputModifiers modifiers)
         {

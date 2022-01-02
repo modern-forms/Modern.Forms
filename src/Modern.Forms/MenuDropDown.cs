@@ -115,7 +115,7 @@ namespace Modern.Forms
         /// <summary>
         /// Scales size by specified factor.
         /// </summary>
-        internal Size ScaleSize (Size startSize, float x, float y)
+        internal static Size ScaleSize (Size startSize, float x, float y)
         {
             var size = startSize;
 

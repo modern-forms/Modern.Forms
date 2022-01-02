@@ -149,7 +149,7 @@ namespace Modern.Forms
         {
             protected const int BUTTON_PADDING = 10;
 
-            private TitleBarButtonGlyph glyph;
+            private readonly TitleBarButtonGlyph glyph;
 
             public TitleBarButton (TitleBarButtonGlyph glyph)
             {

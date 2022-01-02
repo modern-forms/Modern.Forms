@@ -295,7 +295,7 @@ namespace Modern.Forms
 
                 if (Parent != null)
                     Parent.PerformLayout (this, nameof (Dock));
-                else if (Controls.GetAllControls ().Count () > 0)
+                else if (Controls.GetAllControls ().Any ())
                     PerformLayout (this, nameof (Dock));
 
                 OnDockChanged (EventArgs.Empty);
@@ -444,7 +444,7 @@ namespace Modern.Forms
                 start = this;
 
             if (forward) {
-                if (start.Controls.GetAllControls (includeImplicit).Count () > 0 && (start == this || !IsFocusManagingContainerControl (start))) {
+                if (start.Controls.GetAllControls (includeImplicit).Any () && (start == this || !IsFocusManagingContainerControl (start))) {
                     var found = start.GetFirstChildControlInTabOrder (true, includeImplicit);
 
                     if (found != null)
@@ -1761,7 +1761,7 @@ namespace Modern.Forms
         /// <summary>
         /// Changes mouse events to control coordinates.
         /// </summary>
-        private MouseEventArgs TranslateMouseEvents (MouseEventArgs e, Control control)
+        private static MouseEventArgs TranslateMouseEvents (MouseEventArgs e, Control control)
         {
             if (control == null)
                 return e;
