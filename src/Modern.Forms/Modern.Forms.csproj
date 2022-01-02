@@ -21,14 +21,11 @@
   <ItemGroup>
     <PackageReference Include="HarfBuzzSharp" Version="2.6.1.8" />
     <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="2.6.1.8" />
+    <PackageReference Include="Modern.WindowKit" Version="0.1.1" />
     <PackageReference Include="SkiaSharp" Version="2.80.3" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.80.3" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <PackageReference Include="Topten.RichTextKit" Version="0.4.139" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Modern.WindowKit\src\Modern.WindowKit\Modern.WindowKit.csproj" />
   </ItemGroup>
 
 </Project>
