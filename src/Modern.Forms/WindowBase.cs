@@ -1,14 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Platform.Surfaces;
-using Avalonia.Input;
-using Avalonia.Input.Raw;
-using Avalonia.Platform;
-using Avalonia.Skia;
-using Avalonia.Win32.Input;
+using Modern.WindowKit;
+using Modern.WindowKit.Controls;
+using Modern.WindowKit.Controls.Platform.Surfaces;
+using Modern.WindowKit.Input.Raw;
+using Modern.WindowKit.Platform;
+using Modern.WindowKit.Skia;
+using Modern.WindowKit.Win32.Input;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -16,13 +15,10 @@ namespace Modern.Forms
     /// <summary>
     /// Represents the base class for windows, like Form and PopupWindow
     /// </summary>
-    public abstract class Window : Component
+    public abstract class WindowBase : Component
     {
         private const int DOUBLE_CLICK_TIME = 500;
         private const int DOUBLE_CLICK_MOVEMENT = 4;
-
-        // If the border is only 1 pixel it's too hard to resize, so we may steal some pixels from the client area
-        private const int MINIMUM_RESIZE_PIXELS = 4;
 
         internal IWindowBaseImpl window;
         internal ControlAdapter adapter;
@@ -30,15 +26,12 @@ namespace Modern.Forms
         private DateTime last_click_time;
         private Point last_click_point;
         private Cursor? current_cursor;
-        private IWindowImpl? dialog_parent;
-        private System.Drawing.Size minimum_size;
-        private System.Drawing.Size maximum_size;
         internal bool shown;
 
         /// <summary>
         /// Initializes a new instance of the Window class.
         /// </summary>
-        internal Window (IWindowBaseImpl window)
+        internal WindowBase (IWindowBaseImpl window)
         {
             this.window = window;
             adapter = new ControlAdapter (this);
@@ -52,23 +45,13 @@ namespace Modern.Forms
                 Application.ActiveMenu?.Deactivate ();
                 Deactivated?.Invoke (this, EventArgs.Empty);
             };
-            window.Resize (new Size (DefaultSize.Width, DefaultSize.Height));
         }
 
         /// <summary>
-        /// Begins dragging the window to move it.
-        /// </summary>
-        public void BeginMoveDrag () => window.BeginMoveDrag (new Avalonia.Input.PointerPressedEventArgs ());
-
-        /// <summary>
-        /// The bounds of the Window.
+        /// Gets the bounds of the Window.
         /// </summary>
         public System.Drawing.Rectangle Bounds {
             get => new System.Drawing.Rectangle (Location, Size);
-            set {
-                Location = value.Location;
-                Size = value.Size;
-            }
         }
 
         private MouseEventArgs BuildMouseClickArgs (MouseButtons buttons, Point point, Keys keyData)
@@ -89,7 +72,7 @@ namespace Modern.Forms
         /// <summary>
         /// Closes and destroys the window.
         /// </summary>
-        public void Close () 
+        public virtual void Close () 
         {
             // If we just Dispose the window, WM_CLOSE will never get called so OnClosing will not get called
             if (this is Form f) {
@@ -99,12 +82,6 @@ namespace Modern.Forms
 
                 if (args.Cancel)
                     return;
-            }
-
-            // If this was a dialog box we need to reactivate the parent
-            if (!(dialog_parent is null)) {
-                dialog_parent.Activate ();
-                dialog_parent = null;
             }
             
             window.Dispose (); 
@@ -148,90 +125,14 @@ namespace Modern.Forms
         /// </summary>
         public System.Drawing.Rectangle DisplayRectangle => new System.Drawing.Rectangle (CurrentStyle.Border.Left.GetWidth (), CurrentStyle.Border.Top.GetWidth (), (int)window.ClientSize.Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth (), (int)window.ClientSize.Height - CurrentStyle.Border.Top.GetWidth () - CurrentStyle.Border.Bottom.GetWidth ());
 
-        private WindowElement GetElementAtLocation (int x, int y)
+        internal virtual bool HandleMouseDown (int x, int y)
         {
-            var left = false;
-            var right = false;
-
-            if (x < Math.Max (Style.Border.Left.GetWidth (), MINIMUM_RESIZE_PIXELS))
-                left = true;
-            else if (x >= ScaledSize.Width - Math.Max (Style.Border.Right.GetWidth (), MINIMUM_RESIZE_PIXELS))
-                right = true;
-
-            if (y < Math.Max (Style.Border.Top.GetWidth (), MINIMUM_RESIZE_PIXELS))
-                return left ? WindowElement.TopLeftCorner : right ? WindowElement.TopRightCorner : WindowElement.TopBorder;
-            else if (y >= ScaledSize.Height - Math.Max (Style.Border.Bottom.GetWidth (), MINIMUM_RESIZE_PIXELS))
-                return left ? WindowElement.BottomLeftCorner : right ? WindowElement.BottomRightCorner : WindowElement.BottomBorder;
-
-            return left ? WindowElement.LeftBorder : right ? WindowElement.RightBorder : WindowElement.Client;
-        }
-
-        private bool HandleMouseDown (int x, int y)
-        {
-            var element = GetElementAtLocation (x, y);
-
-            switch (element) {
-                case WindowElement.TopBorder:
-                    window.BeginResizeDrag (WindowEdge.North, new PointerPressedEventArgs ());
-                    return true;
-                case WindowElement.RightBorder:
-                    window.BeginResizeDrag (WindowEdge.East, new PointerPressedEventArgs ());
-                    return true;
-                case WindowElement.BottomBorder:
-                    window.BeginResizeDrag (WindowEdge.South, new PointerPressedEventArgs ());
-                    return true;
-                case WindowElement.LeftBorder:
-                    window.BeginResizeDrag (WindowEdge.West, new PointerPressedEventArgs ());
-                    return true;
-                case WindowElement.TopLeftCorner:
-                    window.BeginResizeDrag (WindowEdge.NorthWest, new PointerPressedEventArgs ());
-                    return true;
-                case WindowElement.TopRightCorner:
-                    window.BeginResizeDrag (WindowEdge.NorthEast, new PointerPressedEventArgs ());
-                    return true;
-                case WindowElement.BottomLeftCorner:
-                    window.BeginResizeDrag (WindowEdge.SouthWest, new PointerPressedEventArgs ());
-                    return true;
-                case WindowElement.BottomRightCorner:
-                    window.BeginResizeDrag (WindowEdge.SouthEast, new PointerPressedEventArgs ());
-                    return true;
-            }
-
             return false;
         }
 
-        private bool HandleMouseMove (int x, int y)
+        internal virtual bool HandleMouseMove (int x, int y)
         {
-            var element = GetElementAtLocation (x, y);
-
-            switch (element) {
-                case WindowElement.TopBorder:
-                    window.SetCursor (Cursors.TopSide.cursor.PlatformCursor);
-                    return true;
-                case WindowElement.RightBorder:
-                    window.SetCursor (Cursors.RightSide.cursor.PlatformCursor);
-                    return true;
-                case WindowElement.BottomBorder:
-                    window.SetCursor (Cursors.BottomSide.cursor.PlatformCursor);
-                    return true;
-                case WindowElement.LeftBorder:
-                    window.SetCursor (Cursors.LeftSide.cursor.PlatformCursor);
-                    return true;
-                case WindowElement.TopLeftCorner:
-                    window.SetCursor (Cursors.TopLeftCorner.cursor.PlatformCursor);
-                    return true;
-                case WindowElement.TopRightCorner:
-                    window.SetCursor (Cursors.TopRightCorner.cursor.PlatformCursor);
-                    return true;
-                case WindowElement.BottomLeftCorner:
-                    window.SetCursor (Cursors.BottomLeftCorner.cursor.PlatformCursor);
-                    return true;
-                case WindowElement.BottomRightCorner:
-                    window.SetCursor (Cursors.BottomRightCorner.cursor.PlatformCursor);
-                    return true;
-            }
-
-            window.SetCursor (current_cursor?.cursor?.PlatformCursor);
+            window.SetCursor (current_cursor?.cursor?.PlatformCursor ?? Cursors.Arrow.cursor.PlatformCursor);
             return false;
         }
 
@@ -257,64 +158,10 @@ namespace Modern.Forms
         public void Invalidate (System.Drawing.Rectangle rectangle) => Invalidate ();
 
         /// <summary>
-        /// Gets or sets the unscaled location of the control.
+        /// Gets the unscaled location of the control.
         /// </summary>
         public System.Drawing.Point Location {
             get => window.Position.ToDrawingPoint ();
-            set {
-                if (window.Position.ToDrawingPoint () != value) {
-                    window.Position = value.ToPixelPoint ();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the maximum size of the Window
-        /// </summary>
-        public System.Drawing.Size MaximumSize {
-            get => maximum_size;
-            set {
-                if (maximum_size != value) {
-                    maximum_size = value;
-
-                    // Don't let MinimumSize be larger than MaximumSize
-                    if (!minimum_size.IsEmpty && !maximum_size.IsEmpty)
-                        minimum_size = new System.Drawing.Size (Math.Min (minimum_size.Width, maximum_size.Width), Math.Min (minimum_size.Height, maximum_size.Height));
-
-                    window.SetMinMaxSize (minimum_size.ToAvaloniaSize (), maximum_size.ToAvaloniaSize ());
-
-                    // Keep form size within new limits
-                    var size = Size;
-                    if (!value.IsEmpty && (size.Width > value.Width || size.Height > value.Height))
-                        Size = new System.Drawing.Size (Math.Min (size.Width, value.Width), Math.Min (size.Height, value.Height));
-
-                    OnMaximumSizeChanged (EventArgs.Empty);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the minimum size of the Window
-        /// </summary>
-        public System.Drawing.Size MinimumSize {
-            get => minimum_size;
-            set {
-                if (minimum_size != value) {
-                    minimum_size = value;
-                    window.SetMinMaxSize (minimum_size.ToAvaloniaSize (), maximum_size.ToAvaloniaSize ());
-
-                    // Don't let MaximumSize be smaller than MinimumSize
-                    if (!minimum_size.IsEmpty && !maximum_size.IsEmpty)
-                        maximum_size = new System.Drawing.Size (Math.Max (minimum_size.Width, maximum_size.Width), Math.Max (minimum_size.Height, maximum_size.Height));
-
-                    // Keep form size within new limits
-                    var size = Size;
-                    if (size.Width < value.Width || size.Height < value.Height)
-                        Size = new System.Drawing.Size (Math.Max (size.Width, value.Width), Math.Max (size.Height, value.Height));
-
-                    OnMinimumSizeChanged (EventArgs.Empty);
-                }
-            }
         }
 
         /// <summary>
@@ -394,11 +241,11 @@ namespace Modern.Forms
             } else if (e is RawKeyEventArgs ke) {
                 switch (ke.Type) {
                     case RawKeyEventType.KeyDown:
-                        var kd_e = new KeyEventArgs (KeyInterop.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
+                        var kd_e = new KeyEventArgs (WindowKitExtensions.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
                         adapter.RaiseKeyDown (kd_e);
                         break;
                     case RawKeyEventType.KeyUp:
-                        var ku_e = new KeyEventArgs (KeyInterop.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
+                        var ku_e = new KeyEventArgs (WindowKitExtensions.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
                         adapter.RaiseKeyUp (ku_e);
                         break;
                 }
@@ -411,6 +258,10 @@ namespace Modern.Forms
 
         private void DoPaint (Rect r)
         {
+            // Mac tries to give us paints before the Form constructor completes
+            if (!shown)
+                return;
+
             var skia_framebuffer = window.Surfaces.OfType<IFramebufferPlatformSurface> ().First ();
 
             using var framebuffer = skia_framebuffer.Lock ();
@@ -418,7 +269,7 @@ namespace Modern.Forms
             var framebufferImageInfo = new SKImageInfo (framebuffer.Size.Width, framebuffer.Size.Height,
                 framebuffer.Format.ToSkColorType (), framebuffer.Format == PixelFormat.Rgb565 ? SKAlphaType.Opaque : SKAlphaType.Premul);
 
-            var scaled_client_size = window.ScaledClientSize;
+            var scaled_client_size = ScaledClientSize;
             var scaled_display_rect = ScaledDisplayRectangle;
 
             using var surface = SKSurface.Create (framebufferImageInfo, framebuffer.Address, framebuffer.RowBytes);
@@ -466,7 +317,7 @@ namespace Modern.Forms
             e.Canvas.DrawBackground (Bounds, CurrentStyle);
         }
 
-        private void OnResize (Size size)
+        private void OnResize (Size size, PlatformResizeReason reason)
         {
             adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, ScaledSize.Width, ScaledSize.Height);
         }
@@ -490,7 +341,16 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Converts a point from window coordinates to monitor coordinates.
+        /// Converts a point from screen coordinates to window coordinates.
+        /// </summary>
+        public System.Drawing.Point PointToClient (System.Drawing.Point point)
+        {
+            var pt = window.PointToClient (new PixelPoint (point.X, point.Y));
+            return new System.Drawing.Point ((int)pt.X, (int)pt.Y);
+        }
+
+        /// <summary>
+        /// Converts a point from window coordinates to screen coordinates.
         /// </summary>
         public System.Drawing.Point PointToScreen (System.Drawing.Point point)
         {
@@ -503,20 +363,22 @@ namespace Modern.Forms
         /// </summary>
         public bool Resizeable { get; set; }
 
+        private System.Drawing.Size ScaledClientSize => new System.Drawing.Size ((int)(window.ClientSize.Width * window.RenderScaling), (int)(window.ClientSize.Height * window.RenderScaling));
+
         /// <summary>
         /// Gets the scaled bounds of the form not including borders.
         /// </summary>
-        public System.Drawing.Rectangle ScaledDisplayRectangle => new System.Drawing.Rectangle (CurrentStyle.Border.Left.GetWidth (), CurrentStyle.Border.Top.GetWidth (), (int)window.ScaledClientSize.Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth (), (int)window.ScaledClientSize.Height - CurrentStyle.Border.Top.GetWidth () - CurrentStyle.Border.Bottom.GetWidth ());
+        public System.Drawing.Rectangle ScaledDisplayRectangle => new System.Drawing.Rectangle (CurrentStyle.Border.Left.GetWidth (), CurrentStyle.Border.Top.GetWidth (), (int)ScaledClientSize.Width - CurrentStyle.Border.Right.GetWidth () - CurrentStyle.Border.Left.GetWidth (), (int)ScaledClientSize.Height - CurrentStyle.Border.Top.GetWidth () - CurrentStyle.Border.Bottom.GetWidth ());
 
         /// <summary>
         /// Gets or sets the scaled size of the window.
         /// </summary>
-        public System.Drawing.Size ScaledSize => new System.Drawing.Size ((int)window.ScaledClientSize.Width, (int)window.ScaledClientSize.Height);
+        public System.Drawing.Size ScaledSize => new System.Drawing.Size ((int)ScaledClientSize.Width, (int)ScaledClientSize.Height);
 
         /// <summary>
         /// Gets the current scale factor of the window.
         /// </summary>
-        public double Scaling => window.Scaling;
+        public double Scaling => window.RenderScaling;
 
         internal Screens Screens => new Screens (window!.Screen);
 
@@ -525,36 +387,8 @@ namespace Modern.Forms
             current_cursor = cursor;
         }
 
-        private void SetWindowStartupLocation (IWindowBaseImpl? owner = null)
+        internal virtual void SetWindowStartupLocation (IWindowBaseImpl? owner = null)
         {
-            var scaling = Scaling;
-
-            // TODO: We really need non-client size here.
-            var rect = new PixelRect (
-                PixelPoint.Origin,
-                PixelSize.FromSize (window.ClientSize, scaling));
-
-            if (StartPosition == FormStartPosition.CenterScreen) {
-                var screen = Screens.ScreenFromPoint (owner?.Position ?? Location.ToPixelPoint ());
-
-                if (screen != null) {
-                    var position = screen.WorkingArea.CenterRect (rect).Position.ToDrawingPoint ();
-
-                    // Ensure we don't position the titlebar offscreen
-                    position.X = Math.Max (position.X, screen.WorkingArea.X);
-                    position.Y = Math.Max (position.Y, screen.WorkingArea.Y);
-
-                    Location = position;
-                }
-            } else if (StartPosition == FormStartPosition.CenterParent) {
-                if (owner != null) {
-                    // TODO: We really need non-client size here.
-                    var ownerRect = new PixelRect (
-                        owner.Position,
-                        PixelSize.FromSize (owner.ClientSize, scaling));
-                    Location = ownerRect.CenterRect (rect).Position.ToDrawingPoint ();
-                }
-            }
         }
 
         /// <summary>
@@ -566,23 +400,11 @@ namespace Modern.Forms
             OnVisibleChanged (EventArgs.Empty);
 
             SetWindowStartupLocation ();
-            window.Show ();
+            window.Show (true, false);
 
             if (!shown) {
                 shown = true;
                 OnShown (EventArgs.Empty);
-            }
-        }
-
-        /// <summary>
-        /// Displays the window to the user modally, preventing interaction with other windows until closed.
-        /// </summary>
-        internal void ShowDialog (IWindowImpl parent)
-        {
-            if (window is IWindowImpl win) {
-                dialog_parent = parent;
-                SetWindowStartupLocation (parent);
-                win.ShowDialog (parent);
             }
         }
 
@@ -596,7 +418,6 @@ namespace Modern.Forms
         /// </summary>
         public System.Drawing.Size Size {
             get => new System.Drawing.Size ((int)window.ClientSize.Width, (int)window.ClientSize.Height);
-            set => window.Resize (new Avalonia.Size (value.Width, value.Height));
         }
 
         /// <summary>
@@ -613,18 +434,5 @@ namespace Modern.Forms
         /// Gets or sets whether the window is displayed to the user.
         /// </summary>
         public bool Visible { get; private set; }
-
-        private enum WindowElement
-        {
-            Client,
-            TopBorder,
-            RightBorder,
-            BottomBorder,
-            LeftBorder,
-            TopLeftCorner,
-            TopRightCorner,
-            BottomLeftCorner,
-            BottomRightCorner
-        }
     }
 }

@@ -48,6 +48,15 @@ namespace Modern.Forms
         public DialogResult DialogResult { get; set; }
 
         /// <inheritdoc/>
+        protected override void OnClick (MouseEventArgs e)
+        {
+            if (FindForm () is Form form)
+                form.DialogResult = DialogResult;
+
+            base.OnClick (e);
+        }
+
+        /// <inheritdoc/>
         protected override void OnPaint (PaintEventArgs e)
         {
             base.OnPaint (e);

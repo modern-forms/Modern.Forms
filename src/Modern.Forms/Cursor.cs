@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Avalonia.Input;
+using Modern.WindowKit.Input;
 
 namespace Modern.Forms
 {
@@ -10,11 +10,11 @@ namespace Modern.Forms
     /// </summary>
     public class Cursor
     {
-        internal Avalonia.Input.Cursor cursor;
+        internal Modern.WindowKit.Input.Cursor cursor;
 
         internal Cursor (StandardCursorType type)
         {
-            cursor = new Avalonia.Input.Cursor (type);
+            cursor = new Modern.WindowKit.Input.Cursor (type);
         }
 
         /// <summary>

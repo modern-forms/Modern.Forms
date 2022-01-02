@@ -71,14 +71,15 @@ namespace Modern.Forms
                     popup?.Hide ();
                     OnDropDownClosed (EventArgs.Empty);
                 } else if (!DroppedDown && value) {
-                    popup ??= new PopupWindow (FindForm ()) {
+                    if (FindForm () is not Form form)
+                        throw new InvalidOperationException ("Cannot drop down a ComboBox that is not parented to a Form");
+
+                    popup ??= new PopupWindow (form) {
                         Size = new Size (Width, 102)
                     };
 
-                    popup.Location = PointToScreen (new Point (1, ScaledHeight - 1));
                     popup.Controls.Add (popup_listbox);
-
-                    popup.Show ();
+                    popup.Show (this, 1, Height);
 
                     OnDropDownOpened (EventArgs.Empty);
                 }

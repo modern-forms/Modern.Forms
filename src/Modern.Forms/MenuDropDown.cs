@@ -9,6 +9,7 @@ namespace Modern.Forms
     /// </summary>
     public class MenuDropDown : MenuBase
     {
+        private Form? parent_form;
         private PopupWindow? popup;
         private int width = 400;
         private int height = 400;
@@ -49,6 +50,15 @@ namespace Modern.Forms
                 style.BackgroundColor = Theme.ItemHighlightColor;
                 style.Border.Width = 1;
             });
+
+        /// <inheritdoc/>
+        public override Form? FindForm ()
+        {
+            if (base.FindForm () is Form f)
+                return f;
+
+            return parent_form;
+        }
 
         /// <summary>
         /// Hides the drop down.
@@ -105,7 +115,7 @@ namespace Modern.Forms
         /// <summary>
         /// Scales size by specified factor.
         /// </summary>
-        internal Size ScaleSize (Size startSize, float x, float y)
+        internal static Size ScaleSize (Size startSize, float x, float y)
         {
             var size = startSize;
 
@@ -118,20 +128,22 @@ namespace Modern.Forms
         /// <summary>
         /// Shows the drop down at the specified location.
         /// </summary>
-        public virtual void Show (Point location)
+        public virtual void Show (Control parent, Point location)
         {
             if (popup == null) {
-                popup = new PopupWindow (GetTopLevelMenu ()?.FindForm ());
+                if (parent.FindForm () is not Form parent_form)
+                    throw new InvalidOperationException ("Control 'parent' must belong to a Form.");
+
+                this.parent_form = parent_form;
+                popup = new PopupWindow (parent_form);
                 popup.Controls.Add (this);
             }
-
-            popup.Location = location;
 
             LayoutItems ();
             popup.Size = ScaleSize (new Size (width, height), 1 / (float)Scaling, 1 / (float)Scaling);
 
             Invalidate ();
-            popup.Show ();
+            popup.Show (location);
         }
 
         /// <inheritdoc/>

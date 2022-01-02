@@ -19,11 +19,11 @@ namespace Modern.Forms
         protected override bool IsTopLevelMenu => true;
 
         /// <inheritdoc/>
-        public override void Show (Point location)
+        public override void Show (Control parent, Point location)
         {
             Application.ActiveMenu ??= this;
 
-            base.Show (location);
+            base.Show (parent, location);
         }
     }
 }

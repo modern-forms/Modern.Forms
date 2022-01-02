@@ -18,12 +18,12 @@ namespace ControlGallery.Panels
                 Top = 30
             };
 
-            listbox1.Items.Add (new TestBlah { Text = "A Option" });
-            listbox1.Items.Add (new TestBlah { Text = "B Option" });
-            listbox1.Items.Add (new TestBlah { Text = "D Option" });
-            listbox1.Items.Add (new TestBlah { Text = "C Option" });
-            listbox1.Items.Add (new TestBlah { Text = "E Option" });
-            listbox1.Items.Add (new TestBlah { Text = "F Option" });
+            listbox1.Items.Add (new TestBlah ("A Option"));
+            listbox1.Items.Add (new TestBlah ("B Option"));
+            listbox1.Items.Add (new TestBlah ("D Option"));
+            listbox1.Items.Add (new TestBlah ("C Option"));
+            listbox1.Items.Add (new TestBlah ("E Option"));
+            listbox1.Items.Add (new TestBlah ("F Option"));
 
             listbox1.SelectionMode = SelectionMode.None;
 
@@ -73,12 +73,12 @@ namespace ControlGallery.Panels
                 Top = 420
             };
 
-            listbox4.Items.Add (new TestBlah { Text = "Apple" });
-            listbox4.Items.Add (new TestBlah { Text = "Banana" });
-            listbox4.Items.Add (new TestBlah { Text = "Cactus" });
-            listbox4.Items.Add (new TestBlah { Text = "Cherry" });
-            listbox4.Items.Add (new TestBlah { Text = "Cranberry" });
-            listbox4.Items.Add (new TestBlah { Text = "Donut" });
+            listbox4.Items.Add (new TestBlah ("Apple"));
+            listbox4.Items.Add (new TestBlah ("Banana"));
+            listbox4.Items.Add (new TestBlah ("Cactus"));
+            listbox4.Items.Add (new TestBlah ("Cherry"));
+            listbox4.Items.Add (new TestBlah ("Cranberry"));
+            listbox4.Items.Add (new TestBlah ("Donut"));
 
             listbox4.SelectedIndex = 2;
             listbox4.SelectionMode = SelectionMode.MultiExtended;
@@ -119,6 +119,11 @@ namespace ControlGallery.Panels
         public class TestBlah
         {
             public string Text { get; set; }
+
+            public TestBlah (string text)
+            {
+                Text = text;
+            }
 
             public override string ToString () => Text;
         }

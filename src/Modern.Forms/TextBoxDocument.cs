@@ -326,6 +326,8 @@ namespace Modern.Forms
             cached_text_block = null;
         }
 
+        public void Reset () => cached_text_block = null;
+
         public void SelectAll ()
         {
             selection_start = 0;

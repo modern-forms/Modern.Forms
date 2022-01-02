@@ -212,7 +212,7 @@ namespace Modern.Forms
                 else if (OwnerControl is MenuDropDown)
                     dropdown_location = OwnerControl.PointToScreen (new Point (Bounds.Right - 1, Bounds.Top));
 
-                dropdown.Show (dropdown_location);
+                dropdown.Show (OwnerControl, dropdown_location);
                 IsDropDownOpened = true;
             }
         }

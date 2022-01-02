@@ -172,7 +172,7 @@ namespace Modern.Forms
             // If an item with a ContextMenu was right-clicked, show its ContextMenu
             if (e.Button == MouseButtons.Right) {
                 if (item.ContextMenu != null) {
-                    item.ContextMenu.Show (PointToScreen (e.Location));
+                    item.ContextMenu.Show (this, PointToScreen (e.Location));
                     return;
                 }
 

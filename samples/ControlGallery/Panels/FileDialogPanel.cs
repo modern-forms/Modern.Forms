@@ -21,7 +21,7 @@ namespace ControlGallery.Panels
             list_box = Controls.Add (new ListBox { Left = 200, Top = 10, Width = 550 });
         }
 
-        private async void Button1_Click (object sender, MouseEventArgs e)
+        private async void Button1_Click (object? sender, MouseEventArgs e)
         {
             list_box.Items.Clear ();
 
@@ -35,12 +35,12 @@ namespace ControlGallery.Panels
             ofd.AddFilter ("Image Files", "png", "gif", "jpg", "jpeg");
             ofd.AddFilter ("Text Files", "txt", "log");
 
-            if ((await ofd.ShowDialog (FindForm ())) == DialogResult.OK)
+            if ((await ofd.ShowDialog (FindForm ()!)) == DialogResult.OK)
                 foreach (var file in ofd.FileNames)
                     list_box.Items.Add (file);
         }
 
-        private async void Button2_Click (object sender, MouseEventArgs e)
+        private async void Button2_Click (object? sender, MouseEventArgs e)
         {
             list_box.Items.Clear ();
 
@@ -54,12 +54,12 @@ namespace ControlGallery.Panels
             sfd.AddFilter ("Image Files", "png", "gif", "jpg", "jpeg");
             sfd.AddFilter ("Text Files", "txt", "log");
 
-            if ((await sfd.ShowDialog (FindForm ())) == DialogResult.OK)
+            if ((await sfd.ShowDialog (FindForm ()!)) == DialogResult.OK)
                 foreach (var file in sfd.FileNames)
                     list_box.Items.Add (file);
         }
 
-        private async void Button3_Click (object sender, MouseEventArgs e)
+        private async void Button3_Click (object? sender, MouseEventArgs e)
         {
             list_box.Items.Clear ();
 
@@ -68,7 +68,7 @@ namespace ControlGallery.Panels
                 Title = "Choose a directory"
             };
 
-            if ((await fbd.ShowDialog (FindForm ())) == DialogResult.OK)
+            if ((await fbd.ShowDialog (FindForm ()!)) == DialogResult.OK && fbd.SelectedPath is not null)
                 list_box.Items.Add (fbd.SelectedPath);
         }
     }

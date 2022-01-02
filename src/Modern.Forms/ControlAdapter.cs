@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using Avalonia.Platform;
+using Modern.WindowKit.Platform;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -12,7 +12,7 @@ namespace Modern.Forms
     {
         private Control? selected_control;
 
-        public ControlAdapter (Window parent)
+        public ControlAdapter (WindowBase parent)
         {
             ParentForm = parent;
             SetControlBehavior (ControlBehaviors.Selectable, false);
@@ -29,7 +29,7 @@ namespace Modern.Forms
             }
         }
 
-        public Window ParentForm { get; }
+        public WindowBase ParentForm { get; }
 
         protected override void OnPaint (PaintEventArgs e)
         {

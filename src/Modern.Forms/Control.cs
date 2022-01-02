@@ -295,7 +295,7 @@ namespace Modern.Forms
 
                 if (Parent != null)
                     Parent.PerformLayout (this, nameof (Dock));
-                else if (Controls.GetAllControls ().Count () > 0)
+                else if (Controls.GetAllControls ().Any ())
                     PerformLayout (this, nameof (Dock));
 
                 OnDockChanged (EventArgs.Empty);
@@ -352,7 +352,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the Form that the control is parented to.
         /// </summary>
-        public Form? FindForm ()
+        public virtual Form? FindForm ()
         {
             if (this is ControlAdapter adapter && adapter.ParentForm is Form f)
                 return f;
@@ -363,9 +363,9 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the Window that the control is parented to. (Different from FindForm because it may return a PopupWindow.)
         /// </summary>
-        internal Window? FindWindow ()
+        internal WindowBase? FindWindow ()
         {
-            if (this is ControlAdapter adapter && adapter.ParentForm is Window w)
+            if (this is ControlAdapter adapter && adapter.ParentForm is WindowBase w)
                 return w;
 
             return Parent?.FindWindow ();
@@ -444,7 +444,7 @@ namespace Modern.Forms
                 start = this;
 
             if (forward) {
-                if (start.Controls.GetAllControls (includeImplicit).Count () > 0 && (start == this || !IsFocusManagingContainerControl (start))) {
+                if (start.Controls.GetAllControls (includeImplicit).Any () && (start == this || !IsFocusManagingContainerControl (start))) {
                     var found = start.GetFirstChildControlInTabOrder (true, includeImplicit);
 
                     if (found != null)
@@ -563,6 +563,23 @@ namespace Modern.Forms
         private static bool IsFocusManagingContainerControl (Control ctl)
         {
             return false;// ((ctl._controlStyle & ControlStyles.ContainerControl) == ControlStyles.ContainerControl && ctl is IContainerControl);
+        }
+
+        /// <summary>
+        /// Gets the position of the Control relative to the Form. (Differs from normal when
+        /// the Control is parented to other controls.
+        /// </summary>
+        internal Point GetPositionInForm ()
+        {
+            var p = Location;
+            var parent = Parent;
+
+            while (parent is not null && parent is not ControlAdapter) {
+                p.Offset (parent.Location.X, parent.Location.Y);
+                parent = parent.Parent;
+            }
+
+            return p;
         }
 
         /// <summary>
@@ -799,7 +816,7 @@ namespace Modern.Forms
         protected virtual void OnClick (MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right && ContextMenu != null) {
-                ContextMenu.Show (PointToScreen (e.Location));
+                ContextMenu.Show (this, PointToScreen (e.Location));
                 return;
             }
 
@@ -978,6 +995,13 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Called when the Parent property is changed.
+        /// </summary>
+        protected virtual void OnParentChanged (EventArgs e)
+        {
+        }
+
+        /// <summary>
         /// Called when the Parent's Visible property is changed.
         /// </summary>
         protected virtual void OnParentVisibleChanged (EventArgs e)
@@ -1060,6 +1084,9 @@ namespace Modern.Forms
         public Control? Parent {
             get => parent;
             set {
+                if (value == parent)
+                    return;
+
                 if (value == this)
                     throw new ArgumentException ("Control cannot be its own Parent.");
 
@@ -1073,6 +1100,8 @@ namespace Modern.Forms
                 }
 
                 value.Controls.Add (this);
+
+                OnParentChanged (EventArgs.Empty);
             }
         }
 
@@ -1617,6 +1646,8 @@ namespace Modern.Forms
 
             if (Visible != was_visible)
                 OnVisibleChanged (EventArgs.Empty);
+
+            OnParentChanged (EventArgs.Empty);
         }
 
         /// <summary>
@@ -1744,7 +1775,7 @@ namespace Modern.Forms
         /// <summary>
         /// Changes mouse events to control coordinates.
         /// </summary>
-        private MouseEventArgs TranslateMouseEvents (MouseEventArgs e, Control control)
+        private static MouseEventArgs TranslateMouseEvents (MouseEventArgs e, Control control)
         {
             if (control == null)
                 return e;

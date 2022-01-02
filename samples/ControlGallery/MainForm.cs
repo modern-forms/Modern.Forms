@@ -9,7 +9,7 @@ namespace ControlGallery
 {
     public class MainForm : Form
     {
-        private Panel current_panel;
+        private Panel? current_panel;
         private TreeView tree;
 
         public MainForm ()
@@ -25,6 +25,7 @@ namespace ControlGallery
             tree.Items.Add ("Button", ImageLoader.Get ("button.png"));
             tree.Items.Add ("CheckBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ComboBox", ImageLoader.Get ("button.png"));
+            tree.Items.Add ("Dialogs", ImageLoader.Get ("button.png"));
             tree.Items.Add ("FileDialogs", ImageLoader.Get ("button.png"));
             tree.Items.Add ("FormPaint", ImageLoader.Get ("button.png"));
             tree.Items.Add ("Label", ImageLoader.Get ("button.png"));
@@ -55,7 +56,7 @@ namespace ControlGallery
             Image = ImageLoader.Get ("button.png");
         }
 
-        private void Tree_ItemSelected (object sender, EventArgs<TreeViewItem> e)
+        private void Tree_ItemSelected (object? sender, EventArgs<TreeViewItem> e)
         {
             if (current_panel != null) {
                 Controls.Remove (current_panel);
@@ -72,7 +73,7 @@ namespace ControlGallery
             }
         }
 
-        private Panel CreatePanel (string text)
+        private Panel? CreatePanel (string text)
         {
             switch (text) {
                 case "Button":
@@ -81,6 +82,8 @@ namespace ControlGallery
                     return new CheckBoxPanel ();
                 case "ComboBox":
                     return new ComboBoxPanel ();
+                case "Dialogs":
+                    return new DialogPanel ();
                 case "FileDialogs":
                     return new FileDialogPanel ();
                 case "Label":
