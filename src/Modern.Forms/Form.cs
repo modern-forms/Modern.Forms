@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Modern.WindowKit;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
@@ -17,6 +18,8 @@ namespace Modern.Forms
         private const int MINIMUM_RESIZE_PIXELS = 4;
 
         private IWindowImpl? dialog_parent;
+        private DialogResult dialog_result = DialogResult.None;
+        private TaskCompletionSource<DialogResult>? dialog_task;
         private System.Drawing.Size minimum_size;
         private System.Drawing.Size maximum_size;
 
@@ -85,8 +88,16 @@ namespace Modern.Forms
 
             // If this was a dialog box we need to reactivate the parent
             if (dialog_parent is not null) {
+                dialog_parent.SetEnabled (true);
                 dialog_parent.Activate ();
                 dialog_parent = null;
+            }
+
+            // If this was a dialog box we need to resume the execution task
+            if (dialog_task is not null) {
+                var task = dialog_task;
+                dialog_task = null;
+                task.SetResult (dialog_result);
             }
         }
 
@@ -108,6 +119,19 @@ namespace Modern.Forms
              style.Border.Width = 1;
          });
 
+        /// <summary>
+        ///  Gets or sets the dialog result for the form.
+        /// </summary>
+        public DialogResult DialogResult {
+            get => dialog_result;
+            set {
+                dialog_result = value;
+
+                // If we're showing a dialog, setting this closes the dialog
+                if (dialog_result != DialogResult.None && dialog_parent is not null)
+                    Close ();
+            }
+        }
         /// <summary>
         /// Gets the next control in tab order.
         /// </summary>
@@ -315,11 +339,23 @@ namespace Modern.Forms
         /// <summary>
         /// Displays the window to the user modally, preventing interaction with other windows until closed.
         /// </summary>
-        public void ShowDialog (Form parent)
+        public Task<DialogResult> ShowDialog (Form parent)
         {
+            dialog_task = new TaskCompletionSource<DialogResult> ();
+
+            // If the DialogResult has already been set we don't show the dialog
+            if (dialog_result != DialogResult.None) {
+                dialog_task.SetResult (dialog_result);
+                return dialog_task.Task;
+            }
+
             dialog_parent = parent.Window;
             SetWindowStartupLocation (parent.Window);
-            //win.ShowDialog (parent);
+            parent.Window.SetEnabled (false);
+            Window.SetParent (parent.Window);
+            window.Show (true, true);
+
+            return dialog_task.Task;
         }
 
         /// <summary>
