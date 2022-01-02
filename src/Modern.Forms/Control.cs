@@ -995,6 +995,13 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Called when the Parent property is changed.
+        /// </summary>
+        protected virtual void OnParentChanged (EventArgs e)
+        {
+        }
+
+        /// <summary>
         /// Called when the Parent's Visible property is changed.
         /// </summary>
         protected virtual void OnParentVisibleChanged (EventArgs e)
@@ -1077,6 +1084,9 @@ namespace Modern.Forms
         public Control? Parent {
             get => parent;
             set {
+                if (value == parent)
+                    return;
+
                 if (value == this)
                     throw new ArgumentException ("Control cannot be its own Parent.");
 
@@ -1090,6 +1100,8 @@ namespace Modern.Forms
                 }
 
                 value.Controls.Add (this);
+
+                OnParentChanged (EventArgs.Empty);
             }
         }
 
@@ -1634,6 +1646,8 @@ namespace Modern.Forms
 
             if (Visible != was_visible)
                 OnVisibleChanged (EventArgs.Empty);
+
+            OnParentChanged (EventArgs.Empty);
         }
 
         /// <summary>

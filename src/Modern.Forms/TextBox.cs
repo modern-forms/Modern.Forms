@@ -286,6 +286,16 @@ namespace Modern.Forms
         }
 
         /// <inheritdoc/>
+        protected override void OnParentChanged (EventArgs e)
+        {
+            base.OnParentChanged (e);
+
+            // Changing parent may mean changing scaling, which
+            // means we need to recalculate the document.
+            document.Reset ();
+        }
+
+        /// <inheritdoc/>
         protected override void OnSizeChanged (EventArgs e)
         {
             base.OnSizeChanged (e);
