@@ -28,24 +28,24 @@ using System;
 
 namespace Modern.Forms
 {
-    /// <summary>
-    /// Represents a class that lays out a collection of items.
-    /// </summary>
-    public abstract class LayoutEngine
-    {
-        /// <summary>
-        /// Prepares the layout engine to begin a layout.
-        /// </summary>
-        public virtual void InitLayout (object child, BoundsSpecified specified)
-        {
-        }
+    ///// <summary>
+    ///// Represents a class that lays out a collection of items.
+    ///// </summary>
+    //public abstract class LayoutEngine
+    //{
+    //    /// <summary>
+    //    /// Prepares the layout engine to begin a layout.
+    //    /// </summary>
+    //    public virtual void InitLayout (object child, BoundsSpecified specified)
+    //    {
+    //    }
 
-        /// <summary>
-        /// Performs a layout of the container.
-        /// </summary>
-        public virtual bool Layout (object container, LayoutEventArgs layoutEventArgs)
-        {
-            return false;
-        }
-    }
+    //    /// <summary>
+    //    /// Performs a layout of the container.
+    //    /// </summary>
+    //    public virtual bool Layout (object container, LayoutEventArgs layoutEventArgs)
+    //    {
+    //        return false;
+    //    }
+    //}
 }

@@ -37,7 +37,7 @@ namespace Modern.Forms
         /// <summary>
         ///  Initializes a new instance of the LayoutEventArgs class.
         /// </summary>
-        public LayoutEventArgs (Control? affectedControl, string affectedProperty)
+        public LayoutEventArgs (Control? affectedControl, string? affectedProperty)
         {
             AffectedControl = affectedControl;
             AffectedProperty = affectedProperty;
@@ -46,7 +46,7 @@ namespace Modern.Forms
         /// <summary>
         ///  Initializes a new instance of the LayoutEventArgs class.
         /// </summary>
-        public LayoutEventArgs (IComponent? affectedComponent, string affectedProperty)
+        public LayoutEventArgs (IComponent? affectedComponent, string? affectedProperty)
         {
             AffectedComponent = affectedComponent;
             AffectedProperty = affectedProperty;
@@ -65,6 +65,6 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the property affected by this layout event.
         /// </summary>
-        public string AffectedProperty { get; }
+        public string? AffectedProperty { get; }
     }
 }
