@@ -1,7 +1,14 @@
-﻿using System;
+﻿#undef DEBUG
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using Modern.Forms.Layout;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -9,75 +16,204 @@ namespace Modern.Forms
     /// <summary>
     /// Represents the base class for all Controls.
     /// </summary>
-    public class Control : Component, ILayoutable, IDisposable
+    public partial class Control : Component, ILayoutable, IArrangedElement, IDisposable
     {
-        private AnchorStyles anchor_style = AnchorStyles.Top | AnchorStyles.Left;
-        //private AutoSizeMode auto_size_mode;
+        // Control instance members
+        //
+        // Note: Do not add anything to this list unless absolutely necessary.
+        //       Every control on a form has the overhead of all of these
+        //       variables!
+        private Control? parent;
+        private Rectangle bounds;
+        private States _state = States.Visible | States.Enabled | States.TabStop | States.CausesValidation;
+        private ExtendedStates _extendedState;
+
+        private int tab_index = -1;
+        private string text = string.Empty;
+        private byte layout_suspend_count;
+
         private SKBitmap? back_buffer;
         private ControlBehaviors behaviors;
-        private Rectangle bounds;
         private Control? current_mouse_in;
-        private Cursor? cursor;
-        internal int dist_right;
-        internal int dist_bottom;
-        private DockStyle dock_style;
+        //private Cursor? cursor;
+        //internal int dist_right;
+        //internal int dist_bottom;
+        //private DockStyle dock_style;
         private bool is_captured;
         private bool is_dirty = true;
-        private bool is_enabled = true;
-        private bool is_visible = true;
-        private int layout_suspended;
-        private bool layout_pending;
-        private Padding margin;
-        private Padding padding;
-        private Control? parent;
-        private bool recalculate_distances = true;
-        private int tab_index = -1;
-        private bool tab_stop = true;
-        private string text = string.Empty;
+        //private bool is_enabled = true;
+        //private bool is_visible = true;
+        //private bool layout_pending;
+        //private Padding margin;
+        //private Padding padding;
+        //private bool recalculate_distances = true;
+        //private bool tab_stop = true;
+
+        // Property store keys for properties.
+        private static readonly int s_controlsCollectionProperty = PropertyStore.CreateKey ();
+        private static readonly int s_contextMenuProperty = PropertyStore.CreateKey ();
+        private static readonly int s_cursorProperty = PropertyStore.CreateKey ();
 
         /// <summary>
         /// Initializes a new instance of the Control class.
         /// </summary>
         public Control ()
         {
-            Controls = new ControlCollection (this);
+            // We baked the "default default" margin and min size into CommonProperties
+            // so that in the common case the PropertyStore would be empty.  If, however,
+            // someone overrides these Default* methods, we need to write the default
+            // value into the PropertyStore in the ctor.
 
-            margin = DefaultMargin;
-            padding = DefaultPadding;
+            if (DefaultMargin != CommonProperties.DefaultMargin)
+                Margin = DefaultMargin;
+
+            if (DefaultMinimumSize != CommonProperties.DefaultMinimumSize)
+                MinimumSize = DefaultMinimumSize;
+
+            if (DefaultMaximumSize != CommonProperties.DefaultMaximumSize)
+                MaximumSize = DefaultMaximumSize;
+
+            //padding = DefaultPadding;
 
             bounds = new Rectangle (Point.Empty, DefaultSize);
 
             behaviors = ControlBehaviors.Selectable | ControlBehaviors.ReceivesMouseEvents;
 
-            Cursor = DefaultCursor;
+            //Cursor = DefaultCursor;
 
             Theme.ThemeChanged += (o, e) => is_dirty = true;
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating which sides of the control are anchored when its parent resizes.
-        /// </summary>
-        public virtual AnchorStyles Anchor {
-            get => anchor_style;
-            set {
-                UseAnchorLayoutInternal = true;
 
-                if (anchor_style == value)
-                    return;
+        ///// <summary>
+        ///// Gets or sets a value indicating which sides of the control are anchored when its parent resizes.
+        ///// </summary>
+        //public virtual AnchorStyles Anchor {
+        //    get => anchor_style;
+        //    set {
+        //        UseAnchorLayoutInternal = true;
 
-                anchor_style = value;
-                dock_style = DockStyle.None;
+        //        if (anchor_style == value)
+        //            return;
 
-                RecalculateDistances ();
+        //        anchor_style = value;
+        //        dock_style = DockStyle.None;
 
-                parent?.PerformLayout (this, nameof (Anchor));
+        //        RecalculateDistances ();
+
+        //        parent?.PerformLayout (this, nameof (Anchor));
+        //    }
+        //}
+
+        // GetPreferredSize and SetBoundsCore call this method to allow controls to self impose
+        // constraints on their size.
+        internal Size ApplySizeConstraints (int width, int height)
+        {
+            return ApplyBoundsConstraints (0, 0, width, height).Size;
+        }
+
+        // GetPreferredSize and SetBoundsCore call this method to allow controls to self impose
+        // constraints on their size.
+        internal Size ApplySizeConstraints (Size proposedSize)
+        {
+            return ApplyBoundsConstraints (0, 0, proposedSize.Width, proposedSize.Height).Size;
+        }
+
+        internal virtual Rectangle ApplyBoundsConstraints (int suggestedX, int suggestedY, int proposedWidth, int proposedHeight)
+        {
+            // COMPAT: in Everett we would allow you to set negative values in pre-handle mode
+            // in Whidbey, if you've set Min/Max size we will constrain you to 0,0.  Everett apps didnt
+            // have min/max size on control, which is why this works.
+            if (MaximumSize != Size.Empty || MinimumSize != Size.Empty) {
+                Size maximumSize = LayoutUtils.ConvertZeroToUnbounded (MaximumSize);
+                Rectangle newBounds = new Rectangle (suggestedX, suggestedY, 0, 0) {
+                    // Clip the size to maximum and inflate it to minimum as necessary.
+                    Size = LayoutUtils.IntersectSizes (new Size (proposedWidth, proposedHeight), maximumSize)
+                };
+                newBounds.Size = LayoutUtils.UnionSizes (newBounds.Size, MinimumSize);
+
+                return newBounds;
             }
+
+            return new Rectangle (suggestedX, suggestedY, proposedWidth, proposedHeight);
         }
 
         /// <summary>
-        /// Gets a value indicating if this control's size can be changed automatically.
+        ///  Assigns a new parent control. Sends out the appropriate property change
+        ///  notifications for properties that are affected by the change of parent.
         /// </summary>
-        public bool AutoSize => false;
+        internal virtual void AssignParent (Control? value)
+        {
+            // Adopt the parent's required scaling bits
+            //if (value is not null) {
+            //    RequiredScalingEnabled = value.RequiredScalingEnabled;
+            //}
+
+            //if (CanAccessProperties) {
+            //    // Store the old values for these properties
+            //    Font oldFont = Font;
+            //    Color oldForeColor = ForeColor;
+            //    Color oldBackColor = BackColor;
+            //    RightToLeft oldRtl = RightToLeft;
+            //    bool oldEnabled = Enabled;
+            //    bool oldVisible = Visible;
+
+            //    // Update the parent
+            //    parent = value;
+            //    OnParentChanged (EventArgs.Empty);
+
+            //    if (GetAnyDisposingInHierarchy ()) {
+            //        return;
+            //    }
+
+            //    // Compare property values with new parent to old values
+            //    if (oldEnabled != Enabled) {
+            //        OnEnabledChanged (EventArgs.Empty);
+            //    }
+
+            //    // When a control seems to be going from invisible -> visible,
+            //    // yet its parent is being set to null and it's not top level, do not raise OnVisibleChanged.
+            //    bool newVisible = Visible;
+
+            //    if (oldVisible != newVisible && !(!oldVisible && newVisible && parent is null && !GetTopLevel ())) {
+            //        OnVisibleChanged (EventArgs.Empty);
+            //    }
+
+            //    if (!oldFont.Equals (Font)) {
+            //        OnFontChanged (EventArgs.Empty);
+            //    }
+
+            //    if (!oldForeColor.Equals (ForeColor)) {
+            //        OnForeColorChanged (EventArgs.Empty);
+            //    }
+
+            //    if (!oldBackColor.Equals (BackColor)) {
+            //        OnBackColorChanged (EventArgs.Empty);
+            //    }
+
+            //    if (oldRtl != RightToLeft) {
+            //        OnRightToLeftChanged (EventArgs.Empty);
+            //    }
+
+            //    if (Properties.GetObject (s_bindingManagerProperty) is null && Created) {
+            //        // We do not want to call our parent's BindingContext property here.
+            //        // We have no idea if us or any of our children are using data binding,
+            //        // and invoking the property would just create the binding manager, which
+            //        // we don't need.  We just blindly notify that the binding manager has
+            //        // changed, and if anyone cares, they will do the comparison at that time.
+            //        //
+            //        OnBindingContextChanged (EventArgs.Empty);
+            //    }
+            //} else {
+                parent = value;
+                OnParentChanged (EventArgs.Empty);
+            //}
+
+            //SetState (States.CheckedHost, false);
+            if (Parent is not null) {
+                Parent.LayoutEngine.InitLayout (this, BoundsSpecified.All);
+            }
+        }
 
         /// <summary>
         /// Gets the unscaled bottom location of the control.
@@ -126,7 +262,7 @@ namespace Modern.Forms
         /// Gets or sets a value indicating the control is currently getting system mouse events.
         /// </summary>
         public bool Capture {
-            get => is_captured || Controls.Any (c => c.Capture);
+            get => is_captured || Controls.GetAllControls (true).Any (c => c.Capture);
             set {
                 is_captured = value;
 
@@ -136,9 +272,39 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Raised when this control is clicked.
+        ///  Searches the parent/owner tree for bottom to find any instance
+        ///  of toFind in the parent/owner tree.
         /// </summary>
-        public event EventHandler<MouseEventArgs>? Click;
+        internal static void CheckParentingCycle (Control bottom, Control toFind)
+        {
+            //ControlAdapter lastOwner = null;
+            //Control lastParent = null;
+
+            //for (Control ctl = bottom; ctl is not null; ctl = ctl.Parent) {
+            //    lastParent = ctl;
+            //    if (ctl == toFind) {
+            //        throw new ArgumentException (SR.CircularOwner);
+            //    }
+            //}
+
+            //if (lastParent is not null) {
+            //    if (lastParent is ControlAdapter f) {
+            //        //for (ControlAdapter form = f; form is not null; form = form.OwnerInternal) {
+            //            ControlAdapter form = f;
+            //            lastOwner = form;
+            //            if (form == toFind) {
+            //                throw new ArgumentException (SR.CircularOwner);
+            //            }
+            //        //}
+            //    }
+            //}
+
+            //if (lastOwner is not null) {
+            //    if (lastOwner.Parent is not null) {
+            //        CheckParentingCycle (lastOwner.Parent, toFind);
+            //    }
+            //}
+        }
 
         /// <summary>
         /// Gets the scaled bounds of the control's canvas minus any borders.
@@ -183,12 +349,68 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the context menu that will be shown for the control.
         /// </summary>
-        public ContextMenu? ContextMenu { get; set; }
+        public ContextMenu? ContextMenu {
+            get => (ContextMenu?)Properties.GetObject (s_contextMenuProperty);
+            set {
+                if (value != ContextMenu) {
+                    Properties.SetObject (s_contextMenuProperty, value);
+                    OnContextMenuChanged (EventArgs.Empty);
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the collection of controls contained by the control.
         /// </summary>
-        public ControlCollection Controls { get; }
+        public ControlCollection Controls { 
+            get {
+                var collection = (ControlCollection?)Properties.GetObject (s_controlsCollectionProperty);
+
+                if (collection is null) {
+                    collection = CreateControlsInstance ();
+                    Properties.SetObject (s_controlsCollectionProperty, collection);
+                }
+
+                return collection;
+            }
+        }
+
+        /// <summary>
+        /// This doesn't do much because we don't have native window handles, but having
+        /// the created state allows us to avoid some stuff like layouts if the controls
+        /// aren't actually being used yet.
+        /// </summary>
+        internal void CreateControl ()
+        {
+            // Don't run this more than once
+            if (Created)
+                return;
+
+            SetState (States.Created, true);
+
+            // Create an array copy in case the collection changes
+            foreach (var child in Controls.GetAllControls ().ToArray ())
+                child.CreateControl ();
+
+            OnCreateControl ();
+        }
+
+        /// <summary>
+        ///  Constructs the new instance of the Controls collection objects. Subclasses
+        ///  should not call base.CreateControlsInstance.
+        /// </summary>
+        [EditorBrowsable (EditorBrowsableState.Advanced)]
+        protected virtual ControlCollection CreateControlsInstance ()
+        {
+            return new ControlCollection (this);
+        }
+
+        /// <summary>
+        ///  Indicates whether the control has been created. This property is read-only.
+        /// </summary>
+        [Browsable (false)]
+        [EditorBrowsable (EditorBrowsableState.Advanced)]
+        public bool Created => GetState (States.Created);
 
         /// <summary>
         /// Gets the current style of this control instance.
@@ -199,19 +421,24 @@ namespace Modern.Forms
         /// Gets or sets the mouse cursor to be shown when the mouse is over the control.
         /// </summary>
         public Cursor Cursor {
-            get => cursor ?? Parent?.Cursor ?? Cursor.Default;
+            get {
+                if (GetState (States.UseWaitCursor))
+                    return Cursors.Wait;
+
+                if (Properties.GetObject (s_cursorProperty) is Cursor cursor)
+                    return cursor;
+
+                return Parent?.Cursor ?? DefaultCursor;
+            }
             set {
-                if (cursor != value) {
-                    cursor = value;
+                var old_cursor = Properties.GetObject (s_cursorProperty) as Cursor;
+
+                if (old_cursor != value) {
+                    Properties.SetObject (s_cursorProperty, value);
                     OnCursorChanged (EventArgs.Empty);
                 }
             }
         }
-
-        /// <summary>
-        /// Raised when the Cursor property is changed.
-        /// </summary>
-        public event EventHandler? CursorChanged;
 
         /// <summary>
         /// Gets the default cursor.
@@ -221,7 +448,17 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the default margin of the control.
         /// </summary>
-        protected virtual Padding DefaultMargin => new Padding (3);
+        protected virtual Padding DefaultMargin => CommonProperties.DefaultMargin;
+
+        /// <summary>
+        /// Gets the default maximum size of the control.
+        /// </summary>
+        protected virtual Size DefaultMaximumSize => CommonProperties.DefaultMaximumSize;
+
+        /// <summary>
+        /// Gets the default minimum size of the control.
+        /// </summary>
+        protected virtual Size DefaultMinimumSize => CommonProperties.DefaultMinimumSize;
 
         /// <summary>
         /// Gets the default padding of the control.
@@ -273,70 +510,78 @@ namespace Modern.Forms
         /// </summary>
         public virtual Rectangle DisplayRectangle => ClientRectangle;
 
-        /// <summary>
-        /// Gets or sets which side the control is docked to.
-        /// </summary>
-        public virtual DockStyle Dock {
-            get => dock_style;
-            set {
-                if (value != DockStyle.None)
-                    UseAnchorLayoutInternal = false;
+        ///// <summary>
+        ///// Gets or sets which side the control is docked to.
+        ///// </summary>
+        //public virtual DockStyle Dock {
+        //    get => dock_style;
+        //    set {
+        //        if (value != DockStyle.None)
+        //            UseAnchorLayoutInternal = false;
 
-                if (dock_style == value)
-                    return;
+        //        if (dock_style == value)
+        //            return;
 
-                dock_style = value;
-                anchor_style = AnchorStyles.Top | AnchorStyles.Left;
+        //        dock_style = value;
+        //        anchor_style = AnchorStyles.Top | AnchorStyles.Left;
 
-                if (dock_style == DockStyle.None) {
-                    //bounds = explicit_bounds;
-                    UseAnchorLayoutInternal = true;
-                }
+        //        if (dock_style == DockStyle.None) {
+        //            //bounds = explicit_bounds;
+        //            UseAnchorLayoutInternal = true;
+        //        }
 
-                if (Parent != null)
-                    Parent.PerformLayout (this, nameof (Dock));
-                else if (Controls.GetAllControls ().Any ())
-                    PerformLayout (this, nameof (Dock));
+        //        if (Parent != null)
+        //            Parent.PerformLayout (this, nameof (Dock));
+        //        else if (Controls.GetAllControls ().Any ())
+        //            PerformLayout (this, nameof (Dock));
 
-                OnDockChanged (EventArgs.Empty);
-            }
-        }
-
-        /// <summary>
-        /// Raised when the Dock property is changed.
-        /// </summary>
-        public event EventHandler? DockChanged;
-
-        /// <summary>
-        /// Raised when this control is double-clicked.
-        /// </summary>
-        public event EventHandler<MouseEventArgs>? DoubleClick;
+        //        OnDockChanged (EventArgs.Empty);
+        //    }
+        //}
 
         /// <summary>
         /// Gets or sets whether the control can be interacted with.
         /// </summary>
         public bool Enabled {
             get {
-                if (!is_enabled)
+                // We are only enabled if our parent is enabled
+                if (!GetState (States.Enabled)) {
                     return false;
-
-                return Parent?.Enabled ?? true;
+                } else if (Parent is null) {
+                    return true;
+                } else {
+                    return Parent.Enabled;
+                }
             }
             set {
-                if (is_enabled == value)
-                    return;
+                bool oldValue = Enabled;
+                SetState (States.Enabled, value);
 
-                is_enabled = value;
+                if (oldValue != value) {
+                    if (!value) {
+                        //SelectNextIfFocused ();
+                    }
 
-                OnEnabledChanged (EventArgs.Empty);
-                Invalidate ();
+                    OnEnabledChanged (EventArgs.Empty);
+                }
             }
-        }
 
-        /// <summary>
-        /// Raised when the Enabled property is changed.
-        /// </summary>
-        public event EventHandler? EnabledChanged;
+            //get {
+            //    if (!is_enabled)
+            //        return false;
+
+            //    return Parent?.Enabled ?? true;
+            //}
+            //set {
+            //    if (is_enabled == value)
+            //        return;
+
+            //    is_enabled = value;
+
+            //    OnEnabledChanged (EventArgs.Empty);
+            //    Invalidate ();
+            //}
+        }
 
         /// <summary>
         /// Gets the ControlAdapter the control is parented to.
@@ -402,9 +647,34 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        ///  Returns the closest ContainerControl in the control's chain of parent controls
+        ///  and forms.
+        /// </summary>
+        public IContainerControl GetContainerControl ()
+        {
+            Control c = this;
+
+            // Refer to IsContainerControl property for more details.
+            if (c is not null && IsContainerControl) {
+                c = c.Parent;
+            }
+
+            while (c is not null && !IsFocusManagingContainerControl (c)) {
+                c = c.Parent;
+            }
+
+            return (IContainerControl)c;
+        }
+
+        /// <summary>
         /// Gets behavior flag value.
         /// </summary>
         protected internal bool GetControlBehavior (ControlBehaviors behavior) => behaviors.HasFlag (behavior);
+
+        /// <summary>
+        ///  Retrieves the current value of the specified bit in the control's state2.
+        /// </summary>
+        private protected bool GetExtendedState (ExtendedStates flag) => (_extendedState & flag) != 0;
 
         internal virtual Control? GetFirstChildControlInTabOrder (bool forward, bool includeImplicit)
         {
@@ -560,11 +830,6 @@ namespace Modern.Forms
             return start == this ? null : start;
         }
 
-        private static bool IsFocusManagingContainerControl (Control ctl)
-        {
-            return false;// ((ctl._controlStyle & ControlStyles.ContainerControl) == ControlStyles.ContainerControl && ctl is IContainerControl);
-        }
-
         /// <summary>
         /// Gets the position of the Control relative to the Form. (Differs from normal when
         /// the Control is parented to other controls.
@@ -586,7 +851,7 @@ namespace Modern.Forms
         /// Gets the size the control would prefer to be.
         /// </summary>
         /// <param name="proposedSize">A size the layout engine is proposing for the control.</param>
-        public virtual Size GetPreferredSize (Size proposedSize) => new Size (Width, Height);
+        //public virtual Size GetPreferredSize (Size proposedSize) => new Size (Width, Height);
 
         /// <summary>
         /// Scales bounds by a specified factor.
@@ -618,14 +883,14 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Raised when the control receives focus.
+        ///  Retrieves the current value of the specified bit in the control's state.
         /// </summary>
-        public event EventHandler? GotFocus;
+        private protected bool GetState (States flag) => (_state & flag) != 0;
 
         /// <summary>
         /// Gets a value indicating if control contains any child controls.
         /// </summary>
-        public bool HasChildren => Controls.Count > 0;
+        public bool HasChildren => ((Properties.GetObject (s_controlsCollectionProperty) as ControlCollection)?.Count ?? 0) > 0;
 
         /// <summary>
         /// Gets or sets the unscaled height of the control.
@@ -654,6 +919,9 @@ namespace Modern.Forms
         /// <param name="rectangle">The portion of the control to be redrawn.</param>
         public void Invalidate (Rectangle rectangle)
         {
+            if (!Created)
+                return;
+
             is_dirty = true;
 
             FindWindow ()?.Invalidate (rectangle);
@@ -662,34 +930,14 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Raised when the Control is invalidated.
-        /// </summary>
-        public event EventHandler<EventArgs<Rectangle>>? Invalidated;
-
-        /// <summary>
         /// Is the mouse currently over the control.
         /// </summary>
         public bool IsHovering { get; private set; }
 
-        /// <summary>
-        /// Raised when the user presses down a key.
-        /// </summary>
-        public event EventHandler<KeyEventArgs>? KeyDown;
-
-        /// <summary>
-        /// Raised when the user presses a key.
-        /// </summary>
-        public event EventHandler<KeyPressEventArgs>? KeyPress;
-
-        /// <summary>
-        /// Raised when the user releases a key.
-        /// </summary>
-        public event EventHandler<KeyEventArgs>? KeyUp;
-
-        /// <summary>
-        /// Raised when the control performs a layout.
-        /// </summary>
-        public event EventHandler<LayoutEventArgs>? Layout;
+        // Public because this is interesting for ControlDesigners.
+        [Browsable (false)]
+        [EditorBrowsable (EditorBrowsableState.Advanced)]
+        public virtual LayoutEngine LayoutEngine => DefaultLayout.Instance;
 
         /// <summary>
         /// Gets or sets the unscaled left boundary of the control.
@@ -706,11 +954,6 @@ namespace Modern.Forms
             get => bounds.Location;
             set => SetBounds (value.X, value.Y, bounds.Width, bounds.Height, BoundsSpecified.Location);
         }
-
-        /// <summary>
-        /// Raised when the Location property is changed.
-        /// </summary>
-        public event EventHandler? LocationChanged;
 
         /// <summary>
         /// Converts an unscaled value to a scaled value.
@@ -741,54 +984,16 @@ namespace Modern.Forms
         /// </summary>
         internal bool ImplicitControl { get; set; }
 
-        /// <summary>
-        /// Gets or sets how much space there should be between the control and other controls.
-        /// </summary>
-        public virtual Padding Margin {
-            get => margin;
-            set {
-                if (margin != value) {
-                    margin = value;
-                    Parent?.PerformLayout (this, nameof (Margin));
-                    OnMarginChanged (EventArgs.Empty);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Raised when the Margin property is changed.
-        /// </summary>
-        public event EventHandler? MarginChanged;
-
-        /// <summary>
-        /// Raised when a mouse button is pressed.
-        /// </summary>
-        public event EventHandler<MouseEventArgs>? MouseDown;
-
-        /// <summary>
-        /// Raised when the mouse cursor enters the control.
-        /// </summary>
-        public event EventHandler<MouseEventArgs>? MouseEnter;
-
-        /// <summary>
-        /// Raised when the mouse cursor leaves the control.
-        /// </summary>
-        public event EventHandler? MouseLeave;
-
-        /// <summary>
-        /// Raised when the mouse cursor is moved within the control.
-        /// </summary>
-        public event EventHandler<MouseEventArgs>? MouseMove;
-
-        /// <summary>
-        /// Raised when a mouse button ir released.
-        /// </summary>
-        public event EventHandler<MouseEventArgs>? MouseUp;
-
-        /// <summary>
-        /// Raised when a mouse wheel is rotated.
-        /// </summary>
-        public event EventHandler<MouseEventArgs>? MouseWheel;
+        //public virtual Padding Margin {
+        //    get => margin;
+        //    set {
+        //        if (margin != value) {
+        //            margin = value;
+        //            Parent?.PerformLayout (this, nameof (Margin));
+        //            OnMarginChanged (EventArgs.Empty);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Gets or sets a user specified name for the control.
@@ -811,6 +1016,17 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        ///  Called when a child is about to resume its layout.  The default implementation
+        ///  calls OnChildLayoutResuming on the parent.
+        /// </summary>
+        internal virtual void OnChildLayoutResuming (Control child, bool performLayout)
+        {
+            if (Parent is not null) {
+                Parent.OnChildLayoutResuming (child, performLayout);
+            }
+        }
+
+        /// <summary>
         /// Raises the OnClick event.
         /// </summary>
         protected virtual void OnClick (MouseEventArgs e)
@@ -820,13 +1036,36 @@ namespace Modern.Forms
                 return;
             }
 
-            Click?.Invoke (this, e);
+            (Events[s_clickEvent] as EventHandler<MouseEventArgs>)?.Invoke (this, e);
+        }
+
+        /// <summary>
+        ///  Raises the <see cref='ContextMenuChanged'/> event.
+        /// </summary>
+        protected virtual void OnContextMenuChanged (EventArgs e) => (Events[s_contextMenuChangedEvent] as EventHandler)?.Invoke (this, e);
+
+        /// <summary>
+        ///  Raises the <see cref='ControlAdded'/> event.
+        /// </summary>
+        protected virtual void OnControlAdded (EventArgs<Control> e) => (Events[s_controlAddedEvent] as EventHandler<EventArgs<Control>>)?.Invoke (this, e);
+
+        /// <summary>
+        ///  Raises the <see cref='ControlRemoved'/> event.
+        /// </summary>
+        protected virtual void OnControlRemoved (EventArgs<Control> e) => (Events[s_controlRemovedEvent] as EventHandler<EventArgs<Control>>)?.Invoke (this, e);
+
+        /// <summary>
+        ///  Called when the control is first created.
+        /// </summary>
+        [EditorBrowsable (EditorBrowsableState.Advanced)]
+        protected virtual void OnCreateControl ()
+        {
         }
 
         /// <summary>
         /// Raises the CursorChanged event.
         /// </summary>
-        protected virtual void OnCursorChanged (EventArgs e) => CursorChanged?.Invoke (this, e);
+        protected virtual void OnCursorChanged (EventArgs e) => (Events[s_cursorChangedEvent] as EventHandler)?.Invoke (this, e);
 
         /// <summary>
         /// Called when the control is deselected.
@@ -834,69 +1073,69 @@ namespace Modern.Forms
         protected virtual void OnDeselected (EventArgs e) { }
 
         /// <summary>
-        /// Raises the DockChanged event.
-        /// </summary>
-        protected virtual void OnDockChanged (EventArgs e) => DockChanged?.Invoke (this, e);
-
-        /// <summary>
         /// Raises the DoubleClick event.
         /// </summary>
-        protected virtual void OnDoubleClick (MouseEventArgs e) => DoubleClick?.Invoke (this, e);
+        protected virtual void OnDoubleClick (MouseEventArgs e) => (Events[s_doubleClickEvent] as EventHandler<MouseEventArgs>)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the EnabledChanged event.
         /// </summary>
-        protected virtual void OnEnabledChanged (EventArgs e) => EnabledChanged?.Invoke (this, e);
+        protected virtual void OnEnabledChanged (EventArgs e)
+        {
+            Invalidate ();
+
+            (Events[s_enabledChangedEvent] as EventHandler)?.Invoke (this, e);
+
+            var controlsCollection = (ControlCollection)Properties.GetObject (s_controlsCollectionProperty);
+            if (controlsCollection is not null) {
+                // PERFNOTE: This is more efficient than using Foreach.  Foreach
+                // forces the creation of an array subset enum each time we
+                // enumerate
+                for (var i = 0; i < controlsCollection.Count; i++) {
+                    controlsCollection[i].OnParentEnabledChanged (e);
+                }
+            }
+        }
 
         /// <summary>
         /// Raises the GotFocus event.
         /// </summary>
-        protected virtual void OnGotFocus (EventArgs e) => GotFocus?.Invoke (this, e);
+        protected virtual void OnGotFocus (EventArgs e) => (Events[s_gotFocusEvent] as EventHandler)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the Invalidated event.
         /// </summary>
-        protected virtual void OnInvalidated (EventArgs<Rectangle> e) => Invalidated?.Invoke (this, e);
+        protected virtual void OnInvalidated (EventArgs<Rectangle> e) => (Events[s_invalidatedEvent] as EventHandler<EventArgs<Rectangle>>)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the KeyDown event.
         /// </summary>
-        protected virtual void OnKeyDown (KeyEventArgs e) => KeyDown?.Invoke (this, e);
+        protected virtual void OnKeyDown (KeyEventArgs e) => (Events[s_keyDownEvent] as EventHandler<KeyEventArgs>)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the KeyPress event.
         /// </summary>
-        protected virtual void OnKeyPress (KeyPressEventArgs e) => KeyPress?.Invoke (this, e);
+        protected virtual void OnKeyPress (KeyPressEventArgs e) => (Events[s_keyPressEvent] as EventHandler<KeyPressEventArgs>)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the KeyUp event.
         /// </summary>
-        protected virtual void OnKeyUp (KeyEventArgs e) => KeyUp?.Invoke (this, e);
-
-        /// <summary>
-        /// Raises the Layout event.
-        /// </summary>
-        protected virtual void OnLayout (LayoutEventArgs e)
-        {
-            Layout?.Invoke (this, e);
-
-            DefaultLayout.Instance.Layout (this, e);
-        }
+        protected virtual void OnKeyUp (KeyEventArgs e) => (Events[s_keyUpEvent] as EventHandler<KeyEventArgs>)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the LocationChanged event.
         /// </summary>
-        protected virtual void OnLocationChanged (EventArgs e) => LocationChanged?.Invoke (this, e);
+        protected virtual void OnLocationChanged (EventArgs e) => (Events[s_locationChangedEvent] as EventHandler)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the MarginChanged event.
         /// </summary>
-        protected virtual void OnMarginChanged (EventArgs e) => MarginChanged?.Invoke (this, e);
+        protected virtual void OnMarginChanged (EventArgs e) => (Events[s_marginChangedEvent] as EventHandler)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the MouseDown event.
         /// </summary>
-        protected virtual void OnMouseDown (MouseEventArgs e) => MouseDown?.Invoke (this, e);
+        protected virtual void OnMouseDown (MouseEventArgs e) => (Events[s_mouseDownEvent] as EventHandler<MouseEventArgs>)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the MouseEnter event.
@@ -910,7 +1149,7 @@ namespace Modern.Forms
                 Invalidate ();
             }
 
-            MouseEnter?.Invoke (this, e);
+            (Events[s_mouseEnterEvent] as EventHandler<MouseEventArgs>)?.Invoke (this, e);
         }
 
         /// <summary>
@@ -923,28 +1162,28 @@ namespace Modern.Forms
                 Invalidate ();
             }
 
-            MouseLeave?.Invoke (this, e);
+            (Events[s_mouseLeaveEvent] as EventHandler)?.Invoke (this, e);
         }
 
         /// <summary>
         /// Raises the MouseMove event.
         /// </summary>
-        protected virtual void OnMouseMove (MouseEventArgs e) => MouseMove?.Invoke (this, e);
+        protected virtual void OnMouseMove (MouseEventArgs e) => (Events[s_mouseMoveEvent] as EventHandler<MouseEventArgs>)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the MouseUp event.
         /// </summary>
-        protected virtual void OnMouseUp (MouseEventArgs e) => MouseUp?.Invoke (this, e);
+        protected virtual void OnMouseUp (MouseEventArgs e) => (Events[s_mouseUpEvent] as EventHandler<MouseEventArgs>)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the MouseWheel event.
         /// </summary>
-        protected virtual void OnMouseWheel (MouseEventArgs e) => MouseWheel?.Invoke (this, e);
+        protected virtual void OnMouseWheel (MouseEventArgs e) => (Events[s_mouseWheelEvent] as EventHandler<MouseEventArgs>)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the PaddingChanged event.
         /// </summary>
-        protected virtual void OnPaddingChanged (EventArgs e) => PaddingChanged?.Invoke (this, e);
+        protected virtual void OnPaddingChanged (EventArgs e) => (Events[s_paddingChangedEvent] as EventHandler)?.Invoke (this, e);
 
         /// <summary>
         /// Paints the control.
@@ -1002,6 +1241,16 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Called when the Parent's Enabled property is changed.
+        /// </summary>
+        [EditorBrowsable (EditorBrowsableState.Advanced)]
+        protected virtual void OnParentEnabledChanged (EventArgs e)
+        {
+            if (GetState (States.Enabled))
+                OnEnabledChanged (e);
+        }
+
+        /// <summary>
         /// Called when the Parent's Visible property is changed.
         /// </summary>
         protected virtual void OnParentVisibleChanged (EventArgs e)
@@ -1011,31 +1260,60 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        ///  Retrieves our internal property storage object. If you have a property
+        ///  whose value is not always set, you should store it in here to save
+        ///  space.
+        /// </summary>
+        internal PropertyStore Properties { get; } = new PropertyStore ();
+
+        /// <summary>
+        ///  Raises the <see cref='Resize'/> event.
+        /// </summary>
+        [EditorBrowsable (EditorBrowsableState.Advanced)]
+        protected virtual void OnResize (EventArgs e)
+        {
+            //if ((_controlStyle & ControlStyles.ResizeRedraw) == ControlStyles.ResizeRedraw
+            //    || GetState (States.ExceptionWhilePainting)) {
+            //    Invalidate ();
+            //}
+
+            LayoutTransaction.DoLayout (this, this, PropertyNames.Bounds);
+            (Events[s_resizeEvent] as EventHandler)?.Invoke (this, e);
+        }
+
+        /// <summary>
         /// Raises the SizeChanged event.
         /// </summary>
-        protected virtual void OnSizeChanged (EventArgs e) => SizeChanged?.Invoke (this, e);
+        protected virtual void OnSizeChanged (EventArgs e)
+        {
+            OnResize (EventArgs.Empty);
+
+            (Events[s_sizeChangedEvent] as EventHandler)?.Invoke (this, e);
+        }
 
         /// <summary>
         /// Raises the TabIndexChanged event.
         /// </summary>
-        protected virtual void OnTabIndexChanged (EventArgs e) => TabIndexChanged?.Invoke (this, e);
+        protected virtual void OnTabIndexChanged (EventArgs e) => (Events[s_tabIndexChangedEvent] as EventHandler)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the TabStopChanged event.
         /// </summary>
-        protected virtual void OnTabStopChanged (EventArgs e) => TabStopChanged?.Invoke (this, e);
+        protected virtual void OnTabStopChanged (EventArgs e) => (Events[s_tabStopChangedEvent] as EventHandler)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the TextChanged event.
         /// </summary>
-        protected virtual void OnTextChanged (EventArgs e) => TextChanged?.Invoke (this, e);
+        protected virtual void OnTextChanged (EventArgs e) => (Events[s_textChangedEvent] as EventHandler)?.Invoke (this, e);
 
         /// <summary>
         /// Raises the VisibleChanged event.
         /// </summary>
         protected virtual void OnVisibleChanged (EventArgs e)
         {
-            VisibleChanged?.Invoke (this, e);
+            CreateControl ();
+
+            (Events[s_visibleChangedEvent] as EventHandler)?.Invoke (this, e);
 
             foreach (var c in Controls.GetAllControls ())
                 c.OnParentVisibleChanged (e);
@@ -1059,24 +1337,16 @@ namespace Modern.Forms
             }
         }
 
-        /// <summary>
-        /// Gets or sets the amount of space there should be between the control bounds and the control contents.
-        /// </summary>
-        public virtual Padding Padding {
-            get => padding;
-            set {
-                if (padding != value) {
-                    padding = value;
-                    PerformLayout (this, nameof (Padding));
-                    OnPaddingChanged (EventArgs.Empty);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Raised when the Padding property is changed.
-        /// </summary>
-        public event EventHandler? PaddingChanged;
+        //public virtual Padding Padding {
+        //    get => padding;
+        //    set {
+        //        if (padding != value) {
+        //            padding = value;
+        //            PerformLayout (this, nameof (Padding));
+        //            OnPaddingChanged (EventArgs.Empty);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Gets or sets the control that contains this control.
@@ -1104,50 +1374,6 @@ namespace Modern.Forms
                 OnParentChanged (EventArgs.Empty);
             }
         }
-
-        /// <summary>
-        /// Triggers the control to layout its children.
-        /// </summary>
-        public void PerformLayout () => PerformLayout (null, string.Empty);
-
-        /// <summary>
-        /// Triggers the control to layout its children.
-        /// </summary>
-        /// <param name="affectedControl">The control causing the layout.</param>
-        /// <param name="affectedProperty">The property causing the layout.</param>
-        public void PerformLayout (Control? affectedControl, string affectedProperty)
-        {
-            var levent = new LayoutEventArgs (affectedControl, affectedProperty);
-
-            foreach (var c in Controls.GetAllControls ().Where (c => c.Visible))
-                if (c.recalculate_distances)
-                    c.RecalculateDistances ();
-
-            if (layout_suspended > 0) {
-                layout_pending = true;
-                return;
-            }
-
-            layout_pending = false;
-
-            // Prevent us from getting messed up
-            layout_suspended++;
-
-            // Perform all Dock and Anchor calculations
-            try {
-                OnLayout (levent);
-            }
-
-            // Need to make sure we decremend layout_suspended
-            finally {
-                layout_suspended--;
-            }
-        }
-
-        /// <summary>
-        /// Gets the size the control would prefer to be.
-        /// </summary>
-        public Size PreferredSize => GetPreferredSize (Size.Empty);
 
         /// <summary>
         /// Converts a point from control coordinates to monitor coordinates.
@@ -1407,38 +1633,20 @@ namespace Modern.Forms
         /// </summary>
         internal void RaisePaintBackground (PaintEventArgs e) => OnPaintBackground (e);
 
-        /// <summary>
-        /// Calculates the distances needed for anchored controls.
-        /// </summary>
-        private void RecalculateDistances ()
-        {
-            if (parent != null) {
-                if (bounds.Width >= 0)
-                    dist_right = parent.ClientSize.Width - bounds.X - bounds.Width;
-                if (bounds.Height >= 0)
-                    dist_bottom = parent.ClientSize.Height - bounds.Y - bounds.Height;
+        ///// <summary>
+        ///// Calculates the distances needed for anchored controls.
+        ///// </summary>
+        //private void RecalculateDistances ()
+        //{
+        //    if (parent != null) {
+        //        if (bounds.Width >= 0)
+        //            dist_right = parent.ClientSize.Width - bounds.X - bounds.Width;
+        //        if (bounds.Height >= 0)
+        //            dist_bottom = parent.ClientSize.Height - bounds.Y - bounds.Height;
 
-                recalculate_distances = false;
-            }
-        }
-
-        /// <summary>
-        /// Notifies the control to result performing layouts originally suspended with SuspendLayout.
-        /// </summary>
-        public void ResumeLayout (bool performLayout = true)
-        {
-            if (layout_suspended > 0)
-                layout_suspended--;
-
-            if (layout_suspended == 0) {
-                if (!performLayout)
-                    foreach (var c in Controls.GetAllControls ().Where (c => c.Visible))
-                        c.RecalculateDistances ();
-
-                if (performLayout && layout_pending)
-                    PerformLayout ();
-            }
-        }
+        //        recalculate_distances = false;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the unscaled right boundary of the control.
@@ -1466,7 +1674,7 @@ namespace Modern.Forms
 
                 SetBounds (sx, sy, sw, sh, BoundsSpecified.All);
 
-                foreach (var c in Controls)
+                foreach (var c in Controls.GetAllControls ())
                     c.ScaleCore (dx, dy);
 
             } finally {
@@ -1589,42 +1797,6 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Sets the unscaled bounds of the control.
-        /// </summary>
-        public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
-        {
-            SetBoundsCore (x, y, width, height, specified);
-        }
-
-        /// <summary>
-        /// A version of SetBounds that can be overridden by subclasses.
-        /// </summary>
-        protected virtual void SetBoundsCore (int x, int y, int width, int height, BoundsSpecified specified)
-        {
-            var moved = bounds.X != x || bounds.Y != y;
-            var resized = bounds.Width != width || bounds.Height != height;
-
-            bounds.X = x;
-            bounds.Y = y;
-            bounds.Width = width;
-            bounds.Height = height;
-
-            if (moved)
-                OnLocationChanged (EventArgs.Empty);
-
-            if (resized) {
-                OnSizeChanged (EventArgs.Empty);
-                PerformLayout (this, nameof (Bounds));
-            }
-
-            // If the user explicitly moved or resized us, recalculate our anchor distances
-            if (specified != BoundsSpecified.None)
-                RecalculateDistances ();
-
-            parent?.PerformLayout (this, nameof (Bounds));
-        }
-
-        /// <summary>
         /// Sets behavior flags.
         /// </summary>
         protected internal void SetControlBehavior (ControlBehaviors behavior, bool value = true)
@@ -1659,6 +1831,32 @@ namespace Modern.Forms
             SetBoundsCore (rect.X, rect.Y, rect.Width, rect.Height, BoundsSpecified.None);
         }
 
+        private protected void SetState (States flag, bool value)
+        {
+            _state = value ? _state | flag : _state & ~flag;
+        }
+
+        private protected void SetExtendedState (ExtendedStates flag, bool value)
+        {
+            _extendedState = value ? _extendedState | flag : _extendedState & ~flag;
+        }
+
+        protected virtual void SetVisibleCore (bool value)
+        {
+            if (value != GetState (States.Visible)) {
+                //if (!value)
+                    //SelectNextIfFocused ();
+
+                SetState (States.Visible, value);
+
+                if (Parent is not null)
+                    using (new LayoutTransaction (Parent, this, PropertyNames.Visible))
+                        OnVisibleChanged (EventArgs.Empty);
+                else
+                    OnVisibleChanged (EventArgs.Empty);
+            }
+        }
+
         /// <summary>
         /// Shows this control to the user.
         /// </summary>
@@ -1681,11 +1879,6 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Raised when the Size property is changed.
-        /// </summary>
-        public event EventHandler? SizeChanged;
-
-        /// <summary>
         /// Gets the ControlStyle properties for this instance of the Control.
         /// </summary>
         public virtual ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
@@ -1696,9 +1889,12 @@ namespace Modern.Forms
         public virtual ControlStyle StyleHover { get; } = new ControlStyle (DefaultStyleHover);
 
         /// <summary>
-        /// Pauses performing layouts until ResumeLayout is called.
+        ///  Suspends the layout logic for the control.
         /// </summary>
-        public void SuspendLayout () => layout_suspended++;
+        public void SuspendLayout ()
+        {
+            layout_suspend_count++;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating the order the control is selected when pressing tab.
@@ -1714,27 +1910,17 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Raised when the TabIndex property is changed.
-        /// </summary>
-        public event EventHandler? TabIndexChanged;
-
-        /// <summary>
         /// Gets or sets whether the control is selectable via pressing tab.
         /// </summary>
         public bool TabStop {
-            get => tab_stop;
+            get => GetState (States.TabStop);
             set {
-                if (tab_stop != value) {
-                    tab_stop = value;
+                if (TabStop != value) {
+                    SetState (States.TabStop, value);
                     OnTabStopChanged (EventArgs.Empty);
                 }
             }
         }
-
-        /// <summary>
-        /// Raised when the TabStop property is changed.
-        /// </summary>
-        public event EventHandler? TabStopChanged;
 
         /// <summary>
         /// Gets or sets user defined data.
@@ -1758,11 +1944,6 @@ namespace Modern.Forms
                 OnTextChanged (EventArgs.Empty);
             }
         }
-
-        /// <summary>
-        /// Raised when the Text property is changed.
-        /// </summary>
-        public event EventHandler? TextChanged;
 
         /// <summary>
         /// Gets or sets the unscaled top boundary of the control.
@@ -1793,25 +1974,13 @@ namespace Modern.Forms
         /// </summary>
         public virtual bool Visible {
             get {
-                if (!is_visible)
+                if (!GetState (States.Visible))
                     return false;
 
                 return parent?.Visible ?? false;
             }
-            set {
-                if (is_visible != value) {
-                    is_visible = value;
-                    OnVisibleChanged (EventArgs.Empty);
-
-                    parent?.PerformLayout (this, nameof (Visible));
-                }
-            }
+            set => SetVisibleCore (value);
         }
-
-        /// <summary>
-        /// Raised when the Visisble property is changed.
-        /// </summary>
-        public event EventHandler? VisibleChanged;
 
         /// <summary>
         /// Gets or sets the unscaled width of the control.
@@ -1829,16 +1998,16 @@ namespace Modern.Forms
         /// </summary>
         protected override void Dispose (bool disposing)
         {
-            base.Dispose (disposing);
-
             if (!disposedValue) {
                 FreeBackBuffer ();
 
-                foreach (var c in Controls)
+                foreach (var c in Controls.GetAllControls (true))
                     c.Dispose (disposing);
 
                 disposedValue = true;
             }
+
+            base.Dispose (disposing);
         }
 
         /// <summary>

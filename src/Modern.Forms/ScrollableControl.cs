@@ -26,25 +26,23 @@ namespace Modern.Forms
         /// </summary>
         public ScrollableControl ()
         {
-            hscrollbar = new HorizontalScrollBar {
+            hscrollbar = Controls.AddImplicitControl (new HorizontalScrollBar {
                 Visible = false
-            };
+            });
 
             hscrollbar.ValueChanged += HandleScroll;
             hscrollbar.Scroll += (o, e) => OnScroll (e);
 
-            vscrollbar = new VerticalScrollBar {
+            vscrollbar = Controls.AddImplicitControl (new VerticalScrollBar {
                 Visible = false
-            };
+            });
 
             vscrollbar.ValueChanged += HandleScroll;
             vscrollbar.Scroll += (o, e) => OnScroll (e);
 
-            sizegrip = new SizeGrip {
-                Visible = false
-            };
-
-            Controls.AddImplicitControlRange (sizegrip, hscrollbar, vscrollbar);
+            sizegrip = Controls.AddImplicitControl (new SizeGrip { 
+                Visible = false 
+            });
 
             SizeChanged += (o, e) => Recalculate (true);
             VisibleChanged += (o, e) => Recalculate (true);

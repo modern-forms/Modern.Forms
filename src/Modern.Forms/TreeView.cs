@@ -439,7 +439,7 @@ namespace Modern.Forms
 
                 vscrollbar.Visible = true;
                 vscrollbar.Maximum = root_item.GetVisibleChildrenCount () - VisibleItemCount;
-                vscrollbar.LargeChange = VisibleItemCount;
+                vscrollbar.LargeChange = Math.Max (0, VisibleItemCount);
             } else {
                 vscrollbar.Visible = false;
                 top_index = 0;

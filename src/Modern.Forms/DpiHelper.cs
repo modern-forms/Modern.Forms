@@ -12,6 +12,17 @@ namespace Modern.Forms
         private static double logicalToDeviceUnitsScalingFactor = 0.0;
         private static double deviceDpi = LogicalDpi;
 
+        /// <summary>
+        ///  Returns whether scaling is required when converting between logical-device units,
+        ///  if the application opted in the automatic scaling in the .config file.
+        /// </summary>
+        public static bool IsScalingRequired => deviceDpi != LogicalDpi;
+
+        /// <summary>
+        ///  Indicates, if rescaling becomes necessary, either because we are not 96 DPI or we're PerMonitorV2Aware.
+        /// </summary>
+        internal static bool IsScalingRequirementMet => IsScalingRequired;// || s_perMonitorAware;
+
         private static double LogicalToDeviceUnitsScalingFactor {
             get {
                 if (logicalToDeviceUnitsScalingFactor == 0.0)

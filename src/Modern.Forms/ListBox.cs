@@ -496,7 +496,7 @@ namespace Modern.Forms
             if (NeededHeightForItems > Bounds.Height) {
                 vscrollbar.Visible = true;
                 vscrollbar.Maximum = Items.Count - VisibleItemCount;
-                vscrollbar.LargeChange = VisibleItemCount;
+                vscrollbar.LargeChange = Math.Max (0, VisibleItemCount);
             } else {
                 vscrollbar.Visible = ScrollbarAlwaysVisible;
             }
