@@ -17,6 +17,10 @@ public partial class Control
         Visible                 = 0x00000002,
         Enabled                 = 0x00000004,
         TabStop                 = 0x00000008,
+        IsDirty                 = 0x00000010,   // Modern.Forms addition
+        IsHovering              = 0x00000020,   // Modern.Forms addition
+        IsImplicitControl       = 0x00000040,   // Modern.Forms addition
+        IsSelected              = 0x00000080,   // Modern.Forms addition
         //Recreate                = 0x00000010,
         //Modal                   = 0x00000020,
         //AllowDrop               = 0x00000040,

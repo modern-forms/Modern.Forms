@@ -30,12 +30,12 @@ internal sealed class LayoutTransaction : IDisposable
     readonly Control? _controlToLayout;
     readonly bool _resumeLayout;
 
-    public LayoutTransaction (Control? controlToLayout, IArrangedElement? controlCausingLayout, string? property) :
+    public LayoutTransaction (Control? controlToLayout, IArrangedElement controlCausingLayout, string? property) :
         this (controlToLayout, controlCausingLayout, property, true)
     {
     }
 
-    public LayoutTransaction (Control? controlToLayout, IArrangedElement? controlCausingLayout, string? property, bool resumeLayout)
+    public LayoutTransaction (Control? controlToLayout, IArrangedElement controlCausingLayout, string? property, bool resumeLayout)
     {
         CommonProperties.xClearPreferredSizeCache (controlCausingLayout);
 
@@ -62,7 +62,7 @@ internal sealed class LayoutTransaction : IDisposable
     // This overload should be used when a property has changed that affects preferred size,
     // but you only want to layout if a certain condition exists (say you want to layout your
     // parent because your preferred size has changed).
-    public static IDisposable CreateTransactionIf (bool condition, Control? controlToLayout, IArrangedElement? elementCausingLayout, string? property)
+    public static IDisposable CreateTransactionIf (bool condition, Control? controlToLayout, IArrangedElement elementCausingLayout, string? property)
     {
         if (condition) {
             return new LayoutTransaction (controlToLayout, elementCausingLayout, property);
@@ -72,7 +72,7 @@ internal sealed class LayoutTransaction : IDisposable
         }
     }
 
-    public static void DoLayout (IArrangedElement? elementToLayout, IArrangedElement? elementCausingLayout, string? property)
+    public static void DoLayout (IArrangedElement? elementToLayout, IArrangedElement elementCausingLayout, string? property)
     {
         if (elementCausingLayout is not null) {
             CommonProperties.xClearPreferredSizeCache (elementCausingLayout);
@@ -89,7 +89,7 @@ internal sealed class LayoutTransaction : IDisposable
     // This overload should be used when a property has changed that affects preferred size,
     // but you only want to layout if a certain condition exists (say you want to layout your
     // parent because your preferred size has changed).
-    public static void DoLayoutIf (bool condition, IArrangedElement? elementToLayout, IArrangedElement? elementCausingLayout, string? property)
+    public static void DoLayoutIf (bool condition, IArrangedElement? elementToLayout, IArrangedElement elementCausingLayout, string? property)
     {
         if (!condition) {
             if (elementCausingLayout is not null) {

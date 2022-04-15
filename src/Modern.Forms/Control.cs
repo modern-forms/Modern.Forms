@@ -1,6 +1,4 @@
-﻿#undef DEBUG
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,35 +22,30 @@ namespace Modern.Forms
         //       Every control on a form has the overhead of all of these
         //       variables!
         private Control? parent;
-        private Rectangle bounds;
-        private States _state = States.Visible | States.Enabled | States.TabStop | States.CausesValidation;
+        private States _state = States.Visible | States.Enabled | States.TabStop | States.CausesValidation | States.IsDirty;
         private ExtendedStates _extendedState;
+        private ControlBehaviors behaviors = ControlBehaviors.Selectable | ControlBehaviors.ReceivesMouseEvents;
+
+        private int _x;
+        private int _y;
+        private int _width;
+        private int _height;
 
         private int tab_index = -1;
         private string text = string.Empty;
         private byte layout_suspend_count;
 
         private SKBitmap? back_buffer;
-        private ControlBehaviors behaviors;
         private Control? current_mouse_in;
-        //private Cursor? cursor;
-        //internal int dist_right;
-        //internal int dist_bottom;
-        //private DockStyle dock_style;
+
         private bool is_captured;
-        private bool is_dirty = true;
-        //private bool is_enabled = true;
-        //private bool is_visible = true;
-        //private bool layout_pending;
-        //private Padding margin;
-        //private Padding padding;
-        //private bool recalculate_distances = true;
-        //private bool tab_stop = true;
 
         // Property store keys for properties.
         private static readonly int s_controlsCollectionProperty = PropertyStore.CreateKey ();
         private static readonly int s_contextMenuProperty = PropertyStore.CreateKey ();
         private static readonly int s_cursorProperty = PropertyStore.CreateKey ();
+        private static readonly int s_namePropertyProperty = PropertyStore.CreateKey ();
+        private static readonly int s_tagProperty = PropertyStore.CreateKey ();
 
         /// <summary>
         /// Initializes a new instance of the Control class.
@@ -73,69 +66,12 @@ namespace Modern.Forms
             if (DefaultMaximumSize != CommonProperties.DefaultMaximumSize)
                 MaximumSize = DefaultMaximumSize;
 
-            //padding = DefaultPadding;
+            var default_size = DefaultSize;
 
-            bounds = new Rectangle (Point.Empty, DefaultSize);
+            _width = default_size.Width;
+            _height = default_size.Height;
 
-            behaviors = ControlBehaviors.Selectable | ControlBehaviors.ReceivesMouseEvents;
-
-            //Cursor = DefaultCursor;
-
-            Theme.ThemeChanged += (o, e) => is_dirty = true;
-        }
-
-
-        ///// <summary>
-        ///// Gets or sets a value indicating which sides of the control are anchored when its parent resizes.
-        ///// </summary>
-        //public virtual AnchorStyles Anchor {
-        //    get => anchor_style;
-        //    set {
-        //        UseAnchorLayoutInternal = true;
-
-        //        if (anchor_style == value)
-        //            return;
-
-        //        anchor_style = value;
-        //        dock_style = DockStyle.None;
-
-        //        RecalculateDistances ();
-
-        //        parent?.PerformLayout (this, nameof (Anchor));
-        //    }
-        //}
-
-        // GetPreferredSize and SetBoundsCore call this method to allow controls to self impose
-        // constraints on their size.
-        internal Size ApplySizeConstraints (int width, int height)
-        {
-            return ApplyBoundsConstraints (0, 0, width, height).Size;
-        }
-
-        // GetPreferredSize and SetBoundsCore call this method to allow controls to self impose
-        // constraints on their size.
-        internal Size ApplySizeConstraints (Size proposedSize)
-        {
-            return ApplyBoundsConstraints (0, 0, proposedSize.Width, proposedSize.Height).Size;
-        }
-
-        internal virtual Rectangle ApplyBoundsConstraints (int suggestedX, int suggestedY, int proposedWidth, int proposedHeight)
-        {
-            // COMPAT: in Everett we would allow you to set negative values in pre-handle mode
-            // in Whidbey, if you've set Min/Max size we will constrain you to 0,0.  Everett apps didnt
-            // have min/max size on control, which is why this works.
-            if (MaximumSize != Size.Empty || MinimumSize != Size.Empty) {
-                Size maximumSize = LayoutUtils.ConvertZeroToUnbounded (MaximumSize);
-                Rectangle newBounds = new Rectangle (suggestedX, suggestedY, 0, 0) {
-                    // Clip the size to maximum and inflate it to minimum as necessary.
-                    Size = LayoutUtils.IntersectSizes (new Size (proposedWidth, proposedHeight), maximumSize)
-                };
-                newBounds.Size = LayoutUtils.UnionSizes (newBounds.Size, MinimumSize);
-
-                return newBounds;
-            }
-
-            return new Rectangle (suggestedX, suggestedY, proposedWidth, proposedHeight);
+            Theme.ThemeChanged += (o, e) => SetState (States.IsDirty, true);
         }
 
         /// <summary>
@@ -149,51 +85,27 @@ namespace Modern.Forms
             //    RequiredScalingEnabled = value.RequiredScalingEnabled;
             //}
 
-            //if (CanAccessProperties) {
-            //    // Store the old values for these properties
-            //    Font oldFont = Font;
-            //    Color oldForeColor = ForeColor;
-            //    Color oldBackColor = BackColor;
-            //    RightToLeft oldRtl = RightToLeft;
-            //    bool oldEnabled = Enabled;
-            //    bool oldVisible = Visible;
+            // Store the old values for these properties
+            var old_enabled = Enabled;
+            var old_visible = Visible;
 
-            //    // Update the parent
-            //    parent = value;
-            //    OnParentChanged (EventArgs.Empty);
+            // Update the parent
+            parent = value;
+            OnParentChanged (EventArgs.Empty);
 
-            //    if (GetAnyDisposingInHierarchy ()) {
-            //        return;
-            //    }
+            if (GetAnyDisposingInHierarchy ())
+                return;
 
-            //    // Compare property values with new parent to old values
-            //    if (oldEnabled != Enabled) {
-            //        OnEnabledChanged (EventArgs.Empty);
-            //    }
+            // Compare property values with new parent to old values
+            if (old_enabled != Enabled)
+                OnEnabledChanged (EventArgs.Empty);
 
-            //    // When a control seems to be going from invisible -> visible,
-            //    // yet its parent is being set to null and it's not top level, do not raise OnVisibleChanged.
-            //    bool newVisible = Visible;
+            // When a control seems to be going from invisible -> visible,
+            // yet its parent is being set to null and it's not top level, do not raise OnVisibleChanged.
+            var new_visible = Visible;
 
-            //    if (oldVisible != newVisible && !(!oldVisible && newVisible && parent is null && !GetTopLevel ())) {
-            //        OnVisibleChanged (EventArgs.Empty);
-            //    }
-
-            //    if (!oldFont.Equals (Font)) {
-            //        OnFontChanged (EventArgs.Empty);
-            //    }
-
-            //    if (!oldForeColor.Equals (ForeColor)) {
-            //        OnForeColorChanged (EventArgs.Empty);
-            //    }
-
-            //    if (!oldBackColor.Equals (BackColor)) {
-            //        OnBackColorChanged (EventArgs.Empty);
-            //    }
-
-            //    if (oldRtl != RightToLeft) {
-            //        OnRightToLeftChanged (EventArgs.Empty);
-            //    }
+            if (old_visible != new_visible && !(!old_visible && new_visible && parent is null))
+                OnVisibleChanged (EventArgs.Empty);
 
             //    if (Properties.GetObject (s_bindingManagerProperty) is null && Created) {
             //        // We do not want to call our parent's BindingContext property here.
@@ -204,27 +116,21 @@ namespace Modern.Forms
             //        //
             //        OnBindingContextChanged (EventArgs.Empty);
             //    }
-            //} else {
-                parent = value;
-                OnParentChanged (EventArgs.Empty);
-            //}
 
-            //SetState (States.CheckedHost, false);
-            if (Parent is not null) {
+            if (Parent is not null)
                 Parent.LayoutEngine.InitLayout (this, BoundsSpecified.All);
-            }
         }
 
         /// <summary>
         /// Gets the unscaled bottom location of the control.
         /// </summary>
-        public int Bottom => bounds.Bottom;
+        public int Bottom => _y + _height;
 
         /// <summary>
         /// Gets or sets the unscaled bounds of the control.
         /// </summary>
         public Rectangle Bounds {
-            get => bounds;
+            get => new Rectangle (_x, _y, _width, _height);
             set => SetBounds (value.Left, value.Top, value.Width, value.Height);
         }
 
@@ -277,33 +183,27 @@ namespace Modern.Forms
         /// </summary>
         internal static void CheckParentingCycle (Control bottom, Control toFind)
         {
-            //ControlAdapter lastOwner = null;
-            //Control lastParent = null;
+            ControlAdapter? lastOwner = null;
+            Control? lastParent = null;
 
-            //for (Control ctl = bottom; ctl is not null; ctl = ctl.Parent) {
-            //    lastParent = ctl;
-            //    if (ctl == toFind) {
-            //        throw new ArgumentException (SR.CircularOwner);
-            //    }
-            //}
+            for (var ctl = bottom; ctl is not null; ctl = ctl.Parent) {
+                lastParent = ctl;
 
-            //if (lastParent is not null) {
-            //    if (lastParent is ControlAdapter f) {
-            //        //for (ControlAdapter form = f; form is not null; form = form.OwnerInternal) {
-            //            ControlAdapter form = f;
-            //            lastOwner = form;
-            //            if (form == toFind) {
-            //                throw new ArgumentException (SR.CircularOwner);
-            //            }
-            //        //}
-            //    }
-            //}
+                if (ctl == toFind)
+                    throw new ArgumentException (SR.CircularOwner);
+            }
 
-            //if (lastOwner is not null) {
-            //    if (lastOwner.Parent is not null) {
-            //        CheckParentingCycle (lastOwner.Parent, toFind);
-            //    }
-            //}
+            if (lastParent is not null) {
+                if (lastParent is ControlAdapter form) {
+                    lastOwner = form;
+
+                    if (form == toFind)
+                        throw new ArgumentException (SR.CircularOwner);
+                }
+            }
+
+            if (lastOwner?.Parent is not null)
+                CheckParentingCycle (lastOwner.Parent, toFind);
         }
 
         /// <summary>
@@ -362,7 +262,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the collection of controls contained by the control.
         /// </summary>
-        public ControlCollection Controls { 
+        public ControlCollection Controls {
             get {
                 var collection = (ControlCollection?)Properties.GetObject (s_controlsCollectionProperty);
 
@@ -510,77 +410,42 @@ namespace Modern.Forms
         /// </summary>
         public virtual Rectangle DisplayRectangle => ClientRectangle;
 
-        ///// <summary>
-        ///// Gets or sets which side the control is docked to.
-        ///// </summary>
-        //public virtual DockStyle Dock {
-        //    get => dock_style;
-        //    set {
-        //        if (value != DockStyle.None)
-        //            UseAnchorLayoutInternal = false;
-
-        //        if (dock_style == value)
-        //            return;
-
-        //        dock_style = value;
-        //        anchor_style = AnchorStyles.Top | AnchorStyles.Left;
-
-        //        if (dock_style == DockStyle.None) {
-        //            //bounds = explicit_bounds;
-        //            UseAnchorLayoutInternal = true;
-        //        }
-
-        //        if (Parent != null)
-        //            Parent.PerformLayout (this, nameof (Dock));
-        //        else if (Controls.GetAllControls ().Any ())
-        //            PerformLayout (this, nameof (Dock));
-
-        //        OnDockChanged (EventArgs.Empty);
-        //    }
-        //}
+        /// <summary>
+        ///  Indicates whether the control is in the process of being disposed. This
+        ///  property is read-only.
+        /// </summary>
+        [Browsable (false)]
+        [EditorBrowsable (EditorBrowsableState.Advanced)]
+        public bool Disposing => GetState (States.Disposing);
 
         /// <summary>
         /// Gets or sets whether the control can be interacted with.
         /// </summary>
         public bool Enabled {
             get {
-                // We are only enabled if our parent is enabled
-                if (!GetState (States.Enabled)) {
+                // If we aren't enabled, that's easy
+                if (!GetState (States.Enabled))
                     return false;
-                } else if (Parent is null) {
+
+                // If we don't have a Parent, then we're enabled
+                if (Parent is null)
                     return true;
-                } else {
-                    return Parent.Enabled;
-                }
+
+                // If our Parent isn't enabled, neither are we
+                return Parent.Enabled;
             }
             set {
-                bool oldValue = Enabled;
+                var old_value = Enabled;
                 SetState (States.Enabled, value);
 
-                if (oldValue != value) {
-                    if (!value) {
-                        //SelectNextIfFocused ();
-                    }
+                // See if the computed Enabled actually changed
+                if (old_value != value) {
+                    if (!value)
+                        SelectNextIfFocused ();
 
                     OnEnabledChanged (EventArgs.Empty);
                 }
             }
-
-            //get {
-            //    if (!is_enabled)
-            //        return false;
-
-            //    return Parent?.Enabled ?? true;
-            //}
-            //set {
-            //    if (is_enabled == value)
-            //        return;
-
-            //    is_enabled = value;
-
-            //    OnEnabledChanged (EventArgs.Empty);
-            //    Invalidate ();
-            //}
         }
 
         /// <summary>
@@ -632,6 +497,20 @@ namespace Modern.Forms
             }
         }
 
+        internal bool GetAnyDisposingInHierarchy ()
+        {
+            var up = this;
+
+            while (up is not null) {
+                if (up.Disposing)
+                    return true;
+
+                up = up.parent;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Gets or creates a back buffer for rendering the control.
         /// </summary>
@@ -640,7 +519,7 @@ namespace Modern.Forms
             if (back_buffer is null || back_buffer.Width != ScaledSize.Width || back_buffer.Height != ScaledSize.Height) {
                 FreeBackBuffer ();
                 back_buffer = new SKBitmap (ScaledSize.Width, ScaledSize.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-                is_dirty = true;
+                SetState (States.IsDirty, true);
             }
 
             return back_buffer;
@@ -650,20 +529,18 @@ namespace Modern.Forms
         ///  Returns the closest ContainerControl in the control's chain of parent controls
         ///  and forms.
         /// </summary>
-        public IContainerControl GetContainerControl ()
+        public IContainerControl? GetContainerControl ()
         {
-            Control c = this;
+            var c = this;
 
             // Refer to IsContainerControl property for more details.
-            if (c is not null && IsContainerControl) {
+            if (c is not null && IsContainerControl)
                 c = c.Parent;
-            }
 
-            while (c is not null && !IsFocusManagingContainerControl (c)) {
+            while (c is not null && !IsFocusManagingContainerControl (c))
                 c = c.Parent;
-            }
 
-            return (IContainerControl)c;
+            return (IContainerControl?)c;
         }
 
         /// <summary>
@@ -848,12 +725,6 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Gets the size the control would prefer to be.
-        /// </summary>
-        /// <param name="proposedSize">A size the layout engine is proposing for the control.</param>
-        //public virtual Size GetPreferredSize (Size proposedSize) => new Size (Width, Height);
-
-        /// <summary>
         /// Scales bounds by a specified factor.
         /// </summary>
         protected virtual Rectangle GetScaledBounds (Rectangle bounds, SizeF factor, BoundsSpecified specified)
@@ -896,8 +767,8 @@ namespace Modern.Forms
         /// Gets or sets the unscaled height of the control.
         /// </summary>
         public int Height {
-            get => bounds.Height;
-            set => SetBounds (bounds.X, bounds.Y, bounds.Width, value, BoundsSpecified.Height);
+            get => _height;
+            set => SetBounds (_x, _y, _width, value, BoundsSpecified.Height);
         }
 
         /// <summary>
@@ -922,7 +793,7 @@ namespace Modern.Forms
             if (!Created)
                 return;
 
-            is_dirty = true;
+            SetState (States.IsDirty, true);
 
             FindWindow ()?.Invalidate (rectangle);
 
@@ -932,27 +803,25 @@ namespace Modern.Forms
         /// <summary>
         /// Is the mouse currently over the control.
         /// </summary>
-        public bool IsHovering { get; private set; }
-
-        // Public because this is interesting for ControlDesigners.
-        [Browsable (false)]
-        [EditorBrowsable (EditorBrowsableState.Advanced)]
-        public virtual LayoutEngine LayoutEngine => DefaultLayout.Instance;
+        public bool IsHovering {
+            get => GetState (States.IsHovering);
+            private set => SetState (States.IsHovering, value);
+        }
 
         /// <summary>
         /// Gets or sets the unscaled left boundary of the control.
         /// </summary>
         public int Left {
-            get => bounds.Left;
-            set => SetBounds (value, bounds.Y, bounds.Width, bounds.Height, BoundsSpecified.X);
+            get => _x;
+            set => SetBounds (value, _y, _width, _height, BoundsSpecified.X);
         }
 
         /// <summary>
         /// Gets or sets the unscaled location of the control.
         /// </summary>
         public Point Location {
-            get => bounds.Location;
-            set => SetBounds (value.X, value.Y, bounds.Width, bounds.Height, BoundsSpecified.Location);
+            get => new Point (_x, _y);
+            set => SetBounds (value.X, value.Y, _width, _height, BoundsSpecified.Location);
         }
 
         /// <summary>
@@ -982,28 +851,35 @@ namespace Modern.Forms
         /// <summary>
         /// Internal control (like a scrollbar) that should not show up in Controls for a user.
         /// </summary>
-        internal bool ImplicitControl { get; set; }
-
-        //public virtual Padding Margin {
-        //    get => margin;
-        //    set {
-        //        if (margin != value) {
-        //            margin = value;
-        //            Parent?.PerformLayout (this, nameof (Margin));
-        //            OnMarginChanged (EventArgs.Empty);
-        //        }
-        //    }
-        //}
+        internal bool ImplicitControl {
+            get => GetState (States.IsImplicitControl);
+            set => SetState (States.IsImplicitControl, value);
+        }
 
         /// <summary>
         /// Gets or sets a user specified name for the control.
+        /// The name can be used as a key into the ControlCollection.
         /// </summary>
-        public string? Name { get; set; }
+        [Browsable (false)]
+        public string Name {
+            get {
+                var name = (string?)Properties.GetObject (s_namePropertyProperty);
+
+                if (string.IsNullOrEmpty (name))
+                    name = Site?.Name;
+
+                return name ?? string.Empty;
+            }
+            set {
+                var s = string.IsNullOrEmpty (value) ? null : value;
+                Properties.SetObject (s_namePropertyProperty, s);
+            }
+        }
 
         /// <summary>
         /// Whether the control needs to be repainted.
         /// </summary>
-        internal bool NeedsPaint => is_dirty || Controls.GetAllControls ().Any (c => c.NeedsPaint);
+        internal bool NeedsPaint => GetState (States.IsDirty) || Controls.GetAllControls ().Any (c => c.NeedsPaint);
 
         /// <summary>
         /// The full control canvas.
@@ -1021,9 +897,7 @@ namespace Modern.Forms
         /// </summary>
         internal virtual void OnChildLayoutResuming (Control child, bool performLayout)
         {
-            if (Parent is not null) {
-                Parent.OnChildLayoutResuming (child, performLayout);
-            }
+            Parent?.OnChildLayoutResuming (child, performLayout);
         }
 
         /// <summary>
@@ -1086,15 +960,11 @@ namespace Modern.Forms
 
             (Events[s_enabledChangedEvent] as EventHandler)?.Invoke (this, e);
 
-            var controlsCollection = (ControlCollection)Properties.GetObject (s_controlsCollectionProperty);
-            if (controlsCollection is not null) {
-                // PERFNOTE: This is more efficient than using Foreach.  Foreach
-                // forces the creation of an array subset enum each time we
-                // enumerate
-                for (var i = 0; i < controlsCollection.Count; i++) {
-                    controlsCollection[i].OnParentEnabledChanged (e);
-                }
-            }
+            // PERFNOTE: This is more efficient than using Foreach.  Foreach
+            // forces the creation of an array subset enum each time we enumerate
+            if (Properties.GetObject (s_controlsCollectionProperty) is ControlCollection collection)
+                for (var i = 0; i < collection.Count; i++)
+                    collection[i].OnParentEnabledChanged (e);
         }
 
         /// <summary>
@@ -1272,6 +1142,7 @@ namespace Modern.Forms
         [EditorBrowsable (EditorBrowsableState.Advanced)]
         protected virtual void OnResize (EventArgs e)
         {
+            // TODO?
             //if ((_controlStyle & ControlStyles.ResizeRedraw) == ControlStyles.ResizeRedraw
             //    || GetState (States.ExceptionWhilePainting)) {
             //    Invalidate ();
@@ -1336,17 +1207,6 @@ namespace Modern.Forms
                 return new Rectangle (x, y, w, h);
             }
         }
-
-        //public virtual Padding Padding {
-        //    get => padding;
-        //    set {
-        //        if (padding != value) {
-        //            padding = value;
-        //            PerformLayout (this, nameof (Padding));
-        //            OnPaddingChanged (EventArgs.Empty);
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Gets or sets the control that contains this control.
@@ -1625,7 +1485,7 @@ namespace Modern.Forms
         {
             OnPaint (e);
 
-            is_dirty = false;
+            SetState (States.IsDirty, false);
         }
 
         /// <summary>
@@ -1633,25 +1493,10 @@ namespace Modern.Forms
         /// </summary>
         internal void RaisePaintBackground (PaintEventArgs e) => OnPaintBackground (e);
 
-        ///// <summary>
-        ///// Calculates the distances needed for anchored controls.
-        ///// </summary>
-        //private void RecalculateDistances ()
-        //{
-        //    if (parent != null) {
-        //        if (bounds.Width >= 0)
-        //            dist_right = parent.ClientSize.Width - bounds.X - bounds.Width;
-        //        if (bounds.Height >= 0)
-        //            dist_bottom = parent.ClientSize.Height - bounds.Y - bounds.Height;
-
-        //        recalculate_distances = false;
-        //    }
-        //}
-
         /// <summary>
         /// Gets the unscaled right boundary of the control.
         /// </summary>
-        public int Right => bounds.Right;
+        public int Right => _x + _width;
 
         /// <summary>
         /// Scales the control by the specified factor.
@@ -1745,7 +1590,10 @@ namespace Modern.Forms
         /// <summary>
         /// Gets a value indicating the control has focus.
         /// </summary>
-        public bool Selected { get; private set; }
+        public bool Selected {
+            get => GetState (States.IsSelected);
+            private set => SetState (States.IsSelected, value);
+        }
 
         /// <summary>
         /// Moves focus to the next control.
@@ -1785,6 +1633,17 @@ namespace Modern.Forms
             } while (c != start);
 
             return false;
+        }
+
+        /// <summary>
+        ///  This is called recursively when visibility is changed for a control, this
+        ///  forces focus to be moved to a visible control.
+        /// </summary>
+        private void SelectNextIfFocused ()
+        {
+            if (Focused && Parent is not null)
+                if (Parent.GetContainerControl () is Control c)
+                    c.SelectNextControl (this, true, true, true, true);
         }
 
         /// <summary>
@@ -1844,8 +1703,8 @@ namespace Modern.Forms
         protected virtual void SetVisibleCore (bool value)
         {
             if (value != GetState (States.Visible)) {
-                //if (!value)
-                    //SelectNextIfFocused ();
+                if (!value)
+                    SelectNextIfFocused ();
 
                 SetState (States.Visible, value);
 
@@ -1874,8 +1733,8 @@ namespace Modern.Forms
         /// Gets or sets the unscaled size of the control.
         /// </summary>
         public Size Size {
-            get => bounds.Size;
-            set => SetBounds (bounds.X, bounds.Y, value.Width, value.Height, BoundsSpecified.Size);
+            get => new Size (_width, _height);
+            set => SetBounds (_x, _y, value.Width, value.Height, BoundsSpecified.Size);
         }
 
         /// <summary>
@@ -1891,10 +1750,7 @@ namespace Modern.Forms
         /// <summary>
         ///  Suspends the layout logic for the control.
         /// </summary>
-        public void SuspendLayout ()
-        {
-            layout_suspend_count++;
-        }
+        public void SuspendLayout () => layout_suspend_count++;
 
         /// <summary>
         /// Gets or sets a value indicating the order the control is selected when pressing tab.
@@ -1925,7 +1781,10 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets user defined data.
         /// </summary>
-        public object? Tag { get; set; }
+        public object? Tag {
+            get => Properties.GetObject (s_tagProperty);
+            set => Properties.SetObject (s_tagProperty, value);
+        }
 
         /// <summary>
         /// Gets or sets the text of the control.
@@ -1949,8 +1808,8 @@ namespace Modern.Forms
         /// Gets or sets the unscaled top boundary of the control.
         /// </summary>
         public int Top {
-            get => bounds.Top;
-            set => SetBounds (bounds.X, value, bounds.Width, bounds.Height, BoundsSpecified.Y);
+            get => _y;
+            set => SetBounds (_x, value, _width, _height, BoundsSpecified.Y);
         }
 
         /// <summary>
@@ -1963,11 +1822,6 @@ namespace Modern.Forms
 
             return new MouseEventArgs (e.Button, e.Clicks, e.Location.X - control.ScaledLeft, e.Location.Y - control.ScaledTop, e.Delta, e.Location.X, e.Location.Y, e.Modifiers);
         }
-
-        /// <summary>
-        /// Indicates whether to use anchor or dock layout.
-        /// </summary>
-        internal bool UseAnchorLayoutInternal { get; private set; } = true;
 
         /// <summary>
         /// Gets or sets whether the control is displayed to the user.
@@ -1986,12 +1840,15 @@ namespace Modern.Forms
         /// Gets or sets the unscaled width of the control.
         /// </summary>
         public int Width {
-            get => bounds.Width;
-            set => SetBounds (bounds.X, bounds.Y, value, bounds.Height, BoundsSpecified.Width);
+            get => _width;
+            set => SetBounds (_x, _y, value, _height, BoundsSpecified.Width);
         }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
+        private bool isHovering;
+        private bool implicitControl;
+        private bool selected;
 
         /// <summary>
         /// Disposes unmanaged resources used by the control.

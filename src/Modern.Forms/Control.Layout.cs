@@ -192,7 +192,7 @@ public partial class Control
                     sizeChanged = true;
                 }
 
-                if (locationProperty is not null && !locationProperty.IsReadOnly && (bounds.X != this.bounds.X || bounds.Y != this.bounds.Y)) {
+                if (locationProperty is not null && !locationProperty.IsReadOnly && (bounds.X != _x || bounds.Y != _y)) {
                     if (site is not INestedSite)
                         changeService.OnComponentChanging (this, locationProperty);
 
@@ -242,6 +242,11 @@ public partial class Control
         // TODO probably
         return false;// ((ctl._controlStyle & ControlStyles.ContainerControl) == ControlStyles.ContainerControl && ctl is IContainerControl);
     }
+
+    // Public because this is interesting for ControlDesigners.
+    [Browsable (false)]
+    [EditorBrowsable (EditorBrowsableState.Advanced)]
+    public virtual LayoutEngine LayoutEngine => DefaultLayout.Instance;
 
     /// <summary>
     /// Gets or sets how much space there should be between the control and other controls.
@@ -479,7 +484,7 @@ public partial class Control
     /// </summary>
     public void SetBounds (int x, int y, int width, int height)
     {
-        if (bounds.X != x || bounds.Y != y || bounds.Width != width || bounds.Height != height) {
+        if (_x != x || _y != y || _width != width || _height != height) {
             SetBoundsCore (x, y, width, height, BoundsSpecified.All);
 
             // WM_WINDOWPOSCHANGED will trickle down to an OnResize() which will
@@ -497,18 +502,18 @@ public partial class Control
     public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified)
     {
         if ((specified & BoundsSpecified.X) == BoundsSpecified.None)
-            x = bounds.X;
+            x = _x;
 
         if ((specified & BoundsSpecified.Y) == BoundsSpecified.None)
-            y = bounds.Y;
+            y = _y;
 
         if ((specified & BoundsSpecified.Width) == BoundsSpecified.None)
-            width = bounds.Width;
+            width = _width;
 
         if ((specified & BoundsSpecified.Height) == BoundsSpecified.None)
-            height = bounds.Height;
+            height = _height;
 
-        if (bounds.X != x || bounds.Y != y || bounds.Width != width || bounds.Height != height) {
+        if (_x != x || _y != y || _width != width || _height != height) {
             SetBoundsCore (x, y, width, height, specified);
 
             // WM_WINDOWPOSCHANGED will trickle down to an OnResize() which will
@@ -538,7 +543,7 @@ public partial class Control
             Parent.SuspendLayout ();
 
         try {
-            if (bounds.X != x || bounds.Y != y || bounds.Width != width || bounds.Height != height) {
+            if (_x != x || _y != y || _width != width || _height != height) {
                 CommonProperties.UpdateSpecifiedBounds (this, x, y, width, height, specified);
 
                 // Provide control with an opportunity to apply self imposed constraints on its size.
@@ -582,14 +587,14 @@ public partial class Control
     protected void UpdateBounds (int x, int y, int width, int height)//, int clientWidth, int clientHeight)
     {
 
-        bool newLocation = bounds.X != x || bounds.Y != y;
-        bool newSize = Width != width || Height != height;// ||
+        var newLocation = _x != x || _y != y;
+        var newSize = Width != width || Height != height;// ||
                                                           //_clientWidth != clientWidth || _clientHeight != clientHeight;
 
-        bounds.X = x;
-        bounds.Y = y;
-        bounds.Width = width;
-        bounds.Height = height;
+        _x = x;
+        _y = y;
+        _width = width;
+        _height = height;
         //_clientWidth = clientWidth;
         //_clientHeight = clientHeight;
 
