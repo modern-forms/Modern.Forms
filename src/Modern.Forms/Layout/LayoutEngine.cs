@@ -7,6 +7,9 @@ using System.Drawing;
 
 namespace Modern.Forms.Layout;
 
+/// <summary>
+/// Base class for layout engines.
+/// </summary>
 public abstract class LayoutEngine
 {
     internal IArrangedElement CastToArrangedElement (object obj)
@@ -22,6 +25,9 @@ public abstract class LayoutEngine
         return Size.Empty;
     }
 
+    /// <summary>
+    /// Initializes a layout.
+    /// </summary>
     public virtual void InitLayout (object child, BoundsSpecified specified)
     {
         ArgumentNullException.ThrowIfNull (child);
@@ -33,6 +39,9 @@ public abstract class LayoutEngine
     {
     }
 
+    /// <summary>
+    /// Performs a layout. Returns true is parent layout is required.
+    /// </summary>
     public virtual bool Layout (object container, LayoutEventArgs layoutEventArgs)
     {
         ArgumentNullException.ThrowIfNull (container);

@@ -244,6 +244,9 @@ public partial class Control
     }
 
     // Public because this is interesting for ControlDesigners.
+    /// <summary>
+    /// Gets the LayoutEngine for the current control.
+    /// </summary>
     [Browsable (false)]
     [EditorBrowsable (EditorBrowsableState.Advanced)]
     public virtual LayoutEngine LayoutEngine => DefaultLayout.Instance;
@@ -268,6 +271,9 @@ public partial class Control
         }
     }
 
+    /// <summary>
+    /// Gets or sets the maximum size for the control.
+    /// </summary>
     public virtual Size MaximumSize {
         get => CommonProperties.GetMaximumSize (this, DefaultMaximumSize);
         set {
@@ -282,6 +288,9 @@ public partial class Control
         }
     }
 
+    /// <summary>
+    /// Gets or sets the minimum size for the control.
+    /// </summary>
     public virtual Size MinimumSize {
         get => CommonProperties.GetMinimumSize (this, DefaultMinimumSize);
         set {

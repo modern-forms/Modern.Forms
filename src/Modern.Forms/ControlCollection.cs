@@ -32,6 +32,9 @@ public partial class Control
         ///  Note this is not Thread Safe - but WinForms has to be run in a STA anyways.
         private int _lastAccessedIndex = -1;
 
+        /// <summary>
+        /// Initializes a new instance of the ControlCollection class.
+        /// </summary>
         public ControlCollection (Control owner)
         {
             Owner = owner.OrThrowIfNull ();
@@ -65,6 +68,10 @@ public partial class Control
             return item;
         }
 
+        /// <summary>
+        /// Adds multiple child controls to this control. This suspends layouts until all
+        /// controls are adding, which is more efficient than adding controls individually.
+        /// </summary>
         public virtual void AddRange (params Control[] controls)
         {
             ArgumentNullException.ThrowIfNull (controls);
@@ -81,6 +88,9 @@ public partial class Control
             }
         }
 
+        /// <summary>
+        /// Removes all controls from the collection.
+        /// </summary>
         public virtual void Clear ()
         {
             Owner.SuspendLayout ();
@@ -96,6 +106,9 @@ public partial class Control
             }
         }
 
+        /// <summary>
+        /// Determines if the collection contains the specified control.
+        /// </summary>
         public bool Contains (Control item) => control_list.Contains (item);
 
         /// <summary>
@@ -123,8 +136,14 @@ public partial class Control
             }
         }
 
+        /// <summary>
+        /// Copies the collection of controls to the specified array.
+        /// </summary>
         public void CopyTo (Control[] array, int arrayIndex) => control_list.CopyTo (array, arrayIndex);
 
+        /// <summary>
+        /// Return the number of controls in the collection.
+        /// </summary>
         public int Count => control_list.Count;
 
         /// <summary>
@@ -196,6 +215,9 @@ public partial class Control
             return index;
         }
 
+        /// <summary>
+        /// Returns an enumerator for the collection.
+        /// </summary>
         public IEnumerator<Control> GetEnumerator () => control_list.GetEnumerator ();
 
         IEnumerator IEnumerable.GetEnumerator () => control_list.GetEnumerator ();
@@ -226,8 +248,14 @@ public partial class Control
             return -1;
         }
 
+        /// <summary>
+        /// Returns the index in the collection of the specified control.
+        /// </summary>
         public int IndexOf (Control item) => control_list.IndexOf (item);
 
+        /// <summary>
+        /// Adds the specified control at the specified index in the collection.
+        /// </summary>
         public virtual void Insert (int index, Control value)
         {
             if (value is null)
@@ -282,6 +310,9 @@ public partial class Control
             return;
         }
 
+        /// <summary>
+        /// Returns a value indicating if controls can be added to the collection.
+        /// </summary>
         public bool IsReadOnly => false;
 
         /// <summary>
@@ -363,6 +394,9 @@ public partial class Control
             return true;
         }
 
+        /// <summary>
+        /// Removes the control at the specified collection index.
+        /// </summary>
         public void RemoveAt (int index)
         {
             Remove (this[index]);

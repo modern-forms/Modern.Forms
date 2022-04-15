@@ -11,9 +11,28 @@ namespace Modern.Forms;
 /// </summary>
 public enum TextImageRelation
 {
+    /// <summary>
+    /// Image and text should occupy the same space.
+    /// </summary>
     Overlay = AnchorStyles.None,
+
+    /// <summary>
+    /// Image should be positioned before the text.
+    /// </summary>
     ImageBeforeText = AnchorStyles.Left,
+
+    /// <summary>
+    /// Text should be postitioned before the image.
+    /// </summary>
     TextBeforeImage = AnchorStyles.Right,
+
+    /// <summary>
+    /// Image should be positioned above the text.
+    /// </summary>
     ImageAboveText = AnchorStyles.Top,
+
+    /// <summary>
+    /// Text should be positioned above the image.
+    /// </summary>
     TextAboveImage = AnchorStyles.Bottom
 }

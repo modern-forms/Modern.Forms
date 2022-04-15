@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Modern.Forms.Layout;
@@ -1710,6 +1706,9 @@ namespace Modern.Forms
             _extendedState = value ? _extendedState | flag : _extendedState & ~flag;
         }
 
+        /// <summary>
+        /// Performs the logic needed to change a control's visibility.
+        /// </summary>
         protected virtual void SetVisibleCore (bool value)
         {
             if (value != GetState (States.Visible)) {
@@ -1856,9 +1855,6 @@ namespace Modern.Forms
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
-        private bool isHovering;
-        private bool implicitControl;
-        private bool selected;
 
         /// <summary>
         /// Disposes unmanaged resources used by the control.
