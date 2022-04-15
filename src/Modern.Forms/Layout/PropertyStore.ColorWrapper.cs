@@ -4,18 +4,14 @@
 
 using System.Drawing;
 
-namespace Modern.Forms.Layout
-{
-    internal partial class PropertyStore
-    {
-        private sealed class ColorWrapper
-        {
-            public Color Color;
+namespace Modern.Forms.Layout;
 
-            public ColorWrapper(Color color)
-            {
-                Color = color;
-            }
-        }
+internal partial class PropertyStore
+{
+    private sealed class ColorWrapper
+    {
+        public Color Color;
+
+        public ColorWrapper (Color color) => Color = color;
     }
 }

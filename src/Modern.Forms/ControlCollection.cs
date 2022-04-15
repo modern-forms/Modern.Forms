@@ -355,9 +355,9 @@ public partial class Control
                 LayoutTransaction.DoLayout (Owner, value, PropertyNames.Parent);
                 Owner.OnControlRemoved (new EventArgs<Control> (value));
 
-                // ContainerControl needs to see it needs to find a new ActiveControl.
-                if (Owner.GetContainerControl () is ContainerControl cc)
-                    cc.AfterControlRemoved (value, Owner);
+                // ContainerControl needs to see it needs to find a new ActiveControl. TODO
+                //if (Owner.GetContainerControl () is ContainerControl cc)
+                //    cc.AfterControlRemoved (value, Owner);
             }
 
             return true;
