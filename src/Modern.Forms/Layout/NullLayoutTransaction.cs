@@ -4,12 +4,11 @@
 
 using System;
 
-namespace Modern.Forms.Layout
+namespace Modern.Forms.Layout;
+
+internal struct NullLayoutTransaction : IDisposable
 {
-    internal struct NullLayoutTransaction : IDisposable
+    public void Dispose()
     {
-        public void Dispose()
-        {
-        }
     }
 }

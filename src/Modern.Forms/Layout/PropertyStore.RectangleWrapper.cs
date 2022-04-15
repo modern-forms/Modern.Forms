@@ -4,18 +4,14 @@
 
 using System.Drawing;
 
-namespace Modern.Forms.Layout
-{
-    internal partial class PropertyStore
-    {
-        private sealed class RectangleWrapper
-        {
-            public Rectangle Rectangle;
+namespace Modern.Forms.Layout;
 
-            public RectangleWrapper(Rectangle rectangle)
-            {
-                Rectangle = rectangle;
-            }
-        }
+internal partial class PropertyStore
+{
+    private sealed class RectangleWrapper
+    {
+        public Rectangle Rectangle;
+
+        public RectangleWrapper (Rectangle rectangle) => Rectangle = rectangle;
     }
 }

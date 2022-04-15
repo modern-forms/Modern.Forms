@@ -4,18 +4,14 @@
 
 using System.Drawing;
 
-namespace Modern.Forms.Layout
-{
-    internal partial class PropertyStore
-    {
-        private sealed class SizeWrapper
-        {
-            public Size Size;
+namespace Modern.Forms.Layout;
 
-            public SizeWrapper(Size size)
-            {
-                Size = size;
-            }
-        }
+internal partial class PropertyStore
+{
+    private sealed class SizeWrapper
+    {
+        public Size Size;
+
+        public SizeWrapper (Size size) => Size = size;
     }
 }

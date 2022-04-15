@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Drawing;
 using Modern.Forms.Layout;
@@ -26,6 +27,35 @@ public partial class Control
         set => DefaultLayout.SetAnchor (Parent, this, value);
     }
 
+    internal virtual Rectangle ApplyBoundsConstraints (int suggestedX, int suggestedY, int proposedWidth, int proposedHeight)
+    {
+        // COMPAT: in Everett we would allow you to set negative values in pre-handle mode
+        // in Whidbey, if you've set Min/Max size we will constrain you to 0,0.  Everett apps didnt
+        // have min/max size on control, which is why this works.
+        if (MaximumSize != Size.Empty || MinimumSize != Size.Empty) {
+            var maximumSize = LayoutUtils.ConvertZeroToUnbounded (MaximumSize);
+
+            var newBounds = new Rectangle (suggestedX, suggestedY, 0, 0) {
+                // Clip the size to maximum and inflate it to minimum as necessary.
+                Size = LayoutUtils.IntersectSizes (new Size (proposedWidth, proposedHeight), maximumSize)
+            };
+
+            newBounds.Size = LayoutUtils.UnionSizes (newBounds.Size, MinimumSize);
+
+            return newBounds;
+        }
+
+        return new Rectangle (suggestedX, suggestedY, proposedWidth, proposedHeight);
+    }
+
+    // GetPreferredSize and SetBoundsCore call this method to allow controls to self impose
+    // constraints on their size.
+    internal Size ApplySizeConstraints (int width, int height) => ApplyBoundsConstraints (0, 0, width, height).Size;
+
+    // GetPreferredSize and SetBoundsCore call this method to allow controls to self impose
+    // constraints on their size.
+    internal Size ApplySizeConstraints (Size proposedSize) => ApplyBoundsConstraints (0, 0, proposedSize.Width, proposedSize.Height).Size;
+
     /// <summary>
     /// Gets or sets a value indicating if this control's size can be changed automatically.
     /// </summary>
@@ -34,13 +64,13 @@ public partial class Control
         set {
             if (value != AutoSize) {
                 CommonProperties.SetAutoSize (this, value);
+
                 if (Parent is not null) {
                     // DefaultLayout does not keep anchor information until it needs to.  When
                     // AutoSize became a common property, we could no longer blindly call into
                     // DefaultLayout, so now we do a special InitLayout just for DefaultLayout.
-                    if (value && Parent.LayoutEngine == DefaultLayout.Instance) {
+                    if (value && Parent.LayoutEngine == DefaultLayout.Instance)
                         Parent.LayoutEngine.InitLayout (this, BoundsSpecified.Size);
-                    }
 
                     LayoutTransaction.DoLayout (Parent, this, PropertyNames.AutoSize);
                 }
@@ -95,9 +125,8 @@ public partial class Control
                 var cachedSize = CommonProperties.xGetPreferredSizeCache (this);
 
                 // If the "default" preferred size is being requested, and we have a cached value for it, return it.
-                if (!cachedSize.IsEmpty && (proposedSize == LayoutUtils.s_maxSize)) {
+                if (!cachedSize.IsEmpty && (proposedSize == LayoutUtils.s_maxSize))
                     return cachedSize;
-                }
             }
 
             prefSize = GetPreferredSizeCore (proposedSize);
@@ -107,9 +136,8 @@ public partial class Control
             prefSize = ApplySizeConstraints (prefSize);
 
             // If the "default" preferred size was requested, cache the computed value.
-            if (GetExtendedState (ExtendedStates.UserPreferredSizeCache) && proposedSize == LayoutUtils.s_maxSize) {
+            if (GetExtendedState (ExtendedStates.UserPreferredSizeCache) && proposedSize == LayoutUtils.s_maxSize)
                 CommonProperties.xSetPreferredSizeCache (this, prefSize);
-            }
         }
 
         return prefSize;
@@ -131,8 +159,6 @@ public partial class Control
         }
     }
 
-    PropertyStore IArrangedElement.Properties => Properties;
-
     bool IArrangedElement.ParticipatesInLayout => GetState (States.Visible);
 
     void IArrangedElement.PerformLayout (IArrangedElement affectedElement, string? affectedProperty)
@@ -140,61 +166,60 @@ public partial class Control
         PerformLayout (new LayoutEventArgs ((Control)affectedElement, affectedProperty));
     }
 
+    PropertyStore IArrangedElement.Properties => Properties;
+
     // CAREFUL: This really calls SetBoundsCore, not SetBounds.
     void IArrangedElement.SetBounds (Rectangle bounds, BoundsSpecified specified)
     {
-        //ISite site = Site;
-        //IComponentChangeService changeService = null;
-        //PropertyDescriptor sizeProperty = null;
-        //PropertyDescriptor locationProperty = null;
-        //bool sizeChanged = false;
-        //bool locationChanged = false;
+        var site = Site;
+        var sizeChanged = false;
+        var locationChanged = false;
 
-        //if (site is not null && site.DesignMode && site.TryGetService (out changeService)) {
-        //    sizeProperty = TypeDescriptor.GetProperties (this)[PropertyNames.Size];
-        //    locationProperty = TypeDescriptor.GetProperties (this)[PropertyNames.Location];
-        //    Debug.Assert (sizeProperty is not null && locationProperty is not null, "Error retrieving Size/Location properties on Control.");
+        IComponentChangeService? changeService = null;
+        PropertyDescriptor? sizeProperty = null;
+        PropertyDescriptor? locationProperty = null;
 
-        //    try {
-        //        if (sizeProperty is not null && !sizeProperty.IsReadOnly && (bounds.Width != Width || bounds.Height != Height)) {
-        //            if (!(site is INestedSite)) {
-        //                changeService.OnComponentChanging (this, sizeProperty);
-        //            }
+        if (site is not null && site.DesignMode && site.TryGetService (out changeService)) {
+            sizeProperty = TypeDescriptor.GetProperties (this)[PropertyNames.Size];
+            locationProperty = TypeDescriptor.GetProperties (this)[PropertyNames.Location];
+            Debug.Assert (sizeProperty is not null && locationProperty is not null, "Error retrieving Size/Location properties on Control.");
 
-        //            sizeChanged = true;
-        //        }
+            try {
+                if (sizeProperty is not null && !sizeProperty.IsReadOnly && (bounds.Width != Width || bounds.Height != Height)) {
+                    if (site is not INestedSite)
+                        changeService.OnComponentChanging (this, sizeProperty);
 
-        //        if (locationProperty is not null && !locationProperty.IsReadOnly && (bounds.X != _x || bounds.Y != _y)) {
-        //            if (!(site is INestedSite)) {
-        //                changeService.OnComponentChanging (this, locationProperty);
-        //            }
+                    sizeChanged = true;
+                }
 
-        //            locationChanged = true;
-        //        }
-        //    } catch (InvalidOperationException) {
-        //        // The component change events can throw InvalidOperationException if a change is
-        //        // currently not allowed (typically because the doc data in VS is locked).
-        //        // When this happens, we just eat the exception and proceed with the change.
-        //    }
-        //}
+                if (locationProperty is not null && !locationProperty.IsReadOnly && (bounds.X != this.bounds.X || bounds.Y != this.bounds.Y)) {
+                    if (site is not INestedSite)
+                        changeService.OnComponentChanging (this, locationProperty);
+
+                    locationChanged = true;
+                }
+            } catch (InvalidOperationException) {
+                // The component change events can throw InvalidOperationException if a change is
+                // currently not allowed (typically because the doc data in VS is locked).
+                // When this happens, we just eat the exception and proceed with the change.
+            }
+        }
 
         SetBoundsCore (bounds.X, bounds.Y, bounds.Width, bounds.Height, specified);
 
-        //if (changeService is not null) {
-        //    try {
-        //        if (sizeChanged) {
-        //            changeService.OnComponentChanged (this, sizeProperty);
-        //        }
+        if (changeService is not null) {
+            try {
+                if (sizeChanged)
+                    changeService.OnComponentChanged (this, sizeProperty, null, null);
 
-        //        if (locationChanged) {
-        //            changeService.OnComponentChanged (this, locationProperty);
-        //        }
-        //    } catch (InvalidOperationException) {
-        //        // The component change events can throw InvalidOperationException if a change is
-        //        // currently not allowed (typically because the doc data in VS is locked).
-        //        // When this happens, we just eat the exception and proceed with the change.
-        //    }
-        //}
+                if (locationChanged)
+                    changeService.OnComponentChanged (this, locationProperty, null, null);
+            } catch (InvalidOperationException) {
+                // The component change events can throw InvalidOperationException if a change is
+                // currently not allowed (typically because the doc data in VS is locked).
+                // When this happens, we just eat the exception and proceed with the change.
+            }
+        }
     }
 
     /// <summary>
@@ -214,6 +239,7 @@ public partial class Control
 
     private static bool IsFocusManagingContainerControl (Control ctl)
     {
+        // TODO probably
         return false;// ((ctl._controlStyle & ControlStyles.ContainerControl) == ControlStyles.ContainerControl && ctl is IContainerControl);
     }
 
@@ -221,7 +247,7 @@ public partial class Control
     /// Gets or sets how much space there should be between the control and other controls.
     /// </summary>
     public Padding Margin {
-        get { return CommonProperties.GetMargin (this); }
+        get => CommonProperties.GetMargin (this);
         set {
             // This should be done here rather than in the property store as
             // some IArrangedElements actually support negative padding.
@@ -238,7 +264,7 @@ public partial class Control
     }
 
     public virtual Size MaximumSize {
-        get { return CommonProperties.GetMaximumSize (this, DefaultMaximumSize); }
+        get => CommonProperties.GetMaximumSize (this, DefaultMaximumSize);
         set {
             if (value == Size.Empty) {
                 CommonProperties.ClearMaximumSize (this);
@@ -252,7 +278,7 @@ public partial class Control
     }
 
     public virtual Size MinimumSize {
-        get { return CommonProperties.GetMinimumSize (this, DefaultMinimumSize); }
+        get => CommonProperties.GetMinimumSize (this, DefaultMinimumSize);
         set {
             if (value != MinimumSize) {
                 // SetMinimumSize causes a layout as a side effect.
@@ -263,7 +289,15 @@ public partial class Control
         }
     }
 
+    /// <summary>
+    /// Raises the AutoSizeChanged event.
+    /// </summary>
     protected virtual void OnAutoSizeChanged (EventArgs e) => (Events[s_autoSizeChangedEvent] as EventHandler)?.Invoke (this, e);
+
+    // Give a chance for derived controls to do what they want, just before we resize.
+    internal virtual void OnBoundsUpdate (int x, int y, int width, int height)
+    {
+    }
 
     /// <summary>
     /// Raises the DockChanged event.
@@ -306,16 +340,16 @@ public partial class Control
     /// Gets or sets the amount of space there should be between the control bounds and the control contents.
     /// </summary>
     public Padding Padding {
-        get { return CommonProperties.GetPadding (this, DefaultPadding); }
+        get => CommonProperties.GetPadding (this, DefaultPadding);
         set {
             if (value != Padding) {
                 CommonProperties.SetPadding (this, value);
                 // Ideally we are being laid out by a LayoutEngine that cares about our preferred size.
                 // We set our LAYOUTISDIRTY bit and ask our parent to refresh us.
                 SetState (States.LayoutIsDirty, true);
-                using (new LayoutTransaction (Parent, this, PropertyNames.Padding)) {
+
+                using (new LayoutTransaction (Parent, this, PropertyNames.Padding))
                     OnPaddingChanged (EventArgs.Empty);
-                }
 
                 if (GetState (States.LayoutIsDirty)) {
                     // The above did not cause our layout to be refreshed.  We explicitly refresh our
@@ -337,7 +371,7 @@ public partial class Control
     /// </summary>
     /// <param name="affectedControl">The control causing the layout.</param>
     /// <param name="affectedProperty">The property causing the layout.</param>
-    public void PerformLayout (Control? affectedControl, string affectedProperty)
+    public void PerformLayout (Control? affectedControl, string? affectedProperty)
     {
         PerformLayout (new LayoutEventArgs (affectedControl, affectedProperty));
     }
@@ -345,17 +379,15 @@ public partial class Control
     internal void PerformLayout (LayoutEventArgs args)
     {
         Debug.Assert (args is not null, "This method should never be called with null args.");
-        //if (GetAnyDisposingInHierarchy ()) {
-        //    return;
-        //}
 
         if (layout_suspend_count > 0) {
             SetState (States.LayoutDeferred, true);
+
             if (_cachedLayoutEventArgs is null || GetExtendedState (ExtendedStates.ClearLayoutArgs)) {
                 _cachedLayoutEventArgs = args;
-                if (GetExtendedState (ExtendedStates.ClearLayoutArgs)) {
+
+                if (GetExtendedState (ExtendedStates.ClearLayoutArgs))
                     SetExtendedState (ExtendedStates.ClearLayoutArgs, false);
-                }
             }
 
             LayoutEngine.ProcessSuspendedLayoutEventArgs (this, args);
@@ -380,9 +412,8 @@ public partial class Control
             // LayoutEngine.Layout can return true to request that our parent resize us because
             // we did not have enough room for our contents.  Now that we are unsuspended,
             // see if this happened and layout parent if necessary.  (See also OnLayout)
-            if (Parent is not null && Parent.GetState (States.LayoutIsDirty)) {
+            if (Parent is not null && Parent.GetState (States.LayoutIsDirty))
                 LayoutTransaction.DoLayout (Parent, this, PropertyNames.PreferredSize);
-            }
         }
     }
 
@@ -391,17 +422,13 @@ public partial class Control
     /// </summary>
     public Size PreferredSize => GetPreferredSize (Size.Empty);
 
-    // Give a chance for derived controls to do what they want, just before we resize.
-    internal virtual void OnBoundsUpdate (int x, int y, int width, int height)
-    {
-    }
-
     /// <summary>
     /// Notifies the control to result performing layouts originally suspended with SuspendLayout.
     /// </summary>
     public void ResumeLayout (bool performLayout = true)
     {
-        bool performedLayout = false;
+        var performedLayout = false;
+
         if (layout_suspend_count > 0) {
             if (layout_suspend_count == 1) {
                 layout_suspend_count++;
@@ -421,9 +448,8 @@ public partial class Control
             }
         }
 
-        if (!performedLayout) {
+        if (!performedLayout)
             SetExtendedState (ExtendedStates.ClearLayoutArgs, true);
-        }
 
         /*
         We've had this since Everett,but it seems wrong, redundant and a performance hit.  The
@@ -440,7 +466,7 @@ public partial class Control
             // forces the creation of an array subset enum each time we
             // enumerate
             if (controlsCollection is not null) {
-                for (int i = 0; i < controlsCollection.Count; i++) {
+                for (var i = 0; i < controlsCollection.Count; i++) {
                     LayoutEngine.InitLayout (controlsCollection[i], BoundsSpecified.All);
                     CommonProperties.xClearPreferredSizeCache (controlsCollection[i]);
                 }
@@ -470,21 +496,17 @@ public partial class Control
     /// </summary>
     public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified)
     {
-        if ((specified & BoundsSpecified.X) == BoundsSpecified.None) {
+        if ((specified & BoundsSpecified.X) == BoundsSpecified.None)
             x = bounds.X;
-        }
 
-        if ((specified & BoundsSpecified.Y) == BoundsSpecified.None) {
+        if ((specified & BoundsSpecified.Y) == BoundsSpecified.None)
             y = bounds.Y;
-        }
 
-        if ((specified & BoundsSpecified.Width) == BoundsSpecified.None) {
+        if ((specified & BoundsSpecified.Width) == BoundsSpecified.None)
             width = bounds.Width;
-        }
 
-        if ((specified & BoundsSpecified.Height) == BoundsSpecified.None) {
+        if ((specified & BoundsSpecified.Height) == BoundsSpecified.None)
             height = bounds.Height;
-        }
 
         if (bounds.X != x || bounds.Y != y || bounds.Width != width || bounds.Height != height) {
             SetBoundsCore (x, y, width, height, specified);
@@ -512,16 +534,15 @@ public partial class Control
         // end up in WmWindowPositionChanged which may cause the parent to layout.  We need to
         // suspend/resume to defer the parent from laying out until after InitLayout has been called
         // to update the layout engine's state with the new control bounds.
-        if (Parent is not null) {
+        if (Parent is not null)
             Parent.SuspendLayout ();
-        }
 
         try {
             if (bounds.X != x || bounds.Y != y || bounds.Width != width || bounds.Height != height) {
                 CommonProperties.UpdateSpecifiedBounds (this, x, y, width, height, specified);
 
                 // Provide control with an opportunity to apply self imposed constraints on its size.
-                Rectangle adjustedBounds = ApplyBoundsConstraints (x, y, width, height);
+                var adjustedBounds = ApplyBoundsConstraints (x, y, width, height);
                 width = adjustedBounds.Width;
                 height = adjustedBounds.Height;
                 x = adjustedBounds.X;
@@ -532,7 +553,6 @@ public partial class Control
                     OnBoundsUpdate (x, y, width, height);
 
                 UpdateBounds (x, y, width, height);
-                //PerformLayout ();
             }
         } finally {
             // Initialize the scaling engine.
@@ -564,7 +584,7 @@ public partial class Control
 
         bool newLocation = bounds.X != x || bounds.Y != y;
         bool newSize = Width != width || Height != height;// ||
-                       //_clientWidth != clientWidth || _clientHeight != clientHeight;
+                                                          //_clientWidth != clientWidth || _clientHeight != clientHeight;
 
         bounds.X = x;
         bounds.Y = y;
@@ -573,9 +593,8 @@ public partial class Control
         //_clientWidth = clientWidth;
         //_clientHeight = clientHeight;
 
-        if (newLocation) {
+        if (newLocation)
             OnLocationChanged (EventArgs.Empty);
-        }
 
         if (newSize) {
             OnSizeChanged (EventArgs.Empty);

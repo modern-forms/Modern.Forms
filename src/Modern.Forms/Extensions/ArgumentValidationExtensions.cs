@@ -5,56 +5,47 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Modern.Forms
+namespace Modern.Forms;
+
+internal static class ArgumentValidationExtensions
 {
-    internal static class ArgumentValidationExtensions
+    internal static T OrThrowIfNull<T> (this T? argument, [CallerArgumentExpression ("argument")] string? paramName = null)
     {
-        internal static T OrThrowIfNull<T>(this T? argument, [CallerArgumentExpression("argument")] string? paramName = null)
-        {
-            ArgumentNullException.ThrowIfNull(argument, paramName);
-            return argument;
-        }
+        ArgumentNullException.ThrowIfNull (argument, paramName);
+        return argument;
+    }
 
-        internal static T OrThrowIfNullWithMessage<T>(this T? argument, string message, [CallerArgumentExpression("argument")] string? paramName = null)
-        {
-            if (argument == null)
-            {
-                throw new ArgumentNullException(paramName, message);
-            }
+    internal static T OrThrowIfNullWithMessage<T> (this T? argument, string message, [CallerArgumentExpression ("argument")] string? paramName = null)
+    {
+        if (argument == null) 
+            throw new ArgumentNullException (paramName, message);
 
-            return argument!;
-        }
+        return argument!;
+    }
 
-        internal static IntPtr OrThrowIfZero(this IntPtr argument, [CallerArgumentExpression("argument")] string? paramName = null)
-        {
-            if (argument == IntPtr.Zero)
-            {
-                throw new ArgumentNullException(paramName);
-            }
+    internal static IntPtr OrThrowIfZero (this IntPtr argument, [CallerArgumentExpression ("argument")] string? paramName = null)
+    {
+        if (argument == IntPtr.Zero) 
+            throw new ArgumentNullException (paramName);
 
-            return argument;
-        }
+        return argument;
+    }
 
-        internal static string OrThrowIfNullOrEmpty(this string? argument, [CallerArgumentExpression("argument")] string? paramName = null)
-        {
-            ThrowIfNullOrEmpty(argument, paramName);
-            return argument!;
-        }
+    internal static string OrThrowIfNullOrEmpty (this string? argument, [CallerArgumentExpression ("argument")] string? paramName = null)
+    {
+        argument.ThrowIfNullOrEmpty (paramName);
+        return argument!;
+    }
 
-        internal static void ThrowIfNullOrEmpty(this string? argument, [CallerArgumentExpression("argument")] string? paramName = null)
-        {
-            if (string.IsNullOrEmpty(argument))
-            {
-                throw new ArgumentNullException(paramName);
-            }
-        }
+    internal static void ThrowIfNullOrEmpty (this string? argument, [CallerArgumentExpression ("argument")] string? paramName = null)
+    {
+        if (string.IsNullOrEmpty (argument)) 
+            throw new ArgumentNullException (paramName);
+    }
 
-        internal static void ThrowIfNullOrEmptyWithMessage(this string? argument, string message, [CallerArgumentExpression("argument")] string? paramName = null)
-        {
-            if (string.IsNullOrEmpty(argument))
-            {
-                throw new ArgumentNullException(paramName, message);
-            }
-        }
+    internal static void ThrowIfNullOrEmptyWithMessage (this string? argument, string message, [CallerArgumentExpression ("argument")] string? paramName = null)
+    {
+        if (string.IsNullOrEmpty (argument)) 
+            throw new ArgumentNullException (paramName, message);
     }
 }
