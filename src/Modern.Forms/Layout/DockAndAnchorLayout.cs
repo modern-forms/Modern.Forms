@@ -618,7 +618,7 @@ internal partial class DefaultLayout : LayoutEngine
 
     public static AnchorStyles GetAnchor (IArrangedElement element) => CommonProperties.xGetAnchor (element);
 
-    public static void SetAnchor (IArrangedElement container, IArrangedElement element, AnchorStyles value)
+    public static void SetAnchor (IArrangedElement? container, IArrangedElement element, AnchorStyles value)
     {
         var oldValue = GetAnchor (element);
         if (oldValue != value) {
