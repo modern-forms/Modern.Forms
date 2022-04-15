@@ -170,8 +170,8 @@ namespace Modern.Forms
                     e.Canvas.Clear (glyph == TitleBarButtonGlyph.Close ? Theme.FormCloseHighlightColor : Theme.HighlightColor);
 
                 var glyph_bounds = glyph == TitleBarButtonGlyph.Minimize ?
-                    DrawingExtensions.CenterRectangle (DisplayRectangle, e.LogicalToDeviceUnits (new Size (BUTTON_PADDING, 1))) :
-                    DrawingExtensions.CenterSquare (DisplayRectangle, e.LogicalToDeviceUnits (BUTTON_PADDING));
+                    DrawingExtensions.CenterRectangle (ClientRectangle, e.LogicalToDeviceUnits (new Size (BUTTON_PADDING, 1))) :
+                    DrawingExtensions.CenterSquare (ClientRectangle, e.LogicalToDeviceUnits (BUTTON_PADDING));
 
                 switch (glyph) {
                     case TitleBarButtonGlyph.Close:

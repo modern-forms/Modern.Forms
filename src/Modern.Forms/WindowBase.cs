@@ -322,7 +322,7 @@ namespace Modern.Forms
 
         private void OnResize (Size size, PlatformResizeReason reason)
         {
-            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, ScaledSize.Width, ScaledSize.Height);
+            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, Size.Width, Size.Height);
         }
 
         /// <summary>
