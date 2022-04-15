@@ -406,11 +406,6 @@ namespace Modern.Forms
         public int DeviceDpi => (int)((FindWindow ()?.Scaling ?? 1) * 96);
 
         /// <summary>
-<<<<<<< HEAD
-        /// Gets the scaled bounds of the displayed control.
-        /// </summary>
-        public virtual Rectangle DisplayRectangle => ClientRectangle;
-=======
         /// Gets the unscaled bounds of the displayed control.
         /// </summary>
         public virtual Rectangle DisplayRectangle {
@@ -424,7 +419,6 @@ namespace Modern.Forms
                 return new Rectangle (x, y, _width - w, _height - h);
             }
         }
->>>>>>> 31fee16ff4ae56e9166aac553845d53d9696bd2a
 
         /// <summary>
         ///  Indicates whether the control is in the process of being disposed. This
