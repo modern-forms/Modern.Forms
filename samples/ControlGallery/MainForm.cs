@@ -136,7 +136,7 @@ namespace ControlGallery
             base.OnPaint (e);
 
             if (tree.SelectedItem.Text == "FormPaint")
-                e.Canvas.FillRectangle (300, 50, 100, 100, SKColors.Red);
+                e.Canvas.FillRectangle (Scale (300), Scale (50), Scale (100), Scale (100), SKColors.Red);
         }
 
         protected override void OnPaintBackground (PaintEventArgs e)
@@ -146,5 +146,7 @@ namespace ControlGallery
             if (tree.SelectedItem.Text == "FormPaint")
                 e.Canvas.Clear (SKColors.Green);
         }
+
+        private int Scale (int value) => (int)(value * Scaling);
     }
 }
