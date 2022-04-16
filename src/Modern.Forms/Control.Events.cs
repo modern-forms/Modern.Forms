@@ -35,6 +35,7 @@ public partial class Control
     private static readonly object s_mouseUpEvent = new object ();
     private static readonly object s_mouseWheelEvent = new object ();
     private static readonly object s_paddingChangedEvent = new object ();
+    private static readonly object s_parentEvent = new object ();
     private static readonly object s_resizeEvent = new object ();
     private static readonly object s_sizeChangedEvent = new object ();
     private static readonly object s_tabIndexChangedEvent = new object ();
@@ -232,6 +233,14 @@ public partial class Control
     public event EventHandler? PaddingChanged {
         add => Events.AddHandler (s_paddingChangedEvent, value);
         remove => Events.RemoveHandler (s_paddingChangedEvent, value);
+    }
+
+    /// <summary>
+    /// Raised when the Parent property is changed.
+    /// </summary>
+    public event EventHandler ParentChanged {
+        add => Events.AddHandler (s_parentEvent, value);
+        remove => Events.RemoveHandler (s_parentEvent, value);
     }
 
     /// <summary>

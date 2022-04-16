@@ -25,6 +25,7 @@
 //
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 
 namespace Modern.Forms
@@ -104,6 +105,12 @@ namespace Modern.Forms
         /// Gets or sets the amount of padding on the right side.
         /// </summary>
         public int Right { get; set; }
+
+        /// <summary>
+        /// Gets the amount of horizontal and vertical padding.
+        /// </summary>
+        [Browsable (false)]
+        public Size Size => new Size (Horizontal, Vertical);
 
         /// <summary>
         /// Gets or sets the amount of padding on the top.

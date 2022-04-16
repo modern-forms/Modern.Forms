@@ -1112,9 +1112,7 @@ namespace Modern.Forms
         /// <summary>
         /// Called when the Parent property is changed.
         /// </summary>
-        protected virtual void OnParentChanged (EventArgs e)
-        {
-        }
+        protected virtual void OnParentChanged (EventArgs e) => (Events[s_parentEvent] as EventHandler)?.Invoke (this, e);
 
         /// <summary>
         /// Called when the Parent's Enabled property is changed.

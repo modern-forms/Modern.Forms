@@ -27,6 +27,7 @@ namespace ControlGallery
             tree.Items.Add ("ComboBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("Dialogs", ImageLoader.Get ("button.png"));
             tree.Items.Add ("FileDialogs", ImageLoader.Get ("button.png"));
+            tree.Items.Add ("FlowLayoutPanel", ImageLoader.Get ("button.png"));
             tree.Items.Add ("FormPaint", ImageLoader.Get ("button.png"));
             tree.Items.Add ("Label", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ListBox", ImageLoader.Get ("button.png"));
@@ -86,6 +87,8 @@ namespace ControlGallery
                     return new DialogPanel ();
                 case "FileDialogs":
                     return new FileDialogPanel ();
+                case "FlowLayoutPanel":
+                    return new FlowLayoutPanelPanel ();
                 case "Label":
                     return new LabelPanel ();
                 case "ListBox":
