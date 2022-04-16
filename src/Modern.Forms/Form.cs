@@ -350,10 +350,9 @@ namespace Modern.Forms
             }
 
             dialog_parent = parent.Window;
-            SetWindowStartupLocation (parent.Window);
-            parent.Window.SetEnabled (false);
             Window.SetParent (parent.Window);
-            window.Show (true, true);
+
+            ShowDialog (parent.Window);
 
             return dialog_task.Task;
         }

@@ -95,7 +95,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the collection of controls contained by the window.
         /// </summary>
-        public ControlCollection Controls => adapter.Controls;
+        public Control.ControlCollection Controls => adapter.Controls;
 
         /// <summary>
         /// Gets the current style of this window instance.
@@ -177,6 +177,9 @@ namespace Modern.Forms
         private void OnInput (RawInputEventArgs e)
         {
             if (e is RawPointerEventArgs me) {
+                // TODO: How do we want to handle this for real
+                me.Position *= window.RenderScaling;
+
                 switch (me.Type) {
                     case RawPointerEventType.LeftButtonDown:
                         if (Resizeable && HandleMouseDown ((int)me.Position.X, (int)me.Position.Y))
@@ -319,7 +322,7 @@ namespace Modern.Forms
 
         private void OnResize (Size size, PlatformResizeReason reason)
         {
-            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, ScaledSize.Width, ScaledSize.Height);
+            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, Size.Width, Size.Height);
         }
 
         /// <summary>
@@ -401,6 +404,21 @@ namespace Modern.Forms
 
             SetWindowStartupLocation ();
             window.Show (true, false);
+
+            if (!shown) {
+                shown = true;
+                OnShown (EventArgs.Empty);
+            }
+        }
+
+        internal void ShowDialog (IWindowImpl parent)
+        {
+            Visible = true;
+            OnVisibleChanged (EventArgs.Empty);
+
+            SetWindowStartupLocation (parent);
+            parent.SetEnabled (false);
+            window.Show (true, true);
 
             if (!shown) {
                 shown = true;
