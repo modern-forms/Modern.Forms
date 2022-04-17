@@ -907,7 +907,7 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Raises the OnClick event.
+        /// Raises the Click event.
         /// </summary>
         protected virtual void OnClick (MouseEventArgs e)
         {
