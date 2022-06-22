@@ -15,9 +15,9 @@ This will run create and run a basic Hello World Modern.Forms application.
 
 There isn't documentation available yet, but the API should be relatively familiar for developers with Windows.Forms
 experience.  A good resource is to look at the source code of our sample applications:
-* [ControlGallery](https://github.com/modern-forms/Modern.Forms/tree/master/samples/ControlGallery)
-* [Explore](https://github.com/modern-forms/Modern.Forms/tree/master/samples/Explorer)
-* [ModernDecompile](https://github.com/modern-forms/ModernDecompile/tree/master/src)
+* [ControlGallery](https://github.com/modern-forms/Modern.Forms/tree/main/samples/ControlGallery)
+* [Explore](https://github.com/modern-forms/Modern.Forms/tree/main/samples/Explorer)
+* [ModernDecompile](https://github.com/modern-forms/ModernDecompile/tree/main/src)
 
 ## From Scratch
 

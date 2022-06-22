@@ -19,8 +19,8 @@ The goal is to create a spiritual successor to Winforms that is:
 * Cross platform (Windows / Mac / Linux)
 * Familiar for Winforms developers (ie: not XAML)
   * Sample Form:
-    * [MainForm.cs](https://github.com/modern-forms/Modern.Forms/blob/master/samples/Explorer/MainForm.cs)
-    * [MainForm.Designer.cs](https://github.com/modern-forms/Modern.Forms/blob/master/samples/Explorer/MainForm.Designer.cs)
+    * [MainForm.cs](https://github.com/modern-forms/Modern.Forms/blob/main/samples/Explorer/MainForm.cs)
+    * [MainForm.Designer.cs](https://github.com/modern-forms/Modern.Forms/blob/main/samples/Explorer/MainForm.Designer.cs)
 * Great for LOB applications and quick apps
 * Updated with modern controls and modern aesthetics
 
@@ -39,7 +39,7 @@ decompile
 
 This will launch the sample application built with Modern.Forms.
 
-![ModernDecompiler Screenshot](https://github.com/jpobst/Modern.Forms/blob/master/docs/modern-decompile.png "ModernDecompiler Screenshot")
+![ModernDecompiler Screenshot](https://github.com/jpobst/Modern.Forms/blob/main/docs/modern-decompile.png "ModernDecompiler Screenshot")
 
 ### Other Samples
 
