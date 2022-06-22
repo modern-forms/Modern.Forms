@@ -738,6 +738,9 @@ namespace Modern.Forms
             var dx = factor.Width;
             var dy = factor.Height;
 
+            var left = (int)Math.Round (bounds.X * dx, MidpointRounding.ToZero);
+            var top = (int)Math.Round (bounds.Y * dy, MidpointRounding.ToZero);
+
             var sx = bounds.X;
             var sy = bounds.Y;
             var sw = bounds.Width;
@@ -746,15 +749,21 @@ namespace Modern.Forms
             // Scale the control location (unless this is the top level adapter)
             if (FindAdapter () != this) {
                 if (specified.HasFlag (BoundsSpecified.X))
-                    sx = (int)Math.Round (bounds.X * dx);
+                    sx = left;
                 if (specified.HasFlag (BoundsSpecified.Y))
-                    sy = (int)Math.Round (bounds.Y * dy);
+                    sy = top;
             }
 
-            if (specified.HasFlag (BoundsSpecified.Width))
-                sw = (int)Math.Round (bounds.Width * dx);
-            if (specified.HasFlag (BoundsSpecified.Height))
-                sh = (int)Math.Round (bounds.Height * dy);
+            // Don't just scale the Width/Height as it might round incorrectly
+            if (specified.HasFlag (BoundsSpecified.Width)) {
+                var right = (int)Math.Round ((bounds.Right) * dx, MidpointRounding.ToZero);
+                sw = right - left;
+            }
+
+            if (specified.HasFlag (BoundsSpecified.Height)) {
+                var bottom = (int)Math.Round ((bounds.Bottom) * dy, MidpointRounding.ToZero);
+                sh = bottom - top;
+            }
 
             return new Rectangle (sx, sy, sw, sh);
         }
