@@ -40,8 +40,8 @@ namespace Modern.Forms
             vscrollbar.ValueChanged += HandleScroll;
             vscrollbar.Scroll += (o, e) => OnScroll (e);
 
-            sizegrip = Controls.AddImplicitControl (new SizeGrip { 
-                Visible = false 
+            sizegrip = Controls.AddImplicitControl (new SizeGrip {
+                Visible = false
             });
 
             SizeChanged += (o, e) => Recalculate (true);
@@ -76,23 +76,23 @@ namespace Modern.Forms
 
             foreach (var c in Controls) {
                 if (c.Dock == DockStyle.Right)
-                    extra_width += c.ScaledWidth;
+                    extra_width += c.Width;
                 else if (c.Dock == DockStyle.Bottom)
-                    extra_height += c.ScaledHeight;
+                    extra_height += c.Height;
             }
 
             if (!auto_scroll_min_size.IsEmpty) {
-                width = LogicalToDeviceUnits (auto_scroll_min_size.Width);
-                height = LogicalToDeviceUnits (auto_scroll_min_size.Height);
+                width = auto_scroll_min_size.Width;
+                height = auto_scroll_min_size.Height;
             }
 
             foreach (var c in Controls) {
                 switch (c.Dock) {
                     case DockStyle.Left:
-                        width = Math.Max (width, c.ScaledBounds.Right + extra_width);
+                        width = Math.Max (width, c.Right + extra_width);
                         continue;
                     case DockStyle.Top:
-                        height = Math.Max (height, c.ScaledBounds.Bottom + extra_height);
+                        height = Math.Max (height, c.Bottom + extra_height);
                         continue;
                     case DockStyle.Bottom:
                     case DockStyle.Right:
@@ -102,10 +102,10 @@ namespace Modern.Forms
                         var anchor = c.Anchor;
 
                         if (anchor.HasFlag (AnchorStyles.Left) && !anchor.HasFlag (AnchorStyles.Right))
-                            width = Math.Max (width, c.ScaledBounds.Right + extra_width);
+                            width = Math.Max (width, c.Right + extra_width);
 
                         if (anchor.HasFlag (AnchorStyles.Top) && !anchor.HasFlag (AnchorStyles.Bottom))
-                            height = Math.Max (height, c.ScaledBounds.Bottom + extra_height);
+                            height = Math.Max (height, c.Bottom + extra_height);
 
                         continue;
                 }
@@ -155,7 +155,7 @@ namespace Modern.Forms
         private void Recalculate (bool doLayout)
         {
             var canvas = canvas_size;
-            var client = ClientSize;
+            var client = Bounds;
 
             canvas.Width += auto_scroll_margin.Width;
             canvas.Height += auto_scroll_margin.Height;
@@ -168,7 +168,7 @@ namespace Modern.Forms
             var hscroll_visible = false;
             var vscroll_visible = false;
 
-            var bar_size = LogicalToDeviceUnits (15);
+            var bar_size = 15;
 
             do {
                 prev_right_edge = right_edge;
@@ -200,9 +200,10 @@ namespace Modern.Forms
                 hscrollbar.Value = 0;
 
             if (hscroll_visible) {
-                hscrollbar.Maximum = canvas.Width - client.Width + bar_size;
                 hscrollbar.LargeChange = right_edge;
                 hscrollbar.SmallChange = 5;
+                hscrollbar.Maximum = canvas.Width - client.Width + bar_size;
+
             } else {
                 if (hscrollbar.Visible)
                     ScrollWindow (-scroll_position.X, 0);
@@ -211,9 +212,10 @@ namespace Modern.Forms
             }
 
             if (vscroll_visible) {
-                vscrollbar.Maximum = canvas.Height - client.Height + bar_size;
                 vscrollbar.LargeChange = bottom_edge;
                 vscrollbar.SmallChange = 5;
+                vscrollbar.Maximum = canvas.Height - client.Height + bar_size;
+
             } else {
                 if (vscrollbar.Visible)
                     ScrollWindow (0, -scroll_position.Y);
@@ -223,13 +225,16 @@ namespace Modern.Forms
 
             SuspendLayout ();
 
-            hscrollbar.SetScaledBounds (0, client.Height - bar_size, ClientRectangle.Width - (vscroll_visible ? bar_size : 0), bar_size, BoundsSpecified.None);
+            var sizegrip_visible = hscroll_visible && vscroll_visible;
+
+            hscrollbar.SetBounds (0, client.Height - bar_size, sizegrip_visible ? Bounds.Width - bar_size : Bounds.Height, bar_size);
             hscrollbar.Visible = hscroll_visible;
-            vscrollbar.SetScaledBounds (client.Width - bar_size, 0, bar_size, ClientRectangle.Height - (hscroll_visible ? bar_size : 0), BoundsSpecified.None);
+
+            vscrollbar.SetBounds (client.Width - bar_size, 0, bar_size, sizegrip_visible ? Bounds.Height - bar_size : Bounds.Height);
             vscrollbar.Visible = vscroll_visible;
 
-            sizegrip.Visible = hscroll_visible && vscroll_visible;
-            sizegrip.SetScaledBounds (client.Width - bar_size, client.Height - bar_size, bar_size, bar_size, BoundsSpecified.None);
+            sizegrip.SetBounds (client.Width - bar_size, client.Height - bar_size, bar_size, bar_size);
+            sizegrip.Visible = sizegrip_visible;
 
             ResumeLayout (doLayout);
         }
@@ -248,7 +253,7 @@ namespace Modern.Forms
             SuspendLayout ();
 
             foreach (var c in Controls)
-                c.SetScaledBounds (c.ScaledLeft - xOffset, c.ScaledTop - yOffset, c.ScaledWidth, c.ScaledHeight, BoundsSpecified.Location);
+                c.Location = new Point (c.Left - xOffset, c.Top - yOffset);
 
             scroll_position.Offset (xOffset, yOffset);
 
