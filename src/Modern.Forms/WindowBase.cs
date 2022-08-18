@@ -72,7 +72,7 @@ namespace Modern.Forms
         /// <summary>
         /// Closes and destroys the window.
         /// </summary>
-        public virtual void Close () 
+        public virtual void Close ()
         {
             // If we just Dispose the window, WM_CLOSE will never get called so OnClosing will not get called
             if (this is Form f) {
@@ -83,8 +83,8 @@ namespace Modern.Forms
                 if (args.Cancel)
                     return;
             }
-            
-            window.Dispose (); 
+
+            window.Dispose ();
         }
 
         /// <summary>

@@ -82,7 +82,7 @@ namespace Modern.Forms
             }
 
             if (index >= top_index + VisibleItemCount - 1) {
-               // top_index = index - (VisibleItemCount - 1);
+                // top_index = index - (VisibleItemCount - 1);
                 vscrollbar.Value = index - (VisibleItemCount - 1);
                 return;
             }

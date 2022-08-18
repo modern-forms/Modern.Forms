@@ -5,17 +5,17 @@ namespace ControlGallery.Panels;
 
 public class FlowLayoutPanelPanel : Panel
 {
-    private readonly SKColor[] colors = new[] { 
-        SKColors.CornflowerBlue, 
-        SKColors.LightPink, 
-        SKColors.LightSeaGreen, 
-        SKColors.LightYellow, 
+    private readonly SKColor[] colors = new[] {
+        SKColors.CornflowerBlue,
+        SKColors.LightPink,
+        SKColors.LightSeaGreen,
+        SKColors.LightYellow,
         SKColors.LightCoral,
         SKColors.LightGray,
         SKColors.LightGreen,
         SKColors.LightGoldenrodYellow
     };
-    
+
     public FlowLayoutPanelPanel ()
     {
         var container = Controls.Add (new SplitContainer { Orientation = Orientation.Vertical, SplitterColor = SKColors.DarkGray });

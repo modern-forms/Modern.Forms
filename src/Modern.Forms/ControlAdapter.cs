@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using Modern.WindowKit.Platform;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -53,7 +50,7 @@ namespace Modern.Forms
                 if (control.NeedsPaint) {
                     using (var canvas = new SKCanvas (buffer)) {
                         // start drawing
-                        var args = new PaintEventArgs(info, canvas, Scaling);
+                        var args = new PaintEventArgs (info, canvas, Scaling);
 
                         control.RaisePaintBackground (args);
                         control.RaisePaint (args);

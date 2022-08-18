@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Modern.Forms;
+﻿using Modern.Forms;
 using SkiaSharp;
 
 namespace ControlGallery.Panels

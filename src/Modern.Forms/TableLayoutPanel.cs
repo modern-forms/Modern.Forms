@@ -306,7 +306,7 @@ public class TableLayoutPanel : Panel, IExtenderProvider
 
         return rh;
     }
-        #endregion
+    #endregion
 
     #region PaintCode
     ///// <summary>

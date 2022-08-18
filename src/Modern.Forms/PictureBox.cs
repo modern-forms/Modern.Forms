@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Modern.Forms.Renderers;
 using SkiaSharp;
 
@@ -32,9 +31,9 @@ namespace Modern.Forms
         /// <inheritdoc/>
         protected override Size DefaultSize => new Size (100, 50);
 
-       /// <summary>
-       /// Gets or sets the image the PictureBox should display.
-       /// </summary>
+        /// <summary>
+        /// Gets or sets the image the PictureBox should display.
+        /// </summary>
         public SKBitmap? Image {
             get => image;
             set {

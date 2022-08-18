@@ -23,7 +23,7 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
     /// </summary>
     public override bool CanConvertFrom (ITypeDescriptorContext? context, Type sourceType)
     {
-        if (sourceType == typeof (string)) 
+        if (sourceType == typeof (string))
             return true;
 
         return base.CanConvertFrom (context, sourceType);
@@ -35,7 +35,7 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
     /// </summary>
     public override bool CanConvertTo (ITypeDescriptorContext? context, Type? destinationType)
     {
-        if (destinationType == typeof (InstanceDescriptor) || destinationType == typeof (string)) 
+        if (destinationType == typeof (InstanceDescriptor) || destinationType == typeof (string))
             return true;
 
         return base.CanConvertTo (context, destinationType);
@@ -76,7 +76,7 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
             xmlWriter.WriteStartElement ("Controls");
 
             foreach (var c in tls.GetControlsInformation ()) {
-                if (c.Name is null) 
+                if (c.Name is null)
                     throw new InvalidOperationException (SR.TableLayoutSettingsConverterNoName);
 
                 xmlWriter.WriteStartElement ("Control");
@@ -99,10 +99,10 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
 
             var columnStyles = new StringBuilder ();
 
-            foreach (ColumnStyle colStyle in tls.ColumnStyles) 
+            foreach (ColumnStyle colStyle in tls.ColumnStyles)
                 columnStyles.AppendFormat ("{0},{1},", colStyle.SizeType, colStyle.Width);
 
-            if (columnStyles.Length > 0) 
+            if (columnStyles.Length > 0)
                 columnStyles.Remove (columnStyles.Length - 1, 1);
 
             xmlWriter.WriteAttributeString ("Styles", columnStyles.ToString ());
@@ -115,10 +115,10 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
 
             var rowStyles = new StringBuilder ();
 
-            foreach (RowStyle rowStyle in tls.RowStyles) 
+            foreach (RowStyle rowStyle in tls.RowStyles)
                 rowStyles.AppendFormat ("{0},{1},", rowStyle.SizeType, rowStyle.Height);
 
-            if (rowStyles.Length > 0) 
+            if (rowStyles.Length > 0)
                 rowStyles.Remove (rowStyles.Length - 1, 1);
 
             xmlWriter.WriteAttributeString ("Styles", rowStyles.ToString ());
@@ -137,7 +137,7 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
     {
         var attr = node.Attributes![attribute];
 
-        if (attr is not null) 
+        if (attr is not null)
             return attr.Value;
 
         return null;
@@ -147,8 +147,8 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
     {
         var attributeValue = GetAttributeValue (node, attribute);
 
-        if (!string.IsNullOrEmpty (attributeValue)) 
-            if (int.TryParse (attributeValue, out var result)) 
+        if (!string.IsNullOrEmpty (attributeValue))
+            if (int.TryParse (attributeValue, out var result))
                 return result;
 
         return valueIfNotFound;
@@ -192,14 +192,14 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
                 while (currentIndex < styleString.Length) {
                     // ---- SizeType Parsing -----------------
                     nextIndex = currentIndex;
-                    while (char.IsLetter (styleString[nextIndex])) 
+                    while (char.IsLetter (styleString[nextIndex]))
                         nextIndex++;
 
                     var type = (SizeType)Enum.Parse (sizeTypeType, styleString.AsSpan (currentIndex, nextIndex - currentIndex), true);
 
                     // ----- Float Parsing --------------
                     // Find the next Digit (start of the float)
-                    while (!char.IsDigit (styleString[nextIndex])) 
+                    while (!char.IsDigit (styleString[nextIndex]))
                         nextIndex++;
 
                     // Append digits left of the decimal delimiter(s)
@@ -222,13 +222,13 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
 
                     var floatString = floatStringBuilder.ToString ();
 
-                    if (!float.TryParse (floatString, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out var width)) 
+                    if (!float.TryParse (floatString, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out var width))
                         width = 0F;
 
                     // Add new Column/Row Style
-                    if (columns) 
+                    if (columns)
                         settings.ColumnStyles.Add (new ColumnStyle (type, width));
-                    else 
+                    else
                         settings.RowStyles.Add (new RowStyle (type, width));
 
                     // Go to the next Column/Row Style

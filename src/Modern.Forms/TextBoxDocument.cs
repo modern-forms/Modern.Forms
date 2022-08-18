@@ -14,7 +14,7 @@ namespace Modern.Forms
         private string placeholder = string.Empty;
 
         private TextBlock? cached_text_block;
-        
+
         private bool enabled = true;
         private int cursor_index = 0;
         private bool read_only = false;
@@ -108,7 +108,7 @@ namespace Modern.Forms
         }
 
         public string DisplayText => text.Length == 0 ? placeholder :
-                                     password_char.HasValue ? new string (password_char.Value, text.Length) : 
+                                     password_char.HasValue ? new string (password_char.Value, text.Length) :
                                      text;
 
         public bool Enabled {
@@ -149,7 +149,7 @@ namespace Modern.Forms
 
             var max_size = multiline ? new Size (width, int.MaxValue) : TextMeasurer.MaxSize;
             var color = !Enabled ? Theme.DisabledTextColor :
-                        Text.HasValue () ? textbox.CurrentStyle.GetForegroundColor () : 
+                        Text.HasValue () ? textbox.CurrentStyle.GetForegroundColor () :
                                 placeholder_font_color;
 
             return cached_text_block = TextMeasurer.CreateTextBlock (DisplayText, font, textbox.CurrentFontSize, max_size, alignment, color, MaxLines);
@@ -210,7 +210,7 @@ namespace Modern.Forms
             var new_index = -1;
             var block = GetTextBlock ();
             var current_caret = block.GetCaretInfo (new CaretPosition (cursor_index));
-            
+
             switch (direction) {
                 case ArrowDirection.Left:
 

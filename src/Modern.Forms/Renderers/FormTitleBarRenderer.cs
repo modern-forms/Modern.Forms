@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-
-namespace Modern.Forms.Renderers
+﻿namespace Modern.Forms.Renderers
 {
     /// <summary>
     /// Represents a class that can render a FormTitleBar.

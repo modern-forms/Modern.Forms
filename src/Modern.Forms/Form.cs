@@ -410,7 +410,7 @@ namespace Modern.Forms
             set {
                 if (shown)
                     throw new InvalidOperationException ($"Cannot change {nameof (UseSystemDecorations)} once a Form has been shown.");
-                
+
                 if (use_system_decorations != value) {
                     use_system_decorations = value;
                     TitleBar.Visible = !use_system_decorations;

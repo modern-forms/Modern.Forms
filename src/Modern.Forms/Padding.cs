@@ -24,7 +24,6 @@
 //	Daniel Nauck    (dna(at)mono-project(dot)de)
 //
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
 

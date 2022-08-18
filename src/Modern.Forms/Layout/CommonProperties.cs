@@ -126,7 +126,7 @@ internal partial class CommonProperties
     internal static Padding GetPadding (IArrangedElement element, Padding defaultPadding)
     {
         var padding = element.Properties.GetPadding (_paddingProperty, out var found);
-        
+
         if (found)
             return padding;
 

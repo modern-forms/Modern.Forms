@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using Modern.Forms;
+﻿using Modern.Forms;
 
 namespace ControlGallery.Panels
 {

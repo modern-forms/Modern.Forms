@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Modern.WindowKit;
 using Modern.WindowKit.Input.Platform;
 
@@ -13,7 +12,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the contents of the clipboard as text.
         /// </summary>
-        public static Task<string> GetTextAsync () 
+        public static Task<string> GetTextAsync ()
             => AvaloniaGlobals.GetRequiredService<IClipboard> ().GetTextAsync ();
 
         /// <summary>

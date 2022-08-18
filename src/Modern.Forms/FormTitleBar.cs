@@ -14,7 +14,7 @@ namespace Modern.Forms
         private readonly TitleBarButton maximize_button;
         private readonly TitleBarButton close_button;
         private readonly PictureBox form_image;
-        
+
         private bool show_image = true;
 
         /// <summary>

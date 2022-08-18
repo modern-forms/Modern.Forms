@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace Modern.Forms
 {
@@ -46,7 +45,7 @@ namespace Modern.Forms
         protected override void RemoveItem (int index)
         {
             base.RemoveItem (index);
-            
+
             owner.Controls.RemoveAt (index);
             tab_strip.Tabs.RemoveAt (index);
         }

@@ -15,8 +15,8 @@ namespace Modern.Forms
         private int current_value = 0;
         private int small_change = 1;
         private bool thumb_pressed;
-        private int thumbclick_offset;		        // Position of the last button-down event relative to the thumb edge
-        
+        private int thumbclick_offset;              // Position of the last button-down event relative to the thumb edge
+
         private readonly bool vertical;
 
         internal int thumb_drag_position;     // Current pixel of the midpoint of the thumb drag 
@@ -278,7 +278,7 @@ namespace Modern.Forms
             pixel = Math.Max (pixel, vertical ? effective_track_bounds.Top : effective_track_bounds.Left);
             pixel = Math.Min (pixel, vertical ? effective_track_bounds.Bottom : effective_track_bounds.Right);
 
-            var position_percent = 
+            var position_percent =
                 vertical ? (double)(pixel - effective_track_bounds.Top) / effective_track_bounds.Height
                          : (double)(pixel - effective_track_bounds.Left) / effective_track_bounds.Width;
 

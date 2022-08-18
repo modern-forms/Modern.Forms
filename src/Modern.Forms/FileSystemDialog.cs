@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Modern.Forms
+﻿namespace Modern.Forms
 {
     /// <summary>
     /// Represents a base class for file system dialogs.

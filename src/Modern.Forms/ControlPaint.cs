@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -124,7 +123,7 @@ namespace Modern.Forms
             var outer_radius = e.LogicalToDeviceUnits (8);
             var inner_radius = e.LogicalToDeviceUnits (5);
             var border_color = disabled ? Theme.DisabledTextColor :
-                               state == CheckState.Checked ? Theme.PrimaryColor : 
+                               state == CheckState.Checked ? Theme.PrimaryColor :
                                Theme.BorderGray;
 
             e.Canvas.DrawCircle (origin.X, origin.Y, outer_radius, border_color, e.LogicalToDeviceUnits (1));

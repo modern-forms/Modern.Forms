@@ -598,7 +598,7 @@ public partial class Control
 
         var newLocation = _x != x || _y != y;
         var newSize = Width != width || Height != height;// ||
-                                                          //_clientWidth != clientWidth || _clientHeight != clientHeight;
+                                                         //_clientWidth != clientWidth || _clientHeight != clientHeight;
 
         _x = x;
         _y = y;

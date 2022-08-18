@@ -1,5 +1,4 @@
-﻿using System;
-using Modern.Forms;
+﻿using Modern.Forms;
 
 namespace ControlGallery
 {

@@ -34,7 +34,7 @@ namespace Modern.Forms
         protected override Size DefaultSize => new Size (600, 111);
 
         /// <inheritdoc/>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
                 style.BackgroundColor = Theme.PrimaryColor;
                 style.Border.Bottom.Width = 1;

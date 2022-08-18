@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Modern.Forms
 {
@@ -26,7 +25,7 @@ namespace Modern.Forms
         /// Gets the center point of a rectangle.
         /// </summary>
         public static Point GetCenter (this Rectangle rectangle)
-            => new Point (rectangle.Left + ((rectangle.Right - rectangle.Left) / 2),  rectangle.Top + ((rectangle.Bottom - rectangle.Top) / 2));
+            => new Point (rectangle.Left + ((rectangle.Right - rectangle.Left) / 2), rectangle.Top + ((rectangle.Bottom - rectangle.Top) / 2));
 
         internal static Modern.WindowKit.Size ToAvaloniaSize (this Size size) => new Modern.WindowKit.Size (size.Width, size.Height);
 

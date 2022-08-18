@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using Topten.RichTextKit;
 
 namespace Modern.Forms.Renderers

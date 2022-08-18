@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Modern.Forms
+﻿namespace Modern.Forms
 {
     /// <summary>
     /// Represents a MenuSeparatorItem menu item.

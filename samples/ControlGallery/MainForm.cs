@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ControlGallery.Panels;
+﻿using ControlGallery.Panels;
 using Modern.Forms;
 using SkiaSharp;
 

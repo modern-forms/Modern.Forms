@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Modern.Forms.Renderers
+﻿namespace Modern.Forms.Renderers
 {
     /// <summary>
     /// Represents a class that can render a TabStrip.
@@ -28,8 +26,8 @@ namespace Modern.Forms.Renderers
             if (control.Selected && control.ShowFocusCues && control.Tabs.FocusedIndex == control.Tabs.IndexOf (item))
                 e.Canvas.DrawFocusRectangle (item.Bounds, e.LogicalToDeviceUnits (1));
 
-            var font_color = !item.Enabled ? Theme.DisabledTextColor:
-                             item.Selected ? Theme.PrimaryColor 
+            var font_color = !item.Enabled ? Theme.DisabledTextColor :
+                             item.Selected ? Theme.PrimaryColor
                                            : Theme.LightTextColor;
 
             var font_size = e.LogicalToDeviceUnits (Theme.FontSize);
