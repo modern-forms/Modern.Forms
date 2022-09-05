@@ -10,7 +10,7 @@ namespace Modern.Forms
     /// </summary>
     public static class SkiaTextExtensions
     {
-        private static TextPaintOptions CreateOptions () => new TextPaintOptions { IsAntialias = true, LcdRenderText = true };
+        private static TextPaintOptions CreateOptions () => new TextPaintOptions { Edging = SKFontEdging.SubpixelAntialias };
 
         /// <summary>
         /// Draws a string of text.

@@ -218,6 +218,11 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Gets the size of the specified bitmap.
+        /// </summary>
+        public static Size GetSize (this SKBitmap bitmap) => new Size (bitmap.Width, bitmap.Height);
+
+        /// <summary>
         /// Convers an SKImage to a Bitmap.
         /// </summary>
         [SupportedOSPlatform ("windows")]
@@ -249,6 +254,11 @@ namespace Modern.Forms
         /// Converts an SKRect to a Rectangle.
         /// </summary>
         public static Rectangle ToRectangle (this SKRect rect) => new Rectangle ((int)rect.Left, (int)rect.Top, (int)rect.Width, (int)rect.Height);
+
+        /// <summary>
+        /// Converts an SKSize to a Size.
+        /// </summary>
+        public static Size ToSize (this SKSize size) => new Size ((int)size.Width, (int)size.Height);
 
         /// <summary>
         /// Converts a Rectangle to an SKRect.
