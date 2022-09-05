@@ -29,7 +29,8 @@ namespace Modern.Forms
             var styleNormal = new Style {
                 FontFamily = font.FamilyName,
                 FontSize = fontSize,
-                TextColor = color
+                TextColor = color,
+                FontWeight = font.FontWeight
             };
 
             tb.AddText (text, styleNormal);
