@@ -18,7 +18,7 @@ namespace Modern.Forms
 
         static Theme ()
         {
-            values[nameof (PrimaryColor)] = new SKColor (16, 110, 190);
+            values[nameof (PrimaryColor)] = new SKColor (0, 120, 212);
             values[nameof (PrimaryTextColor)] = SKColors.Black;
             values[nameof (DisabledTextColor)] = new SKColor (190, 190, 190);
             values[nameof (LightTextColor)] = SKColors.White;
@@ -28,7 +28,7 @@ namespace Modern.Forms
             values[nameof (ItemHighlightColor)] = new SKColor (198, 198, 198);
             values[nameof (ItemSelectedColor)] = new SKColor (176, 176, 176);
             values[nameof (DarkNeutralGray)] = new SKColor (225, 225, 225);
-            values[nameof (NeutralGray)] = new SKColor (240, 240, 240);
+            values[nameof (NeutralGray)] = new SKColor (243, 242, 241);
             values[nameof (LightNeutralGray)] = new SKColor (251, 251, 251);
             values[nameof (BorderGray)] = new SKColor (171, 171, 171);
 
