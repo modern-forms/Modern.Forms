@@ -22,6 +22,7 @@ namespace Modern.Forms.Renderers
             SetRenderer<ListView> (new ListViewRenderer ());
             SetRenderer<Menu> (new MenuRenderer ());
             SetRenderer<MenuDropDown> (new MenuDropDownRenderer ());
+            SetRenderer<NavigationPane> (new NavigationPaneRenderer ());
             SetRenderer<Panel> (new PanelRenderer ());
             SetRenderer<PictureBox> (new PictureBoxRenderer ());
             SetRenderer<ProgressBar> (new ProgressBarRenderer ());
