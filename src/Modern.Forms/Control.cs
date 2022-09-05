@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using Modern.Forms.Layout;
 using SkiaSharp;
@@ -821,6 +822,40 @@ namespace Modern.Forms
         public bool IsHovering {
             get => GetState (States.IsHovering);
             private set => SetState (States.IsHovering, value);
+        }
+
+        /// <summary>
+        ///  Determines if <paramref name="charCode"/> is the mnemonic character in <paramref name="text"/>.
+        ///  The mnemonic character is the character immediately following the first
+        ///  instance of "&amp;" in text
+        /// </summary>
+        public static bool IsMnemonic (char charCode, string text)
+        {
+            // Special case handling:
+            if (charCode == '&')
+                return false;
+
+            if (text is not null) {
+                var pos = -1; // start with -1 to handle double &'s
+                var c2 = char.ToUpper (charCode, CultureInfo.CurrentCulture);
+                for (; ; )
+                {
+                    if (pos + 1 >= text.Length)
+                        break;
+
+                    pos = text.IndexOf ('&', pos + 1) + 1;
+
+                    if (pos <= 0 || pos >= text.Length)
+                        break;
+
+                    var c1 = char.ToUpper (text[pos], CultureInfo.CurrentCulture);
+
+                    if (c1 == c2 || char.ToLower (c1, CultureInfo.CurrentCulture) == char.ToLower (c2, CultureInfo.CurrentCulture))
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
