@@ -8,7 +8,7 @@ namespace Modern.Forms
     /// </summary>
     public class ControlStyle
     {
-        private readonly ControlStyle? _parent;
+        internal readonly ControlStyle? _parent;
 
         /// <summary>
         /// Initializes a new instance of the ControlStyle class.  This constructor is
@@ -64,7 +64,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the computed background color.
         /// </summary>
-        public SKColor GetBackgroundColor () => BackgroundColor ?? _parent? .GetBackgroundColor () ?? Theme.NeutralGray;
+        public SKColor GetBackgroundColor () => BackgroundColor ?? _parent?.GetBackgroundColor () ?? Theme.NeutralGray;
 
         /// <summary>
         /// Gets the computed font.

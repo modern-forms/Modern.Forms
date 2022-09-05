@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using Modern.Forms.Renderers;
+using SkiaSharp;
 
 namespace Modern.Forms
 {
@@ -12,6 +13,7 @@ namespace Modern.Forms
     /// </summary>
     public class TreeView : Control
     {
+        private TreeViewDrawMode draw_mode;
         private readonly TreeViewItem root_item;
         private int top_index = 0;
         private TreeViewItem selected_item;
@@ -19,6 +21,8 @@ namespace Modern.Forms
         private bool show_item_images = true;
         private bool virtual_mode;
         private readonly VerticalScrollBar vscrollbar;
+
+        private static readonly object s_drawNode = new object ();
 
         /// <summary>
         /// Initializes a new instance of the TreeView class.
@@ -49,14 +53,38 @@ namespace Modern.Forms
         public event EventHandler<EventArgs<TreeViewItem>>? BeforeExpand;
 
         /// <inheritdoc/>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+        public new static TreeViewControlStyle DefaultStyle = new TreeViewControlStyle (Control.DefaultStyle,
             (style) => {
                 style.BackgroundColor = Theme.LightNeutralGray;
                 style.Border.Width = 1;
+
+                if (style is TreeViewControlStyle s)
+                    s.SelectedItemBackgroundColor = Theme.ItemHighlightColor;
             });
 
         /// <inheritdoc/>
         protected override Size DefaultSize => new Size (250, 500);
+
+        /// <summary>
+        /// Gets or sets a value indicating who will perform the tree node painting.
+        /// </summary>
+        public TreeViewDrawMode DrawMode {
+            get => draw_mode;
+            set {
+                if (draw_mode != value) {
+                    draw_mode = value;
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Raised when TreeView needs an owner drawn node painted.
+        /// </summary>
+        public event EventHandler<TreeViewDrawEventArgs>? DrawNode {
+            add => Events.AddHandler (s_drawNode, value);
+            remove => Events.RemoveHandler (s_drawNode, value);
+        }
 
         internal void EnsureItemVisible (TreeViewItem item)
         {
@@ -211,6 +239,11 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        ///  Raises the <see cref='DrawNode'/> event.
+        /// </summary>
+        protected internal virtual void OnDrawNode (TreeViewDrawEventArgs e) => (Events[s_drawNode] as EventHandler<TreeViewDrawEventArgs>)?.Invoke (this, e);
+
+        /// <summary>
         /// Raises the ItemSelected event.
         /// </summary>
         protected virtual void OnItemSelected (EventArgs<TreeViewItem> e) => ItemSelected?.Invoke (this, e);
@@ -363,7 +396,7 @@ namespace Modern.Forms
         }
 
         // The scaled height of each TreeViewItem.
-        internal int ScaledItemHeight => root_item.GetPreferredSize (Size.Empty).Height;
+        internal int ScaledItemHeight => (root_item.Items.FirstOrDefault () ?? root_item).GetPreferredSize (Size.Empty).Height;
 
         /// <summary>
         /// Gets or sets the currently selected TreeViewItem.
@@ -424,7 +457,7 @@ namespace Modern.Forms
         }
 
         /// <inheritdoc/>
-        public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
+        public override TreeViewControlStyle Style { get; } = new TreeViewControlStyle (DefaultStyle);
 
         // Determines scrollbar visibility and scrollbar values.
         private void UpdateVerticalScrollBar ()
@@ -469,5 +502,29 @@ namespace Modern.Forms
 
         // The number of items that can be shown with the current height.
         private int VisibleItemCount => ScaledHeight / ScaledItemHeight;
+
+        /// <inheritdoc/>
+        public class TreeViewControlStyle : ControlStyle
+        {
+            /// <inheritdoc/>
+            public TreeViewControlStyle (ControlStyle? parent, Action<ControlStyle> setDefaults) : base (parent, setDefaults)
+            {
+            }
+
+            /// <inheritdoc/>
+            public TreeViewControlStyle (ControlStyle parent) : base (parent)
+            {
+            }
+
+            /// <summary>
+            /// Gets or sets the background color of the currently selected item.
+            /// </summary>
+            public SKColor? SelectedItemBackgroundColor { get; set; }
+
+            /// <summary>
+            /// Gets the computed selected item background color.
+            /// </summary>
+            public SKColor GetSelectedItemBackgroundColor () => SelectedItemBackgroundColor ?? (_parent as TreeViewControlStyle)?.GetSelectedItemBackgroundColor () ?? Theme.ItemHighlightColor;
+        }
     }
 }

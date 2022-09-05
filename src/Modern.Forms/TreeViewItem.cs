@@ -42,7 +42,7 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Gets the current bounding box of the tab.
+        /// Gets the current bounding box of the item.
         /// </summary>
         public Rectangle Bounds { get; private set; }
 
@@ -137,9 +137,9 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Gets the preferred size of the tab.
+        /// Gets the preferred size of the item.
         /// </summary>
-        public Size GetPreferredSize (Size proposedSize)
+        public virtual Size GetPreferredSize (Size proposedSize)
         {
             var font_size = LogicalToDeviceUnits (Theme.FontSize);
             var padding = LogicalToDeviceUnits (10);
@@ -244,7 +244,7 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Sets the bounding box of the tab. This is internal API and should not be called.
+        /// Sets the bounding box of the item. This is internal API and should not be called.
         /// </summary>
         public void SetBounds (int x, int y, int width, int height, BoundsSpecified specified = BoundsSpecified.All)
         {

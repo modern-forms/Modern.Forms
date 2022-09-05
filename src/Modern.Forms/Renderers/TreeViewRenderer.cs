@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using SkiaSharp;
 
 namespace Modern.Forms.Renderers
 {
@@ -42,13 +43,21 @@ namespace Modern.Forms.Renderers
         protected virtual void RenderItem (TreeView control, TreeViewItem item, PaintEventArgs e)
         {
             var is_selected = item == control.SelectedItem;
-            var background_color = is_selected ? Theme.ItemHighlightColor : Theme.LightNeutralGray;
             var foreground_color = control.Enabled ? Theme.PrimaryTextColor : Theme.DisabledTextColor;
 
-            e.Canvas.FillRectangle (item.Bounds, background_color);
+            if (is_selected)
+                e.Canvas.FillRectangle (item.Bounds, control.Style.GetSelectedItemBackgroundColor ());
 
             if (is_selected && control.Focused && control.ShowFocusCues)
                 e.Canvas.DrawFocusRectangle (item.Bounds, e.LogicalToDeviceUnits (1));
+
+            if (control.DrawMode == TreeViewDrawMode.OwnerDrawContent) {
+                var dea = new TreeViewDrawEventArgs (control, item, e);
+                control.OnDrawNode (dea);
+
+                if (!dea.DrawDefault)
+                    return;
+            }
 
             if (control.ShowDropdownGlyph == true) {
                 var glyph_bounds = GetGlyphBounds (control, item);
@@ -114,7 +123,7 @@ namespace Modern.Forms.Renderers
 
             // One of these will be valid because we handled the other case above
             var padding = e.LogicalToDeviceUnits (6);
-            var used_bounds = show_image ? GetImageBounds (control, item, e) : GetGlyphBounds (control, item);
+            var used_bounds = show_image && item.Image is not null ? GetImageBounds (control, item, e) : GetGlyphBounds (control, item);
             return new Rectangle (used_bounds.Right + padding, item.Bounds.Top, item.Bounds.Right - used_bounds.Right - padding, item.Bounds.Height);
         }
 
