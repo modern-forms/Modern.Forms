@@ -6,12 +6,12 @@ using Modern.Forms.Renderers;
 namespace Modern.Forms
 {
     /// <summary>
-    /// Represents a VerticalScrollBar control.
+    /// Represents a TabStrip control.
     /// </summary>
     public class TabStrip : Control
     {
         /// <summary>
-        /// Initializes a new instance of the VerticalScrollBar class.
+        /// Initializes a new instance of the TabStrip class.
         /// </summary>
         public TabStrip ()
         {
@@ -19,12 +19,12 @@ namespace Modern.Forms
         }
 
         /// <inheritdoc/>
-        protected override Size DefaultSize => new Size (600, 28);
+        protected override Size DefaultSize => new Size (600, 31);
 
         /// <inheritdoc/>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
-                style.BackgroundColor = Theme.PrimaryColor;
+                style.BackgroundColor = Theme.NeutralGray;
             });
 
         private int FindNextTab (int startIndex, bool forward, bool wrap)

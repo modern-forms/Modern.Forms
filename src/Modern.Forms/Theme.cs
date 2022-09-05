@@ -33,6 +33,7 @@ namespace Modern.Forms
             values[nameof (BorderGray)] = new SKColor (171, 171, 171);
 
             values[nameof (UIFont)] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
+            values[nameof (UIFontBold)] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Bold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
             values[nameof (FontSize)] = 14;
             values[nameof (ItemFontSize)] = 12;
         }
@@ -212,6 +213,14 @@ namespace Modern.Forms
         public static SKTypeface UIFont {
             get => GetValue<SKTypeface> (nameof (UIFont));
             set => SetValue (nameof (UIFont), value);
+        }
+
+        /// <summary>
+        /// The default bold font used by controls.
+        /// </summary>
+        public static SKTypeface UIFontBold {
+            get => GetValue<SKTypeface> (nameof (UIFontBold));
+            set => SetValue (nameof (UIFontBold), value);
         }
     }
 }
