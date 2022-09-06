@@ -21,12 +21,12 @@ namespace Outlaw
         {
             base.OnPaint (e);
 
-            var image_bounds = ClientRectangle.CenterSquare (50);
-            image_bounds.Y -= 40;
+            var image_bounds = ClientRectangle.CenterSquare (e.LogicalToDeviceUnits (50));
+            image_bounds.Y -= e.LogicalToDeviceUnits (40);
 
             e.Canvas.DrawBitmap (image, image_bounds);
 
-            e.Canvas.DrawText ("Select an item to read", Theme.UIFont, 18, ClientRectangle, CustomTheme.GrayFont, ContentAlignment.MiddleCenter);
+            e.Canvas.DrawText ("Select an item to read", Theme.UIFont, e.LogicalToDeviceUnits (18), ClientRectangle, CustomTheme.GrayFont, ContentAlignment.MiddleCenter);
         }
     }
 }
