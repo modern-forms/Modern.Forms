@@ -1,0 +1,4 @@
+Icons are from:
+https://developers.google.com/fonts/docs/material_icons
+
+Licensed as Apache License Version 2.0.
