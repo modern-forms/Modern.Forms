@@ -1,17 +1,10 @@
 ## What is Modern.Forms?
 
-*** **This framework is currently in its early stages. It is not intended for production use.** ***
+*** **This framework is currently in its early stages. Use at your own risk.** ***
 
-Modern.Forms is a cross-platform spiritual successor to Winforms for .NET 6, supporting Windows, Mac, and Linux.
+Modern.Forms is an open-source cross-platform spiritual successor to Winforms for .NET 6, supporting Windows, Mac, and Linux.
 
-**This is accomplished with:**
-
-* Some infrastructure code from Mono's Winforms (like layouts):
-  * https://github.com/mono/mono/tree/master/mcs/class/System.Windows.Forms
-* A port of Avalonia's native backends (for interacting with the operating system)
-  * https://github.com/AvaloniaUI/Avalonia
-* SkiaSharp
-  * All controls are fully managed and drawn with SkiaSharp
+If you are looking for an open-source cross-platform spiritual successor to WPF, see [Avalonia](https://github.com/AvaloniaUI/Avalonia).
 
 ### Motivation
 
@@ -23,6 +16,10 @@ The goal is to create a spiritual successor to Winforms that is:
     * [MainForm.Designer.cs](https://github.com/modern-forms/Modern.Forms/blob/main/samples/Explorer/MainForm.Designer.cs)
 * Great for LOB applications and quick apps
 * Updated with modern controls and modern aesthetics
+
+### Getting Started
+
+To create your own Modern.Forms application, see [Getting Started](docs/getting-started.md).
 
 ## How to Run
 
@@ -39,20 +36,17 @@ decompile
 
 This will launch the sample application built with Modern.Forms.
 
-![ModernDecompiler Screenshot](https://github.com/jpobst/Modern.Forms/blob/main/docs/modern-decompile.png "ModernDecompiler Screenshot")
+![ModernDecompiler Screenshot](https://github.com/modern-forms/Modern.Forms/blob/main/docs/modern-decompile.png "ModernDecompiler Screenshot")
 
 ### Other Samples
 
 Some smaller samples are available in the Modern.Forms repository:
 
-* `ControlGallery` - Gallery of the controls included in Modern.Forms in action.
-* `Explore` - A Windows Explorer clone.
+* [`ControlGallery`](samples/ControlGallery) - Gallery of the controls included in Modern.Forms in action.
+* [`Explore`](samples/Explorer) - A Windows Explorer clone.
+* [`Outlaw`](samples/Outlaw) - A Microsoft Outlook clone.
 
 For information on building and running these samples, see [Samples](docs/samples.md).
-
-### Getting Started
-
-To create your own Modern.Forms application, see [Getting Started](docs/getting-started.md).
 
 ## Build Status
 
