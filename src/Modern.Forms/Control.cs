@@ -1290,15 +1290,21 @@ namespace Modern.Forms
         {
             // If this is the top, add the point to our location
             if (this is ControlAdapter) {
-                var window_location = FindWindow ()?.Location;
+                var window = FindWindow ();
 
-                if (window_location == null)
+                if (window is null)
                     return point;
 
-                var location = window_location.Value;
-                location.Offset (point);
+                var window_location = window.Location;
+                
+                // For Mac, the desktop coordinates are measured at a different scale than
+                // our form coordinates, so we need to fix that. For other platforms, ratio is 1.
+                var desktop_ratio = window.DesktopScaling / window.Scaling;
+                point = new Point ((int)(point.X * desktop_ratio), (int)(point.Y * desktop_ratio));
 
-                return location;
+                window_location.Offset (point);
+
+                return window_location;
             }
 
             // If this isn't the top, we need to add our location to the point

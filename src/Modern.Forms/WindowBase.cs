@@ -383,6 +383,11 @@ namespace Modern.Forms
         /// </summary>
         public double Scaling => window.RenderScaling;
 
+        /// <summary>
+        /// Gets the current scale factor of the desktop.
+        /// </summary>
+        public double DesktopScaling => window.DesktopScaling;
+
         internal Screens Screens => new Screens (window!.Screen);
 
         internal void SetCursor (Cursor cursor)
