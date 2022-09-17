@@ -14,7 +14,7 @@ namespace Modern.Forms
         /// <summary>
         /// Initializes a new instance of the PopupWindow class.
         /// </summary>
-        public PopupWindow (Form parentForm) : base (parentForm.window.CreatePopup ())
+        public PopupWindow (Form parentForm) : base (parentForm.window.CreatePopup ()!) // NRT - This would only be null if we were using WindowKit overlaw popups
         {
             StartPosition = FormStartPosition.Manual;
 
