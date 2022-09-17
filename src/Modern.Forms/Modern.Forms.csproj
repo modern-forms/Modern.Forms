@@ -11,18 +11,21 @@
 
   <PropertyGroup>
     <PackageId>Modern.Forms</PackageId>
-    <Version>0.2.0</Version>  
+    <Version>0.3.0-rc1</Version>  
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/modern-forms/Modern.Forms</PackageProjectUrl>
     <Description>Cross-platform spiritual successor to Winforms for .NET Core</Description>
     <PackageTags>Modern;Forms;Winforms;GUI;UI;Cross;Platform</PackageTags>
     <PackageOutputPath>../../nupkg</PackageOutputPath>
+
+    <!-- Include symbol files (*.pdb) in the built .nupkg -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="HarfBuzzSharp" Version="2.8.2.1" />
     <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.1" />
-    <PackageReference Include="Modern.WindowKit" Version="0.1.1" />
+    <PackageReference Include="Modern.WindowKit" Version="0.1.2-rc1" />
     <PackageReference Include="Topten.RichTextKit" Version="0.4.151" />
   </ItemGroup>
 
