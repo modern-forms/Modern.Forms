@@ -43,6 +43,7 @@ public class TableLayoutPanel : Panel, IExtenderProvider
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
     public TableLayoutSettings LayoutSettings {
         get => _tableLayoutSettings;
+#if DESIGN_TIME
         set {
             if (value is not null && value.IsStub) {
                 // WINRES only scenario.
@@ -56,6 +57,7 @@ public class TableLayoutPanel : Panel, IExtenderProvider
                 throw new NotSupportedException (SR.TableLayoutSettingSettingsIsNotSupported);
             }
         }
+#endif
     }
 
     //[Browsable(false)]
@@ -170,7 +172,7 @@ public class TableLayoutPanel : Panel, IExtenderProvider
         return collection is not null && collection.Count > 0;
     }
 
-    #region Extended Properties
+#region Extended Properties
     bool IExtenderProvider.CanExtend (object obj)
     {
         return obj is Control control && control.Parent == this;
@@ -230,10 +232,11 @@ public class TableLayoutPanel : Panel, IExtenderProvider
     /// <summary>
     ///  Gets the row and column position of the specified control.
     /// </summary>
+#if DESIGN_TIME
     [DefaultValue (typeof (TableLayoutPanelCellPosition), "-1,-1")]  //if change this value, also change the SerializeViaAdd in TableLayoutControlCollectionCodeDomSerializer
+#endif
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    [DisplayName ("Cell")]
-    public TableLayoutPanelCellPosition GetCellPosition (Control control) => _tableLayoutSettings.GetCellPosition (control);
+    [DisplayName ("Cell")]    public TableLayoutPanelCellPosition GetCellPosition (Control control) => _tableLayoutSettings.GetCellPosition (control);
 
     /// <summary>
     ///  Sets the row and column position of the specified control.
@@ -306,9 +309,9 @@ public class TableLayoutPanel : Panel, IExtenderProvider
 
         return rh;
     }
-        #endregion
+#endregion
 
-    #region PaintCode
+#region PaintCode
     ///// <summary>
     ///// Raised when a cell needs to be painted.
     ///// </summary>
@@ -555,5 +558,5 @@ public class TableLayoutPanel : Panel, IExtenderProvider
             }
         }
     }
-    #endregion
+#endregion
 }

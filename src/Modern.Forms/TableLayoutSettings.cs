@@ -16,9 +16,14 @@ namespace Modern.Forms;
 /// <summary>
 ///  This is a wrapper class to expose interesting properties of TableLayout
 /// </summary>
+#if DESIGN_TIME
 [TypeConverter (typeof (TableLayoutSettingsTypeConverter))]
+#endif
 [Serializable]  // This class participates in resx serialization.
-public sealed partial class TableLayoutSettings : LayoutSettings, ISerializable
+public sealed partial class TableLayoutSettings : LayoutSettings
+#if DESIGN_TIME
+    , ISerializable
+#endif
 {
     private static readonly int[] borderStyleToOffset =
     {
@@ -41,6 +46,7 @@ public sealed partial class TableLayoutSettings : LayoutSettings, ISerializable
 
     internal TableLayoutSettings (IArrangedElement owner) : base (owner) { }
 
+#if DESIGN_TIME
     private TableLayoutSettings (SerializationInfo serializationInfo, StreamingContext context) : this ()
     {
         var converter = TypeDescriptor.GetConverter (this);
@@ -52,6 +58,7 @@ public sealed partial class TableLayoutSettings : LayoutSettings, ISerializable
             }
         }
     }
+#endif
 
     /// <inheritdoc/>
     public override LayoutEngine LayoutEngine => TableLayout.Instance;
@@ -175,6 +182,7 @@ public sealed partial class TableLayoutSettings : LayoutSettings, ISerializable
     [MemberNotNullWhen (true, nameof (_stub))]
     internal bool IsStub => _stub is not null;
 
+#if DESIGN_TIME
     internal void ApplySettings (TableLayoutSettings settings)
     {
         if (settings.IsStub) {
@@ -187,8 +195,9 @@ public sealed partial class TableLayoutSettings : LayoutSettings, ISerializable
             }
         }
     }
+#endif
 
-    #region Extended Properties
+#region Extended Properties
     /// <summary>
     /// Return the column span value for the specified control.
     /// </summary>
@@ -391,8 +400,9 @@ public sealed partial class TableLayoutSettings : LayoutSettings, ISerializable
 
     internal TableLayoutPanelCellPosition GetPositionFromControl (IArrangedElement element) => TableLayout.GetPositionFromControl (Owner, element);
 
-    #endregion
+#endregion
 
+#if DESIGN_TIME
     void ISerializable.GetObjectData (SerializationInfo si, StreamingContext context)
     {
         var converter = TypeDescriptor.GetConverter (this);
@@ -431,4 +441,5 @@ public sealed partial class TableLayoutSettings : LayoutSettings, ISerializable
             return controlsInfo;
         }
     }
+#endif
 }

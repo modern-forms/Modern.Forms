@@ -12,6 +12,7 @@ using Modern.Forms.Layout;
 
 namespace Modern.Forms;
 
+#if DESIGN_TIME
 /// <summary>
 /// TypeConverter for TableLayoutSettings.
 /// </summary>
@@ -133,7 +134,7 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
         return base.ConvertTo (context, culture, value, destinationType);
     }
 
-    private string? GetAttributeValue (XmlNode node, string attribute)
+private string? GetAttributeValue (XmlNode node, string attribute)
     {
         var attr = node.Attributes![attribute];
 
@@ -238,3 +239,4 @@ public class TableLayoutSettingsTypeConverter : TypeConverter
         }
     }
 }
+#endif

@@ -14,7 +14,9 @@ namespace Modern.Forms;
 /// <summary>
 /// Represents the row and column of a cell in a TableLayoutPanel.
 /// </summary>
+#if DESIGN_TIME
 [TypeConverter (typeof (TableLayoutPanelCellPositionTypeConverter))]
+#endif
 public struct TableLayoutPanelCellPosition
 {
     /// <summary>
@@ -74,6 +76,7 @@ public struct TableLayoutPanelCellPosition
     public override int GetHashCode () => HashCode.Combine (Row, Column);
 }
 
+#if DESIGN_TIME
 internal class TableLayoutPanelCellPositionTypeConverter : TypeConverter
 {
     public override bool CanConvertTo (ITypeDescriptorContext? context, Type? destinationType)
@@ -91,6 +94,7 @@ internal class TableLayoutPanelCellPositionTypeConverter : TypeConverter
 
         return base.CanConvertFrom (context, sourceType);
     }
+
 
     public override object? ConvertFrom (ITypeDescriptorContext? context, CultureInfo? culture, object value)
     {
@@ -161,3 +165,4 @@ internal class TableLayoutPanelCellPositionTypeConverter : TypeConverter
 
     public override bool GetPropertiesSupported (ITypeDescriptorContext? context) => true;
 }
+#endif

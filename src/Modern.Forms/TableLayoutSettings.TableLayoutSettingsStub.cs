@@ -21,6 +21,7 @@ public sealed partial class TableLayoutSettings
         {
         }
 
+#if DESIGN_TIME
         /// <summary>
         ///  Applies settings from the stub into a full-fledged TableLayoutSettings.
         ///
@@ -71,6 +72,7 @@ public sealed partial class TableLayoutSettings
             _columnStyles = null;
             _rowStyles = null;
         }
+#endif
 
         public TableLayoutColumnStyleCollection ColumnStyles => _columnStyles ??= new TableLayoutColumnStyleCollection ();
 

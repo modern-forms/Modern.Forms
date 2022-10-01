@@ -179,6 +179,7 @@ public partial class Control
         PropertyDescriptor? sizeProperty = null;
         PropertyDescriptor? locationProperty = null;
 
+#if DESIGN_TIME
         if (site is not null && site.DesignMode && site.TryGetService (out changeService)) {
             sizeProperty = TypeDescriptor.GetProperties (this)[PropertyNames.Size];
             locationProperty = TypeDescriptor.GetProperties (this)[PropertyNames.Location];
@@ -204,6 +205,7 @@ public partial class Control
                 // When this happens, we just eat the exception and proceed with the change.
             }
         }
+#endif
 
         SetBoundsCore (bounds.X, bounds.Y, bounds.Width, bounds.Height, specified);
 
