@@ -10,124 +10,36 @@ namespace ControlGallery.Panels
     {
         public LabelPanel ()
         {
-            var lbl1 = new Label {
-                Text = "TopLeft",
-                Left = 10,
-                Top = 10,
-                Height = 35,
-                Width = 150,
-                TextAlign = ContentAlignment.TopLeft
+            // 9 alignment labels
+            var image1 = ImageLoader.Get ("button.png");
+            var alignment_labels = CreateAlignmentLabels ();
+
+            Controls.AddRange (alignment_labels.ToArray ());
+
+            // Alignment label options
+            var show_text_cb = Controls.Add (new CheckBox { Text = "Show Text", Top = 10, Left = 470, Checked = true });
+
+            show_text_cb.CheckedChanged += (o, e) => {
+                alignment_labels.ForEach (label => label.Text = show_text_cb.Checked ? label.TextAlign.ToString () : string.Empty);
             };
 
-            lbl1.Style.Border.Width = 1;
-            lbl1.Style.ForegroundColor = SKColors.Red;
+            var show_image_cb = Controls.Add (new CheckBox { Text = "Show Image", Top = 40, Left = 470 });
 
-            Controls.Add (lbl1);
-
-            var lbl2 = new Label {
-                Text = "MiddleLeft",
-                Left = 10,
-                Top = 45,
-                Height = 35,
-                Width = 150,
-                TextAlign = ContentAlignment.MiddleLeft
+            show_image_cb.CheckedChanged += (o, e) => {
+                alignment_labels.ForEach (label => label.Image = show_image_cb.Checked ? image1 : null);
             };
 
-            lbl2.Style.Border.Width = 1;
+            var text_image_relation = Controls.Add (new ComboBox { Top = 70, Left = 470, Width = 150 });
 
-            Controls.Add (lbl2);
+            text_image_relation.Items.AddRange (Enum.GetNames<TextImageRelation> ());
+            text_image_relation.SelectedIndex = 0;
 
-            var lbl3 = new Label {
-                Text = "BottomLeft",
-                Left = 10,
-                Top = 80,
-                Height = 35,
-                Width = 150,
-                TextAlign = ContentAlignment.BottomLeft
+            text_image_relation.SelectedIndexChanged += (o, e) => {
+                var relation = Enum.Parse<TextImageRelation> (text_image_relation.SelectedItem?.ToString ()!);
+                alignment_labels.ForEach (label => label.TextImageRelation = relation);
             };
 
-            lbl3.Style.Border.Width = 1;
-
-            Controls.Add (lbl3);
-
-            var lbl4 = new Label {
-                Text = "TopCenter",
-                Left = 160,
-                Top = 10,
-                Height = 35,
-                Width = 150,
-                TextAlign = ContentAlignment.TopCenter
-            };
-
-            lbl4.Style.Border.Width = 1;
-
-            Controls.Add (lbl4);
-
-            var lbl5 = new Label {
-                Text = "MiddleCenter",
-                Left = 160,
-                Top = 45,
-                Height = 35,
-                Width = 150,
-                TextAlign = ContentAlignment.MiddleCenter
-            };
-
-            lbl5.Style.Border.Width = 1;
-
-            Controls.Add (lbl5);
-
-            var lbl6 = new Label {
-                Text = "BottomCenter",
-                Left = 160,
-                Top = 80,
-                Height = 35,
-                Width = 150,
-                TextAlign = ContentAlignment.BottomCenter
-            };
-
-            lbl6.Style.Border.Width = 1;
-
-            Controls.Add (lbl6);
-
-            var lbl7 = new Label {
-                Text = "TopRight",
-                Left = 310,
-                Top = 10,
-                Height = 35,
-                Width = 150,
-                TextAlign = ContentAlignment.TopRight
-            };
-
-            lbl7.Style.Border.Width = 1;
-
-            Controls.Add (lbl7);
-
-            var lbl8 = new Label {
-                Text = "MiddleRight",
-                Left = 310,
-                Top = 45,
-                Height = 35,
-                Width = 150,
-                TextAlign = ContentAlignment.MiddleRight
-            };
-
-            lbl8.Style.Border.Width = 1;
-
-            Controls.Add (lbl8);
-
-            var lbl9 = new Label {
-                Text = "BottomRight",
-                Left = 310,
-                Top = 80,
-                Height = 35,
-                Width = 150,
-                TextAlign = ContentAlignment.BottomRight
-            };
-
-            lbl9.Style.Border.Width = 1;
-
-            Controls.Add (lbl9);
-
+            // Other examples
             var lbl10 = new Label {
                 Text = "Border",
                 Left = 10,
@@ -149,6 +61,76 @@ namespace ControlGallery.Panels
 
             Controls.Add (new Label { Text = "This text is too long to fit on two lines", Left = 160, Top = 190, Height = 45, Multiline = true });
             Controls.Add (new Label { Text = "This text is too long to fit on two lines", Left = 160, Top = 250, Height = 45, Multiline = true, AutoEllipsis = true });
+
+            Controls.Add (new Label { Text = "Image", Image = image1, Left = 10, Top = 310, Height = 35, ImageAlign = ContentAlignment.MiddleLeft, TextAlign = ContentAlignment.MiddleCenter });
+            Controls.Add (new Label { Text = "Image", Image = image1, Left = 10, Top = 350, Height = 35, Enabled = false });
+        }
+
+        private List<Label> CreateAlignmentLabels ()
+        {
+            var labels = new List<Label> {
+                CreateAlignmentLabel (ContentAlignment.TopLeft),
+                CreateAlignmentLabel (ContentAlignment.TopCenter),
+                CreateAlignmentLabel (ContentAlignment.TopRight),
+                CreateAlignmentLabel (ContentAlignment.MiddleLeft),
+                CreateAlignmentLabel (ContentAlignment.MiddleCenter),
+                CreateAlignmentLabel (ContentAlignment.MiddleRight),
+                CreateAlignmentLabel (ContentAlignment.BottomLeft),
+                CreateAlignmentLabel (ContentAlignment.BottomCenter),
+                CreateAlignmentLabel (ContentAlignment.BottomRight)
+            };
+
+            return labels;
+        }
+
+        private Label CreateAlignmentLabel (ContentAlignment alignment)
+        {
+            var label = new Label {
+                Text = alignment.ToString (),
+                Left = GetAlignmentLeft (alignment),
+                Top = GetAlignmentTop (alignment),
+                Height = 35,
+                Width = 150,
+                TextAlign = alignment,
+                ImageAlign = alignment,
+                Padding = new Padding (3)
+            };
+
+            label.Style.Border.Width = 1;
+
+            return label;
+        }
+
+        private static int GetAlignmentLeft (ContentAlignment alignment)
+        {
+            return alignment switch {
+                ContentAlignment.TopLeft => 10,
+                ContentAlignment.MiddleLeft => 10,
+                ContentAlignment.BottomLeft => 10,
+                ContentAlignment.TopCenter => 160,
+                ContentAlignment.MiddleCenter => 160,
+                ContentAlignment.BottomCenter => 160,
+                ContentAlignment.TopRight => 310,
+                ContentAlignment.MiddleRight => 310,
+                ContentAlignment.BottomRight => 310,
+                _ => throw new NotImplementedException ()
+            };
+        }
+
+        private static int GetAlignmentTop (ContentAlignment alignment)
+        {
+            return alignment switch {
+                ContentAlignment.TopLeft => 10,
+                ContentAlignment.TopCenter => 10,
+                ContentAlignment.TopRight => 10,
+                ContentAlignment.MiddleLeft => 45,
+                ContentAlignment.MiddleCenter => 45,
+                ContentAlignment.MiddleRight => 45,
+                ContentAlignment.BottomLeft => 80,
+                ContentAlignment.BottomCenter => 80,
+                ContentAlignment.BottomRight => 80,
+                _ => throw new NotImplementedException ()
+            };
         }
     }
 }

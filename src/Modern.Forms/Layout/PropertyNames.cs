@@ -17,7 +17,7 @@ internal class PropertyNames
     //public const string AutoScroll = "AutoScroll";
     public const string AutoSize = "AutoSize";
     //public const string Appearance = "Appearance";
-    //public const string AutoEllipsis = "AutoEllipsis";
+    public const string AutoEllipsis = "AutoEllipsis";
     //public const string BorderStyle = "BorderStyle";
     public const string CellBorderStyle = "CellBorderStyle";
     public const string Bounds = "Bounds";
@@ -46,7 +46,7 @@ internal class PropertyNames
     //public const string ImageScaling = "ImageScaling";
     //public const string ImageScalingSize = "ImageScalingSize";
     //public const string ImageKey = "ImageKey";
-    //public const string ImageAlign = "ImageAlign";
+    public const string ImageAlign = "ImageAlign";
     public const string Items = "Items";
     public const string LayoutSettings = "LayoutSettings";
     //public const string LinkArea = "LinkArea";
@@ -56,7 +56,7 @@ internal class PropertyNames
     public const string Margin = "Margin";
     public const string MaximumSize = "MaximumSize";
     public const string MinimumSize = "MinimumSize";
-    //public const string Multiline = "Multiline";
+    public const string Multiline = "Multiline";
     //public const string Orientation = "Orientation";
     public const string PreferredSize = "PreferredSize";
     public const string Padding = "Padding";
@@ -77,9 +77,9 @@ internal class PropertyNames
     //public const string Spring = "Spring";
     public const string Style = "Style";
     public const string TableIndex = "TableIndex";
-    //public const string Text = "Text";
+    public const string Text = "Text";
     //public const string TextAlign = "TextAlign";
-    //public const string TextImageRelation = "TextImageRelation";
+    public const string TextImageRelation = "TextImageRelation";
     //public const string UseCompatibleTextRendering = "UseCompatibleTextRendering";
     public const string Visible = "Visible";
     //public const string WordWrap = "WordWrap";

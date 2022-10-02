@@ -75,6 +75,19 @@ internal partial class PropertyStore
     }
 
     /// <summary>
+    /// Retrieves an enumeration value from the property list.
+    /// </summary>
+    public T GetEnum<T> (int key, T defaultValue) where T : Enum
+    {
+        var value = GetInteger (key, out var found);
+
+        if (found)
+            return (T)(object)value;
+
+        return defaultValue;
+    }
+
+    /// <summary>
     ///  A wrapper around GetObject designed to reduce the boxing hit.
     /// </summary>
     public Padding GetPadding (int key, out bool found)
@@ -175,6 +188,8 @@ internal partial class PropertyStore
                 return default;
         }
     }
+
+    public T? GetObject<T> (int key) where T : class => GetObject (key) as T;
 
     /// <summary>
     ///  Retrieves an object value from our property list.
@@ -603,6 +618,12 @@ internal partial class PropertyStore
             }
         }
     }
+
+    /// <summary>
+    /// Stores the given value in the key.
+    /// </summary>
+    public void SetEnum<T> (int key, T value) where T : Enum
+        => SetInteger (key, (int)(object)value);
 
     /// <summary>
     ///  Stores the given value in the key.
