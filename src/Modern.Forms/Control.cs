@@ -1111,7 +1111,7 @@ namespace Modern.Forms
         /// <param name="e">A PaintEventArgs that contains the event data.</param>
         protected virtual void OnPaint (PaintEventArgs e)
         {
-            foreach (var control in Controls.GetAllControls ().Where (c => c.Visible)) {
+            foreach (var control in Controls.GetAllControls ().Where (c => c.Visible).ToArray ()) {
                 if (control.Width <= 0 || control.Height <= 0)
                     continue;
 

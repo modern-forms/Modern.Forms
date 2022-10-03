@@ -43,7 +43,7 @@ namespace Modern.Forms
             var form_x = form_border.Left.GetWidth ();
             var form_y = form_border.Top.GetWidth ();
 
-            foreach (var control in Controls.GetAllControls ().Where (c => c.Visible)) {
+            foreach (var control in Controls.GetAllControls ().Where (c => c.Visible).ToArray ()) {
                 if (control.Width <= 0 || control.Height <= 0)
                     continue;
 
