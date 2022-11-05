@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using Modern.Forms.Layout;
 using Modern.Forms.Renderers;
 
 namespace Modern.Forms
@@ -113,6 +114,23 @@ namespace Modern.Forms
 
             canvas_size.Width = width;
             canvas_size.Height = height;
+        }
+
+        /// <inheritdoc/>
+        public override Rectangle DisplayRectangle {
+            get {
+                // A ScrollableControl DisplayRectangle includes Padding, while a normal Control does not.
+                var rect = ClientRectangle;
+
+                if (hscrollbar.Visible)
+                    rect.Height -= hscrollbar.Height;
+
+                if (vscrollbar.Visible)
+                    rect.Width -= vscrollbar.Width;
+
+                // TODO: Scale padding?
+                return LayoutUtils.DeflateRect (rect, Padding);
+            }
         }
 
         // Handles events from the scrollbars to update the window position.

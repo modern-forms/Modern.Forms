@@ -6,6 +6,65 @@ namespace Modern.Forms.Tests
     public class ControlTests
     {
         [Fact]
+        public void ClientSize ()
+        {
+            var control = new Control {
+                Width = 100,
+                Height = 100
+            };
+
+            Assert.Equal (100, control.ClientSize.Width);
+            Assert.Equal (100, control.ClientSize.Height);
+
+            control.Padding = new Padding (15);
+
+            Assert.Equal (100, control.ClientSize.Width);
+            Assert.Equal (100, control.ClientSize.Height);
+        }
+
+        [Fact]
+        public void ClientRectangle ()
+        {
+            var control = new Control {
+                Width = 100,
+                Height = 100
+            };
+
+            Assert.Equal (0, control.ClientRectangle.Left);
+            Assert.Equal (0, control.ClientRectangle.Top);
+            Assert.Equal (100, control.ClientRectangle.Width);
+            Assert.Equal (100, control.ClientRectangle.Height);
+
+            control.Padding = new Padding (15);
+
+            Assert.Equal (0, control.ClientRectangle.Left);
+            Assert.Equal (0, control.ClientRectangle.Top);
+            Assert.Equal (100, control.ClientRectangle.Width);
+            Assert.Equal (100, control.ClientRectangle.Height);
+        }
+
+        [Fact]
+        public void DisplayRectangle ()
+        {
+            var control = new Control {
+                Width = 100,
+                Height = 100
+            };
+
+            Assert.Equal (0, control.DisplayRectangle.Left);
+            Assert.Equal (0, control.DisplayRectangle.Top);
+            Assert.Equal (100, control.DisplayRectangle.Width);
+            Assert.Equal (100, control.DisplayRectangle.Height);
+
+            control.Padding = new Padding (15);
+
+            Assert.Equal (0, control.DisplayRectangle.Left);
+            Assert.Equal (0, control.DisplayRectangle.Top);
+            Assert.Equal (100, control.DisplayRectangle.Width);
+            Assert.Equal (100, control.DisplayRectangle.Height);
+        }
+
+        [Fact]
         public void GetNextControl_BasicTabIndex ()
         {
             var container = new Control ();
