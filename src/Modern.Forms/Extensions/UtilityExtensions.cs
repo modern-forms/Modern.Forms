@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Modern.WindowKit.Input;
 
 namespace Modern.Forms
@@ -32,6 +34,11 @@ namespace Modern.Forms
                 buttons |= MouseButtons.XButton2;
 
             return buttons;
+        }
+
+        public static IEnumerable<T> WhereNotNull<T> (this IEnumerable<T?> values) where T : class
+        {
+            return values.Where (p => p != null).Cast<T> ();
         }
     }
 }

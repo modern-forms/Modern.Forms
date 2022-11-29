@@ -2,6 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Modern.WindowKit.Controls.Platform;
+using Modern.WindowKit.Platform.Storage.FileIO;
+using Modern.WindowKit.Platform.Storage;
 
 namespace Modern.Forms
 {
@@ -21,22 +24,27 @@ namespace Modern.Forms
         /// <param name="owner">The window that owns this dialog.</param>
         public async Task<DialogResult> ShowDialog (Form owner)
         {
-            var dialog = new Modern.WindowKit.Controls.OpenFileDialog {
-                AllowMultiple = AllowMultiple,
-                Directory = InitialDirectory,
-                InitialFileName = FileName,
-                Title = Title,
-                Filters = filters
-            };
+            if (owner.window is ITopLevelImplWithStorageProvider parent) {
+                var options = new FilePickerOpenOptions {
+                    AllowMultiple = AllowMultiple,
+                    SuggestedStartLocation = InitialDirectory is not null ? new BclStorageFolder (InitialDirectory) : null,
+                    Title = Title,
+                    FileTypeFilter = filters
+                };
 
-            var files = await dialog.ShowAsync (owner.window);
+                var result = await parent.StorageProvider.OpenFilePickerAsync (options);
 
-            FileNames.Clear ();
+                FileNames.Clear ();
 
-            if (files?.Any () == true)
-                FileNames.AddRange (files.Select (f => Path.GetFullPath (f)));
+                var files = result.Select (f => f.GetFullPath ()).WhereNotNull ();
 
-            return FileNames.Count > 0 ? DialogResult.OK : DialogResult.Cancel;
+                if (files.Any ())
+                    FileNames.AddRange (files);
+
+                return FileNames.Count > 0 ? DialogResult.OK : DialogResult.Cancel;
+            }
+            
+            throw new ArgumentException ("Owner does not support system dialogs.");
         }
     }
 }

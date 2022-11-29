@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Modern.WindowKit.Controls.Platform;
+using Modern.WindowKit.Platform.Storage.FileIO;
+using Modern.WindowKit.Platform.Storage;
 
 namespace Modern.Forms
 {
@@ -19,22 +22,28 @@ namespace Modern.Forms
         /// <param name="owner">The window that owns this dialog.</param>
         public async Task<DialogResult> ShowDialog (Form owner)
         {
-            var dialog = new Modern.WindowKit.Controls.SaveFileDialog {
-                DefaultExtension = DefaultExtension,
-                Directory = InitialDirectory,
-                InitialFileName = FileName,
-                Title = Title,
-                Filters = filters
-            };
+            if (owner.window is ITopLevelImplWithStorageProvider parent) {
+                var options = new FilePickerSaveOptions {
+                    DefaultExtension= DefaultExtension,
+                    SuggestedStartLocation = InitialDirectory is not null ? new BclStorageFolder (InitialDirectory) : null,
+                    SuggestedFileName = FileName,
+                    Title = Title,
+                    FileTypeChoices = filters
+                };
 
-            var file = await dialog.ShowAsync (owner.window);
+                var result = await parent.StorageProvider.SaveFilePickerAsync (options);
 
-            FileNames.Clear ();
+                FileNames.Clear ();
 
-            if (file is not null)
-                FileNames.Add (file);
+                var file = result?.GetFullPath ();
 
-            return FileNames.Count > 0 ? DialogResult.OK : DialogResult.Cancel;
+                if (file is not null)
+                    FileNames.Add (file);
+
+                return FileNames.Count > 0 ? DialogResult.OK : DialogResult.Cancel;
+            }
+
+            throw new ArgumentException ("Owner does not support system dialogs.");
         }
     }
 }

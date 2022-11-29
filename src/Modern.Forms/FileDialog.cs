@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Modern.WindowKit.Controls;
+using Modern.WindowKit.Platform.Storage;
 
 namespace Modern.Forms
 {
@@ -10,18 +10,17 @@ namespace Modern.Forms
     /// </summary>
     public abstract class FileDialog : FileSystemDialog
     {
-        internal List<FileDialogFilter> filters = new List<FileDialogFilter> ();
+        internal List<FilePickerFileType> filters = new List<FilePickerFileType> ();
 
         /// <summary>
         /// Adds a file filter choice to the dialog.
         /// </summary>
         /// <param name="name">Name of the filter, for example: "Text Files".</param>
-        /// <param name="extensions">File extensions to filter for, for example: "txt", "log".</param>
+        /// <param name="extensions">File extensions to filter for, for example: "*.txt", "*.log".</param>
         public void AddFilter (string name, params string[] extensions)
         {
-            var filter = new FileDialogFilter {
-                Name = name,
-                Extensions = new List<string> (extensions)
+            var filter = new FilePickerFileType (name) {
+                Patterns = new List<string> (extensions)
             };
 
             filters.Add (filter);

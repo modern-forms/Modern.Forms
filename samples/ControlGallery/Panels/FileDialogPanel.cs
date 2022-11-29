@@ -31,9 +31,9 @@ namespace ControlGallery.Panels
                 Title = "Open some files up"
             };
 
-            ofd.AddFilter ("All Files", "*");
-            ofd.AddFilter ("Image Files", "png", "gif", "jpg", "jpeg");
-            ofd.AddFilter ("Text Files", "txt", "log");
+            ofd.AddFilter ("All Files", "*.*");
+            ofd.AddFilter ("Image Files", "*.png", "*.gif", "*.jpg", "*.jpeg");
+            ofd.AddFilter ("Text Files", "*.txt", "*.log");
 
             if ((await ofd.ShowDialog (FindForm ()!)) == DialogResult.OK)
                 foreach (var file in ofd.FileNames)
@@ -50,9 +50,9 @@ namespace ControlGallery.Panels
                 Title = "Save this file"
             };
 
-            sfd.AddFilter ("All Files", "*");
-            sfd.AddFilter ("Image Files", "png", "gif", "jpg", "jpeg");
-            sfd.AddFilter ("Text Files", "txt", "log");
+            sfd.AddFilter ("All Files", "*.*");
+            sfd.AddFilter ("Image Files", "*.png", "*.gif", "*.jpg", "*.jpeg");
+            sfd.AddFilter ("Text Files", "*.txt", "*.log");
 
             if ((await sfd.ShowDialog (FindForm ()!)) == DialogResult.OK)
                 foreach (var file in sfd.FileNames)
