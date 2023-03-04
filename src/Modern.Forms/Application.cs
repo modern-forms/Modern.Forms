@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading;
 using Modern.WindowKit;
 using Modern.WindowKit.Threading;
@@ -12,6 +15,8 @@ namespace Modern.Forms
     {
         private static CancellationTokenSource? _mainLoopCancellationTokenSource;
         private static bool is_exiting;
+
+        private static string s_startupPath;
 
         /// <summary>
         /// This is the top level active menu, if any.
@@ -73,6 +78,27 @@ namespace Modern.Forms
         public static void RunOnUIThread (Action action)
         {
             Dispatcher.UIThread.Post (action);
+        }
+
+        /// <summary>
+        /// All open forms
+        /// </summary>
+        public static readonly List<Form> OpenForms = new List<Form> ();
+
+
+        /// <summary>
+        /// Gets the path for the executable file that started the application, not including the executable name.
+        /// </summary>
+        public static string StartupPath {
+            get {
+                if (s_startupPath is null) {
+                    // StringBuilder sb = UnsafeNativeMethods.GetModuleFileNameLongPath(NativeMethods.NullHandleRef);
+                    // startupPath = Path.GetDirectoryName(sb.ToString());
+                    s_startupPath = AppContext.BaseDirectory;
+                }
+
+                return s_startupPath;
+            }
         }
     }
 }
