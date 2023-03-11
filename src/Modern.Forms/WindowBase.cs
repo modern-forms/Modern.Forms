@@ -82,6 +82,8 @@ namespace Modern.Forms
 
                 if (args.Cancel)
                     return;
+
+                Application.OpenForms.Remove (f);
             }
             
             window.Dispose (); 
@@ -410,6 +412,9 @@ namespace Modern.Forms
             SetWindowStartupLocation ();
             window.Show (true, false);
 
+            if (this is Form f)
+                Application.OpenForms.Add (f);
+
             if (!shown) {
                 shown = true;
                 OnShown (EventArgs.Empty);
@@ -424,6 +429,9 @@ namespace Modern.Forms
             SetWindowStartupLocation (parent);
             parent.SetEnabled (false);
             window.Show (true, true);
+
+            if (this is Form f)
+                Application.OpenForms.Add (f);
 
             if (!shown) {
                 shown = true;

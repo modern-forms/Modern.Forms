@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);xUnit2013</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

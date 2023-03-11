@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading;
 using Modern.WindowKit;
 using Modern.WindowKit.Threading;
@@ -15,8 +12,8 @@ namespace Modern.Forms
     {
         private static CancellationTokenSource? _mainLoopCancellationTokenSource;
         private static bool is_exiting;
-        private static FormCollection s_forms;
-        private static string s_startupPath;
+        private static FormCollection? open_forms;
+        private static string? startup_path;
 
         /// <summary>
         /// This is the top level active menu, if any.
@@ -40,6 +37,11 @@ namespace Modern.Forms
         /// Raised when the application is exiting.
         /// </summary>
         public static event EventHandler? OnExit;
+
+        /// <summary>
+        ///  Gets the forms collection associated with this application.
+        /// </summary>
+        public static FormCollection OpenForms => open_forms ??= new FormCollection ();
 
         /// <summary>
         /// Begins running a standard application message loop on the current thread, and makes the specified form visible.
@@ -81,24 +83,8 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        ///  Gets the forms collection associated with this application.
-        /// </summary>
-        public static FormCollection OpenForms => s_forms ?? (s_forms = new FormCollection ());
-
-
-        /// <summary>
         /// Gets the path for the executable file that started the application, not including the executable name.
         /// </summary>
-        public static string StartupPath {
-            get {
-                if (s_startupPath is null) {
-                    // StringBuilder sb = UnsafeNativeMethods.GetModuleFileNameLongPath(NativeMethods.NullHandleRef);
-                    // startupPath = Path.GetDirectoryName(sb.ToString());
-                    s_startupPath = AppContext.BaseDirectory;
-                }
-
-                return s_startupPath;
-            }
-        }
+        public static string StartupPath => startup_path ??= AppContext.BaseDirectory;
     }
 }

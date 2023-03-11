@@ -300,7 +300,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the name of the form.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Raises the Closing event.
@@ -361,17 +361,6 @@ namespace Modern.Forms
             ShowDialog (parent.Window);
 
             return dialog_task.Task;
-        }
-
-        /// <summary>
-        /// Makes the form display by setting the visible property to true
-        /// </summary>
-        public new void Show()
-        {
-            if (!Application.OpenForms.Contains (this)) {
-                Application.OpenForms.Add (this);
-            }
-            base.Show();
         }
 
         /// <summary>
