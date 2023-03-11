@@ -84,6 +84,7 @@ namespace Modern.Forms
         /// <inheritdoc/>
         public override void Close ()
         {
+            Application.OpenForms.Remove(this);
             base.Close ();
 
             // If this was a dialog box we need to reactivate the parent
@@ -295,6 +296,11 @@ namespace Modern.Forms
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets the name of the form.
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Raises the Closing event.

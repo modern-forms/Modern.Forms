@@ -12,6 +12,8 @@ namespace Modern.Forms
     {
         private static CancellationTokenSource? _mainLoopCancellationTokenSource;
         private static bool is_exiting;
+        private static FormCollection? open_forms;
+        private static string? startup_path;
 
         /// <summary>
         /// This is the top level active menu, if any.
@@ -35,6 +37,11 @@ namespace Modern.Forms
         /// Raised when the application is exiting.
         /// </summary>
         public static event EventHandler? OnExit;
+
+        /// <summary>
+        ///  Gets the forms collection associated with this application.
+        /// </summary>
+        public static FormCollection OpenForms => open_forms ??= new FormCollection ();
 
         /// <summary>
         /// Begins running a standard application message loop on the current thread, and makes the specified form visible.
@@ -74,5 +81,10 @@ namespace Modern.Forms
         {
             Dispatcher.UIThread.Post (action);
         }
+
+        /// <summary>
+        /// Gets the path for the executable file that started the application, not including the executable name.
+        /// </summary>
+        public static string StartupPath => startup_path ??= AppContext.BaseDirectory;
     }
 }
