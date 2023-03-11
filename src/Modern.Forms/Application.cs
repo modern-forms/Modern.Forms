@@ -15,7 +15,7 @@ namespace Modern.Forms
     {
         private static CancellationTokenSource? _mainLoopCancellationTokenSource;
         private static bool is_exiting;
-
+        private static FormCollection s_forms;
         private static string s_startupPath;
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// All open forms
+        ///  Gets the forms collection associated with this application.
         /// </summary>
-        public static readonly List<Form> OpenForms = new List<Form> ();
+        public static FormCollection OpenForms => s_forms ?? (s_forms = new FormCollection ());
 
 
         /// <summary>

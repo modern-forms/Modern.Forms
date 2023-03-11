@@ -84,6 +84,7 @@ namespace Modern.Forms
         /// <inheritdoc/>
         public override void Close ()
         {
+            Application.OpenForms.Remove(this);
             base.Close ();
 
             // If this was a dialog box we need to reactivate the parent
