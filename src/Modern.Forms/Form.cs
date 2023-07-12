@@ -38,7 +38,7 @@ namespace Modern.Forms
             Window.SetSystemDecorations (SystemDecorations.None);
             Window.SetExtendClientAreaToDecorationsHint (true);
 
-            Window.Closing = () => {
+            Window.Closing = (e) => {
                 var args = new CancelEventArgs ();
 
                 OnClosing (args);

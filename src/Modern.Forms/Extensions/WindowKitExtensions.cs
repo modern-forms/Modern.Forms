@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Modern.WindowKit.Input;
 using Modern.WindowKit.Platform.Storage;
+using Modern.WindowKit.Platform.Storage.FileIO;
 
 namespace Modern.Forms
 {
@@ -25,16 +26,16 @@ namespace Modern.Forms
 
         public static string? GetFullPath (this IStorageFile file)
         {
-            if (file.TryGetUri (out var uri))
-                return Path.GetFullPath (uri.LocalPath);
+            if (file is BclStorageFile path)
+                return path.FileInfo.FullName;
 
             return null;
         }
 
         public static string? GetFullPath (this IStorageFolder file)
         {
-            if (file.TryGetUri (out var uri))
-                return Path.GetFullPath (uri.LocalPath);
+            if (file is BclStorageFolder path)
+                return path.DirectoryInfo.FullName;
 
             return null;
         }

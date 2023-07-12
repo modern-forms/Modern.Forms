@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Modern.WindowKit.Platform.Storage.FileIO;
 
 namespace Modern.Forms
 {
@@ -16,5 +18,17 @@ namespace Modern.Forms
         /// Gets or sets the title for the dialog.
         /// </summary>
         public string Title { get; set; } = string.Empty;
+
+        internal BclStorageFolder? GetInitialDirectory ()
+        {
+            if (InitialDirectory is not null) {
+                var dir_info = new DirectoryInfo (InitialDirectory);
+
+                if (dir_info.Exists)
+                    return new BclStorageFolder (dir_info);
+            }
+
+            return null;
+        }
     }
 }
