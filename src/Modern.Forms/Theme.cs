@@ -18,19 +18,7 @@ namespace Modern.Forms
 
         static Theme ()
         {
-            values[nameof (PrimaryColor)] = new SKColor (0, 120, 212);
-            values[nameof (PrimaryTextColor)] = SKColors.Black;
-            values[nameof (DisabledTextColor)] = new SKColor (190, 190, 190);
-            values[nameof (LightTextColor)] = SKColors.White;
-            values[nameof (FormBackgroundColor)] = new SKColor (240, 240, 240);
-            values[nameof (FormCloseHighlightColor)] = new SKColor (232, 17, 35);
-            values[nameof (HighlightColor)] = new SKColor (42, 138, 208);
-            values[nameof (ItemHighlightColor)] = new SKColor (198, 198, 198);
-            values[nameof (ItemSelectedColor)] = new SKColor (176, 176, 176);
-            values[nameof (DarkNeutralGray)] = new SKColor (225, 225, 225);
-            values[nameof (NeutralGray)] = new SKColor (243, 242, 241);
-            values[nameof (LightNeutralGray)] = new SKColor (251, 251, 251);
-            values[nameof (BorderGray)] = new SKColor (171, 171, 171);
+            SetBuiltInTheme (BuiltInTheme.Default);
 
             values[nameof (UIFont)] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
             values[nameof (UIFontBold)] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Bold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
@@ -181,6 +169,51 @@ namespace Modern.Forms
         public static SKColor PrimaryTextColor {
             get => GetValue<SKColor> (nameof (PrimaryTextColor));
             set => SetValue (nameof (PrimaryTextColor), value);
+        }
+
+        public static void SetBuiltInTheme (BuiltInTheme theme)
+        {
+            // We always reset the colors, even if we were already using the current theme.
+            // This resets any modification the user made, which feels like the expected behavior.
+
+            BeginUpdate ();
+
+            // TODO: BuiltInTheme.Default should detect the OS setting. Currently it just uses Light.
+            switch (theme) {
+                case BuiltInTheme.Dark:
+                    values[nameof (PrimaryColor)] = new SKColor (0, 120, 212);
+                    values[nameof (PrimaryTextColor)] = SKColors.White;
+                    values[nameof (DisabledTextColor)] = new SKColor (71, 71, 71);
+                    values[nameof (LightTextColor)] = SKColors.White;
+                    values[nameof (FormBackgroundColor)] = new SKColor (31, 31, 31);
+                    values[nameof (FormCloseHighlightColor)] = new SKColor (232, 17, 35);
+                    values[nameof (HighlightColor)] = new SKColor (42, 138, 208);
+                    values[nameof (ItemHighlightColor)] = new SKColor (45, 71, 101);
+                    values[nameof (ItemSelectedColor)] = new SKColor (176, 176, 176);
+                    values[nameof (DarkNeutralGray)] = new SKColor (225, 225, 225);
+                    values[nameof (NeutralGray)] = new SKColor (37, 37, 38);
+                    values[nameof (LightNeutralGray)] = new SKColor (31, 31, 31);
+                    values[nameof (BorderGray)] = new SKColor (61, 61, 61);
+                    break;
+                default:
+                    values[nameof (PrimaryColor)] = new SKColor (0, 120, 212);
+                    values[nameof (PrimaryTextColor)] = SKColors.Black;
+                    values[nameof (DisabledTextColor)] = new SKColor (190, 190, 190);
+                    values[nameof (LightTextColor)] = SKColors.White;
+                    values[nameof (FormBackgroundColor)] = new SKColor (240, 240, 240);
+                    values[nameof (FormCloseHighlightColor)] = new SKColor (232, 17, 35);
+                    values[nameof (HighlightColor)] = new SKColor (42, 138, 208);
+                    values[nameof (ItemHighlightColor)] = new SKColor (198, 198, 198);
+                    values[nameof (ItemSelectedColor)] = new SKColor (176, 176, 176);
+                    values[nameof (DarkNeutralGray)] = new SKColor (225, 225, 225);
+                    values[nameof (NeutralGray)] = new SKColor (243, 242, 241);
+                    values[nameof (LightNeutralGray)] = new SKColor (251, 251, 251);
+                    values[nameof (BorderGray)] = new SKColor (171, 171, 171);
+                    break;
+            }
+
+            RaiseThemeChanged ();
+            EndUpdate ();
         }
 
         private static void RaiseThemeChanged ()

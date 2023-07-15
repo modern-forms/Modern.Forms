@@ -45,6 +45,8 @@ namespace Modern.Forms
                 Application.ActiveMenu?.Deactivate ();
                 Deactivated?.Invoke (this, EventArgs.Empty);
             };
+
+            Theme.ThemeChanged += (o, e) => Invalidate ();
         }
 
         /// <summary>
