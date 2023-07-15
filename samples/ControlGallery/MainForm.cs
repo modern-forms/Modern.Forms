@@ -64,6 +64,10 @@ namespace ControlGallery
         {
             if (current_panel != null) {
                 Controls.Remove (current_panel);
+
+                if (current_panel is BasePanel bp)
+                    bp.UnloadPanel ();
+
                 current_panel.Dispose ();
                 current_panel = null;
             }
