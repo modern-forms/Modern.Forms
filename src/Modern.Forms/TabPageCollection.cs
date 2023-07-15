@@ -57,8 +57,11 @@ namespace Modern.Forms
             base.SetItem (index, item);
 
             item.Visible = false;
-            owner.Controls[index] = item;
-            tab_strip.Tabs[index] = item.TabStripItem;
+
+            owner.SuspendLayout ();
+            RemoveItem (index);
+            InsertItem (index, item);
+            owner.ResumeLayout ();
         }
     }
 }
