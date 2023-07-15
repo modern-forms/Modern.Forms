@@ -129,10 +129,10 @@ public partial class Control
                 destinationIndex += length;
 
                 for (; length > 0; length--)
-                    destinationList[--destinationIndex] = sourceList[--sourceIndex];
+                    destinationList.control_list[--destinationIndex] = sourceList[--sourceIndex];
             } else {
                 for (; length > 0; length--)
-                    destinationList[destinationIndex++] = sourceList[sourceIndex++];
+                    destinationList.control_list[destinationIndex++] = sourceList[sourceIndex++];
             }
         }
 
@@ -459,7 +459,12 @@ public partial class Control
                 Debug.Assert (control is not null, "Why are we returning null controls from a valid index?");
                 return control;
             }
-            set => control_list[index] = value;
+        }
+
+        // Setter required by IList<T>, but we don't want users to be able to set Controls this way
+        Control IList<Control>.this[int index] { 
+            get => this[index];
+            set => throw new NotSupportedException ();
         }
 
         /// <summary>
