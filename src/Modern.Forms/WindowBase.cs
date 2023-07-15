@@ -15,7 +15,7 @@ namespace Modern.Forms
     /// <summary>
     /// Represents the base class for windows, like Form and PopupWindow
     /// </summary>
-    public abstract class WindowBase : Component
+    public abstract partial class WindowBase : Component
     {
         private const int DOUBLE_CLICK_TIME = 500;
         private const int DOUBLE_CLICK_MOVEMENT = 4;
@@ -247,15 +247,33 @@ namespace Modern.Forms
                 switch (ke.Type) {
                     case RawKeyEventType.KeyDown:
                         var kd_e = new KeyEventArgs (WindowKitExtensions.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
+
+                        OnKeyDown (kd_e);
+
+                        if (kd_e.Handled)
+                            return;
+
                         adapter.RaiseKeyDown (kd_e);
                         break;
                     case RawKeyEventType.KeyUp:
                         var ku_e = new KeyEventArgs (WindowKitExtensions.AddModifiers ((Keys)KeyInterop.VirtualKeyFromKey (ke.Key), ke.Modifiers));
+
+                        OnKeyUp (ku_e);
+
+                        if (ku_e.Handled)
+                            return;
+
                         adapter.RaiseKeyUp (ku_e);
                         break;
                 }
             } else if (e is RawTextInputEventArgs te) {
                 var kp_e = new KeyPressEventArgs (te.Text, KeyEventArgs.FromInputModifiers (te.Modifiers));
+
+                OnKeyPress (kp_e);
+
+                if (kp_e.Handled)
+                    return;
+
                 adapter.RaiseKeyPress (kp_e);
                 e.Handled = true;
             }
