@@ -42,7 +42,7 @@ namespace Modern.Forms
             window.Closed = () => Closed?.Invoke (this, EventArgs.Empty);
             window.Deactivated = () => {
                 // If we're clicking off the form, deactivate any active menus
-                Application.ActiveMenu?.Deactivate ();
+                Application.ClosePopups ();
                 Deactivated?.Invoke (this, EventArgs.Empty);
             };
         }
@@ -145,6 +145,10 @@ namespace Modern.Forms
         {
             Visible = false;
             window.Hide ();
+            
+            if (Application.ActivePopupWindow == this)
+                Application.ActivePopupWindow = null;
+
             OnVisibleChanged (EventArgs.Empty);
         }
 
