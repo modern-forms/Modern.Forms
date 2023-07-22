@@ -92,7 +92,7 @@ namespace Modern.Forms
             if (clicked_item != null && !clicked_item.HasItems) {
 
                 if (!clicked_item.HasItems) {
-                    Application.ActiveMenu?.Deactivate ();
+                    Application.ClosePopups ();
 
                     clicked_item.OnClick (e);
                     OnItemClicked (e, clicked_item);

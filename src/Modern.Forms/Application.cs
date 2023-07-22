@@ -17,9 +17,22 @@ namespace Modern.Forms
 
         /// <summary>
         /// This is the top level active menu, if any.
-        /// This is used to hide menus if the user clicks elsewhere on the Form or off the Form.
         /// </summary>
         internal static MenuBase? ActiveMenu { get; set; }
+
+        /// <summary>
+        /// This is the open popup window, like the ComboBox dropdown, if any.
+        /// </summary>
+        internal static PopupWindow? ActivePopupWindow { get; set; }
+
+        /// <summary>
+        /// Hides any open popups.
+        /// </summary>
+        internal static void ClosePopups ()
+        {
+            ActiveMenu?.Deactivate ();
+            ActivePopupWindow?.Hide ();
+        }
 
         /// <summary>
         /// Exits the application.
