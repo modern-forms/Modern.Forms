@@ -10,7 +10,7 @@ namespace Outlaw
         [STAThread]
         public static void Main (string[] args)
         {
-            Theme.BorderGray = new SKColor (237, 235, 233);
+            Theme.BorderLowColor = new SKColor (237, 235, 233);
 
             var form = new MainForm ();
 

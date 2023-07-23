@@ -34,11 +34,11 @@ namespace Modern.Forms.Renderers
         {
             // Draw selected background
             if (control.Items.SelectedIndexes.Contains (index))
-                e.Canvas.FillRectangle (bounds, Theme.ItemHighlightColor);
+                e.Canvas.FillRectangle (bounds, Theme.ControlHighlightLowColor);
 
             // Draw hover background
             else if (control.ShowHover && control.Items.HoveredIndex == index)
-                e.Canvas.FillRectangle (bounds, Theme.NeutralGray);
+                e.Canvas.FillRectangle (bounds, Theme.ControlMidColor);
 
             // Draw focus rectangle
             if (control.Selected && control.ShowFocusCues && control.Items.FocusedIndex == index)

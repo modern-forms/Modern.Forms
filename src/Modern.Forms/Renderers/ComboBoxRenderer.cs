@@ -31,7 +31,7 @@ namespace Modern.Forms.Renderers
             // Draw the drop down glyph
             var button_bounds = GetDropDownButtonArea (control, e);
 
-            ControlPaint.DrawArrowGlyph (e, button_bounds, control.Enabled ? Theme.PrimaryTextColor : Theme.DisabledTextColor, ArrowDirection.Down);
+            ControlPaint.DrawArrowGlyph (e, button_bounds, control.Enabled ? Theme.ForegroundColor : Theme.ForegroundDisabledColor, ArrowDirection.Down);
         }
 
         /// <summary>

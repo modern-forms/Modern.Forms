@@ -43,7 +43,7 @@ namespace Modern.Forms.Renderers
         protected virtual void RenderItem (TreeView control, TreeViewItem item, PaintEventArgs e)
         {
             var is_selected = item == control.SelectedItem;
-            var foreground_color = control.Enabled ? Theme.PrimaryTextColor : Theme.DisabledTextColor;
+            var foreground_color = control.Enabled ? Theme.ForegroundColor : Theme.ForegroundDisabledColor;
 
             if (is_selected)
                 e.Canvas.FillRectangle (item.Bounds, control.Style.GetSelectedItemBackgroundColor ());

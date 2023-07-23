@@ -27,7 +27,7 @@ namespace Modern.Forms
 
         /// <inheritdoc/>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle, 
-            (style) => style.BackgroundColor = Theme.LightNeutralGray);
+            (style) => style.BackgroundColor = Theme.ControlLowColor);
 
         /// <summary>
         /// Raised when a list view item is double-clicked.

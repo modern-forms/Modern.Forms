@@ -66,8 +66,7 @@ namespace Modern.Forms
         /// <summary>
         /// The default ControlStyle for all instances of CheckBox.
         /// </summary>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => style.BackgroundColor = Theme.LightNeutralGray);
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 
         /// <summary>
         /// Raises the CheckedChanged event.

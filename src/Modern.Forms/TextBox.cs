@@ -70,7 +70,7 @@ namespace Modern.Forms
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
                 style.Border.Width = 1;
-                style.BackgroundColor = Theme.LightNeutralGray;
+                style.BackgroundColor = Theme.ControlLowColor;
             });
 
         // Scrolls the TextBox by the specified amounts.

@@ -35,7 +35,7 @@ namespace Modern.Forms
                 Height = 45
             });
 
-            label.Style.BackgroundColor = Theme.FormBackgroundColor;
+            label.Style.BackgroundColor = Theme.BackgroundColor;
             label.Style.Border.Width = 0;
 
             ok_button = label_panel.Controls.Add (new Button {

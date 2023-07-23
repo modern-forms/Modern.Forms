@@ -84,7 +84,7 @@ namespace Modern.Forms
         /// <inheritdoc/>
         public override void Close ()
         {
-            Application.OpenForms.Remove(this);
+            Application.OpenForms.Remove (this);
             base.Close ();
 
             // If this was a dialog box we need to reactivate the parent
@@ -115,8 +115,8 @@ namespace Modern.Forms
         /// </summary>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
          (style) => {
-             style.BackgroundColor = Theme.FormBackgroundColor;
-             style.Border.Color = Theme.PrimaryColor;
+             style.BackgroundColor = Theme.BackgroundColor;
+             style.Border.Color = Theme.AccentColor2;
              style.Border.Width = 1;
          });
 
@@ -416,7 +416,7 @@ namespace Modern.Forms
             set {
                 if (shown)
                     throw new InvalidOperationException ($"Cannot change {nameof (UseSystemDecorations)} once a Form has been shown.");
-                
+
                 if (use_system_decorations != value) {
                     use_system_decorations = value;
                     TitleBar.Visible = !use_system_decorations;

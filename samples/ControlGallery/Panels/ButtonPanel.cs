@@ -28,7 +28,7 @@ namespace ControlGallery.Panels
             };
 
             b2.Style.BackgroundColor = SKColors.White;
-            b2.Style.ForegroundColor = Theme.PrimaryColor;
+            b2.Style.ForegroundColor = Theme.AccentColor2;
             b2.Style.Border.Width = 3;
             b2.Style.Border.Color = SKColors.Red;
 

@@ -50,7 +50,7 @@ namespace Modern.Forms
         /// <inheritdoc/>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
-                style.BackgroundColor = Theme.LightNeutralGray;
+                style.BackgroundColor = Theme.ControlLowColor;
                 style.Border.Width = 1;
             });
 

@@ -37,9 +37,9 @@ namespace Modern.Forms
         /// </summary>
         public new static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle,
             (style) => {
-                style.BackgroundColor = Theme.HighlightColor;
-                style.Border.Color = Theme.PrimaryColor;
-                style.ForegroundColor = Theme.LightTextColor;
+                style.BackgroundColor = Theme.AccentColor;
+                style.Border.Color = Theme.AccentColor2;
+                style.ForegroundColor = Theme.ForegroundColorOnAccent;
             });
 
         /// <summary>

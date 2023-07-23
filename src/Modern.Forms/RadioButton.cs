@@ -55,8 +55,7 @@ namespace Modern.Forms
         protected override Size DefaultSize => new Size (104, 24);
 
         /// <inheritdoc/>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => style.BackgroundColor = Theme.LightNeutralGray);
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 
         /// <summary>
         /// Raises the CheckedChanged event.

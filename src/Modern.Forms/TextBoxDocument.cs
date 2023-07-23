@@ -26,7 +26,7 @@ namespace Modern.Forms
         private int width = -1;
         private SKTypeface font = Theme.UIFont;
         private TextAlignment alignment = TextAlignment.Left;
-        private SKColor placeholder_font_color = Theme.DisabledTextColor;
+        private SKColor placeholder_font_color = Theme.ForegroundDisabledColor;
         private SKColor selection_color = new SKColor (153, 201, 239);
 
         private static readonly string[] invalid_singleline_characters = new[] { "\r", "\n" };
@@ -148,7 +148,7 @@ namespace Modern.Forms
                 return cached_text_block;
 
             var max_size = multiline ? new Size (width, int.MaxValue) : TextMeasurer.MaxSize;
-            var color = !Enabled ? Theme.DisabledTextColor :
+            var color = !Enabled ? Theme.ForegroundDisabledColor :
                         Text.HasValue () ? textbox.CurrentStyle.GetForegroundColor () : 
                                 placeholder_font_color;
 

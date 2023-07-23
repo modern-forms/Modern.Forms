@@ -114,7 +114,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the computed color of this side of the border.
         /// </summary>
-        public SKColor GetColor () => Color ?? _parent?.GetColor () ?? Theme.BorderGray;
+        public SKColor GetColor () => Color ?? _parent?.GetColor () ?? Theme.BorderLowColor;
 
         /// <summary>
         /// Gets or sets the width of this side of the border.

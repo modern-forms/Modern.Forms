@@ -55,11 +55,11 @@ namespace Modern.Forms
         /// <inheritdoc/>
         public new static TreeViewControlStyle DefaultStyle = new TreeViewControlStyle (Control.DefaultStyle,
             (style) => {
-                style.BackgroundColor = Theme.LightNeutralGray;
+                style.BackgroundColor = Theme.ControlLowColor;
                 style.Border.Width = 1;
 
                 if (style is TreeViewControlStyle s)
-                    s.SelectedItemBackgroundColor = Theme.ItemHighlightColor;
+                    s.SelectedItemBackgroundColor = Theme.ControlHighlightLowColor;
             });
 
         /// <inheritdoc/>
@@ -524,7 +524,7 @@ namespace Modern.Forms
             /// <summary>
             /// Gets the computed selected item background color.
             /// </summary>
-            public SKColor GetSelectedItemBackgroundColor () => SelectedItemBackgroundColor ?? (_parent as TreeViewControlStyle)?.GetSelectedItemBackgroundColor () ?? Theme.ItemHighlightColor;
+            public SKColor GetSelectedItemBackgroundColor () => SelectedItemBackgroundColor ?? (_parent as TreeViewControlStyle)?.GetSelectedItemBackgroundColor () ?? Theme.ControlHighlightLowColor;
         }
     }
 }

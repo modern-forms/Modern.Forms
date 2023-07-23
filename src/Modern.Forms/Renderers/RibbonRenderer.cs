@@ -33,7 +33,7 @@ namespace Modern.Forms.Renderers
         {
             LayoutTabPage (tabPage);
 
-            e.Canvas.FillRectangle (tabPage.Bounds, Theme.NeutralGray);
+            e.Canvas.FillRectangle (tabPage.Bounds, Theme.ControlMidColor);
 
             foreach (var group in tabPage.Groups)
                 RenderItemGroup (control, tabPage, group, e);
@@ -52,7 +52,7 @@ namespace Modern.Forms.Renderers
                     RenderItem (control, tabPage, group, item, e);
 
             // Right border (group separator)
-            e.Canvas.DrawLine (group.Bounds.Right - 1, group.Bounds.Top + 4, group.Bounds.Right - 1, group.Bounds.Bottom - 4, Theme.BorderGray);
+            e.Canvas.DrawLine (group.Bounds.Right - 1, group.Bounds.Top + 4, group.Bounds.Right - 1, group.Bounds.Bottom - 4, Theme.BorderLowColor);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Modern.Forms.Renderers
         {
             var canvas = e.Canvas;
             var padding = e.LogicalToDeviceUnits (item.Padding);
-            var background_color = item.Selected ? Theme.ItemSelectedColor : item.Hovered ? Theme.ItemHighlightColor : Theme.NeutralGray;
+            var background_color = item.Selected ? Theme.ControlHighlightMidColor : item.Hovered ? Theme.ControlHighlightLowColor : Theme.ControlMidColor;
 
             canvas.FillRectangle (item.Bounds, background_color);
 
@@ -79,7 +79,7 @@ namespace Modern.Forms.Renderers
                 canvas.Clip (item.Bounds);
 
                 var text_bounds = new Rectangle (item.Bounds.Left, image_area_bounds.Bottom, item.Bounds.Width, item.Bounds.Bottom - image_area_bounds.Bottom);
-                canvas.DrawText (item.Text, Theme.UIFont, font_size, text_bounds, item.Enabled ? Theme.PrimaryTextColor : Theme.DisabledTextColor, ContentAlignment.MiddleCenter);
+                canvas.DrawText (item.Text, Theme.UIFont, font_size, text_bounds, item.Enabled ? Theme.ForegroundColor : Theme.ForegroundDisabledColor, ContentAlignment.MiddleCenter);
 
                 canvas.Restore ();
             }
@@ -91,13 +91,13 @@ namespace Modern.Forms.Renderers
         protected virtual void RenderMenuSeparatorItem (Ribbon control, RibbonTabPage tabPage, RibbonItemGroup group, MenuSeparatorItem item, PaintEventArgs e)
         {
             // Background
-            e.Canvas.FillRectangle (item.Bounds, Theme.NeutralGray);
+            e.Canvas.FillRectangle (item.Bounds, Theme.ControlMidColor);
 
             var center = item.Bounds.GetCenter ();
             var thickness = e.LogicalToDeviceUnits (1);
             var padding = e.LogicalToDeviceUnits (item.Padding);
 
-            e.Canvas.DrawLine (center.X, item.Bounds.Y + padding.Top, center.X, item.Bounds.Bottom - padding.Bottom, item.Enabled ? Theme.ItemHighlightColor : Theme.DisabledTextColor, thickness);
+            e.Canvas.DrawLine (center.X, item.Bounds.Y + padding.Top, center.X, item.Bounds.Bottom - padding.Bottom, item.Enabled ? Theme.ControlHighlightLowColor : Theme.ForegroundDisabledColor, thickness);
         }
 
         /// <summary>

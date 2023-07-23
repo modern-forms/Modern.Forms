@@ -24,7 +24,7 @@ namespace Modern.Forms.Renderers
         protected virtual void RenderItem (ToolBar control, MenuItem item, PaintEventArgs e)
         {
             // Background
-            var background_color = item.Hovered || item.IsDropDownOpened ? Theme.ItemHighlightColor : Theme.NeutralGray;
+            var background_color = item.Hovered || item.IsDropDownOpened ? Theme.ControlHighlightLowColor : Theme.ControlMidColor;
             e.Canvas.FillRectangle (item.Bounds, background_color);
 
             var bounds = item.Bounds;
@@ -43,7 +43,7 @@ namespace Modern.Forms.Renderers
             }
 
             // Text
-            var font_color = item.Enabled ? Theme.PrimaryTextColor : Theme.DisabledTextColor;
+            var font_color = item.Enabled ? Theme.ForegroundColor : Theme.ForegroundDisabledColor;
             var font_size = e.LogicalToDeviceUnits (Theme.FontSize);
 
             bounds.Y += 1;
@@ -64,13 +64,13 @@ namespace Modern.Forms.Renderers
         protected virtual void RenderMenuSeparatorItem (ToolBar control, MenuSeparatorItem item, PaintEventArgs e)
         {
             // Background
-            e.Canvas.FillRectangle (item.Bounds, Theme.NeutralGray);
+            e.Canvas.FillRectangle (item.Bounds, Theme.ControlMidColor);
 
             var center = item.Bounds.GetCenter ();
             var thickness = e.LogicalToDeviceUnits (1);
             var padding = e.LogicalToDeviceUnits (item.Padding);
 
-            e.Canvas.DrawLine (center.X, item.Bounds.Top + padding.Top + thickness, center.X, item.Bounds.Bottom - padding.Bottom - thickness, item.Enabled ? Theme.ItemHighlightColor : Theme.DisabledTextColor, thickness);
+            e.Canvas.DrawLine (center.X, item.Bounds.Top + padding.Top + thickness, center.X, item.Bounds.Bottom - padding.Bottom - thickness, item.Enabled ? Theme.ControlHighlightLowColor : Theme.ForegroundDisabledColor, thickness);
         }
 
         /// <summary>

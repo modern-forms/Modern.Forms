@@ -121,7 +121,7 @@ namespace Modern.Forms
         /// </summary>
         public static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
          (style) => {
-             style.BackgroundColor = Theme.FormBackgroundColor;
+             style.BackgroundColor = Theme.BackgroundColor;
          });
 
         /// <summary>
