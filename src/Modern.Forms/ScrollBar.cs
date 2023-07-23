@@ -32,7 +32,7 @@ namespace Modern.Forms
 
         /// <inheritdoc/>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-            (style) => style.BackgroundColor = Theme.DarkNeutralGray);
+            (style) => style.BackgroundColor = Theme.ControlMidHighColor);
 
         /// <summary>
         /// Gets or sets the amount the ScrollBar will change when clicked in the track area.

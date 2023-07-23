@@ -151,8 +151,34 @@ namespace ControlGallery
         {
             base.OnPaint (e);
 
-            if (tree.SelectedItem.Text == "FormPaint")
+            if (tree.SelectedItem.Text == "FormPaint") {
                 e.Canvas.FillRectangle (Scale (300), Scale (50), Scale (100), Scale (100), SKColors.Red);
+
+                DrawThemeColor (e.Canvas, Scale (450), Scale (50), Scale (150), Scale (40), Theme.BackgroundColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (90), Scale (150), Scale (40), Theme.ControlLowColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (130), Scale (150), Scale (40), Theme.ControlMidColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (170), Scale (150), Scale (40), Theme.ControlMidHighColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (210), Scale (150), Scale (40), Theme.ControlHighColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (250), Scale (150), Scale (40), Theme.ControlVeryHighColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (290), Scale (150), Scale (40), Theme.ControlHighlightLowColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (330), Scale (150), Scale (40), Theme.ControlHighlightMidColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (370), Scale (150), Scale (40), Theme.ControlHighlightHighColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (410), Scale (150), Scale (40), Theme.BorderLowColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (450), Scale (150), Scale (40), Theme.BorderMidColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (490), Scale (150), Scale (40), Theme.BorderHighColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (530), Scale (150), Scale (40), Theme.ForegroundColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (570), Scale (150), Scale (40), Theme.ForegroundDisabledColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (610), Scale (150), Scale (40), Theme.ForegroundColorOnAccent);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (650), Scale (150), Scale (40), Theme.AccentColor);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (690), Scale (150), Scale (40), Theme.AccentColor2);
+                DrawThemeColor (e.Canvas, Scale (450), Scale (730), Scale (150), Scale (40), Theme.WarningHighlightColor);
+            }
+        }
+
+        private void DrawThemeColor (SKCanvas canvas, int x, int y, int width, int height, SKColor color)
+        {
+            canvas.FillRectangle (x, y, width, height, color);
+            canvas.DrawText (color.ToString (), x + 10, y + 20, new SKPaint { Typeface = Theme.UIFont, Color = Theme.ForegroundColor });
         }
 
         protected override void OnPaintBackground (PaintEventArgs e)

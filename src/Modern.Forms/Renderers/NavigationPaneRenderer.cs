@@ -21,13 +21,13 @@ public class NavigationPaneRenderer : Renderer<NavigationPane>
     protected virtual void RenderItem (NavigationPane control, NavigationPaneItem item, PaintEventArgs e)
     {
         if (item.Hovered && item.Enabled)
-            e.Canvas.FillRectangle (item.Bounds, Theme.LightNeutralGray);
+            e.Canvas.FillRectangle (item.Bounds, Theme.ControlLowColor);
 
         // Draw focus rectangle
         if (control.Selected && control.ShowFocusCues && control.Items.FocusedIndex == control.Items.IndexOf (item))
             e.Canvas.DrawFocusRectangle (item.Bounds, e.LogicalToDeviceUnits (1));
 
-        var font_color = !item.Enabled ? Theme.DisabledTextColor : Theme.PrimaryTextColor;
+        var font_color = !item.Enabled ? Theme.ForegroundDisabledColor : Theme.ForegroundColor;
         var font = item.Selected || item.Hovered ? Theme.UIFontBold : Theme.UIFont;
         var font_size = e.LogicalToDeviceUnits (Theme.FontSize);
 
@@ -43,7 +43,7 @@ public class NavigationPaneRenderer : Renderer<NavigationPane>
             var highlight_padding = e.LogicalToDeviceUnits (3);
             var highlight_bounds = new Rectangle (item.Bounds.Left - highlight_width, item.Bounds.Top + highlight_padding, highlight_width, item.Bounds.Height - (2 * highlight_padding));
             
-            e.Canvas.FillRectangle (highlight_bounds, Theme.PrimaryColor);
+            e.Canvas.FillRectangle (highlight_bounds, Theme.AccentColor2);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Modern.Forms.Renderers
         protected override void Render (FormTitleBar control, PaintEventArgs e)
         {
             // Form text
-            e.Canvas.DrawText (control.Text.Trim (), Theme.UIFont, e.LogicalToDeviceUnits (Theme.FontSize), control.ScaledBounds, Theme.LightTextColor, ContentAlignment.MiddleCenter);
+            e.Canvas.DrawText (control.Text.Trim (), Theme.UIFont, e.LogicalToDeviceUnits (Theme.FontSize), control.ScaledBounds, Theme.ForegroundColorOnAccent, ContentAlignment.MiddleCenter);
         }
     }
 }

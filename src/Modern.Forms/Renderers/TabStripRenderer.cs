@@ -22,14 +22,14 @@ namespace Modern.Forms.Renderers
         {
             // Hover background
             if (item.Hovered && item.Enabled)
-                e.Canvas.FillRectangle (item.Bounds, Theme.LightNeutralGray);
+                e.Canvas.FillRectangle (item.Bounds, Theme.ControlLowColor);
 
             // Draw focus rectangle
             if (control.Selected && control.ShowFocusCues && control.Tabs.FocusedIndex == control.Tabs.IndexOf (item))
                 e.Canvas.DrawFocusRectangle (item.Bounds, e.LogicalToDeviceUnits (1));
 
-            var font_color = !item.Enabled ? Theme.DisabledTextColor : Theme.PrimaryTextColor;
-            var font = item.Selected || item.Hovered ? Theme.UIFontBold : Theme.UIFont;
+            var font_color = !item.Enabled ? Theme.ForegroundDisabledColor : Theme.ForegroundColor;
+            var font = item.Enabled && (item.Selected || item.Hovered) ? Theme.UIFontBold : Theme.UIFont;
             var font_size = e.LogicalToDeviceUnits (Theme.FontSize);
 
             e.Canvas.DrawText (item.Text, font, font_size, item.Bounds, font_color, ContentAlignment.MiddleCenter);
@@ -39,7 +39,7 @@ namespace Modern.Forms.Renderers
                 var highlight_height = e.LogicalToDeviceUnits (3);
                 var highlight_bounds = new Rectangle (item.Bounds.Left + highlight_padding, item.Bounds.Bottom - highlight_height, item.Bounds.Width - (2 * highlight_padding), highlight_height);
                 
-                e.Canvas.FillRectangle (highlight_bounds, Theme.PrimaryColor);
+                e.Canvas.FillRectangle (highlight_bounds, Theme.AccentColor2);
             }
         }
     }

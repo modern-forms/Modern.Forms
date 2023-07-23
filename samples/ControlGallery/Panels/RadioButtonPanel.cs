@@ -15,8 +15,18 @@ namespace ControlGallery.Panels
             var panel = Controls.Add (new Panel { Left = 10, Top = 150, Width = 200, Height = 100 });
             panel.Style.Border.Width = 1;
 
-            panel.Controls.Add (new RadioButton { Text = "Hot", Left = 10, Top = 10, Checked = true });
-            panel.Controls.Add (new RadioButton { Text = "Cold", Left = 10, Top = 45 });
+            var light = panel.Controls.Add (new RadioButton { Text = "Light", Left = 10, Top = 10, Checked = true });
+            var dark = panel.Controls.Add (new RadioButton { Text = "Dark", Left = 10, Top = 45 });
+
+            light.CheckedChanged += (s, e) => {
+                if (light.Checked)
+                    Theme.SetBuiltInTheme (BuiltInTheme.Light);
+            };
+
+            dark.CheckedChanged += (s, e) => {
+                if (dark.Checked)
+                    Theme.SetBuiltInTheme (BuiltInTheme.Dark);
+            };
         }
     }
 }

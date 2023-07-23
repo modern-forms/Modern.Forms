@@ -21,10 +21,7 @@ namespace Modern.Forms
         protected override Size DefaultSize => new Size (600, 28);
 
         /// <inheritdoc/>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-          (style) => {
-              style.BackgroundColor = Theme.NeutralGray;
-          });
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 
         /// <inheritdoc/>
         protected override bool IsTopLevelMenu => true;

@@ -78,44 +78,41 @@ namespace Explore
         {
             var item = sender as MenuItem;
 
-            Theme.FormBackgroundColor = SKColors.White;
-            Theme.NeutralGray = new SKColor (240, 240, 240);
-            Theme.LightNeutralGray = new SKColor (251, 251, 251);
-            Theme.ItemHighlightColor = new SKColor (198, 198, 198);
+            Theme.SetBuiltInTheme (BuiltInTheme.Light);
 
             switch (item.Text) {
                 case "Default":
                     Theme.BeginUpdate ();
-                    Theme.HighlightColor = new SKColor (42, 138, 208);
-                    Theme.PrimaryColor = new SKColor (16, 110, 190);
+                    Theme.AccentColor = new SKColor (42, 138, 208);
+                    Theme.AccentColor2 = new SKColor (16, 110, 190);
                     Theme.EndUpdate ();
                     break;
                 case "Green":
                     Theme.BeginUpdate ();
-                    Theme.HighlightColor = new SKColor (67, 148, 103);
-                    Theme.PrimaryColor = new SKColor (33, 115, 70);
+                    Theme.AccentColor = new SKColor (67, 148, 103);
+                    Theme.AccentColor2 = new SKColor (33, 115, 70);
                     Theme.EndUpdate ();
                     break;
                 case "Orange":
                     Theme.BeginUpdate ();
-                    Theme.HighlightColor = new SKColor (220, 89, 57);
-                    Theme.PrimaryColor = new SKColor (183, 71, 42);
+                    Theme.AccentColor = new SKColor (220, 89, 57);
+                    Theme.AccentColor2 = new SKColor (183, 71, 42);
                     Theme.EndUpdate ();
                     break;
                 case "Purple":
                     Theme.BeginUpdate ();
-                    Theme.HighlightColor = new SKColor (163, 86, 158);
-                    Theme.PrimaryColor = new SKColor (128, 57, 123);
+                    Theme.AccentColor = new SKColor (163, 86, 158);
+                    Theme.AccentColor2 = new SKColor (128, 57, 123);
                     Theme.EndUpdate ();
                     break;
                 case "Hotdog Stand":
                     Theme.BeginUpdate ();
-                    Theme.HighlightColor = new SKColor (255, 128, 128);
-                    Theme.FormBackgroundColor = SKColors.Yellow;
-                    Theme.NeutralGray = SKColors.White;
-                    Theme.LightNeutralGray = new SKColor (255, 0, 0);
-                    Theme.ItemHighlightColor = new SKColor (255, 255, 255);
-                    Theme.PrimaryColor = new SKColor (255, 0, 0);
+                    Theme.AccentColor = new SKColor (255, 128, 128);
+                    Theme.BackgroundColor = SKColors.Yellow;
+                    Theme.ControlMidColor = SKColors.White;
+                    Theme.ControlLowColor = new SKColor (255, 0, 0);
+                    Theme.ControlHighlightLowColor = new SKColor (255, 255, 255);
+                    Theme.AccentColor2 = new SKColor (255, 0, 0);
                     Theme.EndUpdate ();
                     break;
             }

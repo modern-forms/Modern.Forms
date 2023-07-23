@@ -61,9 +61,9 @@ namespace Modern.Forms
         /// </summary>
         public static void DrawCheckBox (PaintEventArgs e, Rectangle rectangle, CheckState state, bool disabled = false)
         {
-            var color = disabled ? Theme.DisabledTextColor
-                            : state == CheckState.Checked && !disabled ? Theme.PrimaryColor
-                            : Theme.BorderGray;
+            var color = disabled ? Theme.ForegroundDisabledColor
+                            : state == CheckState.Checked && !disabled ? Theme.AccentColor
+                            : Theme.BorderLowColor;
             var unit_1 = e.LogicalToDeviceUnits (1);
 
             // Draw the border
@@ -95,8 +95,8 @@ namespace Modern.Forms
         /// </summary>
         public static void DrawCloseGlyph (PaintEventArgs e, Rectangle rectangle)
         {
-            e.Canvas.DrawLine (rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom, Theme.LightTextColor);
-            e.Canvas.DrawLine (rectangle.X, rectangle.Bottom, rectangle.Right, rectangle.Y, Theme.LightTextColor);
+            e.Canvas.DrawLine (rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom, Theme.ForegroundColorOnAccent);
+            e.Canvas.DrawLine (rectangle.X, rectangle.Bottom, rectangle.Right, rectangle.Y, Theme.ForegroundColorOnAccent);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Modern.Forms
         /// </summary>
         public static void DrawMaximizeGlyph (PaintEventArgs e, Rectangle rectangle)
         {
-            e.Canvas.DrawRectangle (rectangle, Theme.LightTextColor);
+            e.Canvas.DrawRectangle (rectangle, Theme.ForegroundColorOnAccent);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Modern.Forms
         /// </summary>
         public static void DrawMinimizeGlyph (PaintEventArgs e, Rectangle rectangle)
         {
-            e.Canvas.DrawLine (rectangle.X, rectangle.Y, rectangle.Right, rectangle.Y, Theme.LightTextColor);
+            e.Canvas.DrawLine (rectangle.X, rectangle.Y, rectangle.Right, rectangle.Y, Theme.ForegroundColorOnAccent);
         }
 
 
@@ -123,14 +123,14 @@ namespace Modern.Forms
         {
             var outer_radius = e.LogicalToDeviceUnits (8);
             var inner_radius = e.LogicalToDeviceUnits (5);
-            var border_color = disabled ? Theme.DisabledTextColor :
-                               state == CheckState.Checked ? Theme.PrimaryColor : 
-                               Theme.BorderGray;
+            var border_color = disabled ? Theme.ForegroundDisabledColor :
+                               state == CheckState.Checked ? Theme.AccentColor2 : 
+                               Theme.BorderLowColor;
 
             e.Canvas.DrawCircle (origin.X, origin.Y, outer_radius, border_color, e.LogicalToDeviceUnits (1));
 
             if (state == CheckState.Checked)
-                e.Canvas.FillCircle (origin.X, origin.Y, inner_radius, disabled ? Theme.DisabledTextColor : Theme.PrimaryColor);
+                e.Canvas.FillCircle (origin.X, origin.Y, inner_radius, disabled ? Theme.ForegroundDisabledColor : Theme.AccentColor2);
         }
     }
 }

@@ -25,9 +25,9 @@ public class NavigationPane : Control
     /// <inheritdoc/>
     public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
         (style) => {
-            style.BackgroundColor = Theme.NeutralGray;
+            style.BackgroundColor = Theme.ControlMidColor;
             style.Border.Right.Width = 1;
-            style.Border.Right.Color = new SkiaSharp.SKColor (237, 235, 233);
+            style.Border.Right.Color = Theme.BorderLowColor;
         });
 
     // Returns the item at the specified location.

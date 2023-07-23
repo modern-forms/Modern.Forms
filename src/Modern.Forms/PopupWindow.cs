@@ -28,7 +28,10 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the default style for all controls of this type.
         /// </summary>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
+        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+            (style) => {
+                style.BackgroundColor = Theme.ControlMidColor;
+            });
 
         private IPopupImpl PopupImpl => (IPopupImpl)window;
 

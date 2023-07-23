@@ -372,12 +372,12 @@ namespace Modern.Forms
         /// </summary>
         public static ControlStyle DefaultStyle = new ControlStyle (null,
             (style) => {
-                style.ForegroundColor = Theme.PrimaryTextColor;
-                style.BackgroundColor = Theme.NeutralGray;
+                style.ForegroundColor = Theme.ForegroundColor;
+                style.BackgroundColor = Theme.BackgroundColor;
                 style.Font = Theme.UIFont;
                 style.FontSize = Theme.FontSize;
                 style.Border.Radius = 0;
-                style.Border.Color = Theme.BorderGray;
+                style.Border.Color = Theme.BorderLowColor;
                 style.Border.Width = 0;
             });
 

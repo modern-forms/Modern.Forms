@@ -84,7 +84,7 @@ namespace Modern.Forms
 
         /// <inheritdoc/>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
-           (style) => style.BackgroundColor = Theme.PrimaryColor);
+           (style) => style.BackgroundColor = Theme.AccentColor2);
 
         /// <summary>
         /// Gets or sets the image used as the upper-left icon of the titlebar.
@@ -167,7 +167,7 @@ namespace Modern.Forms
                 base.OnPaint (e);
 
                 if (IsHovering)
-                    e.Canvas.Clear (glyph == TitleBarButtonGlyph.Close ? Theme.FormCloseHighlightColor : Theme.HighlightColor);
+                    e.Canvas.Clear (glyph == TitleBarButtonGlyph.Close ? Theme.WarningHighlightColor : Theme.AccentColor);
 
                 var glyph_bounds = glyph == TitleBarButtonGlyph.Minimize ?
                     DrawingExtensions.CenterRectangle (ClientRectangle, e.LogicalToDeviceUnits (new Size (BUTTON_PADDING, 1))) :

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using SkiaSharp;
 
 namespace Modern.Forms
@@ -18,24 +16,36 @@ namespace Modern.Forms
 
         static Theme ()
         {
-            values[nameof (PrimaryColor)] = new SKColor (0, 120, 212);
-            values[nameof (PrimaryTextColor)] = SKColors.Black;
-            values[nameof (DisabledTextColor)] = new SKColor (190, 190, 190);
-            values[nameof (LightTextColor)] = SKColors.White;
-            values[nameof (FormBackgroundColor)] = new SKColor (240, 240, 240);
-            values[nameof (FormCloseHighlightColor)] = new SKColor (232, 17, 35);
-            values[nameof (HighlightColor)] = new SKColor (42, 138, 208);
-            values[nameof (ItemHighlightColor)] = new SKColor (198, 198, 198);
-            values[nameof (ItemSelectedColor)] = new SKColor (176, 176, 176);
-            values[nameof (DarkNeutralGray)] = new SKColor (225, 225, 225);
-            values[nameof (NeutralGray)] = new SKColor (243, 242, 241);
-            values[nameof (LightNeutralGray)] = new SKColor (251, 251, 251);
-            values[nameof (BorderGray)] = new SKColor (171, 171, 171);
+            SetBuiltInTheme (BuiltInTheme.Default);
 
             values[nameof (UIFont)] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Normal, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
             values[nameof (UIFontBold)] = SKTypeface.FromFamilyName ("Segoe UI Emoji", SKFontStyleWeight.Bold, SKFontStyleWidth.Normal, SKFontStyleSlant.Upright);
             values[nameof (FontSize)] = 14;
             values[nameof (ItemFontSize)] = 12;
+        }
+
+        /// <summary>
+        /// The primary color uses for accents.
+        /// </summary>
+        public static SKColor AccentColor {
+            get => GetValue<SKColor> (nameof (AccentColor));
+            set => SetValue (nameof (AccentColor), value);
+        }
+
+        /// <summary>
+        /// The secondary color uses for accents.
+        /// </summary>
+        public static SKColor AccentColor2 {
+            get => GetValue<SKColor> (nameof (AccentColor2));
+            set => SetValue (nameof (AccentColor2), value);
+        }
+
+        /// <summary>
+        /// The default background color of a Form and Control.
+        /// </summary>
+        public static SKColor BackgroundColor {
+            get => GetValue<SKColor> (nameof (BackgroundColor));
+            set => SetValue (nameof (BackgroundColor), value);
         }
 
         /// <summary>
@@ -48,27 +58,91 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// A darker gray used as the default control border color.
+        /// The low color used for Control borders.
         /// </summary>
-        public static SKColor BorderGray {
-            get => GetValue<SKColor> (nameof (BorderGray));
-            set => SetValue (nameof (BorderGray), value);
+        public static SKColor BorderLowColor {
+            get => GetValue<SKColor> (nameof (BorderLowColor));
+            set => SetValue (nameof (BorderLowColor), value);
         }
 
         /// <summary>
-        /// A darker gray generally used for showing an item is currently pressed.
+        /// The mid color used for Control borders.
         /// </summary>
-        public static SKColor DarkNeutralGray {
-            get => GetValue<SKColor> (nameof (DarkNeutralGray));
-            set => SetValue (nameof (DarkNeutralGray), value);
+        public static SKColor BorderMidColor {
+            get => GetValue<SKColor> (nameof (BorderMidColor));
+            set => SetValue (nameof (BorderMidColor), value);
         }
 
         /// <summary>
-        /// The color used for disabled text.
+        /// The high color used for Control borders.
         /// </summary>
-        public static SKColor DisabledTextColor {
-            get => GetValue<SKColor> (nameof (DisabledTextColor));
-            set => SetValue (nameof (DisabledTextColor), value);
+        public static SKColor BorderHighColor {
+            get => GetValue<SKColor> (nameof (BorderHighColor));
+            set => SetValue (nameof (BorderHighColor), value);
+        }
+
+        /// <summary>
+        /// The low color used for Controls.
+        /// </summary>
+        public static SKColor ControlLowColor {
+            get => GetValue<SKColor> (nameof (ControlLowColor));
+            set => SetValue (nameof (ControlLowColor), value);
+        }
+
+        /// <summary>
+        /// The mid color used for Controls.
+        /// </summary>
+        public static SKColor ControlMidColor {
+            get => GetValue<SKColor> (nameof (ControlMidColor));
+            set => SetValue (nameof (ControlMidColor), value);
+        }
+
+        /// <summary>
+        /// The mid-high color used for Controls.
+        /// </summary>
+        public static SKColor ControlMidHighColor {
+            get => GetValue<SKColor> (nameof (ControlMidHighColor));
+            set => SetValue (nameof (ControlMidHighColor), value);
+        }
+
+        /// <summary>
+        /// The high color used for Controls.
+        /// </summary>
+        public static SKColor ControlHighColor {
+            get => GetValue<SKColor> (nameof (ControlHighColor));
+            set => SetValue (nameof (ControlHighColor), value);
+        }
+
+        /// <summary>
+        /// The very high color used for Controls.
+        /// </summary>
+        public static SKColor ControlVeryHighColor {
+            get => GetValue<SKColor> (nameof (ControlVeryHighColor));
+            set => SetValue (nameof (ControlVeryHighColor), value);
+        }
+
+        /// <summary>
+        /// The low color used for highlighted elements, like hovered tabs or buttons.
+        /// </summary>
+        public static SKColor ControlHighlightLowColor {
+            get => GetValue<SKColor> (nameof (ControlHighlightLowColor));
+            set => SetValue (nameof (ControlHighlightLowColor), value);
+        }
+
+        /// <summary>
+        /// The mid color used for highlighted elements, like hovered tabs or buttons.
+        /// </summary>
+        public static SKColor ControlHighlightMidColor {
+            get => GetValue<SKColor> (nameof (ControlHighlightMidColor));
+            set => SetValue (nameof (ControlHighlightMidColor), value);
+        }
+
+        /// <summary>
+        /// The high color used for highlighted elements, like hovered tabs or buttons.
+        /// </summary>
+        public static SKColor ControlHighlightHighColor {
+            get => GetValue<SKColor> (nameof (ControlHighlightHighColor));
+            set => SetValue (nameof (ControlHighlightHighColor), value);
         }
 
         /// <summary>
@@ -94,30 +168,30 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// The background color of a form.
+        /// The foreground color used for text.
         /// </summary>
-        public static SKColor FormBackgroundColor {
-            get => GetValue<SKColor> (nameof (FormBackgroundColor));
-            set => SetValue (nameof (FormBackgroundColor), value);
+        public static SKColor ForegroundColor {
+            get => GetValue<SKColor> (nameof (ForegroundColor));
+            set => SetValue (nameof (ForegroundColor), value);
         }
 
         /// <summary>
-        /// The color used to draw a form's close button when highlighted.
+        /// A text color that is visible on an AccentColor background.
         /// </summary>
-        public static SKColor FormCloseHighlightColor {
-            get => GetValue<SKColor> (nameof (FormCloseHighlightColor));
-            set => SetValue (nameof (FormCloseHighlightColor), value);
+        public static SKColor ForegroundColorOnAccent {
+            get => GetValue<SKColor> (nameof (ForegroundColorOnAccent));
+            set => SetValue (nameof (ForegroundColorOnAccent), value);
+        }
+
+        /// <summary>
+        /// The color used for disabled text.
+        /// </summary>
+        public static SKColor ForegroundDisabledColor {
+            get => GetValue<SKColor> (nameof (ForegroundDisabledColor));
+            set => SetValue (nameof (ForegroundDisabledColor), value);
         }
 
         private static T GetValue<T> (string name) => (T)values[name];
-
-        /// <summary>
-        /// The color used for highlighted elements, like hovered tabs or buttons.
-        /// </summary>
-        public static SKColor HighlightColor {
-            get => GetValue<SKColor> (nameof (HighlightColor));
-            set => SetValue (nameof (HighlightColor), value);
-        }
 
         /// <summary>
         /// A smaller font size generally used for lists of items.
@@ -128,59 +202,70 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// The color used for a highlighted item's background.
+        /// The color used to highlight a potentially destructive action.
         /// </summary>
-        public static SKColor ItemHighlightColor {
-            get => GetValue<SKColor> (nameof (ItemHighlightColor));
-            set => SetValue (nameof (ItemHighlightColor), value);
+        public static SKColor WarningHighlightColor {
+            get => GetValue<SKColor> (nameof (WarningHighlightColor));
+            set => SetValue (nameof (WarningHighlightColor), value);
         }
 
         /// <summary>
-        /// The color used for a selected item's background.
+        /// Changes or resets the application theme to a set of built-in defaults.
         /// </summary>
-        public static SKColor ItemSelectedColor {
-            get => GetValue<SKColor> (nameof (ItemSelectedColor));
-            set => SetValue (nameof (ItemSelectedColor), value);
-        }
+        /// <param name="theme"></param>
+        public static void SetBuiltInTheme (BuiltInTheme theme)
+        {
+            // We always reset the colors, even if we were already using the current theme.
+            // This resets any modification the user made, which feels like the expected behavior.
 
-        /// <summary>
-        /// A lighter gray used primarily used as the background of list items.
-        /// </summary>
-        public static SKColor LightNeutralGray {
-            get => GetValue<SKColor> (nameof (LightNeutralGray));
-            set => SetValue (nameof (LightNeutralGray), value);
-        }
+            BeginUpdate ();
 
-        /// <summary>
-        /// A lighter text color, often used when an element is selected with a darker background.
-        /// </summary>
-        public static SKColor LightTextColor {
-            get => GetValue<SKColor> (nameof (LightTextColor));
-            set => SetValue (nameof (LightTextColor), value);
-        }
+            // TODO: BuiltInTheme.Default should detect the OS setting. Currently it just uses Light.
+            switch (theme) {
+                case BuiltInTheme.Dark:
+                    values[nameof (BackgroundColor)] = SKColor.Parse ("#FF282828");
+                    values[nameof (BorderLowColor)] = SKColor.Parse ("#FF505050");
+                    values[nameof (BorderMidColor)] = SKColor.Parse ("#FF808080");
+                    values[nameof (BorderHighColor)] = SKColor.Parse ("#FFA0A0A0");
+                    values[nameof (ControlLowColor)] = SKColor.Parse ("#FF282828");
+                    values[nameof (ControlMidColor)] = SKColor.Parse ("#FF505050");
+                    values[nameof (ControlMidHighColor)] = SKColor.Parse ("#FF686868");
+                    values[nameof (ControlHighColor)] = SKColor.Parse ("#FF808080");
+                    values[nameof (ControlVeryHighColor)] = SKColor.Parse ("#FFEFEBEF");
+                    values[nameof (ControlHighlightLowColor)] = SKColor.Parse ("#FFA8A8A8");
+                    values[nameof (ControlHighlightMidColor)] = SKColor.Parse ("#FF828282");
+                    values[nameof (ControlHighlightHighColor)] = SKColor.Parse ("#FF505050");
+                    values[nameof (ForegroundColor)] = SKColor.Parse ("#FFDEDEDE");
+                    values[nameof (ForegroundDisabledColor)] = new SKColor (150, 150, 150);
+                    values[nameof (ForegroundColorOnAccent)] = SKColors.White;
+                    values[nameof (AccentColor)] = SKColor.Parse ("#FF096085");
+                    values[nameof (AccentColor2)] = new SKColor (0, 120, 212);
+                    values[nameof (WarningHighlightColor)] = new SKColor (232, 17, 35);
+                    break;
+                default:
+                    values[nameof (BackgroundColor)] = new SKColor (240, 240, 240);
+                    values[nameof (BorderLowColor)] = SKColor.Parse ("#FFABABAB");
+                    values[nameof (BorderMidColor)] = SKColor.Parse ("#FF808080");
+                    values[nameof (BorderHighColor)] = SKColor.Parse ("#FF333333");
+                    values[nameof (ControlLowColor)] = SKColor.Parse ("#FFFBFBFB");
+                    values[nameof (ControlMidColor)] = SKColor.Parse ("#FFF3F3F3");
+                    values[nameof (ControlMidHighColor)] = SKColor.Parse ("#FFE1E1E1");
+                    values[nameof (ControlHighColor)] = SKColor.Parse ("#FFC2C3C9");
+                    values[nameof (ControlVeryHighColor)] = SKColor.Parse ("#FF686868");
+                    values[nameof (ControlHighlightLowColor)] = SKColor.Parse ("#FFC6C6C6");
+                    values[nameof (ControlHighlightMidColor)] = SKColor.Parse ("#FFB0B0B0");
+                    values[nameof (ControlHighlightHighColor)] = SKColor.Parse ("#FF808080");
+                    values[nameof (ForegroundColor)] = SKColor.Parse ("#FF000000");
+                    values[nameof (ForegroundDisabledColor)] = new SKColor (170, 170, 170);
+                    values[nameof (ForegroundColorOnAccent)] = SKColors.White;
+                    values[nameof (AccentColor)] = new SKColor (42, 138, 208);
+                    values[nameof (AccentColor2)] = new SKColor (0, 120, 212);
+                    values[nameof (WarningHighlightColor)] = new SKColor (232, 17, 35);
+                    break;
+            }
 
-        /// <summary>
-        /// A neutral gray used as the default background of controls.
-        /// </summary>
-        public static SKColor NeutralGray {
-            get => GetValue<SKColor> (nameof (NeutralGray));
-            set => SetValue (nameof (NeutralGray), value);
-        }
-
-        /// <summary>
-        /// The primary color for elements such as the title bar, tabs, checkboxes and radio button glyph.
-        /// </summary>
-        public static SKColor PrimaryColor {
-            get => GetValue<SKColor> (nameof (PrimaryColor));
-            set => SetValue (nameof (PrimaryColor), value);
-        }
-
-        /// <summary>
-        /// The primary text color.
-        /// </summary>
-        public static SKColor PrimaryTextColor {
-            get => GetValue<SKColor> (nameof (PrimaryTextColor));
-            set => SetValue (nameof (PrimaryTextColor), value);
+            RaiseThemeChanged ();
+            EndUpdate ();
         }
 
         private static void RaiseThemeChanged ()
