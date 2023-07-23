@@ -33,7 +33,7 @@ namespace Modern.Forms.Renderers
         {
             LayoutTabPage (tabPage);
 
-            e.Canvas.FillRectangle (tabPage.Bounds, Theme.ControlMidColor);
+            e.Canvas.FillRectangle (tabPage.Bounds, Theme.BackgroundColor);
 
             foreach (var group in tabPage.Groups)
                 RenderItemGroup (control, tabPage, group, e);
@@ -62,7 +62,7 @@ namespace Modern.Forms.Renderers
         {
             var canvas = e.Canvas;
             var padding = e.LogicalToDeviceUnits (item.Padding);
-            var background_color = item.Selected ? Theme.ControlHighlightMidColor : item.Hovered ? Theme.ControlHighlightLowColor : Theme.ControlMidColor;
+            var background_color = item.Selected ? Theme.ControlHighlightMidColor : item.Hovered ? Theme.ControlHighlightLowColor : Theme.BackgroundColor;
 
             canvas.FillRectangle (item.Bounds, background_color);
 
@@ -91,7 +91,7 @@ namespace Modern.Forms.Renderers
         protected virtual void RenderMenuSeparatorItem (Ribbon control, RibbonTabPage tabPage, RibbonItemGroup group, MenuSeparatorItem item, PaintEventArgs e)
         {
             // Background
-            e.Canvas.FillRectangle (item.Bounds, Theme.ControlMidColor);
+            e.Canvas.FillRectangle (item.Bounds, Theme.BackgroundColor);
 
             var center = item.Bounds.GetCenter ();
             var thickness = e.LogicalToDeviceUnits (1);

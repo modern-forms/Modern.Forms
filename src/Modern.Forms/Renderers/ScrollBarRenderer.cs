@@ -30,14 +30,14 @@ namespace Modern.Forms.Renderers
             bottom_arrow_area.Height -= 1;
 
             // Top Arrow
-            e.Canvas.FillRectangle (top_arrow_area, Theme.ForegroundColorOnAccent);
+            e.Canvas.FillRectangle (top_arrow_area, Theme.ControlLowColor);
             e.Canvas.DrawRectangle (top_arrow_area, Theme.BorderLowColor);
-            ControlPaint.DrawArrowGlyph (e, top_arrow_area, Theme.BorderLowColor, GetDecrementArrowDirection (control));
+            ControlPaint.DrawArrowGlyph (e, top_arrow_area, Theme.ControlHighlightMidColor, GetDecrementArrowDirection (control));
 
             // Bottom Arrow
-            e.Canvas.FillRectangle (bottom_arrow_area, Theme.ForegroundColorOnAccent);
+            e.Canvas.FillRectangle (bottom_arrow_area, Theme.ControlLowColor);
             e.Canvas.DrawRectangle (bottom_arrow_area, Theme.BorderLowColor);
-            ControlPaint.DrawArrowGlyph (e, bottom_arrow_area, Theme.BorderLowColor, GetIncrementArrowDirection (control));
+            ControlPaint.DrawArrowGlyph (e, bottom_arrow_area, Theme.ControlHighlightMidColor, GetIncrementArrowDirection (control));
 
             if (!control.Enabled)
                 return;
@@ -46,7 +46,7 @@ namespace Modern.Forms.Renderers
             var thumb_bounds = GetThumbDragBounds (control);
 
             if (thumb_bounds.Width > 0 && thumb_bounds.Height > 0) {
-                e.Canvas.FillRectangle (thumb_bounds, SKColors.White);
+                e.Canvas.FillRectangle (thumb_bounds, Theme.ControlLowColor);
                 e.Canvas.DrawRectangle (thumb_bounds, Theme.BorderLowColor);
             }
         }

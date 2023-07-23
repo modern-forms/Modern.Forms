@@ -24,7 +24,7 @@ namespace Modern.Forms.Renderers
         protected virtual void RenderItem (ToolBar control, MenuItem item, PaintEventArgs e)
         {
             // Background
-            var background_color = item.Hovered || item.IsDropDownOpened ? Theme.ControlHighlightLowColor : Theme.ControlMidColor;
+            var background_color = item.Hovered || item.IsDropDownOpened ? Theme.ControlHighlightLowColor : Theme.BackgroundColor;
             e.Canvas.FillRectangle (item.Bounds, background_color);
 
             var bounds = item.Bounds;
@@ -64,7 +64,7 @@ namespace Modern.Forms.Renderers
         protected virtual void RenderMenuSeparatorItem (ToolBar control, MenuSeparatorItem item, PaintEventArgs e)
         {
             // Background
-            e.Canvas.FillRectangle (item.Bounds, Theme.ControlMidColor);
+            e.Canvas.FillRectangle (item.Bounds, Theme.BackgroundColor);
 
             var center = item.Bounds.GetCenter ();
             var thickness = e.LogicalToDeviceUnits (1);

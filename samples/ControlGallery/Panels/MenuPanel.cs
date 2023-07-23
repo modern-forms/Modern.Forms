@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Modern.Forms;
+using SkiaSharp;
 
 namespace ControlGallery.Panels
 {
@@ -39,6 +40,7 @@ namespace ControlGallery.Panels
             Controls.Add (menu);
 
             var label = Controls.Add (new Label { Left = 250, Top = 10, Width = 200, Height = 50 });
+            label.Style.BackgroundColor = SKColors.Transparent;
 
             foreach (var item in menu.Items)
                 HookUpEvent (item, label);

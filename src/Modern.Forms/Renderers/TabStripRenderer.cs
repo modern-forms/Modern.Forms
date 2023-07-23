@@ -29,7 +29,7 @@ namespace Modern.Forms.Renderers
                 e.Canvas.DrawFocusRectangle (item.Bounds, e.LogicalToDeviceUnits (1));
 
             var font_color = !item.Enabled ? Theme.ForegroundDisabledColor : Theme.ForegroundColor;
-            var font = item.Selected || item.Hovered ? Theme.UIFontBold : Theme.UIFont;
+            var font = item.Enabled && (item.Selected || item.Hovered) ? Theme.UIFontBold : Theme.UIFont;
             var font_size = e.LogicalToDeviceUnits (Theme.FontSize);
 
             e.Canvas.DrawText (item.Text, font, font_size, item.Bounds, font_color, ContentAlignment.MiddleCenter);

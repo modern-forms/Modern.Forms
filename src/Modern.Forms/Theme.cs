@@ -236,7 +236,7 @@ namespace Modern.Forms
                     values[nameof (ControlHighlightMidColor)] = SKColor.Parse ("#FF828282");
                     values[nameof (ControlHighlightHighColor)] = SKColor.Parse ("#FF505050");
                     values[nameof (ForegroundColor)] = SKColor.Parse ("#FFDEDEDE");
-                    values[nameof (ForegroundDisabledColor)] = new SKColor (71, 71, 71);
+                    values[nameof (ForegroundDisabledColor)] = new SKColor (150, 150, 150);
                     values[nameof (ForegroundColorOnAccent)] = SKColors.White;
                     values[nameof (AccentColor)] = SKColor.Parse ("#FF096085");
                     values[nameof (AccentColor2)] = new SKColor (0, 120, 212);
@@ -256,7 +256,7 @@ namespace Modern.Forms
                     values[nameof (ControlHighlightMidColor)] = SKColor.Parse ("#FFB0B0B0");
                     values[nameof (ControlHighlightHighColor)] = SKColor.Parse ("#FF808080");
                     values[nameof (ForegroundColor)] = SKColor.Parse ("#FF000000");
-                    values[nameof (ForegroundDisabledColor)] = new SKColor (190, 190, 190);
+                    values[nameof (ForegroundDisabledColor)] = new SKColor (170, 170, 170);
                     values[nameof (ForegroundColorOnAccent)] = SKColors.White;
                     values[nameof (AccentColor)] = new SKColor (42, 138, 208);
                     values[nameof (AccentColor2)] = new SKColor (0, 120, 212);
