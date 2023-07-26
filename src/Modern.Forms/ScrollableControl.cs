@@ -120,7 +120,7 @@ namespace Modern.Forms
         public override Rectangle DisplayRectangle {
             get {
                 // A ScrollableControl DisplayRectangle includes Padding, while a normal Control does not.
-                var rect = ClientRectangle;
+                var rect = base.DisplayRectangle;
 
                 if (hscrollbar.Visible)
                     rect.Height -= hscrollbar.Height;
