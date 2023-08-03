@@ -19,8 +19,8 @@ namespace Modern.Forms
         private Size auto_scroll_min_size = Size.Empty;
         private Size auto_scroll_margin = Size.Empty;
         private bool auto_scroll = false;
-        private bool force_hscroll_visible = false;
-        private bool force_vscroll_visible = false;
+        private readonly bool force_hscroll_visible = false;
+        private readonly bool force_vscroll_visible = false;
 
         /// <summary>
         /// Initializes a new instance of the ScrollableControl class.

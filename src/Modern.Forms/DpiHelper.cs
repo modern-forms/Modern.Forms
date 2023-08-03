@@ -10,7 +10,7 @@ namespace Modern.Forms
         internal const double LogicalDpi = 96.0;
 
         private static double logicalToDeviceUnitsScalingFactor = 0.0;
-        private static double deviceDpi = LogicalDpi;
+        private static readonly double deviceDpi = LogicalDpi;
 
         /// <summary>
         ///  Returns whether scaling is required when converting between logical-device units,

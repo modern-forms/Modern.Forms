@@ -10,7 +10,7 @@ namespace Outlaw
 {
     internal class MessagePanePlaceholder : Panel
     {
-        private SKBitmap image;
+        private readonly SKBitmap image;
 
         public MessagePanePlaceholder ()
         {
