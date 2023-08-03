@@ -8,8 +8,8 @@ namespace ControlGallery
 {
     public static class ImageLoader
     {
-        private static Dictionary<string, SKBitmap> _cache = new Dictionary<string, SKBitmap> ();
-        private static string _defaultLocation = "Images";
+        private static readonly Dictionary<string, SKBitmap> _cache = new Dictionary<string, SKBitmap> ();
+        private static readonly string _defaultLocation = "Images";
 
         public static SKBitmap Get (string filename)
         {

@@ -36,7 +36,7 @@ public sealed partial class TableLayoutSettings : LayoutSettings
         /*OutsetPartial = */ 3
     };
     private TableLayoutPanelCellBorderStyle _borderStyle;
-    private TableLayoutSettingsStub? _stub;
+    private readonly TableLayoutSettingsStub? _stub;
 
     // used by TableLayoutSettingsTypeConverter
     internal TableLayoutSettings () : base (null!)

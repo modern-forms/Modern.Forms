@@ -9,7 +9,7 @@ namespace ControlGallery.Panels
 {
     public class TreeViewPanel : Panel
     {
-        private int max_dirs = 5;
+        private readonly int max_dirs = 5;
 
         public TreeViewPanel ()
         {

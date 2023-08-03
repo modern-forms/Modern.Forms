@@ -8,7 +8,7 @@ namespace ControlGallery.Panels
 {
     public class ListViewPanel : Panel
     {
-        private static Random random = new Random ();
+        private static readonly Random random = new Random ();
 
         public ListViewPanel ()
         {

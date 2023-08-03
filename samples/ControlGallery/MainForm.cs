@@ -10,7 +10,7 @@ namespace ControlGallery
     public class MainForm : Form
     {
         private Panel? current_panel;
-        private TreeView tree;
+        private readonly TreeView tree;
 
         public MainForm ()
         {
