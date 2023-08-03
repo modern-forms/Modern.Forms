@@ -26,7 +26,7 @@ namespace ControlGallery.Panels
             Controls.Add (view);
         }
 
-        private SKBitmap GetImage ()
+        private static SKBitmap GetImage ()
         {
             switch (random.Next () % 2) {
                 case 0:

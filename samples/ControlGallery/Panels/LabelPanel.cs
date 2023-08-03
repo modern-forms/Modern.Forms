@@ -83,7 +83,7 @@ namespace ControlGallery.Panels
             return labels;
         }
 
-        private Label CreateAlignmentLabel (ContentAlignment alignment)
+        private static Label CreateAlignmentLabel (ContentAlignment alignment)
         {
             var label = new Label {
                 Text = alignment.ToString (),

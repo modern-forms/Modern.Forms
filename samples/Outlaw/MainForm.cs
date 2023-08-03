@@ -38,7 +38,7 @@ namespace Outlaw
             e.Canvas.DrawLine (item.Bounds.Left, item.Bounds.Bottom - e.LogicalToDeviceUnits (1), item.Bounds.Right, item.Bounds.Bottom - e.LogicalToDeviceUnits (1), Theme.ControlMidColor, e.LogicalToDeviceUnits (1));
         }
 
-        private string FormatDateTime (DateTime date)
+        private static string FormatDateTime (DateTime date)
         {
             if (date.ToShortDateString () == DateTime.Now.ToShortDateString ())
                 return date.ToShortTimeString ();

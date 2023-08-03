@@ -39,31 +39,31 @@ namespace Modern.Forms.Renderers
         /// <summary>
         /// Gets the TextBox's font size.
         /// </summary>
-        protected int GetCurrentFontSize (TextBox control) => control.CurrentFontSize;
+        protected static int GetCurrentFontSize (TextBox control) => control.CurrentFontSize;
 
         /// <summary>
         /// Gets the current index of the TextBox cursor.
         /// </summary>
-        protected int GetCursorIndex (TextBox control) => control.document.CursorIndex;
+        protected static int GetCursorIndex (TextBox control) => control.document.CursorIndex;
 
         /// <summary>
         /// Gets the TextBox's text block.
         /// </summary>
-        protected TextBlock GetTextBlock (TextBox control) => control.document.GetTextBlock ();
+        protected static TextBlock GetTextBlock (TextBox control) => control.document.GetTextBlock ();
 
         /// <summary>
         /// Gets the TextBox's text origin.
         /// </summary>
-        protected Point GetTextOrigin (TextBox control) => control.TextOrigin;
+        protected static Point GetTextOrigin (TextBox control) => control.TextOrigin;
 
         /// <summary>
         /// Gets the TextBox's text seleection.
         /// </summary>
-        protected TextSelection GetTextSelection (TextBox control) => control.document.GetTextSelection ();
+        protected static TextSelection GetTextSelection (TextBox control) => control.document.GetTextSelection ();
 
         /// <summary>
         /// Updates the TextBox's scroll bars.
         /// </summary>
-        protected void UpdateScrollBars (TextBox control, TextBlock block) => control.UpdateScrollBars (block);
+        protected static void UpdateScrollBars (TextBox control, TextBlock block) => control.UpdateScrollBars (block);
     }
 }

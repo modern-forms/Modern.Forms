@@ -54,7 +54,7 @@ public class FlowLayoutSettings : LayoutSettings
     {
         ArgumentNullException.ThrowIfNull (child);
 
-        var element = FlowLayout.Instance.CastToArrangedElement (child);
+        var element = LayoutEngine.CastToArrangedElement (child);
 
         if (GetFlowBreak (child) != value)
             CommonProperties.SetFlowBreak (element, value);
@@ -67,7 +67,7 @@ public class FlowLayoutSettings : LayoutSettings
     {
         ArgumentNullException.ThrowIfNull (child);
 
-        var element = FlowLayout.Instance.CastToArrangedElement (child);
+        var element = LayoutEngine.CastToArrangedElement (child);
         return CommonProperties.GetFlowBreak (element);
     }
 }

@@ -207,7 +207,7 @@ internal partial class TableLayout : LayoutEngine
     /// <summary>
     ///  ExpandLastElement: expands the row/column to fill the rest of the space in the container.
     /// </summary>
-    private void ExpandLastElement (ContainerInfo containerInfo, Size usedSpace, Size totalSpace)
+    private static void ExpandLastElement (ContainerInfo containerInfo, Size usedSpace, Size totalSpace)
     {
         var rows = containerInfo.Rows;
         var cols = containerInfo.Columns;
@@ -452,7 +452,7 @@ internal partial class TableLayout : LayoutEngine
     ///  IsCursorPastInsertionPoint: part of xAssignRowsAndColumns.
     ///  check to see if the user specified location for fixedLayoutInfo has passed the insertion point specified by the cursor
     /// </summary>
-    private bool IsCursorPastInsertionPoint (LayoutInfo fixedLayoutInfo, int insertionRow, int insertionCol)
+    private static bool IsCursorPastInsertionPoint (LayoutInfo fixedLayoutInfo, int insertionRow, int insertionCol)
     {
         Debug.Assert (fixedLayoutInfo.IsAbsolutelyPositioned, "should only check for those elements which are absolutely positioned");
 
@@ -471,7 +471,7 @@ internal partial class TableLayout : LayoutEngine
     ///  IsOverlappingWithReservationGrid: part of xAssignRowsAndColumns.
     ///  check to see if the absolutely positioned layoutInfo fits in the reservation grid
     /// </summary>
-    private bool IsOverlappingWithReservationGrid (LayoutInfo fixedLayoutInfo, ReservationGrid reservationGrid, int currentRow)
+    private static bool IsOverlappingWithReservationGrid (LayoutInfo fixedLayoutInfo, ReservationGrid reservationGrid, int currentRow)
     {
         //since we shall not put anything above our current row, this means that the fixedLayoutInfo overlaps with something already placed on the table
         if (fixedLayoutInfo.RowPosition < currentRow)
@@ -505,7 +505,7 @@ internal partial class TableLayout : LayoutEngine
     /// <summary>
     ///  GetColStartAndStop: part of xAssignRowsAndColumns.
     /// </summary>
-    private void GetColStartAndStop (int maxColumns, ReservationGrid reservationGrid, LayoutInfo layoutInfo, out int colStop)
+    private static void GetColStartAndStop (int maxColumns, ReservationGrid reservationGrid, LayoutInfo layoutInfo, out int colStop)
     {
         // Compute the column our element ends on
         colStop = layoutInfo.ColumnStart + layoutInfo.ColumnSpan;
@@ -522,7 +522,7 @@ internal partial class TableLayout : LayoutEngine
         }
     }
 
-    private bool ScanRowForOverlap (int maxColumns, ReservationGrid reservationGrid, LayoutInfo layoutInfo, int stopCol, int rowOffset)
+    private static bool ScanRowForOverlap (int maxColumns, ReservationGrid reservationGrid, LayoutInfo layoutInfo, int stopCol, int rowOffset)
     {
         for (var i = layoutInfo.ColumnStart; i < stopCol; i++) {
             if (reservationGrid.IsReserved (i, rowOffset)) {
@@ -573,7 +573,7 @@ internal partial class TableLayout : LayoutEngine
     }
 
     //allocate space for all absolutely sized strips. Set the size of the rest of the strips to 0.
-    private void InitializeStrips (Strip[] strips, IList styles)
+    private static void InitializeStrips (Strip[] strips, IList styles)
     {
         Strip strip;
         for (int i = 0; i < strips.Length; i++) {
@@ -755,7 +755,7 @@ internal partial class TableLayout : LayoutEngine
         return DistributeStyles (containerInfo.CellBorderWidth, containerInfo.RowStyles, containerInfo.Rows, proposedConstraints.Height, dontHonorConstraint);
     }
 
-    private Size GetElementSize (IArrangedElement element, Size proposedConstraints)
+    private static Size GetElementSize (IArrangedElement element, Size proposedConstraints)
     {
         if (CommonProperties.GetAutoSize (element))
             return element.GetPreferredSize (proposedConstraints);
@@ -763,7 +763,7 @@ internal partial class TableLayout : LayoutEngine
             return CommonProperties.GetSpecifiedBounds (element).Size;
     }
 
-    internal int SumStrips (Strip[] strips, int start, int span)
+    internal static int SumStrips (Strip[] strips, int start, int span)
     {
         var size = 0;
 
@@ -880,7 +880,7 @@ internal partial class TableLayout : LayoutEngine
     }
 
     //determines whether strip[index]'s style is absolutely sized
-    private bool IsAbsolutelySized (int index, IList styles)
+    private static bool IsAbsolutelySized (int index, IList styles)
     {
         return (index < styles.Count) && ((TableLayoutStyle)styles[index]!).SizeType == SizeType.Absolute;
     }

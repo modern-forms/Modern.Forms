@@ -37,7 +37,7 @@ namespace Modern.Forms.Renderers
         /// <summary>
         /// Gets the bounding box of the area to draw the drop down glyph.
         /// </summary>
-        protected Rectangle GetDropDownButtonArea (ComboBox control, PaintEventArgs e)
+        protected static Rectangle GetDropDownButtonArea (ComboBox control, PaintEventArgs e)
         {
             var glyph_size = e.LogicalToDeviceUnits (GLYPH_SIZE);
 
@@ -47,7 +47,7 @@ namespace Modern.Forms.Renderers
         /// <summary>
         /// Gets the bounding box of the area to draw the ComboBox text.
         /// </summary>
-        protected Rectangle GetTextArea (ComboBox control, PaintEventArgs e)
+        protected static Rectangle GetTextArea (ComboBox control, PaintEventArgs e)
         {
             var area = control.PaddedClientRectangle;
 

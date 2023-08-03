@@ -29,7 +29,7 @@ namespace Modern.Forms
                 LayoutVertical (bounds, items);
         }
 
-        private void LayoutHorizontal (Rectangle bounds, IEnumerable<ILayoutable> items)
+        private static void LayoutHorizontal (Rectangle bounds, IEnumerable<ILayoutable> items)
         {
             var x = bounds.Left;
             var y = bounds.Top;
@@ -47,7 +47,7 @@ namespace Modern.Forms
             }
         }
 
-        private void LayoutVertical (Rectangle bounds, IEnumerable<ILayoutable> items)
+        private static void LayoutVertical (Rectangle bounds, IEnumerable<ILayoutable> items)
         {
             var x = bounds.Left;
             var y = bounds.Top;

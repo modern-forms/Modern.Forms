@@ -131,6 +131,6 @@ namespace Modern.Forms.Renderers
         /// Performs a layout of the tab page's items.
         /// </summary>
         // TODO: This should not be done during the paint process
-        protected void LayoutTabPage (RibbonTabPage tabPage) => tabPage.LayoutItems ();
+        protected static void LayoutTabPage (RibbonTabPage tabPage) => tabPage.LayoutItems ();
     }
 }

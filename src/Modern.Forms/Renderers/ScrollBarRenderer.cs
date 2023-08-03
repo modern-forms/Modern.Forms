@@ -138,7 +138,7 @@ namespace Modern.Forms.Renderers
                 return new Rectangle (thumb_drag_bounds.Right + 1, 0, control.ClientRectangle.Width - arrow_button_size - thumb_drag_bounds.Right, control.ClientRectangle.Height);
         }
 
-        private int GetPossibleValues (ScrollBar control) => control.Maximum - control.Minimum + 1;
+        private static int GetPossibleValues (ScrollBar control) => control.Maximum - control.Minimum + 1;
 
         /// <summary>
         /// Gets the bounds of the thumb drag element.

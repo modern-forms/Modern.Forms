@@ -125,7 +125,7 @@ internal partial class FlowLayout : LayoutEngine
     ///  LayoutRow and MeasureRow both forward to this method. The measureOnly flag
     ///  determines which behavior we get.
     /// </summary>
-    private Size TryCalculatePreferredSizeRow (ContainerProxy containerProxy, ElementProxy elementProxy, int startIndex, int endIndex, Rectangle rowBounds, out int breakIndex, bool measureOnly)
+    private static Size TryCalculatePreferredSizeRow (ContainerProxy containerProxy, ElementProxy elementProxy, int startIndex, int endIndex, Rectangle rowBounds, out int breakIndex, bool measureOnly)
     {
         Debug.Assert (startIndex < endIndex, "Loop should be in forward Z-order.");
         var location = rowBounds.Location;
