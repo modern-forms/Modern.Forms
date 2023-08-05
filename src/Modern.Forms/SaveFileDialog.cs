@@ -22,16 +22,16 @@ namespace Modern.Forms
         /// <param name="owner">The window that owns this dialog.</param>
         public async Task<DialogResult> ShowDialog (Form owner)
         {
-            if (owner.window is ITopLevelImplWithStorageProvider parent) {
+            if (owner.window.TryGetFeature (typeof (IStorageProvider)) is IStorageProvider parent) {
                 var options = new FilePickerSaveOptions {
                     DefaultExtension= DefaultExtension,
-                    SuggestedStartLocation = InitialDirectory is not null ? new BclStorageFolder (InitialDirectory) : null,
+                    SuggestedStartLocation = GetInitialDirectory (),
                     SuggestedFileName = FileName,
                     Title = Title,
                     FileTypeChoices = filters
                 };
 
-                var result = await parent.StorageProvider.SaveFilePickerAsync (options);
+                var result = await parent.SaveFilePickerAsync (options);
 
                 FileNames.Clear ();
 

@@ -50,7 +50,7 @@ namespace Modern.Forms
                 Size = Size.ToAvaloniaSize ()
             };
 
-            PopupImpl.PopupPositioner.Update (ppp);
+            PopupImpl.PopupPositioner?.Update (ppp);
 
             Show ();
         }

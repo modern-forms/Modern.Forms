@@ -13,7 +13,7 @@ namespace ControlGallery.Panels
             var cb1 = Controls.Add (new ComboBox { Left = 10, Top = 35 });
             cb1.Items.AddRange (fruits);
 
-            var button = Controls.Add (new Button { Text = "Toggle", Left = 140, Top = 35 });
+            var button = Controls.Add (new Button { Text = "Open", Left = 140, Top = 35 });
             button.Click += (o, e) => cb1.DroppedDown = !cb1.DroppedDown;
 
             Controls.Add (new Label { Text = "Disabled", Left = 10, Top = 70, Width = 200 });

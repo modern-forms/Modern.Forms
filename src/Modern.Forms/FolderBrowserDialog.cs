@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Modern.WindowKit.Controls.Platform;
@@ -24,16 +25,16 @@ namespace Modern.Forms
         /// <param name="owner">The window that owns this dialog.</param>
         public async Task<DialogResult> ShowDialog (Form owner)
         {
-            if (owner.window is ITopLevelImplWithStorageProvider parent) {
+            if (owner.window.TryGetFeature (typeof (IStorageProvider)) is IStorageProvider parent) {
                 var options = new FolderPickerOpenOptions {
                     AllowMultiple = false,
-                    SuggestedStartLocation = InitialDirectory is not null ? new BclStorageFolder (InitialDirectory) : null,
+                    SuggestedStartLocation = GetInitialDirectory (),
                     Title = Title
                 };
 
-                var result = await parent.StorageProvider.OpenFolderPickerAsync (options);
+                var result = await parent.OpenFolderPickerAsync (options);
 
-                var paths = result.Select (f =>  f.GetFullPath ()).WhereNotNull ();
+                var paths = result.Select (f => f.GetFullPath ()).WhereNotNull ();
 
                 SelectedPath = paths?.FirstOrDefault ();
 

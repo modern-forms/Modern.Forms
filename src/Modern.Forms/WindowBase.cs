@@ -346,7 +346,7 @@ namespace Modern.Forms
             e.Canvas.DrawBackground (Bounds, CurrentStyle);
         }
 
-        private void OnResize (Size size, PlatformResizeReason reason)
+        private void OnResize (Size size, WindowResizeReason reason)
         {
             adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, Size.Width, Size.Height);
         }
