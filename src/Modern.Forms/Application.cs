@@ -28,10 +28,13 @@ namespace Modern.Forms
         /// <summary>
         /// Hides any open popups.
         /// </summary>
-        internal static void ClosePopups ()
+        internal static void ClosePopups (bool closeMenus = true, bool closePopups = true)
         {
-            ActiveMenu?.Deactivate ();
-            ActivePopupWindow?.Hide ();
+            if (closeMenus)
+                ActiveMenu?.Deactivate ();
+
+            if (closePopups)
+                ActivePopupWindow?.Hide ();
         }
 
         /// <summary>
