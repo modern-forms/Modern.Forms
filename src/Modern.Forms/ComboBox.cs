@@ -80,8 +80,6 @@ namespace Modern.Forms
 
                     popup.Controls.Add (popup_listbox);
 
-                    Application.ActivePopupWindow = popup;
-
                     popup.Show (this, 1, Height);
 
                     OnDropDownOpened (EventArgs.Empty);

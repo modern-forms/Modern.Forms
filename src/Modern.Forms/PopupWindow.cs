@@ -52,6 +52,8 @@ namespace Modern.Forms
 
             PopupImpl.PopupPositioner?.Update (ppp);
 
+            Application.ActivePopupWindow = this;
+
             Show ();
         }
 
