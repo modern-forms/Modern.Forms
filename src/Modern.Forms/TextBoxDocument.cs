@@ -270,7 +270,16 @@ namespace Modern.Forms
             }
 
             if (new_index != -1 && new_index != cursor_index) {
+                int prev_index = cursor_index;
                 SetCursorToCharIndex (new_index);
+
+                if(!select || CursorIndex == SelectionStart) {
+                    SelectionStart = -1;
+                    SelectionEnd = -1;
+                } else {
+                    SelectionStart = (SelectionStart < 0 ? prev_index : SelectionStart);
+                    SelectionEnd = new_index;
+                }
                 return true;
             }
 
