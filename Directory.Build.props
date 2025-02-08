@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
+    <!-- .NET version to build for -->
+    <_TargetFramework>net8.0</_TargetFramework>
+    
     <!-- NuGet packaging info -->
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/modern-forms/Modern.Forms</PackageProjectUrl>

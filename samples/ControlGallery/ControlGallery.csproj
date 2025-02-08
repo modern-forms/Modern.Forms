@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>$(_TargetFramework)</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
