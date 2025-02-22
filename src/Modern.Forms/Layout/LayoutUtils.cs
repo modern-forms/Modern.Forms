@@ -276,6 +276,11 @@ internal partial class LayoutUtils
         return VAlign (alignThis, HAlign (alignThis, withinThis, align), align);
     }
 
+    public static Rectangle Align (SkiaSharp.SKSize alignThis, Rectangle withinThis, ContentAlignment align)
+    {
+        return VAlign (alignThis.ToSize (), HAlign (alignThis.ToSize (), withinThis, align), align);
+    }
+
     public static Rectangle HAlign (Size alignThis, Rectangle withinThis, AnchorStyles anchorStyles)
     {
         if ((anchorStyles & AnchorStyles.Right) != 0) {

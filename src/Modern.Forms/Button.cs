@@ -57,14 +57,6 @@ namespace Modern.Forms
         }
 
         /// <inheritdoc/>
-        protected override void OnPaint (PaintEventArgs e)
-        {
-            base.OnPaint (e);
-
-            RenderManager.Render (this, e);
-        }
-
-        /// <inheritdoc/>
         protected override void OnKeyUp (KeyEventArgs e)
         {
             if (e.KeyCode.In (Keys.Space, Keys.Enter)) {
@@ -74,6 +66,14 @@ namespace Modern.Forms
             }
 
             base.OnKeyUp (e);
+        }
+
+        /// <inheritdoc/>
+        protected override void OnPaint (PaintEventArgs e)
+        {
+            base.OnPaint (e);
+
+            RenderManager.Render (this, e);
         }
 
         /// <summary>

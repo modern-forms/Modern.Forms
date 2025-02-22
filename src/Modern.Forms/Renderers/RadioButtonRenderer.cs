@@ -1,34 +1,38 @@
-﻿using System;
-using System.Drawing;
+﻿using Modern.Forms.Layout;
 
 namespace Modern.Forms.Renderers
 {
     /// <summary>
     /// Represents a class that can render a RadioButton.
     /// </summary>
-    public class RadioButtonRenderer : Renderer<RadioButton>
+    public class RadioButtonRenderer : Renderer<RadioButton>, IRenderGlyph
     {
+        /// <inheritdoc/>
+        public int GlyphSize { get; } = 24;
+
+        /// <inheritdoc/>
+        public int GlyphTextPadding { get; } = 0;
+
         /// <inheritdoc/>
         protected override void Render (RadioButton control, PaintEventArgs e)
         {
-            var x = e.LogicalToDeviceUnits (11);
-            var y = control.ScaledHeight / 2;
+            var layout = TextImageLayoutEngine.Layout (control);
 
-            ControlPaint.DrawRadioButton (e, new Point (x, y), control.Checked ? CheckState.Checked : CheckState.Unchecked, !control.Enabled);
+            ControlPaint.DrawRadioButton (e, layout.GlyphBounds.GetCenter (), control.Checked ? CheckState.Checked : CheckState.Unchecked, !control.Enabled);
 
-            var text_bounds = control.ClientRectangle;
-            var unit_24 = e.LogicalToDeviceUnits (24);
-            var unit_5 = e.LogicalToDeviceUnits (5);
+            // Draw the image
+            if (control.Image is not null)
+                e.Canvas.DrawBitmap (control.Image, layout.ImageBounds, !control.Enabled);
 
-            text_bounds.X += unit_24;
-            text_bounds.Width -= unit_24;
-
+            // Draw the focus rectangle
             if (control.Selected && control.ShowFocusCues) {
-                var focus_bounds = new Rectangle (text_bounds.X - unit_5, 0, text_bounds.Width + unit_5, text_bounds.Height);
-                e.Canvas.DrawFocusRectangle (focus_bounds, e.LogicalToDeviceUnits (3));
+                //var focus_bounds = new Rectangle (box_bounds.Right, 0, text_bounds.Width + glyph_padding, text_bounds.Height);
+                e.Canvas.DrawFocusRectangle (layout.TextBounds, e.LogicalToDeviceUnits (-3));
             }
 
-            e.Canvas.DrawText (control.Text, text_bounds, control, ContentAlignment.MiddleLeft);
+            // Draw the text
+            if (control.Text.HasValue ())
+                e.Canvas.DrawText (control.Text, layout.TextBounds, control, control.TextAlign, maxLines: 1, ellipsis: control.AutoEllipsis);
         }
     }
 }

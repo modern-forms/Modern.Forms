@@ -21,7 +21,6 @@ internal class PropertyNames
     //public const string BorderStyle = "BorderStyle";
     public const string CellBorderStyle = "CellBorderStyle";
     public const string Bounds = "Bounds";
-    //public const string CheckAlign = "CheckAlign";
     public const string ChildIndex = "ChildIndex";
     //public const string ColumnHeadersHeight = "ColumnHeadersHeight";
     //public const string ColumnHeadersVisible = "ColumnHeadersVisible";
@@ -39,9 +38,10 @@ internal class PropertyNames
     public const string FlowBreak = "FlowBreak";
     public const string FlowDirection = "FlowDirection";
     //public const string Font = "Font";
+    public const string GlyphAlign = "GlyphAlign";
     //public const string GripStyle = "GripStyle";
     public const string GrowStyle = "GrowStyle";
-    //public const string Image = "Image";
+    public const string Image = "Image";
     //public const string ImageIndex = nameof(ImageIndex);
     //public const string ImageScaling = "ImageScaling";
     //public const string ImageScalingSize = "ImageScalingSize";
@@ -78,7 +78,7 @@ internal class PropertyNames
     public const string Style = "Style";
     public const string TableIndex = "TableIndex";
     public const string Text = "Text";
-    //public const string TextAlign = "TextAlign";
+    public const string TextAlign = "TextAlign";
     public const string TextImageRelation = "TextImageRelation";
     //public const string UseCompatibleTextRendering = "UseCompatibleTextRendering";
     public const string Visible = "Visible";

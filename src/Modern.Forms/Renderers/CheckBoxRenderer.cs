@@ -1,45 +1,38 @@
-﻿using System;
-using System.Drawing;
+﻿using Modern.Forms.Layout;
 
 namespace Modern.Forms.Renderers
 {
     /// <summary>
     /// Represents a class that can render a CheckBox.
     /// </summary>
-    public class CheckBoxRenderer : Renderer<CheckBox>
+    public class CheckBoxRenderer : Renderer<CheckBox>, IRenderGlyph
     {
-        /// <summary>
-        /// Size of the checkbox glyph.
-        /// </summary>
-        protected const int GLYPH_SIZE = 15;
-        /// <summary>
-        /// Padding between glyph and text.
-        /// </summary>
-        protected const int GLYPH_TEXT_PADDING = 4;
+        /// <inheritdoc/>
+        public int GlyphSize { get; } = 15;
+
+        /// <inheritdoc/>
+        public int GlyphTextPadding { get; } = 5;
 
         /// <inheritdoc/>
         protected override void Render (CheckBox control, PaintEventArgs e)
         {
-            var box_size = e.LogicalToDeviceUnits (GLYPH_SIZE);
-            var glyph_padding = e.LogicalToDeviceUnits (GLYPH_TEXT_PADDING);
+            var layout = TextImageLayoutEngine.Layout (control);
 
-            // Draw the checkbox glyph
-            var y = (control.ScaledHeight - box_size) / 2;
-            var box_bounds = new Rectangle (e.LogicalToDeviceUnits (3), y, box_size, box_size);
+            ControlPaint.DrawCheckBox (e, layout.GlyphBounds, control.CheckState, !control.Enabled);
 
-            ControlPaint.DrawCheckBox (e, box_bounds, control.CheckState, !control.Enabled);
-
-            var text_bounds = new Rectangle (box_bounds.Right + glyph_padding, 0, control.ScaledWidth - box_bounds.Right - glyph_padding, control.ScaledHeight);
+            // Draw the image
+            if (control.Image is not null)
+                e.Canvas.DrawBitmap (control.Image, layout.ImageBounds, !control.Enabled);
 
             // Draw the focus rectangle
             if (control.Selected && control.ShowFocusCues) {
-                var focus_bounds = new Rectangle (box_bounds.Right, 0, text_bounds.Width + glyph_padding, text_bounds.Height);
-                e.Canvas.DrawFocusRectangle (focus_bounds, e.LogicalToDeviceUnits (3));
+                //var focus_bounds = new Rectangle (box_bounds.Right, 0, text_bounds.Width + glyph_padding, text_bounds.Height);
+                e.Canvas.DrawFocusRectangle (layout.TextBounds, e.LogicalToDeviceUnits (-3));
             }
 
             // Draw the text
             if (control.Text.HasValue ())
-                e.Canvas.DrawText (control.Text, text_bounds, control, ContentAlignment.MiddleLeft);
+                e.Canvas.DrawText (control.Text, layout.TextBounds, control, control.TextAlign, maxLines: 1, ellipsis: control.AutoEllipsis);
         }
     }
 }

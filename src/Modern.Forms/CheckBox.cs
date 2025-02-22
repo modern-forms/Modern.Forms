@@ -1,15 +1,28 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Drawing;
+using Modern.Forms.Layout;
 using Modern.Forms.Renderers;
+using SkiaSharp;
 
 namespace Modern.Forms
 {
     /// <summary>
     /// Represents a CheckBox control.
     /// </summary>
-    public class CheckBox : Control
+    public class CheckBox : Control, IHaveGlyph, IHaveTextAndImageAlign
     {
         private CheckState state;
+        private SKBitmap? image;
+
+        private static readonly BitVector32.Section s_stateAutoEllipsis = BitVector32.CreateSection (1);
+
+        private static readonly int s_propCheckAlign = PropertyStore.CreateKey ();
+        private static readonly int s_propImageAlign = PropertyStore.CreateKey ();
+        private static readonly int s_propTextAlign = PropertyStore.CreateKey ();
+        private static readonly int s_propTextImageRelation = PropertyStore.CreateKey ();
+
+        private BitVector32 _checkboxState;
 
         /// <summary>
         /// Initializes a new instance of the CheckBox class.
@@ -23,6 +36,41 @@ namespace Modern.Forms
         /// Gets or sets a valud indicating if the CheckBox will respond to mouse clicks.
         /// </summary>
         public bool AutoCheck { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating if text will be truncated with an ellipsis if it cannot fully fit in the <see cref='CheckBox'/>.
+        /// Value is currently ignored.
+        /// </summary>
+        public bool AutoEllipsis {
+            get => _checkboxState[s_stateAutoEllipsis] != 0;
+            set {
+                if (AutoEllipsis != value) {
+
+                    _checkboxState[s_stateAutoEllipsis] = value ? 1 : 0;
+
+                    if (Parent is not null)
+                        LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.AutoEllipsis);
+
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the alignment of the checkbox glyph on the <see cref='CheckBox'/>.
+        /// </summary>
+        public ContentAlignment GlyphAlign {
+            get => Properties.GetEnum (s_propCheckAlign, ContentAlignment.MiddleLeft);
+            set {
+                SourceGenerated.EnumValidator.Validate (value);
+
+                if (value != GlyphAlign) {
+                    Properties.SetEnum (s_propCheckAlign, value);
+                    LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.GlyphAlign);
+                    Invalidate ();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating if the CheckBox is in the checked state.
@@ -67,6 +115,36 @@ namespace Modern.Forms
         /// The default ControlStyle for all instances of CheckBox.
         /// </summary>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
+
+        /// <summary>
+        /// Gets or sets the image displayed on the <see cref='CheckBox'/>.
+        /// </summary>
+        public SKBitmap? Image {
+            get => image;
+            set {
+                if (image != value) {
+                    image = value;
+                    LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.Image);
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the alignment of the image on the <see cref='CheckBox'/>.
+        /// </summary>
+        public ContentAlignment ImageAlign {
+            get => Properties.GetEnum (s_propImageAlign, ContentAlignment.MiddleLeft);
+            set {
+                SourceGenerated.EnumValidator.Validate (value);
+
+                if (value != ImageAlign) {
+                    Properties.SetEnum (s_propImageAlign, value);
+                    LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.ImageAlign);
+                    Invalidate ();
+                }
+            }
+        }
 
         /// <summary>
         /// Raises the CheckedChanged event.
@@ -122,8 +200,43 @@ namespace Modern.Forms
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
         /// <summary>
+        /// Gets or sets the alignment of the text on the <see cref='CheckBox'/>.
+        /// </summary>
+        public ContentAlignment TextAlign {
+            get => Properties.GetEnum (s_propTextAlign, ContentAlignment.MiddleLeft);
+            set {
+                SourceGenerated.EnumValidator.Validate (value);
+
+                if (value != TextAlign) {
+                    Properties.SetEnum (s_propTextAlign, value);
+                    LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.TextAlign);
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the alignment of the text relative to the image on the <see cref='CheckBox'/>.
+        /// </summary>
+        public TextImageRelation TextImageRelation {
+            get => Properties.GetEnum (s_propTextImageRelation, TextImageRelation.ImageBeforeText);
+            set {
+                SourceGenerated.EnumValidator.Validate (value);
+
+                if (value != TextImageRelation) {
+                    Properties.SetEnum (s_propTextImageRelation, value);
+                    LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.TextImageRelation);
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the CheckBox will allow three check states rather than two.
         /// </summary>
         public bool ThreeState { get; set; }
+
+        /// <inheritdoc/>
+        public override string ToString () => $"{base.ToString ()}, CheckState: {(int)CheckState}";
     }
 }
