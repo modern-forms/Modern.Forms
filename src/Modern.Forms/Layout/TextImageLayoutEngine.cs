@@ -17,6 +17,8 @@ internal static class TextImageLayoutEngine
         CalculateGlyph (control, result);
         CalculateImageAndTextBounds (control, result);
 
+        result.Focus = Rectangle.Inflate (result.Field, control.LogicalToDeviceUnits (3), control.LogicalToDeviceUnits (3));
+
         return result;
     }
 

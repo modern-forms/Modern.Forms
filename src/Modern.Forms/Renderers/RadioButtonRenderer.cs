@@ -25,10 +25,8 @@ namespace Modern.Forms.Renderers
                 e.Canvas.DrawBitmap (control.Image, layout.ImageBounds, !control.Enabled);
 
             // Draw the focus rectangle
-            if (control.Selected && control.ShowFocusCues) {
-                //var focus_bounds = new Rectangle (box_bounds.Right, 0, text_bounds.Width + glyph_padding, text_bounds.Height);
-                e.Canvas.DrawFocusRectangle (layout.TextBounds, e.LogicalToDeviceUnits (-3));
-            }
+            if (control.Selected && control.ShowFocusCues)
+                e.Canvas.DrawFocusRectangle (layout.Focus, 0);
 
             // Draw the text
             if (control.Text.HasValue ())
