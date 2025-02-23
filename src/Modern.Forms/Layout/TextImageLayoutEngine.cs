@@ -183,6 +183,12 @@ internal static class TextImageLayoutEngine
         // the text along the edge of the control.  If so, we can increase the space for image.
         var text_edge = (AnchorStyles)(TextAlignToRelation (text_align) & text_image_relation) != AnchorStyles.None;
 
+        var renderer = RenderManager.GetRenderer<Renderer> (control);
+        var margin = 0;
+
+        if (renderer is IRenderTextAndImage text_image_renderer)
+            margin = control.LogicalToDeviceUnits (text_image_renderer.ImageTextPadding);
+
         Rectangle text_bounds;
         Rectangle image_bounds;
 
@@ -192,6 +198,7 @@ internal static class TextImageLayoutEngine
                 max_combined_bounds,
                 image_size,
                 (AnchorStyles)text_image_relation,
+                margin,
                 out image_bounds,
                 out text_bounds);
         } else if (text_edge) {
@@ -200,6 +207,7 @@ internal static class TextImageLayoutEngine
                 max_combined_bounds,
                 text_size,
                 (AnchorStyles)LayoutUtils.GetOppositeTextImageRelation (text_image_relation),
+                margin,
                 out text_bounds,
                 out image_bounds);
         } else {
@@ -209,6 +217,7 @@ internal static class TextImageLayoutEngine
                 combined_bounds,
                 image_size,
                 (AnchorStyles)text_image_relation,
+                margin,
                 out image_bounds,
                 out text_bounds);
             LayoutUtils.ExpandRegionsToFillBounds (

@@ -481,29 +481,29 @@ internal partial class LayoutUtils
         return ((size1.Width >= size2.Width) && (size1.Height >= size2.Height));
     }
 
-    public static void SplitRegion (Rectangle bounds, Size specifiedContent, AnchorStyles region1Align, out Rectangle region1, out Rectangle region2)
+    public static void SplitRegion (Rectangle bounds, Size specifiedContent, AnchorStyles region1Align, int margin, out Rectangle region1, out Rectangle region2)
     {
         region1 = region2 = bounds;
         switch (region1Align) {
             case AnchorStyles.Left:
                 region1.Width = specifiedContent.Width;
-                region2.X += specifiedContent.Width;
-                region2.Width -= specifiedContent.Width;
+                region2.X += specifiedContent.Width + margin;
+                region2.Width -= specifiedContent.Width + margin;
                 break;
             case AnchorStyles.Right:
                 region1.X += bounds.Width - specifiedContent.Width;
                 region1.Width = specifiedContent.Width;
-                region2.Width -= specifiedContent.Width;
+                region2.Width -= specifiedContent.Width + margin;
                 break;
             case AnchorStyles.Top:
                 region1.Height = specifiedContent.Height;
-                region2.Y += specifiedContent.Height;
-                region2.Height -= specifiedContent.Height;
+                region2.Y += specifiedContent.Height + margin;
+                region2.Height -= specifiedContent.Height + margin;
                 break;
             case AnchorStyles.Bottom:
                 region1.Y += bounds.Height - specifiedContent.Height;
                 region1.Height = specifiedContent.Height;
-                region2.Height -= specifiedContent.Height;
+                region2.Height -= specifiedContent.Height + margin;
                 break;
             default:
                 Debug.Fail ("Unsupported value for region1Align.");

@@ -6,13 +6,16 @@ namespace Modern.Forms.Renderers
     /// <summary>
     /// Represents a class that can render a RadioButton.
     /// </summary>
-    public class RadioButtonRenderer : Renderer<RadioButton>, IRenderGlyph
+    public class RadioButtonRenderer : Renderer<RadioButton>, IRenderGlyph, IRenderTextAndImage
     {
         /// <inheritdoc/>
         public int GlyphSize { get; } = 24;
 
         /// <inheritdoc/>
         public int GlyphTextPadding { get; } = 0;
+
+        /// <inheritdoc/>
+        public int ImageTextPadding { get; } = 4;
 
         /// <inheritdoc/>
         protected override void Render (RadioButton control, PaintEventArgs e)

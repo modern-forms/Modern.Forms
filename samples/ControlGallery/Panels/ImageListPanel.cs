@@ -79,6 +79,24 @@ public class ImageListPanel : Panel
             ImageKey = "button"
         });
 
+        var button_16 = Controls.Add (new Button {
+            Text = "Button 16",
+            Left = 10,
+            Top = 290,
+            Width = 200,
+            ImageList = image_list_16,
+            ImageKey = "button"
+        });
+
+        var button_32 = Controls.Add (new Button {
+            Text = "Button 32",
+            Left = 10,
+            Top = 330,
+            Width = 200,
+            ImageList = image_list_32,
+            ImageKey = "button"
+        });
+
         comboBox.SelectedIndexChanged += (o, e) => {
             checkbox_16.ImageKey = comboBox.SelectedItem?.ToString ()!;
             checkbox_32.ImageKey = comboBox.SelectedItem?.ToString ()!;
@@ -86,6 +104,8 @@ public class ImageListPanel : Panel
             radiobutton_32.ImageKey = comboBox.SelectedItem?.ToString ()!;
             label_16.ImageKey = comboBox.SelectedItem?.ToString ()!;
             label_32.ImageKey = comboBox.SelectedItem?.ToString ()!;
+            button_16.ImageKey = comboBox.SelectedItem?.ToString ()!;
+            button_32.ImageKey = comboBox.SelectedItem?.ToString ()!;
         };
     }
 

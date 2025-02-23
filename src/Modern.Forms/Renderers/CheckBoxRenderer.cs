@@ -6,13 +6,16 @@ namespace Modern.Forms.Renderers
     /// <summary>
     /// Represents a class that can render a CheckBox.
     /// </summary>
-    public class CheckBoxRenderer : Renderer<CheckBox>, IRenderGlyph
+    public class CheckBoxRenderer : Renderer<CheckBox>, IRenderGlyph, IRenderTextAndImage
     {
         /// <inheritdoc/>
         public int GlyphSize { get; } = 15;
 
         /// <inheritdoc/>
         public int GlyphTextPadding { get; } = 5;
+
+        /// <inheritdoc/>
+        public int ImageTextPadding { get; } = 4;
 
         /// <inheritdoc/>
         protected override void Render (CheckBox control, PaintEventArgs e)
