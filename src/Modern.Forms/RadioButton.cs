@@ -14,7 +14,10 @@ namespace Modern.Forms
     public class RadioButton : Control, IHaveGlyph, IHaveTextAndImageAlign
     {
         private bool is_checked;
-        private SKBitmap? image;
+        private SKBitmap? _image;
+        private int _imageIndex = -1;
+        private string _imageKey = string.Empty;
+        private ImageList? _imageList;
 
         private static readonly BitVector32.Section s_stateAutoEllipsis = BitVector32.CreateSection (1);
 
@@ -109,10 +112,10 @@ namespace Modern.Forms
         /// Gets or sets the image displayed on the <see cref='RadioButton'/>.
         /// </summary>
         public SKBitmap? Image {
-            get => image;
+            get => _image;
             set {
-                if (image != value) {
-                    image = value;
+                if (_image != value) {
+                    _image = value;
                     LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.Image);
                     Invalidate ();
                 }
@@ -130,6 +133,64 @@ namespace Modern.Forms
                 if (value != ImageAlign) {
                     Properties.SetEnum (s_propImageAlign, value);
                     LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.ImageAlign);
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the index of the image in the <see cref='ImageList'/> associated with the <see cref='RadioButton'/>.
+        /// </summary>
+        public int ImageIndex {
+            get => _imageIndex;
+            set {
+                if (_imageIndex != value) {
+                    _imageIndex = value;
+
+                    // Setting this clears any existing ImageKey and Image
+                    if (value >= 0) {
+                        _image = null;
+                        _imageKey = string.Empty;
+                    }
+
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the key of the image in the <see cref='ImageList'/> associated with the <see cref='RadioButton'/>.
+        /// </summary>
+        public string ImageKey {
+            get => _imageKey;
+            set {
+                if (_imageKey != value) {
+                    _imageKey = value;
+
+                    // Setting this clears any existing ImageIndex and Image
+                    if (value is not null) {
+                        _image = null;
+                        _imageIndex = -1;
+                    }
+
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref='ImageList'/> associated with the <see cref='RadioButton'/>.
+        /// </summary>
+        public ImageList? ImageList {
+            get => _imageList;
+            set {
+                if (_imageList != value) {
+                    _imageList = value;
+
+                    // If an image list is set, clear any existing image
+                    if (value is not null)
+                        _image = null;
+
                     Invalidate ();
                 }
             }

@@ -1,4 +1,5 @@
 ﻿using Modern.Forms.Layout;
+using SkiaSharp;
 
 namespace Modern.Forms.Renderers
 {
@@ -21,8 +22,8 @@ namespace Modern.Forms.Renderers
             ControlPaint.DrawCheckBox (e, layout.GlyphBounds, control.CheckState, !control.Enabled);
 
             // Draw the image
-            if (control.Image is not null)
-                e.Canvas.DrawBitmap (control.Image, layout.ImageBounds, !control.Enabled);
+            if ((control as IHaveTextAndImageAlign).GetImage () is SKBitmap image)
+                e.Canvas.DrawBitmap (image, layout.ImageBounds, !control.Enabled);
 
             // Draw the focus rectangle
             if (control.Selected && control.ShowFocusCues)

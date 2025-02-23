@@ -153,7 +153,7 @@ internal static class TextImageLayoutEngine
         var image_align = text_image_control.ImageAlign;
         var text_align = text_image_control.TextAlign;
         var text_image_relation = text_image_control.TextImageRelation;
-        var image_size = text_image_control.Image?.GetSize () ?? Size.Empty;
+        var image_size = text_image_control.GetImage ()?.GetSize () ?? Size.Empty;
         var maxBounds = layout.Field;
 
         var text_size = GetTextSize (control).ToSize ();
