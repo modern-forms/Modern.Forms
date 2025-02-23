@@ -189,6 +189,19 @@ internal partial class PropertyStore
         }
     }
 
+    /// <summary>
+    /// Retrieves an integer value from the property list.
+    /// </summary>
+    public int GetInteger (int key, int defaultValue)
+    {
+        var value = GetInteger (key, out var found);
+
+        if (found)
+            return value;
+
+        return defaultValue;
+    }
+
     public T? GetObject<T> (int key) where T : class => GetObject (key) as T;
 
     /// <summary>

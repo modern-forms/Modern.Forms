@@ -1,6 +1,5 @@
-﻿using System;
-using System.Drawing;
-using Modern.Forms.Layout;
+﻿using Modern.Forms.Layout;
+using SkiaSharp;
 
 namespace Modern.Forms.Renderers
 {
@@ -12,26 +11,15 @@ namespace Modern.Forms.Renderers
         /// <inheritdoc/>
         protected override void Render (Label control, PaintEventArgs e)
         {
-            var face = LayoutUtils.DeflateRect (control.ClientRectangle, control.Padding);
-            var i = control.Image;
+            var layout = TextImageLayoutEngine.Layout (control);
 
-            var layout = new TextImageRelationLayoutUtils {
-                Bounds = face,
-                Font = control.CurrentStyle.GetFont (),
-                FontSize = control.LogicalToDeviceUnits (control.CurrentStyle.GetFontSize ()),
-                ImageAlign = control.ImageAlign,
-                ImageSize = control.Image?.GetSize () ?? Size.Empty,
-                Text = control.Text,
-                TextAlign = control.TextAlign,
-                TextImageRelation = control.TextImageRelation,
-            };
+            // Draw the image
+            if ((control as IHaveTextAndImageAlign).GetImage () is SKBitmap image)
+                e.Canvas.DrawBitmap (image, layout.ImageBounds, !control.Enabled);
 
-            (var image_bounds, var text_bounds) = layout.Layout ();
-
-            if (i is not null)
-                e.Canvas.DrawBitmap (i, image_bounds, !control.Enabled);
-
-            e.Canvas.DrawText (control.Text, text_bounds, control, control.TextAlign, maxLines: control.Multiline ? (int?)null : 1, ellipsis: control.AutoEllipsis);
+            // Draw the text
+            if (control.Text.HasValue ())
+                e.Canvas.DrawText (control.Text, layout.TextBounds, control, control.TextAlign, maxLines: 1, ellipsis: control.AutoEllipsis);
         }
     }
 }

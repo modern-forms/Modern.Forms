@@ -61,11 +61,31 @@ public class ImageListPanel : Panel
             ImageKey = "button"
         });
 
+        var label_16 = Controls.Add (new Label {
+            Text = "Label 16",
+            Left = 10,
+            Top = 210,
+            Width = 200,
+            ImageList = image_list_16,
+            ImageKey = "button"
+        });
+
+        var label_32 = Controls.Add (new Label {
+            Text = "Label 32",
+            Left = 10,
+            Top = 250,
+            Width = 200,
+            ImageList = image_list_32,
+            ImageKey = "button"
+        });
+
         comboBox.SelectedIndexChanged += (o, e) => {
             checkbox_16.ImageKey = comboBox.SelectedItem?.ToString ()!;
             checkbox_32.ImageKey = comboBox.SelectedItem?.ToString ()!;
             radiobutton_16.ImageKey = comboBox.SelectedItem?.ToString ()!;
             radiobutton_32.ImageKey = comboBox.SelectedItem?.ToString ()!;
+            label_16.ImageKey = comboBox.SelectedItem?.ToString ()!;
+            label_32.ImageKey = comboBox.SelectedItem?.ToString ()!;
         };
     }
 

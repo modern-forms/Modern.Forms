@@ -13,16 +13,15 @@ namespace Modern.Forms
     /// </summary>
     public class RadioButton : Control, IHaveGlyph, IHaveTextAndImageAlign
     {
-        private bool is_checked;
-        private SKBitmap? _image;
-        private int _imageIndex = -1;
-        private string _imageKey = string.Empty;
-        private ImageList? _imageList;
-
         private static readonly BitVector32.Section s_stateAutoEllipsis = BitVector32.CreateSection (1);
+        private static readonly BitVector32.Section s_stateChecked = BitVector32.CreateSection (1, s_stateAutoEllipsis);
 
         private static readonly int s_propGlyphAlign = PropertyStore.CreateKey ();
+        private static readonly int s_propImage = PropertyStore.CreateKey ();
         private static readonly int s_propImageAlign = PropertyStore.CreateKey ();
+        private static readonly int s_propImageList = PropertyStore.CreateKey ();
+        private static readonly int s_propImageIndex = PropertyStore.CreateKey ();
+        private static readonly int s_propImageKey = PropertyStore.CreateKey ();
         private static readonly int s_propTextAlign = PropertyStore.CreateKey ();
         private static readonly int s_propTextImageRelation = PropertyStore.CreateKey ();
 
@@ -80,13 +79,13 @@ namespace Modern.Forms
         /// Gets or sets a value indicating if the RadioButton is in the checked state.
         /// </summary>
         public bool Checked {
-            get => is_checked;
+            get => _radiobuttonState[s_stateChecked] != 0;
             set {
-                if (is_checked != value) {
-                    is_checked = value;
+                if (Checked != value) {
+                    _radiobuttonState[s_stateChecked] = value ? 1 : 0;
                     Invalidate ();
 
-                    if (is_checked)
+                    if (value)
                         UpdateSiblings ();
 
                     OnCheckedChanged (EventArgs.Empty);
@@ -112,11 +111,10 @@ namespace Modern.Forms
         /// Gets or sets the image displayed on the <see cref='RadioButton'/>.
         /// </summary>
         public SKBitmap? Image {
-            get => _image;
+            get => Properties.GetObject<SKBitmap> (s_propImage);
             set {
-                if (_image != value) {
-                    _image = value;
-                    LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.Image);
+                if (Image != value) {
+                    Properties.SetObject (s_propImage, value);
                     Invalidate ();
                 }
             }
@@ -142,15 +140,15 @@ namespace Modern.Forms
         /// Gets or sets the index of the image in the <see cref='ImageList'/> associated with the <see cref='RadioButton'/>.
         /// </summary>
         public int ImageIndex {
-            get => _imageIndex;
+            get => Properties.GetInteger (s_propImageIndex, -1);
             set {
-                if (_imageIndex != value) {
-                    _imageIndex = value;
+                if (ImageIndex != value) {
+                    Properties.SetInteger (s_propImageIndex, value);
 
                     // Setting this clears any existing ImageKey and Image
                     if (value >= 0) {
-                        _image = null;
-                        _imageKey = string.Empty;
+                        Properties.RemoveObject (s_propImage);
+                        Properties.RemoveObject (s_propImageKey);
                     }
 
                     Invalidate ();
@@ -162,15 +160,15 @@ namespace Modern.Forms
         /// Gets or sets the key of the image in the <see cref='ImageList'/> associated with the <see cref='RadioButton'/>.
         /// </summary>
         public string ImageKey {
-            get => _imageKey;
+            get => Properties.GetObject<string> (s_propImageKey) ?? string.Empty;
             set {
-                if (_imageKey != value) {
-                    _imageKey = value;
+                if (ImageKey != value) {
+                    Properties.SetObject (s_propImageKey, value);
 
                     // Setting this clears any existing ImageIndex and Image
                     if (value is not null) {
-                        _image = null;
-                        _imageIndex = -1;
+                        Properties.RemoveObject (s_propImage);
+                        Properties.RemoveInteger (s_propImageIndex);
                     }
 
                     Invalidate ();
@@ -182,14 +180,14 @@ namespace Modern.Forms
         /// Gets or sets the <see cref='ImageList'/> associated with the <see cref='RadioButton'/>.
         /// </summary>
         public ImageList? ImageList {
-            get => _imageList;
+            get => Properties.GetObject<ImageList> (s_propImageList);
             set {
-                if (_imageList != value) {
-                    _imageList = value;
+                if (ImageList != value) {
+                    Properties.SetObject (s_propImageList, value);
 
                     // If an image list is set, clear any existing image
                     if (value is not null)
-                        _image = null;
+                        Properties.RemoveObject (s_propImage);
 
                     Invalidate ();
                 }

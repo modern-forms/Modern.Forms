@@ -13,7 +13,7 @@ namespace Modern.Forms
     /// <summary>
     /// Represents a Label control.
     /// </summary>
-    public class Label : Control
+    public class Label : Control, IHaveTextAndImageAlign
     {
         private static readonly object s_eventTextAlignChanged = new ();
 
@@ -24,6 +24,9 @@ namespace Modern.Forms
 
         private static readonly int s_propImage = PropertyStore.CreateKey ();
         private static readonly int s_propImageAlign = PropertyStore.CreateKey ();
+        private static readonly int s_propImageList = PropertyStore.CreateKey ();
+        private static readonly int s_propImageIndex = PropertyStore.CreateKey ();
+        private static readonly int s_propImageKey = PropertyStore.CreateKey ();
         private static readonly int s_propTextAlign = PropertyStore.CreateKey ();
         private static readonly int s_propTextImageRelation = PropertyStore.CreateKey ();
 
@@ -94,6 +97,64 @@ namespace Modern.Forms
                 if (value != ImageAlign) {
                     Properties.SetEnum (s_propImageAlign, value);
                     LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.ImageAlign);
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the index of the image in the <see cref='ImageList'/> to display on the <see cref='CheckBox'/>.
+        /// </summary>
+        public int ImageIndex {
+            get => Properties.GetInteger (s_propImageIndex, -1);
+            set {
+                if (ImageIndex != value) {
+                    Properties.SetInteger (s_propImageIndex, value);
+
+                    // Setting this clears any existing ImageKey and Image
+                    if (value >= 0) {
+                        Properties.RemoveObject (s_propImage);
+                        Properties.RemoveObject (s_propImageKey);
+                    }
+
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the key of the image in the <see cref='ImageList'/> to display on the <see cref='CheckBox'/>.
+        /// </summary>
+        public string ImageKey {
+            get => Properties.GetObject<string> (s_propImageKey) ?? string.Empty;
+            set {
+                if (ImageKey != value) {
+                    Properties.SetObject (s_propImageKey, value);
+
+                    // Setting this clears any existing ImageIndex and Image
+                    if (value is not null) {
+                        Properties.RemoveObject (s_propImage);
+                        Properties.RemoveInteger (s_propImageIndex);
+                    }
+
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref='ImageList'/> that contains the image to display on the <see cref='CheckBox'/>.
+        /// </summary>
+        public ImageList? ImageList {
+            get => Properties.GetObject<ImageList> (s_propImageList);
+            set {
+                if (ImageList != value) {
+                    Properties.SetObject (s_propImageList, value);
+
+                    // If an image list is set, clear any existing image
+                    if (value is not null)
+                        Properties.RemoveObject (s_propImage);
+
                     Invalidate ();
                 }
             }

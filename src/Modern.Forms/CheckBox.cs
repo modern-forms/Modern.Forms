@@ -12,16 +12,16 @@ namespace Modern.Forms
     /// </summary>
     public class CheckBox : Control, IHaveGlyph, IHaveTextAndImageAlign
     {
-        private CheckState state;
-        private SKBitmap? _image;
-        private int _imageIndex = -1;
-        private string _imageKey = string.Empty;
-        private ImageList? _imageList;
+        private CheckState _state;
 
         private static readonly BitVector32.Section s_stateAutoEllipsis = BitVector32.CreateSection (1);
 
         private static readonly int s_propCheckAlign = PropertyStore.CreateKey ();
+        private static readonly int s_propImage = PropertyStore.CreateKey ();
         private static readonly int s_propImageAlign = PropertyStore.CreateKey ();
+        private static readonly int s_propImageList = PropertyStore.CreateKey ();
+        private static readonly int s_propImageIndex = PropertyStore.CreateKey ();
+        private static readonly int s_propImageKey = PropertyStore.CreateKey ();
         private static readonly int s_propTextAlign = PropertyStore.CreateKey ();
         private static readonly int s_propTextImageRelation = PropertyStore.CreateKey ();
 
@@ -79,7 +79,7 @@ namespace Modern.Forms
         /// Gets or sets a value indicating if the CheckBox is in the checked state.
         /// </summary>
         public bool Checked {
-            get => state != CheckState.Unchecked;
+            get => _state != CheckState.Unchecked;
             set => CheckState = value ? CheckState.Checked : CheckState.Unchecked;
         }
 
@@ -92,10 +92,10 @@ namespace Modern.Forms
         /// Gets or sets the current state of the CheckBox.
         /// </summary>
         public CheckState CheckState {
-            get => state;
+            get => _state;
             set {
-                if (state != value) {
-                    state = value;
+                if (_state != value) {
+                    _state = value;
                     Invalidate ();
                     OnCheckedChanged (EventArgs.Empty);
                     OnCheckStateChanged (EventArgs.Empty);
@@ -123,11 +123,10 @@ namespace Modern.Forms
         /// Gets or sets the image displayed on the <see cref='CheckBox'/>.
         /// </summary>
         public SKBitmap? Image {
-            get => _image;
+            get => Properties.GetObject<SKBitmap> (s_propImage);
             set {
-                if (_image != value) {
-                    _image = value;
-                    LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.Image);
+                if (Image != value) {
+                    Properties.SetObject (s_propImage, value);
                     Invalidate ();
                 }
             }
@@ -153,15 +152,15 @@ namespace Modern.Forms
         /// Gets or sets the index of the image in the <see cref='ImageList'/> to display on the <see cref='CheckBox'/>.
         /// </summary>
         public int ImageIndex {
-            get => _imageIndex;
+            get => Properties.GetInteger (s_propImageIndex, -1);
             set {
-                if (_imageIndex != value) {
-                    _imageIndex = value;
+                if (ImageIndex != value) {
+                    Properties.SetInteger (s_propImageIndex, value);
 
                     // Setting this clears any existing ImageKey and Image
                     if (value >= 0) {
-                        _image = null;
-                        _imageKey = string.Empty;
+                        Properties.RemoveObject (s_propImage);
+                        Properties.RemoveObject (s_propImageKey);
                     }
 
                     Invalidate ();
@@ -173,15 +172,15 @@ namespace Modern.Forms
         /// Gets or sets the key of the image in the <see cref='ImageList'/> to display on the <see cref='CheckBox'/>.
         /// </summary>
         public string ImageKey {
-            get => _imageKey;
+            get => Properties.GetObject<string> (s_propImageKey) ?? string.Empty;
             set {
-                if (_imageKey != value) {
-                    _imageKey = value;
+                if (ImageKey != value) {
+                    Properties.SetObject (s_propImageKey, value);
 
                     // Setting this clears any existing ImageIndex and Image
                     if (value is not null) {
-                        _image = null;
-                        _imageIndex = -1;
+                        Properties.RemoveObject (s_propImage);
+                        Properties.RemoveInteger (s_propImageIndex);
                     }
 
                     Invalidate ();
@@ -193,14 +192,14 @@ namespace Modern.Forms
         /// Gets or sets the <see cref='ImageList'/> that contains the image to display on the <see cref='CheckBox'/>.
         /// </summary>
         public ImageList? ImageList {
-            get => _imageList;
+            get => Properties.GetObject<ImageList> (s_propImageList);
             set {
-                if (_imageList != value) {
-                    _imageList = value;
+                if (ImageList != value) {
+                    Properties.SetObject (s_propImageList, value);
 
                     // If an image list is set, clear any existing image
                     if (value is not null)
-                        _image = null;
+                        Properties.RemoveObject (s_propImage);
 
                     Invalidate ();
                 }
@@ -223,7 +222,7 @@ namespace Modern.Forms
             if (AutoCheck) {
                 if (ThreeState) {
                     // Order: Unchecked -> Checked -> Indeterminate
-                    var new_state = ((int)state + 1);
+                    var new_state = ((int)_state + 1);
 
                     if (new_state == 3)
                         new_state = 0;
