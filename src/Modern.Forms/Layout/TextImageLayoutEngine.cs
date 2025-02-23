@@ -187,7 +187,7 @@ internal static class TextImageLayoutEngine
         var margin = 0;
 
         if (renderer is IRenderTextAndImage text_image_renderer)
-            margin = control.LogicalToDeviceUnits (text_image_renderer.ImageTextPadding);
+            margin = control.LogicalToDeviceUnits (text_image_renderer.ImageTextMargin);
 
         Rectangle text_bounds;
         Rectangle image_bounds;

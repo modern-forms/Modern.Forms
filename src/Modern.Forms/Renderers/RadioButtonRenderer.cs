@@ -15,7 +15,7 @@ namespace Modern.Forms.Renderers
         public int GlyphTextPadding { get; } = 0;
 
         /// <inheritdoc/>
-        public int ImageTextPadding { get; } = 4;
+        public int ImageTextMargin { get; } = 4;
 
         /// <inheritdoc/>
         protected override void Render (RadioButton control, PaintEventArgs e)

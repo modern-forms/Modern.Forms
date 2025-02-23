@@ -9,7 +9,7 @@ namespace Modern.Forms.Renderers
     public class ButtonRenderer : Renderer<Button>, IRenderTextAndImage
     {
         /// <inheritdoc/>
-        public int ImageTextPadding { get; } = 4;
+        public int ImageTextMargin { get; } = 4;
 
         /// <inheritdoc/>
         protected override void Render (Button control, PaintEventArgs e)

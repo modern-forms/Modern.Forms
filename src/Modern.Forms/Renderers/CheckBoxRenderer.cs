@@ -15,7 +15,7 @@ namespace Modern.Forms.Renderers
         public int GlyphTextPadding { get; } = 5;
 
         /// <inheritdoc/>
-        public int ImageTextPadding { get; } = 4;
+        public int ImageTextMargin { get; } = 4;
 
         /// <inheritdoc/>
         protected override void Render (CheckBox control, PaintEventArgs e)

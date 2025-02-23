@@ -6,8 +6,8 @@
     interface IRenderTextAndImage
     {
         /// <summary>
-        /// Padding between image and text.
+        /// Margin between image and text.
         /// </summary>
-        int ImageTextPadding { get; }
+        int ImageTextMargin { get; }
     }
 }
