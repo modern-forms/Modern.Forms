@@ -68,8 +68,11 @@ namespace Modern.Forms
             _width = default_size.Width;
             _height = default_size.Height;
 
-            Theme.ThemeChanged += (o, e) => SetState (States.IsDirty, true);
+            Theme.ThemeChanged += OnThemeChanged;
+
         }
+
+        private void OnThemeChanged (object? sender, EventArgs e) => SetState (States.IsDirty, true);
 
         /// <summary>
         ///  Assigns a new parent control. Sends out the appropriate property change
@@ -1916,6 +1919,8 @@ namespace Modern.Forms
         {
             if (!disposedValue) {
                 FreeBackBuffer ();
+
+                Theme.ThemeChanged -= OnThemeChanged;
 
                 foreach (var c in Controls.GetAllControls (true))
                     c.Dispose (disposing);
