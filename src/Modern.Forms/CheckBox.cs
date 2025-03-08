@@ -35,6 +35,66 @@ namespace Modern.Forms
             SetControlBehavior (ControlBehaviors.InvalidateOnTextChanged);
         }
 
+        public override bool AutoSize {
+            get => base.AutoSize;
+            set {
+                if (base.AutoSize != value) {
+                    base.AutoSize = value;
+                    SetState (States.IsDirty, true);
+                }
+            }
+        }
+
+        public override string Text {
+            get => base.Text;
+            set {
+                if (base.Text != value) {
+                    base.Text = value;
+                    Trigger_Resizing ();
+                }
+            }
+        }
+
+        private void Trigger_Resizing ()
+        {
+            //required
+            //SetState (States.IsDirty, true);
+            var old = AutoSize;
+            AutoSize = !old;
+            AutoSize = old;
+        }
+        Size calculate_AutosizeArea () 
+        {
+            //the layout calculation is corrent - we just need to make controls.width bigger to show all the clipped texts
+            //find biggest right Coord
+            var newSize = new Size (DefaultSize.Width, DefaultSize.Height);
+
+            var layout = TextImageLayoutEngine.Layout (this);
+
+            var rightMax = 0;
+            rightMax = Math.Max (rightMax, layout.GlyphBounds.Right);
+            rightMax = Math.Max (rightMax, layout.ImageBounds.Right);
+            rightMax = Math.Max (rightMax, layout.TextBounds.Right);
+            
+            var bottomMax = 0;
+            bottomMax = Math.Max (bottomMax, layout.GlyphBounds.Bottom);
+            bottomMax = Math.Max (bottomMax, layout.ImageBounds.Bottom);
+            bottomMax = Math.Max (bottomMax, layout.TextBounds.Bottom);
+
+            return new Size (rightMax, bottomMax);
+        }
+
+        internal override Size GetPreferredSizeCore (Size proposedSize)
+        {
+            //return base.GetPreferredSizeCore (proposedSize);
+            if (AutoSize) 
+            {
+                return calculate_AutosizeArea ();
+            }
+            return DefaultSize;
+        }
+
+
         /// <summary>
         /// Gets or sets a valud indicating if the CheckBox will respond to mouse clicks.
         /// </summary>
@@ -71,6 +131,7 @@ namespace Modern.Forms
                     Properties.SetEnum (s_propCheckAlign, value);
                     LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.GlyphAlign);
                     Invalidate ();
+                    Trigger_Resizing ();
                 }
             }
         }
@@ -128,6 +189,7 @@ namespace Modern.Forms
                 if (Image != value) {
                     Properties.SetObject (s_propImage, value);
                     Invalidate ();
+                    Trigger_Resizing ();
                 }
             }
         }
@@ -144,6 +206,7 @@ namespace Modern.Forms
                     Properties.SetEnum (s_propImageAlign, value);
                     LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.ImageAlign);
                     Invalidate ();
+                    Trigger_Resizing ();
                 }
             }
         }
@@ -271,6 +334,7 @@ namespace Modern.Forms
                     Properties.SetEnum (s_propTextAlign, value);
                     LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.TextAlign);
                     Invalidate ();
+                    Trigger_Resizing ();
                 }
             }
         }
@@ -287,6 +351,7 @@ namespace Modern.Forms
                     Properties.SetEnum (s_propTextImageRelation, value);
                     LayoutTransaction.DoLayoutIf (AutoSize, Parent, this, PropertyNames.TextImageRelation);
                     Invalidate ();
+                    Trigger_Resizing ();
                 }
             }
         }
