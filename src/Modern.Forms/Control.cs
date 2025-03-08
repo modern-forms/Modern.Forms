@@ -67,8 +67,6 @@ namespace Modern.Forms
 
             _width = default_size.Width;
             _height = default_size.Height;
-
-            Theme.ThemeChanged += (o, e) => SetState (States.IsDirty, true);
         }
 
         /// <summary>
@@ -1224,6 +1222,14 @@ namespace Modern.Forms
         /// Raises the TextChanged event.
         /// </summary>
         protected virtual void OnTextChanged (EventArgs e) => (Events[s_textChangedEvent] as EventHandler)?.Invoke (this, e);
+
+        /// <summary>
+        /// Called when the theme changes.
+        /// </summary>
+        protected internal virtual void OnThemeChanged (EventArgs e)
+        {
+            SetState (States.IsDirty, true);
+        }
 
         /// <summary>
         /// Raises the VisibleChanged event.

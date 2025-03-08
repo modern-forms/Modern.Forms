@@ -45,8 +45,6 @@ namespace Modern.Forms
                 Application.ClosePopups ();
                 Deactivated?.Invoke (this, EventArgs.Empty);
             };
-
-            Theme.ThemeChanged += (o, e) => Invalidate ();
         }
 
         /// <summary>

@@ -276,6 +276,7 @@ namespace Modern.Forms
             }
 
             ThemeChanged?.Invoke (null, EventArgs.Empty);
+            Application.DoThemeChanged ();
             suspended_raise_waiting = false;
         }
 

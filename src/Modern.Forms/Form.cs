@@ -310,6 +310,15 @@ namespace Modern.Forms
             Closing?.Invoke (this, e);
         }
 
+        /// <summary>
+        /// Called when the theme changes.
+        /// </summary>
+        protected internal virtual void OnThemeChanged (EventArgs e)
+        {
+            foreach (var control in Controls.GetAllControls ())
+                control.OnThemeChanged (e);
+        }
+
         internal override void SetWindowStartupLocation (IWindowBaseImpl? owner = null)
         {
             var scaling = Scaling;

@@ -38,6 +38,15 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Raises the OnThemeChanged event for all open forms.
+        /// </summary>
+        internal static void DoThemeChanged ()
+        {
+            foreach (Form form in OpenForms)
+                form.OnThemeChanged (EventArgs.Empty);
+        }
+
+        /// <summary>
         /// Exits the application.
         /// </summary>
         public static void Exit ()
