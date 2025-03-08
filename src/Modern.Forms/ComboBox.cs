@@ -18,7 +18,7 @@ namespace Modern.Forms
         /// </summary>
         public ComboBox ()
         {
-            popup_listbox = new ListBox { Dock = DockStyle.Fill, ShowHover = true };
+            popup_listbox = new ListBox { Dock = DockStyle.Fill, SelectItemOnMouseUp = true, ShowHover = true };
             popup_listbox.SelectedIndexChanged += ListBox_SelectedIndexChanged;
         }
 

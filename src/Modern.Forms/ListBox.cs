@@ -313,10 +313,8 @@ namespace Modern.Forms
             base.OnKeyUp (e);
         }
 
-        /// <inheritdoc/>
-        protected override void OnMouseDown (MouseEventArgs e)
+        private void OnMouseButtonLogic (MouseEventArgs e)
         {
-            base.OnMouseDown (e);
 
             if (!Enabled || !e.Button.HasFlag (MouseButtons.Left))
                 return;
@@ -355,6 +353,24 @@ namespace Modern.Forms
             }
 
             EnsureItemVisible (index);
+        }
+
+        /// <inheritdoc/>
+        protected override void OnMouseDown (MouseEventArgs e)
+        {
+            base.OnMouseDown (e);
+
+            if (!SelectItemOnMouseUp)
+                OnMouseButtonLogic (e);
+        }
+
+        /// <inheritdoc/>
+        protected override void OnMouseUp (MouseEventArgs e)
+        {
+            base.OnMouseUp (e);
+
+            if (SelectItemOnMouseUp)
+                OnMouseButtonLogic (e);
         }
 
         /// <inheritdoc/>
@@ -470,6 +486,11 @@ namespace Modern.Forms
                     Items.SelectedIndex = Items.SelectedIndex;  // Yes this does something  ;)
             }
         }
+
+        // By default, we select the item in MouseDown. However, when used in a ComboBox,
+        // we need to select the item in MouseUp, or else the popup will close and the MouseUp
+        // event will leak to the control/form beneath the popup.
+        internal bool SelectItemOnMouseUp { get; set; }
 
         /// <inheritdoc/>
         protected override void SetBoundsCore (int x, int y, int width, int height, BoundsSpecified specified)
