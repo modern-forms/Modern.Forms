@@ -59,6 +59,14 @@ namespace ControlGallery.Panels
                 AutoCheck = false
             });
 
+            Controls.Add (new CheckBox {
+                Text = "Text that is too long to fit",
+                Left = 10,
+                Top = 220,
+                Width = 200,
+                AutoEllipsis = true
+            });
+
             AddConfigurableCheckBox ();
         }
 

@@ -42,7 +42,6 @@ namespace Modern.Forms
 
         /// <summary>
         /// Gets or sets a value indicating if text will be truncated with an ellipsis if it cannot fully fit in the <see cref='RadioButton'/>.
-        /// Value is currently ignored.
         /// </summary>
         public bool AutoEllipsis {
             get => _radiobuttonState[s_stateAutoEllipsis] != 0;

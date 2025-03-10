@@ -33,8 +33,7 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Gets or sets a value indicating if text will be truncated with an ellipsis if it cannot fully fit in the <see cref='CheckBox'/>.
-        /// Value is currently ignored.
+        /// Gets or sets a value indicating if text will be truncated with an ellipsis if it cannot fully fit in the <see cref='Button'/>.
         /// </summary>
         public bool AutoEllipsis {
             get => _buttonState[s_stateAutoEllipsis] != 0;

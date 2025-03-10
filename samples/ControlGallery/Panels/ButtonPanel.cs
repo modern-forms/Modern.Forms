@@ -176,6 +176,8 @@ namespace ControlGallery.Panels
             Controls.Add (new MyCustomRenderedButton { Text = "MyCustomButton", Left = 225, Top = 370 });
 
             RenderManager.SetRenderer<MyCustomRenderedButton> (new MyCustomRenderer ());
+
+            Controls.Add (new Button { Text = "Text that is too long to fit in the button", Left = 350, Top = 300, AutoEllipsis = true });
         }
     }
 

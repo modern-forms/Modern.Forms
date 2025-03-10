@@ -159,6 +159,10 @@ internal static class TextImageLayoutEngine
         var text_size = GetTextSize (control).ToSize ();
         text_size.Height++;
 
+        // Sizes cannot be bigger than max bounds
+        text_size = text_size.Clamp (maxBounds.Size);
+        image_size = image_size.Clamp (maxBounds.Size);
+
         // We only have one thing to layout, or it's overlay so position doesn't matter
         if (text_image_relation == TextImageRelation.Overlay || image_size.IsEmpty || !control.Text.HasValue ()) {
 

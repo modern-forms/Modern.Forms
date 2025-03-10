@@ -47,7 +47,6 @@ namespace Modern.Forms
 
         /// <summary>
         /// Gets or sets a value indicating if text will be truncated with an ellipsis if it cannot fully fit in the Label.
-        /// Value is currently ignored.
         /// </summary>
         public bool AutoEllipsis {
             get => _labelState[s_stateAutoEllipsis] != 0;

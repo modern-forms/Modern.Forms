@@ -23,7 +23,8 @@ namespace Modern.Forms
                 MaxWidth = maxLines.GetValueOrDefault () == 1 ? (float?)null : maxSize.Width,
                 MaxHeight = maxSize.Height == int.MaxValue ? (int?)null : maxSize.Height,
                 Alignment = alignment,
-                MaxLines = maxLines
+                MaxLines = maxLines,
+                EllipsisEnabled = ellipsis,
             };
 
             var styleNormal = new Style {

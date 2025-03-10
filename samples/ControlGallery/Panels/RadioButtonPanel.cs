@@ -14,8 +14,9 @@ namespace ControlGallery.Panels
             Controls.Add (new RadioButton { Text = "Option 2", Left = 10, Top = 45, Width = 150 });
             Controls.Add (new RadioButton { Text = "Disabled", Left = 10, Top = 80, Width = 150, Enabled = false, Checked = true });
             Controls.Add (new RadioButton { Text = "AutoCheck Off", Left = 10, Top = 115, Width = 150, AutoCheck = false });
+            Controls.Add (new RadioButton { Text = "Text that is too long to fit", Left = 10, Top = 150, Width = 150, AutoEllipsis = true });
 
-            var panel = Controls.Add (new Panel { Left = 10, Top = 150, Width = 200, Height = 100 });
+            var panel = Controls.Add (new Panel { Left = 10, Top = 185, Width = 200, Height = 100 });
             panel.Style.Border.Width = 1;
 
             var light = panel.Controls.Add (new RadioButton { Text = "Light", Left = 10, Top = 10, Checked = true });
