@@ -104,6 +104,11 @@ public partial class Control
     }
 
     /// <summary>
+    /// Derived controls can use to provide a public AutoSizeMode property.
+    /// </summary>
+    protected AutoSizeMode GetAutoSizeMode () => CommonProperties.GetAutoSizeMode (this);
+
+    /// <summary>
     /// Gets the size the control would prefer to be.
     /// </summary>
     /// <param name="proposedSize">A size the layout engine is proposing for the control.</param>
@@ -165,6 +170,11 @@ public partial class Control
     {
         PerformLayout (new LayoutEventArgs ((Control)affectedElement, affectedProperty));
     }
+
+    /// <summary>
+    /// Derived controls can use to provide a public AutoSizeMode property.
+    /// </summary>
+    protected void SetAutoSizeMode (AutoSizeMode mode) => CommonProperties.SetAutoSizeMode (this, mode);
 
     PropertyStore IArrangedElement.Properties => Properties;
 

@@ -59,6 +59,29 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        ///  Allows the control to optionally shrink when <see cref="Control.AutoSize"/> is <see langword="true"/>.
+        /// </summary>
+        public AutoSizeMode AutoSizeMode {
+            get => GetAutoSizeMode ();
+            set {
+                SourceGenerated.EnumValidator.Validate (value);
+
+                if (GetAutoSizeMode () != value) {
+                    SetAutoSizeMode (value);
+                    if (Parent is not null) {
+                        // DefaultLayout does not keep anchor information until it needs to. When
+                        // AutoSize became a common property, we could no longer blindly call into
+                        // DefaultLayout, so now we do a special InitLayout just for DefaultLayout.
+                        if (Parent.LayoutEngine == DefaultLayout.Instance)
+                            Parent.LayoutEngine.InitLayout (this, BoundsSpecified.Size);
+
+                        LayoutTransaction.DoLayout (Parent, this, PropertyNames.AutoSize);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the alignment of the checkbox glyph on the <see cref='CheckBox'/>.
         /// </summary>
         public ContentAlignment GlyphAlign {
