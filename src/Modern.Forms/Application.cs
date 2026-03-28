@@ -85,7 +85,7 @@ namespace Modern.Forms
         public static void Run (ICloseable closable)
         {
             if (_mainLoopCancellationTokenSource != null)
-                throw new Exception ("Run should only called once");
+                throw new InvalidOperationException ("Run should only be called once");
 
             closable.Closed += (s, e) => Exit ();
 

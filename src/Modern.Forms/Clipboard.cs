@@ -13,19 +13,19 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the contents of the clipboard as text.
         /// </summary>
-        public static Task<string?> GetTextAsync () 
-            => AvaloniaGlobals.GetRequiredService<IClipboard> ().GetTextAsync ();
+        public static async Task<string?> GetTextAsync () 
+            => await AvaloniaGlobals.GetRequiredService<IClipboard> ().GetTextAsync ().ConfigureAwait (false);
 
         /// <summary>
         /// Sets the text contents of the clipboard.
         /// </summary>
-        public static Task SetTextAsync (string text)
-            => AvaloniaGlobals.GetRequiredService<IClipboard> ().SetTextAsync (text);
+        public static async Task SetTextAsync (string text)
+            => await AvaloniaGlobals.GetRequiredService<IClipboard> ().SetTextAsync (text).ConfigureAwait (false);
 
         /// <summary>
-        /// Clears the contents of the clipbaord.
+        /// Clears the contents of the clipboard.
         /// </summary>
-        public static Task ClearAsync ()
-            => AvaloniaGlobals.GetRequiredService<IClipboard> ().ClearAsync ();
+        public static async Task ClearAsync ()
+            => await AvaloniaGlobals.GetRequiredService<IClipboard> ().ClearAsync ().ConfigureAwait (false);
     }
 }

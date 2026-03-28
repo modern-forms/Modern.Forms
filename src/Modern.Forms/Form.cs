@@ -84,8 +84,11 @@ namespace Modern.Forms
         /// <inheritdoc/>
         public override void Close ()
         {
-            Application.OpenForms.Remove (this);
             base.Close ();
+
+            // If close was cancelled by OnClosing, don't proceed with dialog cleanup
+            if (Application.OpenForms.Contains (this))
+                return;
 
             // If this was a dialog box we need to reactivate the parent
             if (dialog_parent is not null) {
@@ -281,11 +284,12 @@ namespace Modern.Forms
             set {
                 if (minimum_size != value) {
                     minimum_size = value;
-                    Window.SetMinMaxSize (minimum_size.ToAvaloniaSize (), maximum_size.ToAvaloniaSize ());
 
                     // Don't let MaximumSize be smaller than MinimumSize
                     if (!minimum_size.IsEmpty && !maximum_size.IsEmpty)
                         maximum_size = new System.Drawing.Size (Math.Max (minimum_size.Width, maximum_size.Width), Math.Max (minimum_size.Height, maximum_size.Height));
+
+                    Window.SetMinMaxSize (minimum_size.ToAvaloniaSize (), maximum_size.ToAvaloniaSize ());
 
                     // Keep form size within new limits
                     var size = Size;

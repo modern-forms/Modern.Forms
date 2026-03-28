@@ -46,7 +46,7 @@ public partial class Control
     /// <summary>
     /// Raised when the AutoSize property is changed.
     /// </summary>
-    public event EventHandler AutoSizeChanged {
+    public event EventHandler? AutoSizeChanged {
         add => Events.AddHandler (s_autoSizeChangedEvent, value);
         remove => Events.RemoveHandler (s_autoSizeChangedEvent, value);
     }
@@ -62,7 +62,7 @@ public partial class Control
     /// <summary>
     /// Raised when the ContextMenu property is changed
     /// </summary>
-    public event EventHandler ContextMenuChanged {
+    public event EventHandler? ContextMenuChanged {
         add => Events.AddHandler (s_contextMenuChangedEvent, value);
         remove => Events.RemoveHandler (s_contextMenuChangedEvent, value);
     }
@@ -70,7 +70,7 @@ public partial class Control
     /// <summary>
     ///  Raised when a new control is added.
     /// </summary>
-    public event EventHandler<EventArgs<Control>> ControlAdded {
+    public event EventHandler<EventArgs<Control>>? ControlAdded {
         add => Events.AddHandler (s_controlAddedEvent, value);
         remove => Events.RemoveHandler (s_controlAddedEvent, value);
     }
@@ -78,7 +78,7 @@ public partial class Control
     /// <summary>
     ///  Raised when a control is removed.
     /// </summary>
-    public event EventHandler<EventArgs<Control>> ControlRemoved {
+    public event EventHandler<EventArgs<Control>>? ControlRemoved {
         add => Events.AddHandler (s_controlRemovedEvent, value);
         remove => Events.RemoveHandler (s_controlRemovedEvent, value);
     }
@@ -238,7 +238,7 @@ public partial class Control
     /// <summary>
     /// Raised when the Parent property is changed.
     /// </summary>
-    public event EventHandler ParentChanged {
+    public event EventHandler? ParentChanged {
         add => Events.AddHandler (s_parentEvent, value);
         remove => Events.RemoveHandler (s_parentEvent, value);
     }
@@ -246,7 +246,7 @@ public partial class Control
     /// <summary>
     ///  Raised when the control is resized.
     /// </summary>
-    public event EventHandler Resize {
+    public event EventHandler? Resize {
         add => Events.AddHandler (s_resizeEvent, value);
         remove => Events.RemoveHandler (s_resizeEvent, value);
     }
