@@ -151,7 +151,12 @@ namespace Modern.Forms
         {
             using var paint = new SKPaint { Color = color, IsStroke = true, StrokeWidth = strokeWidth };
 
-            canvas.DrawRect (x, y, width, height, paint);
+            // Inset by half the stroke width so the stroke is fully inside the specified bounds.
+            // In Skia's coordinate system, pixel (i,j) occupies [i,i+1)x[j,j+1), so a centered
+            // stroke at an integer coordinate straddles a pixel edge and can bleed outside the
+            // buffer at fractional DPI scales (e.g. 150%).
+            var half = strokeWidth * 0.5f;
+            canvas.DrawRect (x + half, y + half, width - strokeWidth, height - strokeWidth, paint);
         }
 
         /// <summary>
@@ -172,7 +177,12 @@ namespace Modern.Forms
                 StrokeWidth = strokeWidth
             };
 
-            canvas.DrawRoundRect (x + .5f, y + .5f, width, height, rx, ry, paint);
+            // Inset by half the stroke width so the stroke is fully inside the specified bounds.
+            // In Skia's coordinate system, pixel (i,j) occupies [i,i+1)x[j,j+1), so a centered
+            // stroke at an integer coordinate straddles a pixel edge and can bleed outside the
+            // buffer at fractional DPI scales (e.g. 150%).
+            var half = strokeWidth * 0.5f;
+            canvas.DrawRoundRect (x + half, y + half, width, height, rx, ry, paint);
         }
 
         /// <summary>

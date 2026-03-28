@@ -122,7 +122,7 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Raises the DropDownOpened event.
+        /// Raises the DropDownClosed event.
         /// </summary>
         protected virtual void OnDropDownClosed (EventArgs e) => DropDownClosed?.Invoke (this, e);
 

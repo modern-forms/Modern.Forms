@@ -276,7 +276,7 @@ namespace Modern.Forms
                 return;
             }
 
-            // Home moves to first expanded node
+            // End moves to last expanded node
             if (e.KeyCode == Keys.End) {
                 var all = GetVisibleItems ().ToList ();
 
@@ -289,7 +289,7 @@ namespace Modern.Forms
                 return;
             }
 
-            // End moves to last expanded node
+            // Home moves to first expanded node
             if (e.KeyCode == Keys.Home) {
                 var all = GetVisibleItems ().ToList ();
 

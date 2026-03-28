@@ -200,7 +200,7 @@ namespace Modern.Forms
         {
             base.OnMouseMove (e);
 
-            if (thumb_pressed == true) {
+            if (thumb_pressed) {
                 UpdateFromPoint ((vertical ? e.Y : e.X) - thumbclick_offset);
                 OnScroll (new ScrollEventArgs (ScrollEventType.ThumbTrack, Value));
             }
@@ -304,7 +304,8 @@ namespace Modern.Forms
             value = Math.Max (value, minimum);
             value = Math.Min (value, maximum);
 
-            var value_percent = (double)(value - minimum) / (PossibleValuesCount - 1);
+            var possible = PossibleValuesCount - 1;
+            var value_percent = possible > 0 ? (double)(value - minimum) / possible : 0d;
 
             var effective_track_bounds = GetEffectiveTrackBounds ();
 

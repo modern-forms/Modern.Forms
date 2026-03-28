@@ -1274,9 +1274,6 @@ namespace Modern.Forms
                 if (value == this)
                     throw new ArgumentException ("Control cannot be its own Parent.");
 
-                if (parent == value)
-                    return;
-
                 if (value == null) {
                     parent?.Controls.Remove (this);
                     parent = null;
@@ -1500,7 +1497,7 @@ namespace Modern.Forms
             current_mouse_in = child;
 
             if (child != null)
-                child?.RaiseMouseMove (TranslateMouseEvents (e, child));
+                child.RaiseMouseMove (TranslateMouseEvents (e, child));
             else if (Enabled)
                 OnMouseMove (e);
         }

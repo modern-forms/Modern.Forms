@@ -132,7 +132,7 @@ namespace Modern.Forms
         public Rectangle GetItemRectangle (int index)
         {
             if (index < 0 || index >= Items.Count)
-                throw new ArgumentOutOfRangeException ("Index out of range.");
+                throw new ArgumentOutOfRangeException (nameof (index), "Index out of range.");
 
             var client = ClientRectangle;
 
@@ -154,7 +154,7 @@ namespace Modern.Forms
             }
             set {
                 if (value > 255)
-                    throw new ArgumentOutOfRangeException ("The ItemHeight property was set beyond 255 pixels");
+                    throw new ArgumentOutOfRangeException (nameof (value), "The ItemHeight property was set beyond 255 pixels");
 
                 item_height = value;
 
