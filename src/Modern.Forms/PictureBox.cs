@@ -88,7 +88,7 @@ namespace Modern.Forms
 
             try {
                 if (url.Contains ("://"))
-                    Image = SKBitmap.Decode (await Client.GetStreamAsync (url).ConfigureAwait (false));
+                    Image = SKBitmap.Decode (await Client.GetStreamAsync (url));
                 else
                     Image = SKBitmap.Decode (url);
             } catch (Exception) {

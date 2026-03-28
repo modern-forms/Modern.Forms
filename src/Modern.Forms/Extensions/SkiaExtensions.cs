@@ -156,7 +156,24 @@ namespace Modern.Forms
             // stroke at an integer coordinate straddles a pixel edge and can bleed outside the
             // buffer at fractional DPI scales (e.g. 150%).
             var half = strokeWidth * 0.5f;
-            canvas.DrawRect (x + half, y + half, width - strokeWidth, height - strokeWidth, paint);
+
+            // When the requested rectangle is thinner than the stroke width, subtracting the
+            // stroke width from the dimensions can produce zero or negative sizes, which Skia
+            // will not render. In those cases, approximate the rectangle as a line or point
+            // so thin glyphs (e.g. text carets) still appear.
+            if (width <= strokeWidth && height <= strokeWidth) {
+                // Degenerate case: both dimensions are very small, render a single point.
+                canvas.DrawPoint (x + half, y + half, paint);
+            } else if (width <= strokeWidth) {
+                // Very thin vertical rectangle: draw a vertical line centered in the bounds.
+                canvas.DrawLine (x + half, y + half, x + half, y + height - half, paint);
+            } else if (height <= strokeWidth) {
+                // Very thin horizontal rectangle: draw a horizontal line centered in the bounds.
+                canvas.DrawLine (x + half, y + half, x + width - half, y + half, paint);
+            } else {
+                // Normal rectangle: inset by the stroke width so the stroke stays inside bounds.
+                canvas.DrawRect (x + half, y + half, width - strokeWidth, height - strokeWidth, paint);
+            }
         }
 
         /// <summary>
@@ -182,7 +199,9 @@ namespace Modern.Forms
             // stroke at an integer coordinate straddles a pixel edge and can bleed outside the
             // buffer at fractional DPI scales (e.g. 150%).
             var half = strokeWidth * 0.5f;
-            canvas.DrawRoundRect (x + half, y + half, width, height, rx, ry, paint);
+            var adjustedWidth = Math.Max (0, width - strokeWidth);
+            var adjustedHeight = Math.Max (0, height - strokeWidth);
+            canvas.DrawRoundRect (x + half, y + half, adjustedWidth, adjustedHeight, rx, ry, paint);
         }
 
         /// <summary>
