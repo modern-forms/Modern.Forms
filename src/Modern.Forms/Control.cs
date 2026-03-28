@@ -1299,7 +1299,7 @@ namespace Modern.Forms
                     return point;
 
                 var window_location = window.Location;
-                
+
                 // For Mac, the desktop coordinates are measured at a different scale than
                 // our form coordinates, so we need to fix that. For other platforms, ratio is 1.
                 var desktop_ratio = window.DesktopScaling / window.Scaling;

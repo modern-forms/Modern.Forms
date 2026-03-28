@@ -736,7 +736,7 @@ internal partial class DefaultLayout : LayoutEngine
                 Debug.Assert (element.Container == container, "We have non-children in our containers cached bounds store.");
                 var bounds = (Rectangle)entry.Value!;
                 element.SetBounds (bounds, BoundsSpecified.None);
-        }
+            }
 
             ClearCachedBounds (container);
         }

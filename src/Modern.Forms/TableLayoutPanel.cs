@@ -172,7 +172,7 @@ public class TableLayoutPanel : Panel, IExtenderProvider
         return collection is not null && collection.Count > 0;
     }
 
-#region Extended Properties
+    #region Extended Properties
     bool IExtenderProvider.CanExtend (object obj)
     {
         return obj is Control control && control.Parent == this;
@@ -236,7 +236,7 @@ public class TableLayoutPanel : Panel, IExtenderProvider
     [DefaultValue (typeof (TableLayoutPanelCellPosition), "-1,-1")]  //if change this value, also change the SerializeViaAdd in TableLayoutControlCollectionCodeDomSerializer
 #endif
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
-    [DisplayName ("Cell")]    public TableLayoutPanelCellPosition GetCellPosition (Control control) => _tableLayoutSettings.GetCellPosition (control);
+    [DisplayName ("Cell")] public TableLayoutPanelCellPosition GetCellPosition (Control control) => _tableLayoutSettings.GetCellPosition (control);
 
     /// <summary>
     ///  Sets the row and column position of the specified control.
@@ -309,9 +309,9 @@ public class TableLayoutPanel : Panel, IExtenderProvider
 
         return rh;
     }
-#endregion
+    #endregion
 
-#region PaintCode
+    #region PaintCode
     ///// <summary>
     ///// Raised when a cell needs to be painted.
     ///// </summary>
@@ -558,5 +558,5 @@ public class TableLayoutPanel : Panel, IExtenderProvider
             }
         }
     }
-#endregion
+    #endregion
 }

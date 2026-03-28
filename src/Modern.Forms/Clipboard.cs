@@ -13,7 +13,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the contents of the clipboard as text.
         /// </summary>
-        public static async Task<string?> GetTextAsync () 
+        public static async Task<string?> GetTextAsync ()
             => await AvaloniaGlobals.GetRequiredService<IClipboard> ().GetTextAsync ().ConfigureAwait (false);
 
         /// <summary>

@@ -42,7 +42,7 @@ public class NavigationPaneRenderer : Renderer<NavigationPane>
             var highlight_width = e.LogicalToDeviceUnits (2);
             var highlight_padding = e.LogicalToDeviceUnits (3);
             var highlight_bounds = new Rectangle (item.Bounds.Left - highlight_width, item.Bounds.Top + highlight_padding, highlight_width, item.Bounds.Height - (2 * highlight_padding));
-            
+
             e.Canvas.FillRectangle (highlight_bounds, Theme.AccentColor2);
         }
     }

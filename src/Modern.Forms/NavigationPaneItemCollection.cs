@@ -87,7 +87,7 @@ public class NavigationPaneItemCollection : Collection<NavigationPaneItem>
             // we still want to force it to be treated like a new selection.
             selected_index = -1;
             owner.SelectedIndex = Math.Max (index - 1, 0);
-        } 
+        }
 
         if (selected_item is null && Count > 0)
             owner.SelectedIndex = 0;

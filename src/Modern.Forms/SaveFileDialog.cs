@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Modern.WindowKit.Controls.Platform;
-using Modern.WindowKit.Platform.Storage.FileIO;
 using Modern.WindowKit.Platform.Storage;
+using Modern.WindowKit.Platform.Storage.FileIO;
 
 namespace Modern.Forms
 {
@@ -24,7 +24,7 @@ namespace Modern.Forms
         {
             if (owner.window.TryGetFeature (typeof (IStorageProvider)) is IStorageProvider parent) {
                 var options = new FilePickerSaveOptions {
-                    DefaultExtension= DefaultExtension,
+                    DefaultExtension = DefaultExtension,
                     SuggestedStartLocation = GetInitialDirectory (),
                     SuggestedFileName = FileName,
                     Title = Title,

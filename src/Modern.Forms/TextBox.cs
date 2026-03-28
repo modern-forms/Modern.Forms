@@ -322,7 +322,7 @@ namespace Modern.Forms
             var text = AsyncHelper.RunSync (() => Modern.WindowKit.AvaloniaGlobals.GetRequiredService<IClipboard> ().GetTextAsync ());
 
             if (!string.IsNullOrEmpty (text) && document.InsertText (text))
-                    ScrollToCaret ();
+                ScrollToCaret ();
         }
 
         /// <summary>
@@ -397,8 +397,8 @@ namespace Modern.Forms
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
         /// <inheritdoc/>
-        public override string Text { 
-            get => document.Text; 
+        public override string Text {
+            get => document.Text;
             set {
                 if (document.Text != value) {
                     document.Text = value;

@@ -11,7 +11,7 @@ namespace ControlGallery.Panels
         {
             var titlebar = Controls.Add (new FormTitleBar {
                 Text = "Test Text!",
-                 Image = ImageLoader.Get ("swatches.png")
+                Image = ImageLoader.Get ("swatches.png")
             });
 
             titlebar.Controls.Add (
