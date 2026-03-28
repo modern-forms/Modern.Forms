@@ -124,7 +124,7 @@ namespace Modern.Forms
             var outer_radius = e.LogicalToDeviceUnits (8);
             var inner_radius = e.LogicalToDeviceUnits (5);
             var border_color = disabled ? Theme.ForegroundDisabledColor :
-                               state == CheckState.Checked ? Theme.AccentColor2 : 
+                               state == CheckState.Checked ? Theme.AccentColor2 :
                                Theme.BorderLowColor;
 
             e.Canvas.DrawCircle (origin.X, origin.Y, outer_radius, border_color, e.LogicalToDeviceUnits (1));

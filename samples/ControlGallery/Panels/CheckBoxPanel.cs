@@ -105,10 +105,10 @@ namespace ControlGallery.Panels
                 test_cb.Text = show_text_cb.Checked ? "Test CheckBox" : string.Empty;
             };
 
-            var text_image_relation = Controls.Add (new ComboBox { 
-                Top = 70, 
-                Left = 525, 
-                Width = 150 
+            var text_image_relation = Controls.Add (new ComboBox {
+                Top = 70,
+                Left = 525,
+                Width = 150
             });
 
             text_image_relation.Items.AddRange (Enum.GetNames<TextImageRelation> ());

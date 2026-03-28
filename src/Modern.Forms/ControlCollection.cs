@@ -462,7 +462,7 @@ public partial class Control
         }
 
         // Setter required by IList<T>, but we don't want users to be able to set Controls this way
-        Control IList<Control>.this[int index] { 
+        Control IList<Control>.this[int index] {
             get => this[index];
             set => throw new NotSupportedException ();
         }

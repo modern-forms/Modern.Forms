@@ -32,9 +32,9 @@ namespace Modern.Forms
         /// <inheritdoc/>
         protected override Size DefaultSize => new Size (100, 50);
 
-       /// <summary>
-       /// Gets or sets the image the PictureBox should display.
-       /// </summary>
+        /// <summary>
+        /// Gets or sets the image the PictureBox should display.
+        /// </summary>
         public SKBitmap? Image {
             get => image;
             set {

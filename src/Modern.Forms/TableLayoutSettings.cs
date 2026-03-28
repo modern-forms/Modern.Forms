@@ -197,7 +197,7 @@ public sealed partial class TableLayoutSettings : LayoutSettings
     }
 #endif
 
-#region Extended Properties
+    #region Extended Properties
     /// <summary>
     /// Return the column span value for the specified control.
     /// </summary>
@@ -400,7 +400,7 @@ public sealed partial class TableLayoutSettings : LayoutSettings
 
     internal TableLayoutPanelCellPosition GetPositionFromControl (IArrangedElement element) => TableLayout.GetPositionFromControl (Owner, element);
 
-#endregion
+    #endregion
 
 #if DESIGN_TIME
     void ISerializable.GetObjectData (SerializationInfo si, StreamingContext context)

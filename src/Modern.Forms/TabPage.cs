@@ -28,8 +28,8 @@ namespace Modern.Forms
         internal TabStripItem TabStripItem { get; }
 
         /// <inheritdoc/>
-        public override string Text { 
-            get => TabStripItem.Text; 
+        public override string Text {
+            get => TabStripItem.Text;
             set => TabStripItem.Text = value;
         }
     }

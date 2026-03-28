@@ -22,7 +22,7 @@ namespace Modern.Forms
             Dock = DockStyle.Left;
             Cursor = Cursors.SizeWestEast;
         }
-        
+
         /// <inheritdoc/>
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 
