@@ -12,6 +12,7 @@ interface IHaveTextAndImageAlign
     ImageList? ImageList { get; set; }
     int ImageIndex { get; set; }
     string ImageKey { get; set; }
+    bool Multiline => false;
 
     public SKBitmap? GetImage ()
     {

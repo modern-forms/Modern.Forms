@@ -19,7 +19,7 @@ namespace Modern.Forms.Renderers
 
             // Draw the text
             if (control.Text.HasValue ())
-                e.Canvas.DrawText (control.Text, layout.TextBounds, control, control.TextAlign, maxLines: 1, ellipsis: control.AutoEllipsis);
+                e.Canvas.DrawText (control.Text, layout.TextBounds, control, control.TextAlign, maxLines: control.Multiline ? null : 1, ellipsis: control.AutoEllipsis);
         }
     }
 }

@@ -166,7 +166,7 @@ internal static class TextImageLayoutEngine
         // We only have one thing to layout, or it's overlay so position doesn't matter
         if (text_image_relation == TextImageRelation.Overlay || image_size.IsEmpty || !control.Text.HasValue ()) {
 
-            layout.TextBounds = LayoutUtils.Align (text_size, maxBounds, text_align);
+            layout.TextBounds = text_image_control.Multiline ? maxBounds : LayoutUtils.Align (text_size, maxBounds, text_align);
             layout.ImageBounds = LayoutUtils.Align (image_size, maxBounds, image_align);
 
             return;
@@ -233,7 +233,7 @@ internal static class TextImageLayoutEngine
 
         // Align text/image within their regions.
         layout.ImageBounds = LayoutUtils.Align (image_size, image_bounds, image_align);
-        layout.TextBounds = LayoutUtils.Align (text_size, text_bounds, text_align);
+        layout.TextBounds = text_image_control.Multiline ? text_bounds : LayoutUtils.Align (text_size, text_bounds, text_align);
     }
 
     // Maps an image align to the set of TextImageRelations that represent the same edge.

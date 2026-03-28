@@ -61,6 +61,7 @@ namespace ControlGallery.Panels
 
             Controls.Add (new Label { Text = "This text is too long to fit on two lines", Left = 160, Top = 190, Height = 45, Multiline = true });
             Controls.Add (new Label { Text = "This text is too long to fit on two lines", Left = 160, Top = 250, Height = 45, Multiline = true, AutoEllipsis = true });
+            Controls.Add (new Label { Text = "Line 1\nLine 2\nLine 3", Left = 310, Top = 190, Height = 60, Width = 100, Multiline = true });
 
             Controls.Add (new Label { Text = "Image", Image = image1, Left = 10, Top = 310, Height = 35, ImageAlign = ContentAlignment.MiddleLeft, TextAlign = ContentAlignment.MiddleCenter });
             Controls.Add (new Label { Text = "Image", Image = image1, Left = 10, Top = 350, Height = 35, Enabled = false });
