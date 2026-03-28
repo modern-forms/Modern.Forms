@@ -318,6 +318,8 @@ namespace Modern.Forms
         /// </summary>
         public bool ThreeState { get; set; }
 
+        bool IHaveTextAndImageAlign.Multiline => false;
+
         /// <inheritdoc/>
         public override string ToString () => $"{base.ToString ()}, CheckState: {(int)CheckState}";
     }

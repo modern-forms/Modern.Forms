@@ -262,6 +262,8 @@ namespace Modern.Forms
             }
         }
 
+        bool IHaveTextAndImageAlign.Multiline => false;
+
         /// <inheritdoc/>
         public override string ToString () => $"{base.ToString ()}, Text: {Text}";
     }
