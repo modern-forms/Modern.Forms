@@ -79,7 +79,12 @@ namespace Modern.Forms
             width = sizes.Select (s => s.Width).Max ();
             height = sizes.Select (s => s.Height).Sum () + 2;
 
-            var client_rect = new Rectangle (1, 1, width - 2, height - 2);
+            // Use the actual control's scaled dimensions if they are larger, to account
+            // for fractional DPI rounding that may produce a slightly larger buffer.
+            var layout_width = Math.Max (width, ScaledSize.Width);
+            var layout_height = Math.Max (height, ScaledSize.Height);
+
+            var client_rect = new Rectangle (1, 1, layout_width - 2, layout_height - 2);
 
             StackLayoutEngine.VerticalExpand.Layout (client_rect, Items.Cast<ILayoutable> ());
         }
@@ -140,7 +145,9 @@ namespace Modern.Forms
             }
 
             LayoutItems ();
-            popup.Size = ScaleSize (new Size (width, height), 1 / (float)Scaling, 1 / (float)Scaling);
+            popup.Size = new Size (
+                (int)Math.Ceiling (width / Scaling),
+                (int)Math.Ceiling (height / Scaling));
 
             Invalidate ();
             popup.Show (location);
