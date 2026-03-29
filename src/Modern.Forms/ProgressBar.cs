@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using Modern.Forms.Renderers;
 
 namespace Modern.Forms
@@ -10,7 +9,7 @@ namespace Modern.Forms
     public class ProgressBar : Control
     {
         private int maximum = 100;
-        private int minimum = 0;
+        private int minimum;
         private int current_value;
 
         /// <summary>

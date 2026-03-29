@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Modern.WindowKit.Platform.Storage.FileIO;
+﻿using Modern.WindowKit.Platform.Storage.FileIO;
 
 namespace Modern.Forms
 {

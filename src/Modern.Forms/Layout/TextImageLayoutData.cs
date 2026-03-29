@@ -2,7 +2,7 @@
 
 namespace Modern.Forms.Layout;
 
-internal class TextImageLayoutData
+internal sealed class TextImageLayoutData
 {
     /// <summary>
     /// Control's ClientRectangle.

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Modern.Forms.Renderers
+﻿namespace Modern.Forms.Renderers
 {
     /// <summary>
     /// Represents a class to manage rendering.
     /// </summary>
     public static class RenderManager
     {
-        private static readonly Dictionary<Type, Renderer> renderers = new Dictionary<Type, Renderer> ();
+        private static readonly Dictionary<Type, Renderer> renderers = [];
 
         static RenderManager ()
         {

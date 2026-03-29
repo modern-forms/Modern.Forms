@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using SkiaSharp;
 
 namespace Modern.Forms;
@@ -10,7 +9,7 @@ namespace Modern.Forms;
 public class NavigationPaneItemCollection : Collection<NavigationPaneItem>
 {
     private readonly NavigationPane owner;
-    private int focused_index = 0;
+    private int focused_index;
     private int hovered_index = -1;
     private int selected_index = -1;
 

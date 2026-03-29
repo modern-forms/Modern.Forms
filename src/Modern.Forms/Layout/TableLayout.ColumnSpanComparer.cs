@@ -4,9 +4,9 @@
 
 namespace Modern.Forms.Layout;
 
-internal partial class TableLayout
+internal sealed partial class TableLayout
 {
-    private class ColumnSpanComparer : SpanComparer
+    private sealed class ColumnSpanComparer : SpanComparer
     {
         public override int GetSpan (LayoutInfo layoutInfo) => layoutInfo.ColumnSpan;
 

@@ -8,7 +8,7 @@ namespace Modern.Forms.Layout;
 // strings to use as property names.  Doing this allows us to use reference comparisons
 // which is advantageous because 1) pref and 2) we will not accidently collide with
 // names that extenders provide.
-internal class PropertyNames
+internal sealed class PropertyNames
 {
     // SWF members that are unused are commented out. When Modern Forms is more mature,
     // we can probably better determine which of these we will never use and delete them.

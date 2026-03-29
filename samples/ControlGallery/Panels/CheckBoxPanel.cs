@@ -1,5 +1,4 @@
-﻿using System;
-using Modern.Forms;
+﻿using Modern.Forms;
 using SkiaSharp;
 using ContentAlignment = Modern.Forms.ContentAlignment;
 

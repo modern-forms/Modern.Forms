@@ -4,7 +4,7 @@
 
 namespace Modern.Forms.Layout;
 
-internal class SR
+internal sealed class SR
 {
     internal static string CannotActivateControl => "Invisible or disabled control cannot be activated.";
 

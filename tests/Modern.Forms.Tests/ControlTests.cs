@@ -1,5 +1,4 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
 namespace Modern.Forms.Tests
 {
@@ -115,26 +114,26 @@ namespace Modern.Forms.Tests
                 container.Controls.Add (controls[i]);
             }
 
-            Assert.Equal ("ctrl 4", container.GetNextControl (null, true).Text);
-            Assert.Equal ("ctrl 0", container.GetNextControl (null, false).Text);
+            Assert.Equal ("ctrl 4", container.GetNextControl (null, true)?.Text);
+            Assert.Equal ("ctrl 0", container.GetNextControl (null, false)?.Text);
 
             // Ignores passed in controls that are not child controls
-            Assert.Equal ("ctrl 4", container.GetNextControl (new Control (), true).Text);
-            Assert.Equal ("ctrl 0", container.GetNextControl (new Control (), false).Text);
+            Assert.Equal ("ctrl 4", container.GetNextControl (new Control (), true)?.Text);
+            Assert.Equal ("ctrl 0", container.GetNextControl (new Control (), false)?.Text);
 
             Assert.Null (container.GetNextControl (controls[0], true));
-            Assert.Equal ("ctrl 1", container.GetNextControl (controls[0], false).Text);
+            Assert.Equal ("ctrl 1", container.GetNextControl (controls[0], false)?.Text);
 
-            Assert.Equal ("ctrl 0", container.GetNextControl (controls[1], true).Text);
-            Assert.Equal ("ctrl 2", container.GetNextControl (controls[1], false).Text);
+            Assert.Equal ("ctrl 0", container.GetNextControl (controls[1], true)?.Text);
+            Assert.Equal ("ctrl 2", container.GetNextControl (controls[1], false)?.Text);
 
-            Assert.Equal ("ctrl 1", container.GetNextControl (controls[2], true).Text);
-            Assert.Equal ("ctrl 3", container.GetNextControl (controls[2], false).Text);
+            Assert.Equal ("ctrl 1", container.GetNextControl (controls[2], true)?.Text);
+            Assert.Equal ("ctrl 3", container.GetNextControl (controls[2], false)?.Text);
 
-            Assert.Equal ("ctrl 2", container.GetNextControl (controls[3], true).Text);
-            Assert.Equal ("ctrl 4", container.GetNextControl (controls[3], false).Text);
+            Assert.Equal ("ctrl 2", container.GetNextControl (controls[3], true)?.Text);
+            Assert.Equal ("ctrl 4", container.GetNextControl (controls[3], false)?.Text);
 
-            Assert.Equal ("ctrl 3", container.GetNextControl (controls[4], true).Text);
+            Assert.Equal ("ctrl 3", container.GetNextControl (controls[4], true)?.Text);
             Assert.Null (container.GetNextControl (controls[4], false));
 
             container.Dispose ();
@@ -157,23 +156,23 @@ namespace Modern.Forms.Tests
 
             controls[3].TabIndex = 2;
 
-            Assert.Equal ("ctrl 0", container.GetNextControl (null, true).Text);
-            Assert.Equal ("ctrl 4", container.GetNextControl (null, false).Text);
+            Assert.Equal ("ctrl 0", container.GetNextControl (null, true)?.Text);
+            Assert.Equal ("ctrl 4", container.GetNextControl (null, false)?.Text);
 
-            Assert.Equal ("ctrl 1", container.GetNextControl (controls[0], true).Text);
+            Assert.Equal ("ctrl 1", container.GetNextControl (controls[0], true)?.Text);
             Assert.Null (container.GetNextControl (controls[0], false));
 
-            Assert.Equal ("ctrl 2", container.GetNextControl (controls[1], true).Text);
-            Assert.Equal ("ctrl 0", container.GetNextControl (controls[1], false).Text);
+            Assert.Equal ("ctrl 2", container.GetNextControl (controls[1], true)?.Text);
+            Assert.Equal ("ctrl 0", container.GetNextControl (controls[1], false)?.Text);
 
-            Assert.Equal ("ctrl 3", container.GetNextControl (controls[2], true).Text);
-            Assert.Equal ("ctrl 1", container.GetNextControl (controls[2], false).Text);
+            Assert.Equal ("ctrl 3", container.GetNextControl (controls[2], true)?.Text);
+            Assert.Equal ("ctrl 1", container.GetNextControl (controls[2], false)?.Text);
 
-            Assert.Equal ("ctrl 4", container.GetNextControl (controls[3], true).Text);
-            Assert.Equal ("ctrl 2", container.GetNextControl (controls[3], false).Text);
+            Assert.Equal ("ctrl 4", container.GetNextControl (controls[3], true)?.Text);
+            Assert.Equal ("ctrl 2", container.GetNextControl (controls[3], false)?.Text);
 
             Assert.Null (container.GetNextControl (controls[4], true));
-            Assert.Equal ("ctrl 3", container.GetNextControl (controls[4], false).Text);
+            Assert.Equal ("ctrl 3", container.GetNextControl (controls[4], false)?.Text);
 
             container.Dispose ();
         }
@@ -216,19 +215,19 @@ namespace Modern.Forms.Tests
             Assert.Null (b1.GetNextControl (b4, true));
 
             // Panel 1 as "this"
-            Assert.Equal ("Button 2", p1.GetNextControl (b1, true).Text);
-            Assert.Equal ("Button 2", p1.GetNextControl (p1, true).Text);
+            Assert.Equal ("Button 2", p1.GetNextControl (b1, true)?.Text);
+            Assert.Equal ("Button 2", p1.GetNextControl (p1, true)?.Text);
             Assert.Null (p1.GetNextControl (b2, true));
-            Assert.Equal ("Button 2", p1.GetNextControl (uc1, true).Text);
-            Assert.Equal ("Button 2", p1.GetNextControl (b3, true).Text);
-            Assert.Equal ("Button 2", p1.GetNextControl (b4, true).Text);
+            Assert.Equal ("Button 2", p1.GetNextControl (uc1, true)?.Text);
+            Assert.Equal ("Button 2", p1.GetNextControl (b3, true)?.Text);
+            Assert.Equal ("Button 2", p1.GetNextControl (b4, true)?.Text);
 
             // Form as "this"
-            Assert.Equal ("Panel 1", f.GetNextControl (b1, true).Text);
-            Assert.Equal ("Button 2", f.GetNextControl (p1, true).Text);
-            Assert.Equal ("UserControl 1", f.GetNextControl (b2, true).Text);
+            Assert.Equal ("Panel 1", f.GetNextControl (b1, true)?.Text);
+            Assert.Equal ("Button 2", f.GetNextControl (p1, true)?.Text);
+            Assert.Equal ("UserControl 1", f.GetNextControl (b2, true)?.Text);
             //Assert.Equal ("Button 4", f.GetNextControl (uc1, true).Text);
-            Assert.Equal ("Button 4", f.GetNextControl (b3, true).Text);
+            Assert.Equal ("Button 4", f.GetNextControl (b3, true)?.Text);
             Assert.Null (f.GetNextControl (b4, true));
         }
     }

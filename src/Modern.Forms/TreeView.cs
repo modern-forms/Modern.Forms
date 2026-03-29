@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using Modern.Forms.Renderers;
 using SkiaSharp;
 
@@ -15,7 +12,7 @@ namespace Modern.Forms
     {
         private TreeViewDrawMode draw_mode;
         private readonly TreeViewItem root_item;
-        private int top_index = 0;
+        private int top_index;
         private TreeViewItem selected_item;
         private bool show_dropdown_glyph = true;
         private bool show_item_images = true;
@@ -53,7 +50,7 @@ namespace Modern.Forms
         public event EventHandler<EventArgs<TreeViewItem>>? BeforeExpand;
 
         /// <inheritdoc/>
-        public new static TreeViewControlStyle DefaultStyle = new TreeViewControlStyle (Control.DefaultStyle,
+        public new static readonly TreeViewControlStyle DefaultStyle = new TreeViewControlStyle (Control.DefaultStyle,
             (style) => {
                 style.BackgroundColor = Theme.ControlLowColor;
                 style.Border.Width = 1;
@@ -119,6 +116,7 @@ namespace Modern.Forms
         /// <summary>
         /// Finds the index of the next item after startIndex that begins with the specified string. This search is case-insensitive.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage ("Globalization", "CA1309:Use ordinal string comparison", Justification = "This should be culture aware.")]
         private TreeViewItem? FindString (string s, TreeViewItem startItem)
         {
             var all_items = GetVisibleItems ().ToList ();

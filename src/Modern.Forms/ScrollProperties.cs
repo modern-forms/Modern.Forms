@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Modern.Forms
+﻿namespace Modern.Forms
 {
     /// <summary>
     ///  Provides properties for scrollbars.

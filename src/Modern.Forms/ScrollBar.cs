@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using Modern.Forms.Renderers;
 
 namespace Modern.Forms
@@ -11,8 +10,8 @@ namespace Modern.Forms
     {
         private int large_change = 10;
         private int maximum = 100;
-        private int minimum = 0;
-        private int current_value = 0;
+        private int minimum;
+        private int current_value;
         private int small_change = 1;
         private bool thumb_pressed;
         private int thumbclick_offset;              // Position of the last button-down event relative to the thumb edge
@@ -31,7 +30,7 @@ namespace Modern.Forms
         }
 
         /// <inheritdoc/>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+        public new static readonly ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => style.BackgroundColor = Theme.ControlMidHighColor);
 
         /// <summary>

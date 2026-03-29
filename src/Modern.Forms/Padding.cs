@@ -24,7 +24,6 @@
 //	Daniel Nauck    (dna(at)mono-project(dot)de)
 //
 
-using System;
 using System.ComponentModel;
 using System.Drawing;
 
@@ -76,9 +75,9 @@ namespace Modern.Forms
         public static readonly Padding Empty = new Padding (0);
 
         /// <inheritdoc/>
-        public override bool Equals (object? other)
+        public override bool Equals (object? obj)
         {
-            if (other is Padding other_aux) {
+            if (obj is Padding other_aux) {
                 return Left == other_aux.Left &&
                     Top == other_aux.Top &&
                     Right == other_aux.Right &&

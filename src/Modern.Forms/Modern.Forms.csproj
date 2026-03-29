@@ -2,10 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>$(_TargetFramework)</TargetFramework>
-    <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <WarningLevel>5</WarningLevel>
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 

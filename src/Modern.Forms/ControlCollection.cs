@@ -2,13 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using Modern.Forms.Layout;
 
 namespace Modern.Forms;
@@ -23,8 +20,8 @@ public partial class Control
     {
         // Implicit controls are built-in controls that the user did not add
         // and should not see. Things like implicit scrollbars.
-        private readonly List<Control> control_list = new List<Control> ();
-        private readonly List<Control> implicit_control_list = new List<Control> ();
+        private readonly List<Control> control_list = [];
+        private readonly List<Control> implicit_control_list = [];
 
         ///  A caching mechanism for key accessor
         ///  We use an index here rather than control so that we don't have lifetime
@@ -154,7 +151,7 @@ public partial class Control
         {
             key.ThrowIfNullOrEmptyWithMessage (SR.FindKeyMayNotBeEmptyOrNull);
 
-            List<Control> foundControls = new ();
+            List<Control> foundControls = [];
             FindInternal (key, searchAllChildren, this, foundControls);
             return foundControls.ToArray ();
         }
@@ -163,7 +160,7 @@ public partial class Control
         ///  Searches for Controls by their Name property, builds up a list
         ///  of all the controls that match.
         /// </summary>
-        private void FindInternal (string key, bool searchAllChildren, ControlCollection controlsToLookIn, List<Control> foundControls)
+        private static void FindInternal (string key, bool searchAllChildren, ControlCollection controlsToLookIn, List<Control> foundControls)
         {
             try {
                 // Perform breadth first search - as it's likely people will want controls belonging

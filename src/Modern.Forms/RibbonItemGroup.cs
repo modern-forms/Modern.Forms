@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using SkiaSharp;
+﻿using System.Drawing;
 
 namespace Modern.Forms
 {
@@ -70,7 +65,7 @@ namespace Modern.Forms
         }
 
         // The amount of padding to leave between the group's bounds and the contained items' bounds.
-        private Padding Padding => new Padding (3, 3, 4, 3);
+        private static Padding Padding => new Padding (3, 3, 4, 3);
 
         /// <summary>
         /// Sets the bounding box of the tab page. This is internal API and should not be called.

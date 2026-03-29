@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using Modern.WindowKit.Platform;
+﻿using System.Drawing;
 using SkiaSharp;
 
 namespace Modern.Forms
 {
-    internal class ControlAdapter : ScrollableControl
+    internal sealed class ControlAdapter : ScrollableControl
     {
         private Control? selected_control;
 

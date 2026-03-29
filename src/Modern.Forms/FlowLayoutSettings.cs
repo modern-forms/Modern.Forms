@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using Modern.Forms.Layout;
@@ -54,7 +53,7 @@ public class FlowLayoutSettings : LayoutSettings
     {
         ArgumentNullException.ThrowIfNull (child);
 
-        var element = FlowLayout.Instance.CastToArrangedElement (child);
+        var element = LayoutEngine.CastToArrangedElement (child);
 
         if (GetFlowBreak (child) != value)
             CommonProperties.SetFlowBreak (element, value);
@@ -67,7 +66,7 @@ public class FlowLayoutSettings : LayoutSettings
     {
         ArgumentNullException.ThrowIfNull (child);
 
-        var element = FlowLayout.Instance.CastToArrangedElement (child);
+        var element = LayoutEngine.CastToArrangedElement (child);
         return CommonProperties.GetFlowBreak (element);
     }
 }

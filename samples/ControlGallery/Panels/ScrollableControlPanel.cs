@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Modern.Forms;
+﻿using Modern.Forms;
 
 namespace ControlGallery.Panels
 {
@@ -78,7 +75,7 @@ namespace ControlGallery.Panels
             Controls.Add (sc4);
         }
 
-        private Button CreateButton (string text, int x, int y)
+        private static Button CreateButton (string text, int x, int y)
         {
             return new Button {
                 Left = x,

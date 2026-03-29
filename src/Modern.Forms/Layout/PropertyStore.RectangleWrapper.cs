@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace Modern.Forms.Layout;
 
-internal partial class PropertyStore
+internal sealed partial class PropertyStore
 {
     private sealed class RectangleWrapper
     {

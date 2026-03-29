@@ -4,7 +4,7 @@
 
 namespace Modern.Forms.Layout;
 
-internal partial class TableLayout
+internal sealed partial class TableLayout
 {
     /// <summary>
     ///  This class contains layout related information pertaining to a child control of the

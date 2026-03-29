@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Diagnostics;
 using System.Drawing;
 
@@ -10,7 +9,7 @@ namespace Modern.Forms.Layout;
 
 // Utilities used by layout code.  If you use these outside of the layout
 // namespace, you should probably move them to WindowsFormsUtils.
-internal partial class LayoutUtils
+internal sealed partial class LayoutUtils
 {
     public static readonly Size s_maxSize = new (int.MaxValue, int.MaxValue);
     public static readonly Size s_invalidSize = new (int.MinValue, int.MinValue);
@@ -93,7 +92,7 @@ internal partial class LayoutUtils
             || (bottomBits != 0 && (topBits == 0 && middleBits == 0)),
             "One (and only one) of topBits, middleBits, or bottomBits should be non-zero.");
 
-        int result = (middleBits != 0 ? 0x04 : 0) | (bottomBits != 0 ? 0x08 : 0) | topBits | middleBits | bottomBits;
+        var result = (middleBits != 0 ? 0x04 : 0) | (bottomBits != 0 ? 0x08 : 0) | topBits | middleBits | bottomBits;
 
         // zero isn't used, so we can subtract 1 and start with index 0.
         result--;
@@ -118,7 +117,7 @@ internal partial class LayoutUtils
     private static byte xContentAlignmentToIndex (int threeBitFlag)
     {
         Debug.Assert (threeBitFlag >= 0x00 && threeBitFlag <= 0x04 && threeBitFlag != 0x03, "threeBitFlag out of range.");
-        byte result = threeBitFlag == 0x04 ? (byte)3 : (byte)threeBitFlag;
+        var result = threeBitFlag == 0x04 ? (byte)3 : (byte)threeBitFlag;
         Debug.Assert ((result & 0x03) == result, "Result out of range.");
         return result;
     }
@@ -162,14 +161,14 @@ internal partial class LayoutUtils
     // Returns the positive opposite of the given anchor (e.g., L -> R, LT -> RB, LTR -> LBR, etc.).  None return none.
     private static AnchorStyles GetOppositeAnchor (AnchorStyles anchor)
     {
-        AnchorStyles result = AnchorStyles.None;
+        var result = AnchorStyles.None;
         if (anchor == AnchorStyles.None) {
             return result;
         }
 
         // iterate through T,B,L,R
         // bitwise or      B,T,R,L as appropriate
-        for (int i = 1; i <= (int)AnchorStyles.Right; i <<= 1) {
+        for (var i = 1; i <= (int)AnchorStyles.Right; i <<= 1) {
             switch (anchor & (AnchorStyles)i) {
                 case AnchorStyles.None:
                     break;
@@ -253,7 +252,7 @@ internal partial class LayoutUtils
     //returns anchorStyles, transforms from DockStyle if necessary
     internal static AnchorStyles GetUnifiedAnchor (IArrangedElement element)
     {
-        DockStyle dockStyle = DefaultLayout.GetDock (element);
+        var dockStyle = DefaultLayout.GetDock (element);
         if (dockStyle != DockStyle.None) {
             return s_dockingToAnchor[(int)dockStyle];
         }
@@ -335,7 +334,7 @@ internal partial class LayoutUtils
 
     public static Size Stretch (Size stretchThis, Size withinThis, AnchorStyles anchorStyles)
     {
-        Size stretchedSize = new Size (
+        var stretchedSize = new Size (
             (anchorStyles & HorizontalAnchorStyles) == HorizontalAnchorStyles ? withinThis.Width : stretchThis.Width,
             (anchorStyles & VerticalAnchorStyles) == VerticalAnchorStyles ? withinThis.Height : stretchThis.Height
         );
@@ -410,7 +409,7 @@ internal partial class LayoutUtils
     public static Point FlipPoint (Point point)
     {
         // Point is a struct (passed by value, no need to make a copy)
-        int temp = point.X;
+        var temp = point.X;
         point.X = point.Y;
         point.Y = temp;
         return point;
@@ -432,7 +431,7 @@ internal partial class LayoutUtils
     public static Size FlipSize (Size size)
     {
         // Size is a struct (passed by value, no need to make a copy)
-        int temp = size.Width;
+        var temp = size.Width;
         size.Width = size.Height;
         size.Height = temp;
         return size;
@@ -564,10 +563,10 @@ internal partial class LayoutUtils
 
     private static Rectangle SubstituteSpecifiedBounds (Rectangle originalBounds, Rectangle substitutionBounds, AnchorStyles specified)
     {
-        int left = (specified & AnchorStyles.Left) != 0 ? substitutionBounds.Left : originalBounds.Left;
-        int top = (specified & AnchorStyles.Top) != 0 ? substitutionBounds.Top : originalBounds.Top;
-        int right = (specified & AnchorStyles.Right) != 0 ? substitutionBounds.Right : originalBounds.Right;
-        int bottom = (specified & AnchorStyles.Bottom) != 0 ? substitutionBounds.Bottom : originalBounds.Bottom;
+        var left = (specified & AnchorStyles.Left) != 0 ? substitutionBounds.Left : originalBounds.Left;
+        var top = (specified & AnchorStyles.Top) != 0 ? substitutionBounds.Top : originalBounds.Top;
+        var right = (specified & AnchorStyles.Right) != 0 ? substitutionBounds.Right : originalBounds.Right;
+        var bottom = (specified & AnchorStyles.Bottom) != 0 ? substitutionBounds.Bottom : originalBounds.Bottom;
         return Rectangle.FromLTRB (left, top, right, bottom);
     }
 

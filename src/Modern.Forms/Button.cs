@@ -82,13 +82,13 @@ namespace Modern.Forms
         /// <summary>
         /// The default ControlStyle for all instances of Button.
         /// </summary>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+        public new static readonly ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => style.Border.Width = 1);
 
         /// <summary>
         /// The default hover ControlStyle for all instances of Button.
         /// </summary>
-        public new static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle,
+        public new static readonly ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle,
             (style) => {
                 style.BackgroundColor = Theme.AccentColor;
                 style.Border.Color = Theme.AccentColor2;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using Modern.Forms.Renderers;
 using Modern.WindowKit.Input.Platform;
 using Topten.RichTextKit;
@@ -15,8 +14,8 @@ namespace Modern.Forms
 
         private bool is_highlighting;
         private int selection_anchor = -1;
-        private int scroll_x = 0;
-        private int scroll_y = 0;
+        private int scroll_x;
+        private int scroll_y;
 
         /// <summary>
         /// Initializes a new instance of the TextBox class.

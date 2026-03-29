@@ -6,9 +6,9 @@ using System.Drawing;
 
 namespace Modern.Forms.Layout;
 
-internal partial class FlowLayout
+internal sealed partial class FlowLayout
 {
-    private class RightToLeftProxy : ContainerProxy
+    private sealed class RightToLeftProxy : ContainerProxy
     {
         public RightToLeftProxy (IArrangedElement container) : base (container)
         {

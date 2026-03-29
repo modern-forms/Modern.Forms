@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Modern.Forms;
+﻿using Modern.Forms;
 using SkiaSharp;
 
 namespace ControlGallery.Panels;
@@ -109,7 +108,7 @@ public class ImageListPanel : Panel
         };
     }
 
-    private void AddImages (ImageList imageList)
+    private static void AddImages (ImageList imageList)
     {
         imageList.Images.Add ("button", ImageLoader.Get ("button.png"));
         imageList.Images.Add ("cd-burn", ImageLoader.Get ("cd-burn.png"));

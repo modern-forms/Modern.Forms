@@ -13,7 +13,7 @@ internal partial class FlowLayout
     ///  sending the control to the right, we have to send the control to the bottom. When the rotation
     ///  is complete - that's equivalent to pushing it to the right.
     /// </summary>
-    private class TopDownProxy : ContainerProxy
+    private sealed class TopDownProxy : ContainerProxy
     {
         public TopDownProxy (IArrangedElement container) : base (container)
         {

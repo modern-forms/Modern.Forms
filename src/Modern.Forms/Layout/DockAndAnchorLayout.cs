@@ -2,16 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 
 namespace Modern.Forms.Layout;
 
-internal partial class DefaultLayout : LayoutEngine
+internal sealed partial class DefaultLayout : LayoutEngine
 {
     internal static readonly DefaultLayout Instance = new DefaultLayout ();
 

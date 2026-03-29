@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SkiaSharp;
+﻿using SkiaSharp;
 
 namespace Modern.Forms
 {
@@ -28,7 +25,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets an empty text selection.
         /// </summary>
-        public static TextSelection Empty = new TextSelection ();
+        public static TextSelection Empty;
 
         /// <summary>
         /// Gets or sets the end of the text selection.

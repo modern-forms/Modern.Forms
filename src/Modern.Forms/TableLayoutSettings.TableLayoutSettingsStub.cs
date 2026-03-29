@@ -2,15 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Generic;
-using System.ComponentModel;
-using Modern.Forms.Layout;
-
 namespace Modern.Forms;
 
 public sealed partial class TableLayoutSettings
 {
-    private class TableLayoutSettingsStub
+    private sealed class TableLayoutSettingsStub
     {
         private static ControlInformation s_defaultControlInfo = new ControlInformation (null, -1, -1, 1, 1);
         private TableLayoutColumnStyleCollection? _columnStyles;
@@ -74,14 +70,14 @@ public sealed partial class TableLayoutSettings
         }
 #endif
 
-        public TableLayoutColumnStyleCollection ColumnStyles => _columnStyles ??= new TableLayoutColumnStyleCollection ();
+        public TableLayoutColumnStyleCollection ColumnStyles => _columnStyles ??= [];
 
-        public TableLayoutRowStyleCollection RowStyles => _rowStyles ??= new TableLayoutRowStyleCollection ();
+        public TableLayoutRowStyleCollection RowStyles => _rowStyles ??= [];
 
         internal List<ControlInformation> GetControlsInformation ()
         {
             if (_controlsInfo is null)
-                return new List<ControlInformation> ();
+                return [];
 
             var listOfControlInfo = new List<ControlInformation> (_controlsInfo.Count);
 
@@ -99,10 +95,10 @@ public sealed partial class TableLayoutSettings
             if (_controlsInfo is null)
                 return s_defaultControlInfo;
 
-            if (!_controlsInfo.ContainsKey (controlName))
+            if (!_controlsInfo.TryGetValue (controlName, out var value))
                 return s_defaultControlInfo;
 
-            return _controlsInfo[controlName];
+            return value;
         }
 
         public int GetColumn (object controlName) => GetControlInformation (controlName).Column;
@@ -115,7 +111,7 @@ public sealed partial class TableLayoutSettings
 
         private void SetControlInformation (object controlName, ControlInformation info)
         {
-            _controlsInfo ??= new Dictionary<object, ControlInformation> ();
+            _controlsInfo ??= [];
             _controlsInfo[controlName] = info;
         }
 

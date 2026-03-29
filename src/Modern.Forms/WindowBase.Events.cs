@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Modern.Forms;
+﻿namespace Modern.Forms;
 
 public abstract partial class WindowBase
 {

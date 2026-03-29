@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Modern.WindowKit;
+﻿using Modern.WindowKit;
 using Modern.WindowKit.Input.Platform;
 
 namespace Modern.Forms

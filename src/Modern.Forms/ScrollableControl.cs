@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using Modern.Forms.Layout;
 using Modern.Forms.Renderers;
 
@@ -18,9 +17,7 @@ namespace Modern.Forms
         private Size canvas_size = Size.Empty;
         private Size auto_scroll_min_size = Size.Empty;
         private Size auto_scroll_margin = Size.Empty;
-        private bool auto_scroll = false;
-        private readonly bool force_hscroll_visible = false;
-        private readonly bool force_vscroll_visible = false;
+        private bool auto_scroll;
 
         /// <summary>
         /// Initializes a new instance of the ScrollableControl class.
@@ -192,7 +189,7 @@ namespace Modern.Forms
                 prev_right_edge = right_edge;
                 prev_bottom_edge = bottom_edge;
 
-                if ((force_hscroll_visible || (canvas.Width > right_edge && auto_scroll)) && client.Width > 0) {
+                if (canvas.Width > right_edge && auto_scroll && client.Width > 0) {
                     hscroll_visible = true;
                     bottom_edge = client.Height - bar_size;// SystemInformation.HorizontalScrollBarHeight;
                 } else {
@@ -200,7 +197,7 @@ namespace Modern.Forms
                     bottom_edge = client.Height;
                 }
 
-                if ((force_vscroll_visible || (canvas.Height > bottom_edge && auto_scroll)) && client.Height > 0) {
+                if (canvas.Height > bottom_edge && auto_scroll && client.Height > 0) {
                     vscroll_visible = true;
                     right_edge = client.Width - bar_size;// SystemInformation.VerticalScrollBarWidth;
                 } else {

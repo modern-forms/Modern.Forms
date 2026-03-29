@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Modern.Forms.Renderers
+﻿namespace Modern.Forms.Renderers
 {
     /// <summary>
     /// Base class for rendering controls.

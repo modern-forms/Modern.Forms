@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Modern.Forms;
+﻿using Modern.Forms;
 using SkiaSharp;
 
 namespace Outlaw
 {
-    internal class MessagePanePlaceholder : Panel
+    internal sealed class MessagePanePlaceholder : Panel
     {
         private readonly SKBitmap image;
 

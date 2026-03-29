@@ -1,6 +1,6 @@
 ﻿namespace Modern.Forms
 {
-    internal class MenuRootItem : MenuItem
+    internal sealed class MenuRootItem : MenuItem
     {
         public Control Control { get; }
 

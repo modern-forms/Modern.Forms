@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using Modern.WindowKit;
 using Modern.WindowKit.Controls;
 using Modern.WindowKit.Input;
@@ -116,7 +114,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the default style for all forms.
         /// </summary>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+        public new static readonly ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
          (style) => {
              style.BackgroundColor = Theme.BackgroundColor;
              style.Border.Color = Theme.AccentColor2;

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
+﻿using System.Drawing;
 using SkiaSharp;
 using Topten.RichTextKit;
 
 namespace Modern.Forms
 {
-    class TextBoxDocument
+    internal sealed class TextBoxDocument
     {
         private readonly TextBox textbox;
 
@@ -16,12 +14,12 @@ namespace Modern.Forms
         private TextBlock? cached_text_block;
 
         private bool enabled = true;
-        private int cursor_index = 0;
-        private bool read_only = false;
+        private int cursor_index;
+        private bool read_only;
         private int selection_start = -1;
         private int selection_end = -1;
         private int max_length = int.MaxValue;
-        private bool multiline = false;
+        private bool multiline;
         private char? password_char;
         private int width = -1;
         private SKTypeface font = Theme.UIFont;
@@ -216,7 +214,7 @@ namespace Modern.Forms
 
                     // Ctrl-Home - Go to the beginning of the document
                     if (end && wholeWord)
-                        new_index = block.CaretIndicies.First ();
+                        new_index = block.CaretIndicies[0];
                     // Home - Go to the beginning of the current line
                     else if (end)
                         new_index = block.HitTest (0, current_caret.CaretRectangle.MidY).ClosestCodePointIndex;
