@@ -212,7 +212,7 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// The color use as the background for selected text.
+        /// The color used as the background for selected text.
         /// </summary>
         public static SKColor TextSelectionBackgroundColor {
             get => GetValue<SKColor> (nameof (TextSelectionBackgroundColor));
