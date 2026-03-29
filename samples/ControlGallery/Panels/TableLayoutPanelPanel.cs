@@ -5,7 +5,7 @@ namespace ControlGallery.Panels;
 
 public class TableLayoutPanelPanel : TableLayoutPanel
 {
-    private readonly SKColor[] colors = new[] {
+    private readonly SKColor[] colors = [
         SKColors.CornflowerBlue,
         SKColors.LightPink,
         SKColors.LightSeaGreen,
@@ -16,7 +16,7 @@ public class TableLayoutPanelPanel : TableLayoutPanel
         SKColors.LightGoldenrodYellow,
         SKColors.Violet,
         SKColors.Orange
-    };
+    ];
 
     public TableLayoutPanelPanel ()
     {

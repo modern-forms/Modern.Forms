@@ -22,7 +22,7 @@ public sealed partial class TableLayoutSettings : LayoutSettings
 #endif
 {
     private static readonly int[] borderStyleToOffset =
-    {
+    [
         /*None = */ 0,
         /*Single = */ 1,
         /*Inset = */ 2,
@@ -30,7 +30,7 @@ public sealed partial class TableLayoutSettings : LayoutSettings
         /*Outset = */ 2,
         /*OutsetDouble = */ 3,
         /*OutsetPartial = */ 3
-    };
+    ];
     private TableLayoutPanelCellBorderStyle _borderStyle;
     private readonly TableLayoutSettingsStub? _stub;
 

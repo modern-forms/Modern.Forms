@@ -27,7 +27,7 @@ namespace Modern.Forms
         private SKColor placeholder_font_color = Theme.ForegroundDisabledColor;
         private SKColor selection_color = new SKColor (153, 201, 239);
 
-        private static readonly string[] invalid_singleline_characters = new[] { "\r", "\n" };
+        private static readonly string[] invalid_singleline_characters = ["\r", "\n"];
 
         internal TextBoxDocument (TextBox textbox)
         {

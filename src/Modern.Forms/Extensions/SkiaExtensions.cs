@@ -9,13 +9,13 @@ namespace Modern.Forms
     /// </summary>
     public static class SkiaExtensions
     {
-        private static readonly SKColorFilter disabled_matrix = SKColorFilter.CreateColorMatrix (new float[]
-                {
+        private static readonly SKColorFilter disabled_matrix = SKColorFilter.CreateColorMatrix (
+                [
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0,     0,     0,     1, 0
-                });
+                ]);
         private static readonly float[] focus_dash_intervals = [1f, 1f];
 
         /// <summary>

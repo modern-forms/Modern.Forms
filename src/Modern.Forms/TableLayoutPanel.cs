@@ -279,7 +279,7 @@ public class TableLayoutPanel : Panel, IExtenderProvider
         var containerInfo = TableLayout.GetContainerInfo (this);
 
         if (containerInfo.Columns is null)
-            return Array.Empty<int> ();
+            return [];
 
         var cw = new int[containerInfo.Columns.Length];
 
@@ -299,7 +299,7 @@ public class TableLayoutPanel : Panel, IExtenderProvider
         var containerInfo = TableLayout.GetContainerInfo (this);
 
         if (containerInfo.Rows is null)
-            return Array.Empty<int> ();
+            return [];
 
         var rh = new int[containerInfo.Rows.Length];
 
