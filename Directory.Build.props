@@ -23,6 +23,9 @@
          while developing locally, but ensures CI doesn't allow warnings to be committed). -->
     <TreatWarningsAsErrors Condition=" '$(Configuration)' == 'Release' ">true</TreatWarningsAsErrors>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
+    
+    <!-- NU5104: A stable release of a package should not have a prerelease dependency. -->
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
   </PropertyGroup>
 
   <!-- Required for Deterministic -->
