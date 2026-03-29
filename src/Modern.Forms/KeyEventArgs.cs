@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using Modern.WindowKit.Input;
 
 namespace Modern.Forms
@@ -12,7 +11,7 @@ namespace Modern.Forms
     /// </summary>
     public class KeyEventArgs : EventArgs
     {
-        private bool _suppressKeyPress = false;
+        private bool _suppressKeyPress;
 
         /// <summary>
         ///  Initializes a new instance of the KeyEventArgs class.

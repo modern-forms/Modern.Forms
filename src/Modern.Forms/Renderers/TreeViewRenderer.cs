@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Linq;
-using SkiaSharp;
+﻿using System.Drawing;
 
 namespace Modern.Forms.Renderers
 {

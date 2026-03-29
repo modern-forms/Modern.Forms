@@ -1,11 +1,9 @@
-﻿using System;
-using Modern.Forms;
-using Modern.Forms.Renderers;
+﻿using Modern.Forms;
 using SkiaSharp;
 
 namespace Outlaw
 {
-    class Program
+    sealed class Program
     {
         [STAThread]
         public static void Main (string[] args)

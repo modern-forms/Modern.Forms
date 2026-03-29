@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using Modern.Forms.Renderers;
 
 namespace Modern.Forms
@@ -34,7 +33,7 @@ namespace Modern.Forms
         /// <summary>
         /// The default ControlStyle for all instances of ComboBox.
         /// </summary>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
+        public new static readonly ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle,
             (style) => {
                 style.Border.Width = 1;
                 style.BackgroundColor = Theme.ControlMidColor;

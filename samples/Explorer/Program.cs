@@ -1,10 +1,8 @@
-﻿using System;
-using System.Drawing;
-using Modern.Forms;
+﻿using Modern.Forms;
 
 namespace Explore
 {
-    class Program
+    sealed class Program
     {
         [STAThread]
         public static void Main (string[] args)

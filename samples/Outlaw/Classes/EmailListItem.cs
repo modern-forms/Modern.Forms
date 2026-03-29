@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using Modern.Forms;
 
 namespace Outlaw
 {
-    internal class EmailListItem : TreeViewItem
+    internal sealed class EmailListItem : TreeViewItem
     {
         public string Subject { get; set; }
         public string Body { get; set; }

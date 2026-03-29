@@ -12,7 +12,7 @@ namespace Modern.Forms.Renderers
         public int GlyphSize { get; } = 24;
 
         /// <inheritdoc/>
-        public int GlyphTextPadding { get; } = 0;
+        public int GlyphTextPadding { get; }
 
         /// <inheritdoc/>
         public int ImageTextMargin { get; } = 4;

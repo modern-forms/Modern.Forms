@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using Modern.WindowKit;
+﻿using Modern.WindowKit;
 using Modern.WindowKit.Threading;
 
 namespace Modern.Forms
@@ -42,7 +40,7 @@ namespace Modern.Forms
         /// </summary>
         internal static void DoThemeChanged ()
         {
-            foreach (Form form in OpenForms)
+            foreach (var form in OpenForms)
                 form.OnThemeChanged (EventArgs.Empty);
         }
 
@@ -66,7 +64,7 @@ namespace Modern.Forms
         /// <summary>
         ///  Gets the forms collection associated with this application.
         /// </summary>
-        public static FormCollection OpenForms => open_forms ??= new FormCollection ();
+        public static FormCollection OpenForms => open_forms ??= [];
 
         /// <summary>
         /// Begins running a standard application message loop on the current thread, and makes the specified form visible.

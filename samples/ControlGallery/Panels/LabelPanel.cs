@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Modern.Forms;
-using SkiaSharp;
+﻿using Modern.Forms;
 
 namespace ControlGallery.Panels
 {
@@ -67,7 +63,7 @@ namespace ControlGallery.Panels
             Controls.Add (new Label { Text = "Image", Image = image1, Left = 10, Top = 350, Height = 35, Enabled = false });
         }
 
-        private List<Label> CreateAlignmentLabels ()
+        private static List<Label> CreateAlignmentLabels ()
         {
             var labels = new List<Label> {
                 CreateAlignmentLabel (ContentAlignment.TopLeft),
@@ -84,7 +80,7 @@ namespace ControlGallery.Panels
             return labels;
         }
 
-        private Label CreateAlignmentLabel (ContentAlignment alignment)
+        private static Label CreateAlignmentLabel (ContentAlignment alignment)
         {
             var label = new Label {
                 Text = alignment.ToString (),

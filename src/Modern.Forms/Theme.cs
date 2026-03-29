@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using SkiaSharp;
+﻿using SkiaSharp;
 
 namespace Modern.Forms
 {
@@ -9,10 +7,10 @@ namespace Modern.Forms
     /// </summary>
     public static class Theme
     {
-        private static int suspend_count = 0;
-        private static bool suspended_raise_waiting = false;
+        private static int suspend_count;
+        private static bool suspended_raise_waiting;
 
-        private static readonly Dictionary<string, object> values = new Dictionary<string, object> ();
+        private static readonly Dictionary<string, object> values = [];
 
         static Theme ()
         {

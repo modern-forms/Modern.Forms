@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Modern.Forms
+﻿namespace Modern.Forms
 {
     /// <summary>
     /// Specifies some behaviors descendents of Control can request.

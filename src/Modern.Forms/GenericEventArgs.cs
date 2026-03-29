@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Modern.Forms
+﻿namespace Modern.Forms
 {
     /// <summary>
     /// An EventArgs class with a generic Value parameter.

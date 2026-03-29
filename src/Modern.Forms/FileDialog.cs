@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Modern.WindowKit.Platform.Storage;
+﻿using Modern.WindowKit.Platform.Storage;
 
 namespace Modern.Forms
 {
@@ -10,7 +7,7 @@ namespace Modern.Forms
     /// </summary>
     public abstract class FileDialog : FileSystemDialog
     {
-        internal List<FilePickerFileType> filters = new List<FilePickerFileType> ();
+        internal List<FilePickerFileType> filters = [];
 
         /// <summary>
         /// Adds a file filter choice to the dialog.
@@ -42,6 +39,6 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the selected files.
         /// </summary>
-        public List<string> FileNames { get; } = new List<string> ();
+        public List<string> FileNames { get; } = [];
     }
 }

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 
 namespace Modern.Forms
 {
     // This is used by ScrollableControl when both scrollbars are shown to draw
     // the corner where they meet, so any control behind it doesn't bleed through
-    internal class SizeGrip : Control
+    internal sealed class SizeGrip : Control
     {
         public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 

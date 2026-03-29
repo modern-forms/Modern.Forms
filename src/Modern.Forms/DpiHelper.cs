@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 
 namespace Modern.Forms
 {
-    internal class DpiHelper
+    internal sealed class DpiHelper
     {
         internal const double LogicalDpi = 96.0;
 
-        private static double logicalToDeviceUnitsScalingFactor = 0.0;
+        private static double logicalToDeviceUnitsScalingFactor;
         private static readonly double deviceDpi = LogicalDpi;
 
         /// <summary>

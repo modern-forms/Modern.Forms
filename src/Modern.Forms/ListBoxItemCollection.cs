@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
 
 namespace Modern.Forms
 {
@@ -13,7 +10,7 @@ namespace Modern.Forms
     public class ListBoxItemCollection : ObservableCollection<object>
     {
         private readonly ListBox owner;
-        private int focused_index = 0;
+        private int focused_index;
         private int hovered_index = -1;
 
         internal ListBoxItemCollection (ListBox owner)
@@ -104,13 +101,13 @@ namespace Modern.Forms
             get => SelectedIndexes.Count > 0 ? SelectedIndexes[0] : -1;
             set {
                 if (value < -1 || value >= Count)
-                    throw new ArgumentOutOfRangeException ("Index out of range");
+                    throw new ArgumentOutOfRangeException (nameof (value), "Index out of range");
 
                 AddSelectedIndex (value, true);
             }
         }
 
-        internal List<int> SelectedIndexes { get; } = new List<int> ();
+        internal List<int> SelectedIndexes { get; } = [];
 
         internal object? SelectedItem {
             get => SelectedIndexes.Count > 0 ? this[SelectedIndexes[0]] : null;

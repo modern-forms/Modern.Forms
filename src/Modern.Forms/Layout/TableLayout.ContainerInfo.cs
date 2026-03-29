@@ -2,12 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using System.Linq;
 
 namespace Modern.Forms.Layout;
 
@@ -22,7 +20,7 @@ internal partial class TableLayout
     /// </summary>
     internal sealed class ContainerInfo
     {
-        private static readonly Strip[] emptyStrip = Array.Empty<Strip> ();
+        private static readonly Strip[] emptyStrip = [];
 
         private static readonly int stateValid = BitVector32.CreateMask ();
         private static readonly int stateChildInfoValid = BitVector32.CreateMask (stateValid);
@@ -242,7 +240,7 @@ internal partial class TableLayout
                     _state[stateChildInfoValid] = true;
                 }
 
-                return _childInfo ?? (Array.Empty<LayoutInfo> ());
+                return _childInfo ?? ([]);
             }
         }
 

@@ -1,8 +1,6 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using Modern.Forms.Layout;
 using SkiaSharp;
 
@@ -368,7 +366,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the default style for all controls of this type.
         /// </summary>
-        public static ControlStyle DefaultStyle = new ControlStyle (null,
+        public static readonly ControlStyle DefaultStyle = new ControlStyle (null,
             (style) => {
                 style.ForegroundColor = Theme.ForegroundColor;
                 style.BackgroundColor = Theme.BackgroundColor;
@@ -382,7 +380,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the default style for all controls of this type when the user is hovering over it.
         /// </summary>
-        public static ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle);
+        public static readonly ControlStyle DefaultStyleHover = new ControlStyle (DefaultStyle);
 
         /// <summary>
         /// Removes focus from the control.
@@ -1910,7 +1908,7 @@ namespace Modern.Forms
         }
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue; // To detect redundant calls
 
         /// <summary>
         /// Disposes unmanaged resources used by the control.

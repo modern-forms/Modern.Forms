@@ -2,13 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using Modern.Forms.Layout;
 
 namespace Modern.Forms;
@@ -23,8 +20,8 @@ public partial class Control
     {
         // Implicit controls are built-in controls that the user did not add
         // and should not see. Things like implicit scrollbars.
-        private readonly List<Control> control_list = new List<Control> ();
-        private readonly List<Control> implicit_control_list = new List<Control> ();
+        private readonly List<Control> control_list = [];
+        private readonly List<Control> implicit_control_list = [];
 
         ///  A caching mechanism for key accessor
         ///  We use an index here rather than control so that we don't have lifetime
@@ -154,7 +151,7 @@ public partial class Control
         {
             key.ThrowIfNullOrEmptyWithMessage (SR.FindKeyMayNotBeEmptyOrNull);
 
-            List<Control> foundControls = new ();
+            List<Control> foundControls = [];
             FindInternal (key, searchAllChildren, this, foundControls);
             return foundControls.ToArray ();
         }
@@ -163,7 +160,7 @@ public partial class Control
         ///  Searches for Controls by their Name property, builds up a list
         ///  of all the controls that match.
         /// </summary>
-        private void FindInternal (string key, bool searchAllChildren, ControlCollection controlsToLookIn, List<Control> foundControls)
+        private static void FindInternal (string key, bool searchAllChildren, ControlCollection controlsToLookIn, List<Control> foundControls)
         {
             try {
                 // Perform breadth first search - as it's likely people will want controls belonging
@@ -256,56 +253,56 @@ public partial class Control
         /// <summary>
         /// Adds the specified control at the specified index in the collection.
         /// </summary>
-        public virtual void Insert (int index, Control value)
+        public virtual void Insert (int index, Control item)
         {
-            if (value is null)
+            if (item is null)
                 return;
 
-            CheckParentingCycle (Owner, value);
+            CheckParentingCycle (Owner, item);
 
-            if (value.parent == Owner) {
-                value.SendToBack ();
+            if (item.parent == Owner) {
+                item.SendToBack ();
                 return;
             }
 
             // Remove the new control from its old parent (if any)
-            value.parent?.Controls.Remove (value);
+            item.parent?.Controls.Remove (item);
 
             // Find the next highest tab index
-            if (value.tab_index == -1)
-                value.tab_index = Count == 0 ? 0 : control_list.Max (c => c.TabIndex) + 1;
+            if (item.tab_index == -1)
+                item.tab_index = Count == 0 ? 0 : control_list.Max (c => c.TabIndex) + 1;
 
             // Add the control
-            control_list.Insert (index, value);
+            control_list.Insert (index, item);
 
             // if we don't suspend layout, AssignParent will indirectly trigger a layout event
             // before we're ready (AssignParent will fire a PropertyChangedEvent("Visible"), which calls PerformLayout)
             Owner.SuspendLayout ();
 
             try {
-                var oldParent = value.parent;
+                var oldParent = item.parent;
 
                 try {
                     // AssignParent calls into user code - this could throw, which
                     // would make us short-circuit the rest of the reparenting logic.
                     // you could end up with a control half reparented.
-                    value.AssignParent (Owner);
+                    item.AssignParent (Owner);
                 } finally {
-                    if (value.Visible) {
-                        value.CreateControl ();
-                        value.OnVisibleChanged (EventArgs.Empty);
+                    if (item.Visible) {
+                        item.CreateControl ();
+                        item.OnVisibleChanged (EventArgs.Empty);
                     }
                 }
 
-                value.InitLayout ();
+                item.InitLayout ();
             } finally {
                 Owner.ResumeLayout (false);
             }
 
             // Not putting in the finally block, as it would eat the original
             // exception thrown from AssignParent if the following throws an exception.
-            LayoutTransaction.DoLayout (Owner, value, PropertyNames.Parent);
-            Owner.OnControlAdded (new EventArgs<Control> (value));
+            LayoutTransaction.DoLayout (Owner, item, PropertyNames.Parent);
+            Owner.OnControlAdded (new EventArgs<Control> (item));
 
             return;
         }
@@ -371,20 +368,20 @@ public partial class Control
         ///  Removes control from this control. Inheriting controls should call
         ///  base.remove to ensure that the control is removed.
         /// </summary>
-        public virtual bool Remove (Control value)
+        public virtual bool Remove (Control item)
         {
             // Sanity check parameter
-            if (value is null)
+            if (item is null)
                 return false;     // Don't do anything
 
-            if (value.Parent == Owner) {
+            if (item.Parent == Owner) {
 
                 // Remove the control from the internal control array
-                control_list.Remove (value);
-                value.AssignParent (null);
+                control_list.Remove (item);
+                item.AssignParent (null);
 
-                LayoutTransaction.DoLayout (Owner, value, PropertyNames.Parent);
-                Owner.OnControlRemoved (new EventArgs<Control> (value));
+                LayoutTransaction.DoLayout (Owner, item, PropertyNames.Parent);
+                Owner.OnControlRemoved (new EventArgs<Control> (item));
 
                 // ContainerControl needs to see it needs to find a new ActiveControl. TODO
                 //if (Owner.GetContainerControl () is ContainerControl cc)

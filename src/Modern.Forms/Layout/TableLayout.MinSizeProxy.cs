@@ -6,7 +6,7 @@ namespace Modern.Forms.Layout;
 
 internal partial class TableLayout
 {
-    private class MinSizeProxy : SizeProxy
+    private sealed class MinSizeProxy : SizeProxy
     {
         public override int Size {
             get => strip.MinSize;

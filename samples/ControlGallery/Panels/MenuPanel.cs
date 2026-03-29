@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Modern.Forms;
+﻿using Modern.Forms;
 using SkiaSharp;
 
 namespace ControlGallery.Panels
@@ -62,7 +59,7 @@ namespace ControlGallery.Panels
                 HookUpEvent (item, context_button);
         }
 
-        private void HookUpEvent (MenuItem item, Control control)
+        private static void HookUpEvent (MenuItem item, Control control)
         {
             item.Click += (o, e) => control.Text = item.Text + " clicked";
 

@@ -1,14 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Modern.Forms;
+﻿using Modern.Forms;
 using SkiaSharp;
 
 namespace Explore
 {
     public partial class MainForm : Form
     {
-        private string current_directory;
+        private string current_directory = string.Empty;
 
         public MainForm ()
         {
@@ -21,7 +18,8 @@ namespace Explore
             tree.SelectedItem = tree.Items.First ();
 
             // Select the first available drive
-            SetSelectedDirectory ((string)tree.Items.First ().Tag);
+            if (tree.Items.First ().Tag is string s)
+                SetSelectedDirectory (s);
         }
 
         private void View_ItemDoubleClicked (object sender, EventArgs<ListViewItem> e)
@@ -34,9 +32,7 @@ namespace Explore
 
         private void Tree_ItemSelected (object sender, EventArgs<TreeViewItem> e)
         {
-            var drive = (string)e.Value.Tag;
-
-            if (drive != null)
+            if (e.Value.Tag is string drive)
                 SetSelectedDirectory (drive);
         }
 
@@ -80,7 +76,7 @@ namespace Explore
 
             Theme.SetBuiltInTheme (BuiltInTheme.Light);
 
-            switch (item.Text) {
+            switch (item?.Text) {
                 case "Default":
                     Theme.BeginUpdate ();
                     Theme.AccentColor = new SKColor (42, 138, 208);

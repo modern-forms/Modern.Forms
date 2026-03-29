@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 
 namespace Modern.Forms.Layout;
 
@@ -15,7 +13,7 @@ namespace Modern.Forms.Layout;
 // to another.  (For example, set BoxStretchInternal on a control in FlowPanel and then move
 // the control to GridPanel.)  CommonProperties is a place to define keys and
 // accessors for such properties.
-internal partial class CommonProperties
+internal sealed partial class CommonProperties
 {
     private static readonly int _layoutStateProperty = PropertyStore.CreateKey ();
     private static readonly int _specifiedBoundsProperty = PropertyStore.CreateKey ();
@@ -500,7 +498,7 @@ internal partial class CommonProperties
     ///  Returns true if the element is both AutoSized and Anchored.
     internal static bool xGetAutoSizedAndAnchored (IArrangedElement element)
     {
-        BitVector32 state = GetLayoutState (element);
+        var state = GetLayoutState (element);
 
         if (state[_selfAutoSizingSection] != 0)
             return false;
@@ -654,7 +652,7 @@ internal partial class CommonProperties
     ///  Returns whether we have layout bounds stored for this element.
     internal static bool HasLayoutBounds (IArrangedElement element)
     {
-        element.Properties.GetSize (_layoutBoundsProperty, out bool found);
+        element.Properties.GetSize (_layoutBoundsProperty, out var found);
         return found;
     }
 

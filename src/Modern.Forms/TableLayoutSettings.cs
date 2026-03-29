@@ -2,13 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.Serialization;
 using Modern.Forms.Layout;
 
 namespace Modern.Forms;
@@ -26,7 +22,7 @@ public sealed partial class TableLayoutSettings : LayoutSettings
 #endif
 {
     private static readonly int[] borderStyleToOffset =
-    {
+    [
         /*None = */ 0,
         /*Single = */ 1,
         /*Inset = */ 2,
@@ -34,7 +30,7 @@ public sealed partial class TableLayoutSettings : LayoutSettings
         /*Outset = */ 2,
         /*OutsetDouble = */ 3,
         /*OutsetPartial = */ 3
-    };
+    ];
     private TableLayoutPanelCellBorderStyle _borderStyle;
     private readonly TableLayoutSettingsStub? _stub;
 

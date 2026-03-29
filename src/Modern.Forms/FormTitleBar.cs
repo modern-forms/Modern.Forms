@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using Modern.Forms.Renderers;
 using SkiaSharp;
 
@@ -145,9 +144,9 @@ namespace Modern.Forms
         /// <inheritdoc/>
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
-        internal class TitleBarButton : Button
+        internal sealed class TitleBarButton : Button
         {
-            protected const int BUTTON_PADDING = 10;
+            private const int BUTTON_PADDING = 10;
 
             private readonly TitleBarButtonGlyph glyph;
 

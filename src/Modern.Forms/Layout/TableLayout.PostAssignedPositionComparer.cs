@@ -8,7 +8,7 @@ namespace Modern.Forms.Layout;
 
 internal partial class TableLayout
 {
-    private class PostAssignedPositionComparer : IComparer
+    private sealed class PostAssignedPositionComparer : IComparer
     {
         public static PostAssignedPositionComparer GetInstance { get; } = new PostAssignedPositionComparer ();
 

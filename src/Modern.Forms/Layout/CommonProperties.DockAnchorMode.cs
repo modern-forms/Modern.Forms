@@ -4,7 +4,7 @@
 
 namespace Modern.Forms.Layout;
 
-internal partial class CommonProperties
+internal sealed partial class CommonProperties
 {
     private enum DockAnchorMode
     {

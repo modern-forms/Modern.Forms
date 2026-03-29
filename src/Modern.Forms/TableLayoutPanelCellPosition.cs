@@ -2,11 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.ComponentModel.Design.Serialization;
-using System.Globalization;
 using Modern.Forms.Layout;
 
 namespace Modern.Forms;
@@ -45,9 +40,9 @@ public struct TableLayoutPanelCellPosition
     public int Column { get; set; }
 
     /// <inheritdoc/>
-    public override bool Equals (object? other)
+    public override bool Equals (object? obj)
     {
-        if (other is not TableLayoutPanelCellPosition otherCellPosition)
+        if (obj is not TableLayoutPanelCellPosition otherCellPosition)
             return false;
 
         return this == otherCellPosition;

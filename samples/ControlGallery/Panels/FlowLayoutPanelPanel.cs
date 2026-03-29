@@ -5,7 +5,7 @@ namespace ControlGallery.Panels;
 
 public class FlowLayoutPanelPanel : Panel
 {
-    private readonly SKColor[] colors = new[] {
+    private readonly SKColor[] colors = [
         SKColors.CornflowerBlue,
         SKColors.LightPink,
         SKColors.LightSeaGreen,
@@ -14,7 +14,7 @@ public class FlowLayoutPanelPanel : Panel
         SKColors.LightGray,
         SKColors.LightGreen,
         SKColors.LightGoldenrodYellow
-    };
+    ];
 
     public FlowLayoutPanelPanel ()
     {

@@ -6,7 +6,7 @@ namespace Modern.Forms.Layout;
 
 internal partial class TableLayout
 {
-    private class RowSpanComparer : SpanComparer
+    private sealed class RowSpanComparer : SpanComparer
     {
         public override int GetSpan (LayoutInfo layoutInfo) => layoutInfo.RowSpan;
 

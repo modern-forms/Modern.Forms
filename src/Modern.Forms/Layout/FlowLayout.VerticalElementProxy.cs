@@ -13,7 +13,7 @@ internal partial class FlowLayout
     ///  so that the same code path used for horizontal flow can be applied to
     ///  vertical flow.
     /// </summary>
-    private class VerticalElementProxy : ElementProxy
+    private sealed class VerticalElementProxy : ElementProxy
     {
         public override AnchorStyles AnchorStyles {
             get {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Drawing;
 using Modern.Forms.Layout;
 using Modern.Forms.Renderers;
@@ -139,7 +138,7 @@ namespace Modern.Forms
         /// <summary>
         /// The default ControlStyle for all instances of CheckBox.
         /// </summary>
-        public new static ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
+        public new static readonly ControlStyle DefaultStyle = new ControlStyle (Control.DefaultStyle);
 
         /// <summary>
         /// Gets or sets the image displayed on the <see cref='CheckBox'/>.

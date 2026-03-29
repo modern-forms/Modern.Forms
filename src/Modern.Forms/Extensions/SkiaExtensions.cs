@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Runtime.Versioning;
 using SkiaSharp;
 
@@ -10,13 +9,14 @@ namespace Modern.Forms
     /// </summary>
     public static class SkiaExtensions
     {
-        private static readonly SKColorFilter disabled_matrix = SKColorFilter.CreateColorMatrix (new float[]
-                {
+        private static readonly SKColorFilter disabled_matrix = SKColorFilter.CreateColorMatrix (
+                [
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0.21f, 0.72f, 0.07f, 0, 0,
                     0,     0,     0,     1, 0
-                });
+                ]);
+        private static readonly float[] focus_dash_intervals = [1f, 1f];
 
         /// <summary>
         /// Clips a canvas to the specified rectangle.
@@ -122,7 +122,7 @@ namespace Modern.Forms
             canvas.DrawRectangle (x + inset, y + inset, width - (2 * inset) - 1, height - (2 * inset) - 1, SKColors.White);
 
             // Draw a black dashed rectangle on top of it
-            var effect = SKPathEffect.CreateDash (new[] { 1f, 1f }, 0);
+            var effect = SKPathEffect.CreateDash (focus_dash_intervals, 0);
             using var paint = new SKPaint { Color = SKColors.Black, IsStroke = true, StrokeWidth = 1, PathEffect = effect };
 
             canvas.DrawRect (x + inset, y + inset, width - (2 * inset) - 1, height - (2 * inset) - 1, paint);

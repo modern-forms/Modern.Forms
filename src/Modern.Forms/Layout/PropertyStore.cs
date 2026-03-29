@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
@@ -158,9 +157,9 @@ internal partial class PropertyStore
     /// </summary>
     public int GetInteger (int key, out bool found)
     {
-        var keyIndex = SplitKey (key, out short element);
+        var keyIndex = SplitKey (key, out var element);
 
-        if (!LocateIntegerEntry (keyIndex, out int index)) {
+        if (!LocateIntegerEntry (keyIndex, out var index)) {
             found = false;
             return default;
         }
@@ -218,9 +217,9 @@ internal partial class PropertyStore
     /// </summary>
     public object? GetObject (int key, out bool found)
     {
-        var keyIndex = SplitKey (key, out short element);
+        var keyIndex = SplitKey (key, out var element);
 
-        if (!LocateObjectEntry (keyIndex, out int index)) {
+        if (!LocateObjectEntry (keyIndex, out var index)) {
             found = false;
             return null;
         }
@@ -448,8 +447,8 @@ internal partial class PropertyStore
     /// </summary>
     public void RemoveInteger (int key)
     {
-        var entryKey = SplitKey (key, out short element);
-        if (!LocateIntegerEntry (entryKey, out int index)) {
+        var entryKey = SplitKey (key, out var element);
+        if (!LocateIntegerEntry (entryKey, out var index)) {
             return;
         }
 
@@ -506,8 +505,8 @@ internal partial class PropertyStore
     /// </summary>
     public void RemoveObject (int key)
     {
-        var entryKey = SplitKey (key, out short element);
-        if (!LocateObjectEntry (entryKey, out int index)) {
+        var entryKey = SplitKey (key, out var element);
+        if (!LocateObjectEntry (entryKey, out var index)) {
             return;
         }
 
@@ -648,7 +647,7 @@ internal partial class PropertyStore
         if (!LocateIntegerEntry (entryKey, out var index)) {
             // We must allocate a new entry.
             if (_intEntries is not null) {
-                IntegerEntry[] newEntries = new IntegerEntry[_intEntries.Length + 1];
+                var newEntries = new IntegerEntry[_intEntries.Length + 1];
 
                 if (index > 0) {
                     Array.Copy (_intEntries, 0, newEntries, 0, index);
@@ -751,7 +750,7 @@ internal partial class PropertyStore
     /// <summary>
     ///  Takes the given key and splits it into an index and an element.
     /// </summary>
-    private short SplitKey (int key, out short element)
+    private static short SplitKey (int key, out short element)
     {
         element = (short)(key & 0x00000003);
         return (short)(key & 0xFFFFFFFC);

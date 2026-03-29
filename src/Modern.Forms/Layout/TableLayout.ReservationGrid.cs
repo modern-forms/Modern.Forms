@@ -13,7 +13,7 @@ internal partial class TableLayout
     private sealed class ReservationGrid
     {
         int _numColumns = 1;
-        readonly ArrayList _rows = new ArrayList ();
+        readonly ArrayList _rows = [];
 
         public bool IsReserved (int column, int rowOffset)
         {

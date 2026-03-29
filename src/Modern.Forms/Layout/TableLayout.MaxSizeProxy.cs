@@ -6,7 +6,7 @@ namespace Modern.Forms.Layout;
 
 internal partial class TableLayout
 {
-    private class MaxSizeProxy : SizeProxy
+    private sealed class MaxSizeProxy : SizeProxy
     {
         public override int Size {
             get => strip.MaxSize;

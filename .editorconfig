@@ -103,3 +103,23 @@ csharp_prefer_braces = false
 # IDE0090: Use 'new(...)'
 csharp_style_implicit_object_creation_when_type_is_apparent = false
 
+dotnet_diagnostic.IDE0005.severity = warning    # IDE0005: Using directive is unnecessary
+dotnet_diagnostic.IDE0028.severity = none       # IDE0028: Use collection initializers or expressions
+dotnet_diagnostic.IDE0130.severity = none       # IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0290.severity = none       # IDE0290: Use primary constructor
+dotnet_diagnostic.IDE0300.severity = warning    # IDE0300: Use collection expression for array
+dotnet_diagnostic.IDE0301.severity = warning    # IDE0301: Use collection expression for empty
+dotnet_diagnostic.IDE0305.severity = none       # IDE0305: Use collection expression for fluent
+dotnet_diagnostic.IDE0306.severity = none       # IDE0306: Use collection expression for new
+dotnet_diagnostic.CA1010.severity = none        # CA1010: Inherits IList but not IList<T>
+dotnet_diagnostic.CA1069.severity = none        # CA1069: Duplicate enum values
+dotnet_diagnostic.CA1305.severity = none        # CA1305: Specify IFormatProvider
+dotnet_diagnostic.CA1309.severity = none        # CA1309: Use ordinal StringComparison
+dotnet_diagnostic.CA1707.severity = none        # CA1707: Underscores in constants
+dotnet_diagnostic.CA1708.severity = none        # CA1708: Identifiers should differ by more than case
+dotnet_diagnostic.CA1720.severity = none        # CA1720: Enum value has same name as a type
+dotnet_diagnostic.CA1822.severity = none        # CA1822: Method can be marked as static
+dotnet_diagnostic.CA1826.severity = none        # CA1826: Do not use Enumerable methods in indexable collections
+dotnet_diagnostic.CA1863.severity = none        # CA1863: Use 'CompositeFormat'
+dotnet_diagnostic.CA2208.severity = none        # CA2208: Call ArgumentException constructor with parameters
+dotnet_diagnostic.CA2211.severity = none        # CA2211: Non-constant fields should not be visible

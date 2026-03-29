@@ -1,12 +1,11 @@
-﻿using System;
-using Modern.Forms;
+﻿using Modern.Forms;
 using SkiaSharp;
 
 namespace ControlGallery.Panels
 {
     public class RadioButtonPanel : Panel
     {
-        private static SKBitmap _swatches = ImageLoader.Get ("swatches.png");
+        private static readonly SKBitmap _swatches = ImageLoader.Get ("swatches.png");
 
         public RadioButtonPanel ()
         {

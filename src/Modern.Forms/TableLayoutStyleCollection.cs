@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections;
 using Modern.Forms.Layout;
 
@@ -13,7 +12,7 @@ namespace Modern.Forms;
 /// </summary>
 public abstract class TableLayoutStyleCollection : IList
 {
-    private readonly ArrayList _innerList = new ArrayList ();
+    private readonly ArrayList _innerList = [];
 
     internal TableLayoutStyleCollection (IArrangedElement? owner)
     {
@@ -126,7 +125,7 @@ public abstract class TableLayoutStyleCollection : IList
 
     IEnumerator IEnumerable.GetEnumerator () => _innerList.GetEnumerator ();
 
-    private void EnsureNotOwned (TableLayoutStyle style)
+    private static void EnsureNotOwned (TableLayoutStyle style)
     {
         if (style.Owner is not null)
             throw new ArgumentException (string.Format (SR.OnlyOneControl, style.GetType ().Name), nameof (style));

@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 
 namespace Modern.Forms.Layout;
 
@@ -43,8 +41,8 @@ internal partial class TableLayout : LayoutEngine
     private static readonly int _containerInfoProperty = PropertyStore.CreateKey ();
     private static readonly int _layoutInfoProperty = PropertyStore.CreateKey ();
 
-    private static readonly string?[] _propertiesWhichInvalidateCache = new string?[]
-    {
+    private static readonly string?[] _propertiesWhichInvalidateCache =
+    [
        //suspend layout before changing one of the above property will cause the AffectedProperty of LayoutEventArgs to be set to null
 
        null,
@@ -57,7 +55,7 @@ internal partial class TableLayout : LayoutEngine
        PropertyNames.RowStyles,
        PropertyNames.ColumnStyles,
        // RowSpan, ColumnSpan, TableIndex manually call ClearCachedAssignments.
-    };
+    ];
 
     internal static TableLayoutSettings CreateSettings (IArrangedElement owner) => new TableLayoutSettings (owner);
 
@@ -197,7 +195,7 @@ internal partial class TableLayout : LayoutEngine
     ///  - Does nothing if Cache is valid
     ///  - sets RowStart,RowSpan,ColumnStart,ColumnSpan into the LayoutInfo[] collection (containerInfo.ChildrenInfo)
     /// </summary>
-    private void EnsureRowAndColumnAssignments (IArrangedElement container, ContainerInfo containerInfo, bool doNotCache)
+    private static void EnsureRowAndColumnAssignments (IArrangedElement container, ContainerInfo containerInfo, bool doNotCache)
     {
         // Assign new rows and columns if the cache is invalid or if we are in GetPreferredSize
         if (!HasCachedAssignments (containerInfo) || doNotCache)
@@ -207,7 +205,7 @@ internal partial class TableLayout : LayoutEngine
     /// <summary>
     ///  ExpandLastElement: expands the row/column to fill the rest of the space in the container.
     /// </summary>
-    private void ExpandLastElement (ContainerInfo containerInfo, Size usedSpace, Size totalSpace)
+    private static void ExpandLastElement (ContainerInfo containerInfo, Size usedSpace, Size totalSpace)
     {
         var rows = containerInfo.Rows;
         var cols = containerInfo.Columns;
@@ -223,7 +221,7 @@ internal partial class TableLayout : LayoutEngine
     ///  AssignRowsAndColumns: part of EnsureRowAndColumnAssignments.
     ///  determines the number of rows and columns we need to create
     /// </summary>
-    private void AssignRowsAndColumns (ContainerInfo containerInfo)
+    private static void AssignRowsAndColumns (ContainerInfo containerInfo)
     {
         var numCols = containerInfo.MaxColumns;
         var numRows = containerInfo.MaxRows;
@@ -286,7 +284,7 @@ internal partial class TableLayout : LayoutEngine
     ///  Determines the placement of fixed and flow elements.  Walks through the rows/columns - if there's a
     ///  spot for the fixed element, place it, else place the next flow element.
     /// </summary>
-    private bool xAssignRowsAndColumns (ContainerInfo containerInfo, LayoutInfo[] childrenInfo, int maxColumns, int maxRows, TableLayoutPanelGrowStyle growStyle)
+    private static bool xAssignRowsAndColumns (ContainerInfo containerInfo, LayoutInfo[] childrenInfo, int maxColumns, int maxRows, TableLayoutPanelGrowStyle growStyle)
     {
         Debug.Assert (maxColumns > 0, "maxColumn must be positive");
 
@@ -452,7 +450,7 @@ internal partial class TableLayout : LayoutEngine
     ///  IsCursorPastInsertionPoint: part of xAssignRowsAndColumns.
     ///  check to see if the user specified location for fixedLayoutInfo has passed the insertion point specified by the cursor
     /// </summary>
-    private bool IsCursorPastInsertionPoint (LayoutInfo fixedLayoutInfo, int insertionRow, int insertionCol)
+    private static bool IsCursorPastInsertionPoint (LayoutInfo fixedLayoutInfo, int insertionRow, int insertionCol)
     {
         Debug.Assert (fixedLayoutInfo.IsAbsolutelyPositioned, "should only check for those elements which are absolutely positioned");
 
@@ -471,7 +469,7 @@ internal partial class TableLayout : LayoutEngine
     ///  IsOverlappingWithReservationGrid: part of xAssignRowsAndColumns.
     ///  check to see if the absolutely positioned layoutInfo fits in the reservation grid
     /// </summary>
-    private bool IsOverlappingWithReservationGrid (LayoutInfo fixedLayoutInfo, ReservationGrid reservationGrid, int currentRow)
+    private static bool IsOverlappingWithReservationGrid (LayoutInfo fixedLayoutInfo, ReservationGrid reservationGrid, int currentRow)
     {
         //since we shall not put anything above our current row, this means that the fixedLayoutInfo overlaps with something already placed on the table
         if (fixedLayoutInfo.RowPosition < currentRow)
@@ -493,7 +491,7 @@ internal partial class TableLayout : LayoutEngine
     ///  collide with a rowSpanned element.  ColStop will be the column on which the
     ///  element ends (exclusive).
     /// </summary>
-    private void AdvanceUntilFits (int maxColumns, ReservationGrid reservationGrid, LayoutInfo layoutInfo, out int colStop)
+    private static void AdvanceUntilFits (int maxColumns, ReservationGrid reservationGrid, LayoutInfo layoutInfo, out int colStop)
     {
         var prevRow = layoutInfo.RowStart;
         do {
@@ -505,7 +503,7 @@ internal partial class TableLayout : LayoutEngine
     /// <summary>
     ///  GetColStartAndStop: part of xAssignRowsAndColumns.
     /// </summary>
-    private void GetColStartAndStop (int maxColumns, ReservationGrid reservationGrid, LayoutInfo layoutInfo, out int colStop)
+    private static void GetColStartAndStop (int maxColumns, ReservationGrid reservationGrid, LayoutInfo layoutInfo, out int colStop)
     {
         // Compute the column our element ends on
         colStop = layoutInfo.ColumnStart + layoutInfo.ColumnSpan;
@@ -522,7 +520,7 @@ internal partial class TableLayout : LayoutEngine
         }
     }
 
-    private bool ScanRowForOverlap (int maxColumns, ReservationGrid reservationGrid, LayoutInfo layoutInfo, int stopCol, int rowOffset)
+    private static bool ScanRowForOverlap (int maxColumns, ReservationGrid reservationGrid, LayoutInfo layoutInfo, int stopCol, int rowOffset)
     {
         for (var i = layoutInfo.ColumnStart; i < stopCol; i++) {
             if (reservationGrid.IsReserved (i, rowOffset)) {
@@ -541,7 +539,7 @@ internal partial class TableLayout : LayoutEngine
         return false;
     }
 
-    private Size ApplyStyles (ContainerInfo containerInfo, Size proposedConstraints, bool measureOnly)
+    private static Size ApplyStyles (ContainerInfo containerInfo, Size proposedConstraints, bool measureOnly)
     {
         var preferredSize = Size.Empty;
 
@@ -573,10 +571,10 @@ internal partial class TableLayout : LayoutEngine
     }
 
     //allocate space for all absolutely sized strips. Set the size of the rest of the strips to 0.
-    private void InitializeStrips (Strip[] strips, IList styles)
+    private static void InitializeStrips (Strip[] strips, IList styles)
     {
         Strip strip;
-        for (int i = 0; i < strips.Length; i++) {
+        for (var i = 0; i < strips.Length; i++) {
             var style = i < styles.Count ? (TableLayoutStyle)styles[i]! : null;
             strip = strips[i];
             if (style is not null && style.SizeType == SizeType.Absolute) {
@@ -592,7 +590,7 @@ internal partial class TableLayout : LayoutEngine
         }
     }
 
-    private int InflateColumns (ContainerInfo containerInfo, Size proposedConstraints, bool measureOnly)
+    private static int InflateColumns (ContainerInfo containerInfo, Size proposedConstraints, bool measureOnly)
     {
         var dontHonorConstraint = measureOnly;
 
@@ -699,9 +697,9 @@ internal partial class TableLayout : LayoutEngine
         return width;
     }
 
-    private int InflateRows (ContainerInfo containerInfo, Size proposedConstraints, int expandLastElementWidth, bool measureOnly)
+    private static int InflateRows (ContainerInfo containerInfo, Size proposedConstraints, int expandLastElementWidth, bool measureOnly)
     {
-        bool dontHonorConstraint = measureOnly;
+        var dontHonorConstraint = measureOnly;
 
         var sortedChildren = containerInfo.ChildrenInfo;
 
@@ -755,7 +753,7 @@ internal partial class TableLayout : LayoutEngine
         return DistributeStyles (containerInfo.CellBorderWidth, containerInfo.RowStyles, containerInfo.Rows, proposedConstraints.Height, dontHonorConstraint);
     }
 
-    private Size GetElementSize (IArrangedElement element, Size proposedConstraints)
+    private static Size GetElementSize (IArrangedElement element, Size proposedConstraints)
     {
         if (CommonProperties.GetAutoSize (element))
             return element.GetPreferredSize (proposedConstraints);
@@ -763,7 +761,7 @@ internal partial class TableLayout : LayoutEngine
             return CommonProperties.GetSpecifiedBounds (element).Size;
     }
 
-    internal int SumStrips (Strip[] strips, int start, int span)
+    internal static int SumStrips (Strip[] strips, int start, int span)
     {
         var size = 0;
 
@@ -778,13 +776,13 @@ internal partial class TableLayout : LayoutEngine
     /// <summary>
     ///  Sets the minimum size for each element
     /// </summary>
-    private void DistributeSize (IList styles, Strip[] strips, int start, int stop, int min, int max, int cellBorderWidth)
+    private static void DistributeSize (IList styles, Strip[] strips, int start, int stop, int min, int max, int cellBorderWidth)
     {
         xDistributeSize (styles, strips, start, stop, min, MinSizeProxy.GetInstance, cellBorderWidth);
         xDistributeSize (styles, strips, start, stop, max, MaxSizeProxy.GetInstance, cellBorderWidth);
     }
 
-    private void xDistributeSize (IList styles, Strip[] strips, int start, int stop, int desiredLength, SizeProxy sizeProxy, int cellBorderWidth)
+    private static void xDistributeSize (IList styles, Strip[] strips, int start, int stop, int desiredLength, SizeProxy sizeProxy, int cellBorderWidth)
     {
         var currentLength = 0;   //total length allocated so far
         var numUninitializedStrips = 0;  //number of strips whose Size is 0 and is not absolutely positioned
@@ -880,7 +878,7 @@ internal partial class TableLayout : LayoutEngine
     }
 
     //determines whether strip[index]'s style is absolutely sized
-    private bool IsAbsolutelySized (int index, IList styles)
+    private static bool IsAbsolutelySized (int index, IList styles)
     {
         return (index < styles.Count) && ((TableLayoutStyle)styles[index]!).SizeType == SizeType.Absolute;
     }
@@ -889,7 +887,7 @@ internal partial class TableLayout : LayoutEngine
     ///  Now that we've allocated minimum and maximum sizes to everyone (the strips), distribute the extra space
     ///  as according to the Row/Column styles.
     /// </summary>
-    private int DistributeStyles (int cellBorderWidth, IList styles, Strip[] strips, int maxSize, bool dontHonorConstraint)
+    private static int DistributeStyles (int cellBorderWidth, IList styles, Strip[] strips, int maxSize, bool dontHonorConstraint)
     {
         var usedSpace = 0;
         //first, allocate the minimum space required for each element
@@ -1033,7 +1031,7 @@ internal partial class TableLayout : LayoutEngine
         return usedSpace;
     }
 
-    private void SetElementBounds (ContainerInfo containerInfo, RectangleF displayRectF)
+    private static void SetElementBounds (ContainerInfo containerInfo, RectangleF displayRectF)
     {
         var cellBorderWidth = containerInfo.CellBorderWidth;
 
@@ -1136,7 +1134,7 @@ internal partial class TableLayout : LayoutEngine
         }
     }
 
-    internal IArrangedElement? GetControlFromPosition (IArrangedElement container, int column, int row)
+    internal static IArrangedElement? GetControlFromPosition (IArrangedElement container, int column, int row)
     {
         if (row < 0)
             throw new ArgumentOutOfRangeException (nameof (row), row, string.Format (SR.InvalidArgument, "RowPosition", row));
@@ -1169,7 +1167,7 @@ internal partial class TableLayout : LayoutEngine
         return null;
     }
 
-    internal TableLayoutPanelCellPosition GetPositionFromControl (IArrangedElement container, IArrangedElement child)
+    internal static TableLayoutPanelCellPosition GetPositionFromControl (IArrangedElement container, IArrangedElement child)
     {
         if (container is null || child is null) {
             return new TableLayoutPanelCellPosition (-1, -1);
@@ -1178,7 +1176,7 @@ internal partial class TableLayout : LayoutEngine
         var children = container.Children;
         var containerInfo = GetContainerInfo (container);
 
-        if (children is null || children.Count () == 0) {
+        if (children is null || !children.Any ()) {
             //nothing in the container. returns null.
             return new TableLayoutPanelCellPosition (-1, -1);
         }

@@ -6,9 +6,9 @@ using System.Drawing;
 
 namespace Modern.Forms.Layout;
 
-internal partial class FlowLayout
+internal sealed partial class FlowLayout
 {
-    private class BottomUpProxy : ContainerProxy
+    private sealed class BottomUpProxy : ContainerProxy
     {
         public BottomUpProxy (IArrangedElement container) : base (container)
         {

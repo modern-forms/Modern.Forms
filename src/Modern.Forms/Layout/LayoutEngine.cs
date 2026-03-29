@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Drawing;
 
 namespace Modern.Forms.Layout;
@@ -12,7 +11,7 @@ namespace Modern.Forms.Layout;
 /// </summary>
 public abstract class LayoutEngine
 {
-    internal IArrangedElement CastToArrangedElement (object obj)
+    internal static IArrangedElement CastToArrangedElement (object obj)
     {
         if (obj is not IArrangedElement element)
             throw new NotSupportedException (string.Format (SR.LayoutEngineUnsupportedType, obj.GetType ()));

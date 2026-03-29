@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -280,7 +279,7 @@ public class TableLayoutPanel : Panel, IExtenderProvider
         var containerInfo = TableLayout.GetContainerInfo (this);
 
         if (containerInfo.Columns is null)
-            return Array.Empty<int> ();
+            return [];
 
         var cw = new int[containerInfo.Columns.Length];
 
@@ -300,7 +299,7 @@ public class TableLayoutPanel : Panel, IExtenderProvider
         var containerInfo = TableLayout.GetContainerInfo (this);
 
         if (containerInfo.Rows is null)
-            return Array.Empty<int> ();
+            return [];
 
         var rh = new int[containerInfo.Rows.Length];
 
