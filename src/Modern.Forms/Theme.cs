@@ -11,7 +11,7 @@ namespace Modern.Forms
         private static int suspend_count;
         private static bool suspended_raise_waiting;
 
-        private static readonly Lock _lock = new ();
+        private static readonly object _lock = new ();
         private static readonly ConcurrentDictionary<string, object> values = new ();
 
         static Theme ()
