@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using System.Collections.Concurrent;
+using SkiaSharp;
 
 namespace Modern.Forms
 {
@@ -10,7 +11,8 @@ namespace Modern.Forms
         private static int suspend_count;
         private static bool suspended_raise_waiting;
 
-        private static readonly Dictionary<string, object> values = [];
+        private static readonly object _lock = new ();
+        private static readonly ConcurrentDictionary<string, object> values = new ();
 
         static Theme ()
         {
@@ -52,7 +54,9 @@ namespace Modern.Forms
         /// </summary>
         public static void BeginUpdate ()
         {
-            suspend_count++;
+            lock (_lock) {
+                suspend_count++;
+            }
         }
 
         /// <summary>
@@ -148,13 +152,21 @@ namespace Modern.Forms
         /// </summary>
         public static void EndUpdate ()
         {
-            if (suspend_count == 0)
-                throw new InvalidOperationException ("EndUpdate called without matching BeginUpdate");
+            bool should_raise;
 
-            suspend_count--;
+            lock (_lock) {
+                if (suspend_count == 0)
+                    throw new InvalidOperationException ("EndUpdate called without matching BeginUpdate");
 
-            if (suspended_raise_waiting)
-                RaiseThemeChanged ();
+                suspend_count--;
+                should_raise = suspend_count == 0 && suspended_raise_waiting;
+
+                if (should_raise)
+                    suspended_raise_waiting = false;
+            }
+
+            if (should_raise)
+                InvokeThemeChanged ();
         }
 
         /// <summary>
@@ -200,6 +212,14 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// The color used as the background for selected text.
+        /// </summary>
+        public static SKColor TextSelectionBackgroundColor {
+            get => GetValue<SKColor> (nameof (TextSelectionBackgroundColor));
+            set => SetValue (nameof (TextSelectionBackgroundColor), value);
+        }
+
+        /// <summary>
         /// The color used to highlight a potentially destructive action.
         /// </summary>
         public static SKColor WarningHighlightColor {
@@ -238,6 +258,7 @@ namespace Modern.Forms
                     values[nameof (ForegroundColorOnAccent)] = SKColors.White;
                     values[nameof (AccentColor)] = SKColor.Parse ("#FF096085");
                     values[nameof (AccentColor2)] = new SKColor (0, 120, 212);
+                    values[nameof (TextSelectionBackgroundColor)] = new SKColor (153, 201, 239);
                     values[nameof (WarningHighlightColor)] = new SKColor (232, 17, 35);
                     break;
                 default:
@@ -258,6 +279,7 @@ namespace Modern.Forms
                     values[nameof (ForegroundColorOnAccent)] = SKColors.White;
                     values[nameof (AccentColor)] = new SKColor (42, 138, 208);
                     values[nameof (AccentColor2)] = new SKColor (0, 120, 212);
+                    values[nameof (TextSelectionBackgroundColor)] = new SKColor (153, 201, 239);
                     values[nameof (WarningHighlightColor)] = new SKColor (232, 17, 35);
                     break;
             }
@@ -266,16 +288,28 @@ namespace Modern.Forms
             EndUpdate ();
         }
 
-        private static void RaiseThemeChanged ()
+        private static void InvokeThemeChanged ()
         {
-            if (suspend_count > 0) {
-                suspended_raise_waiting = true;
-                return;
-            }
-
             ThemeChanged?.Invoke (null, EventArgs.Empty);
             Application.DoThemeChanged ();
-            suspended_raise_waiting = false;
+        }
+
+        private static void RaiseThemeChanged ()
+        {
+            bool should_raise;
+
+            lock (_lock) {
+                if (suspend_count > 0) {
+                    suspended_raise_waiting = true;
+                    should_raise = false;
+                } else {
+                    suspended_raise_waiting = false;
+                    should_raise = true;
+                }
+            }
+
+            if (should_raise)
+                InvokeThemeChanged ();
         }
 
         private static void SetValue (string key, object value)

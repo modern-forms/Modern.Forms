@@ -38,7 +38,7 @@ namespace Modern.Forms
 
             if (selectionStart >= 0 && selectionEnd >= 0 && selectionStart != selectionEnd) {
                 options.Selection = new TextRange (selectionStart, selectionEnd);
-                options.SelectionColor = selectionColor ?? SKColors.Blue;
+                options.SelectionColor = selectionColor ?? Theme.TextSelectionBackgroundColor;
             }
 
             canvas.Save ();

@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using SkiaSharp;
 
 namespace Modern.Forms.Renderers
 {
@@ -37,8 +36,8 @@ namespace Modern.Forms.Renderers
                         break;
                 }
             } else if (control.IsErrored) {
-                e.Canvas.DrawLine (0, 0, control.Width, control.Height, SKColors.Red, 2);
-                e.Canvas.DrawLine (0, control.Height, control.Width, 0, SKColors.Red, 2);
+                e.Canvas.DrawLine (0, 0, control.Width, control.Height, Theme.WarningHighlightColor, 2);
+                e.Canvas.DrawLine (0, control.Height, control.Width, 0, Theme.WarningHighlightColor, 2);
             }
         }
     }

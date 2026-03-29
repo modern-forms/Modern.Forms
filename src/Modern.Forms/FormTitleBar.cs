@@ -52,6 +52,7 @@ namespace Modern.Forms
                 SizeMode = PictureBoxSizeMode.CenterImage
             });
 
+            // It's ok to hardcode SKColors.Transparent here.
             form_image.Style.BackgroundColor = SKColors.Transparent;
             form_image.SetControlBehavior (ControlBehaviors.ReceivesMouseEvents, false);
         }
