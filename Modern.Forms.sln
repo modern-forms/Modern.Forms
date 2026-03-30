@@ -1,16 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.32014.148
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11612.150 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modern.Forms", "src\Modern.Forms\Modern.Forms.csproj", "{384E4147-2CA3-46DB-A4F9-2A6EB118B527}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Explore", "samples\Explorer\Explore.csproj", "{0E141F62-EC4C-4DBD-9258-FAD4421DB8B1}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{307D56E2-8989-4C52-BFD7-E7A62E262280}"
-	ProjectSection(SolutionItems) = preProject
-		controls.txt = controls.txt
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlGallery", "samples\ControlGallery\ControlGallery.csproj", "{CCA86CCB-49D3-43C7-8A5D-346953F2375D}"
 EndProject
@@ -21,7 +16,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{8A6441CB-3BFB-429B-B282-EC30F637589E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Outlaw", "samples\Outlaw\Outlaw.csproj", "{A297D354-FD20-43CD-9858-81B8794A6C3B}"
-EndProject
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
