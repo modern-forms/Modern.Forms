@@ -15,9 +15,6 @@ namespace Modern.Forms
     /// This timer uses <see cref="DispatcherTimer"/> internally and is therefore
     /// integrated with the current UI dispatcher.
     /// </remarks>
-    [DefaultProperty (nameof (Interval))]
-    [DefaultEvent (nameof (Tick))]
-    [ToolboxItemFilter ("Modern.Forms")]
     public class Timer : Component
     {
         private DispatcherTimer? dispatcherTimer;
@@ -30,16 +27,6 @@ namespace Modern.Forms
         /// </summary>
         public Timer ()
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Timer"/> class with the specified container.
-        /// </summary>
-        /// <param name="container">The container to add this component to.</param>
-        public Timer (IContainer container)
-            : this ()
-        {
-            container?.Add (this);
         }
 
         /// <summary>
@@ -112,11 +99,12 @@ namespace Modern.Forms
 
         private void StartTimer ()
         {
-            dispatcherTimer ??= new DispatcherTimer ();
-
+            if (dispatcherTimer is null) 
+            {
+                dispatcherTimer = new DispatcherTimer ();
+                dispatcherTimer.Tick += DispatcherTimer_Tick;
+            }
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds (interval);
-            dispatcherTimer.Tick -= DispatcherTimer_Tick;
-            dispatcherTimer.Tick += DispatcherTimer_Tick;
             dispatcherTimer.Start ();
         }
 
@@ -139,6 +127,7 @@ namespace Modern.Forms
         protected override void Dispose (bool disposing)
         {
             if (disposing) {
+                enabled = false;
                 StopTimer ();
 
                 if (dispatcherTimer is not null) {
