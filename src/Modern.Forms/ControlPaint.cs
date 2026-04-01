@@ -107,6 +107,29 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Draws a restore glyph, as seen on FormTitleBar when the window is maximized.
+        /// </summary>
+        public static void DrawRestoreGlyph (PaintEventArgs e, Rectangle rectangle)
+        {
+            var offset = e.LogicalToDeviceUnits (2);
+
+            var back = new Rectangle (
+                rectangle.X + offset,
+                rectangle.Y,
+                rectangle.Width - offset,
+                rectangle.Height - offset);
+
+            var front = new Rectangle (
+                rectangle.X,
+                rectangle.Y + offset,
+                rectangle.Width - offset,
+                rectangle.Height - offset);
+
+            e.Canvas.DrawRectangle (back, Theme.ForegroundColorOnAccent);
+            e.Canvas.DrawRectangle (front, Theme.ForegroundColorOnAccent);
+        }
+
+        /// <summary>
         /// Draws a minimize glyph, as seen on FormTitleBar.
         /// </summary>
         public static void DrawMinimizeGlyph (PaintEventArgs e, Rectangle rectangle)
