@@ -99,11 +99,11 @@ namespace Modern.Forms
 
         private void StartTimer ()
         {
-            if (dispatcherTimer is null) 
-            {
+            if (dispatcherTimer is null) {
                 dispatcherTimer = new DispatcherTimer ();
                 dispatcherTimer.Tick += DispatcherTimer_Tick;
             }
+
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds (interval);
             dispatcherTimer.Start ();
         }
