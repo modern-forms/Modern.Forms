@@ -72,6 +72,8 @@ namespace Modern.Forms
         /// <param name="mainForm">A Form that represents the form to make visible.</param>
         public static void Run (Form mainForm)
         {
+            AvaloniaSynchronizationContext.InstallIfNeeded ();
+
             mainForm.Show ();
             Run ((ICloseable)mainForm);
         }
@@ -85,6 +87,7 @@ namespace Modern.Forms
             if (_mainLoopCancellationTokenSource != null)
                 throw new InvalidOperationException ("Run should only be called once");
 
+            AvaloniaSynchronizationContext.InstallIfNeeded ();
             closable.Closed += (s, e) => Exit ();
 
             _mainLoopCancellationTokenSource = new CancellationTokenSource ();
