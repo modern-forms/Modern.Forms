@@ -84,11 +84,10 @@ namespace Modern.Forms
         /// <param name="closable">The closable to track.</param>
         public static void Run (ICloseable closable)
         {
-            AvaloniaSynchronizationContext.InstallIfNeeded ();
-
             if (_mainLoopCancellationTokenSource != null)
                 throw new InvalidOperationException ("Run should only be called once");
 
+            AvaloniaSynchronizationContext.InstallIfNeeded ();
             closable.Closed += (s, e) => Exit ();
 
             _mainLoopCancellationTokenSource = new CancellationTokenSource ();
