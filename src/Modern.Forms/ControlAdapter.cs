@@ -24,7 +24,37 @@ namespace Modern.Forms
             }
         }
 
+        // The DisplayRectangle accounts for the managed title bar so that
+        // child controls are laid out below it, similar to system decorations.
+        public override Rectangle DisplayRectangle {
+            get {
+                var rect = base.DisplayRectangle;
+                var titleBarOffset = TitleBarOffset;
+
+                if (titleBarOffset > 0) {
+                    rect.Y += titleBarOffset;
+                    rect.Height -= titleBarOffset;
+                }
+
+                return rect;
+            }
+        }
+
         public WindowBase ParentForm { get; }
+
+        protected override void OnLayout (LayoutEventArgs e)
+        {
+            // Manually position the title bar since it's not part of the normal layout flow.
+            // This ensures it spans the full width at the top of the form.
+            if (ParentForm is Form form && form.TitleBar.Visible)
+                form.TitleBar.SetBounds (0, 0, Width, form.TitleBar.Height);
+
+            base.OnLayout (e);
+        }
+
+        // Returns the height of the visible managed title bar, or 0.
+        private int TitleBarOffset =>
+            ParentForm is Form form && form.TitleBar.Visible ? form.TitleBar.Height : 0;
 
         protected override void OnPaint (PaintEventArgs e)
         {
