@@ -26,7 +26,7 @@ namespace Modern.Forms
                     FileTypeFilter = filters
                 };
 
-                var result = await parent.OpenFilePickerAsync (options).ConfigureAwait (false);
+                var result = await parent.OpenFilePickerAsync (options);
 
                 FileNames.Clear ();
 
