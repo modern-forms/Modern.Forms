@@ -117,8 +117,8 @@ namespace Modern.Forms
         {
             var size = startSize;
 
-            size.Width = (int)Math.Round ((float)size.Width * x);
-            size.Height = (int)Math.Round ((float)size.Height * y);
+            size.Width = (int)Math.Ceiling ((float)size.Width * x);
+            size.Height = (int)Math.Ceiling ((float)size.Height * y);
 
             return size;
         }
