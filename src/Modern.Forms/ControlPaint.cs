@@ -111,22 +111,30 @@ namespace Modern.Forms
         /// </summary>
         public static void DrawRestoreGlyph (PaintEventArgs e, Rectangle rectangle)
         {
+            var color = Theme.ForegroundColorOnAccent;
             var offset = e.LogicalToDeviceUnits (2);
 
             var back = new Rectangle (
-                rectangle.X + offset,
+                rectangle.X,
                 rectangle.Y,
                 rectangle.Width - offset,
                 rectangle.Height - offset);
 
             var front = new Rectangle (
-                rectangle.X,
+                rectangle.X + offset,
                 rectangle.Y + offset,
                 rectangle.Width - offset,
                 rectangle.Height - offset);
 
-            e.Canvas.DrawRectangle (back, Theme.ForegroundColorOnAccent);
-            e.Canvas.DrawRectangle (front, Theme.ForegroundColorOnAccent);
+            e.Canvas.DrawLine (back.Left, back.Top, back.Right, back.Top, color);
+
+            e.Canvas.DrawLine (back.Left, back.Top, back.Left, back.Bottom, color);
+
+            e.Canvas.DrawLine (back.Right, back.Top, back.Right, front.Top, color);
+
+            e.Canvas.DrawLine (back.Left, back.Bottom, front.Left, back.Bottom, color);
+
+            e.Canvas.DrawRectangle (front, color);
         }
 
         /// <summary>
