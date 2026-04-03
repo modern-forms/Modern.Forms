@@ -44,12 +44,24 @@ namespace Modern.Forms
 
         protected override void OnLayout (LayoutEventArgs e)
         {
-            // Manually position the title bar since it's not part of the normal layout flow.
-            // This ensures it spans the full width at the top of the form.
-            if (ParentForm is Form form && form.TitleBar.Visible)
-                form.TitleBar.SetBounds (0, 0, Width, form.TitleBar.Height);
-
             base.OnLayout (e);
+
+            // After the normal layout has run, manually position the title bar at
+            // the top and offset all other controls below it. The title bar acts as
+            // non-client chrome and should not participate in the normal layout flow.
+            if (ParentForm is Form form && form.TitleBar.Visible) {
+                var offset = form.TitleBar.Height;
+
+                form.TitleBar.SetBounds (0, 0, Width, offset);
+
+                // Offset all non-titlebar controls so they appear below the title bar,
+                // matching the behavior of system decorations where the title bar is
+                // not part of the client area.
+                foreach (var control in Controls.GetAllControls ()) {
+                    if (control != form.TitleBar)
+                        control.Top += offset;
+                }
+            }
         }
 
         // Returns the height of the visible managed title bar, or 0.
