@@ -36,8 +36,10 @@ namespace Modern.Forms.Renderers
                         break;
                 }
             } else if (control.IsErrored) {
-                e.Canvas.DrawLine (0, 0, control.Width, control.Height, Theme.WarningHighlightColor, 2);
-                e.Canvas.DrawLine (0, control.Height, control.Width, 0, Theme.WarningHighlightColor, 2);
+                var client = control.PaddedClientRectangle;
+
+                e.Canvas.DrawLine (0, 0, client.Width, client.Height, Theme.WarningHighlightColor, control.LogicalToDeviceUnits (2));
+                e.Canvas.DrawLine (0, client.Height, client.Width, 0, Theme.WarningHighlightColor, control.LogicalToDeviceUnits (2));
             }
         }
     }
