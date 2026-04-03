@@ -38,8 +38,8 @@ namespace Modern.Forms.Renderers
             } else if (control.IsErrored) {
                 var client = control.PaddedClientRectangle;
 
-                e.Canvas.DrawLine (0, 0, client.Width, client.Height, Theme.WarningHighlightColor, control.LogicalToDeviceUnits (2));
-                e.Canvas.DrawLine (0, client.Height, client.Width, 0, Theme.WarningHighlightColor, control.LogicalToDeviceUnits (2));
+                e.Canvas.DrawLine (client.Left, client.Top, client.Right, client.Bottom, Theme.WarningHighlightColor, control.LogicalToDeviceUnits (2));
+                e.Canvas.DrawLine (client.Left, client.Bottom, client.Right, client.Top, Theme.WarningHighlightColor, control.LogicalToDeviceUnits (2));
             }
         }
     }
