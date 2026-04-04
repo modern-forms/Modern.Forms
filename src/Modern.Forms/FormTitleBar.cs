@@ -30,7 +30,7 @@ namespace Modern.Forms
             minimize_button.Click += (o, e) => {
                 var form_min = FindForm ();
 
-                if (form_min != null)
+                if (form_min is not null)
                     form_min.WindowState = FormWindowState.Minimized;
             };
 
@@ -38,8 +38,13 @@ namespace Modern.Forms
             maximize_button.Click += (o, e) => {
                 var form = FindForm ();
 
-                if (form != null)
-                    form.WindowState = form.WindowState == FormWindowState.Maximized ? FormWindowState.Normal : FormWindowState.Maximized;
+                if (form is not null) {
+                    form.WindowState = form.WindowState == FormWindowState.Maximized
+                        ? FormWindowState.Normal
+                        : FormWindowState.Maximized;
+
+                    UpdateMaximizeButtonGlyph ();
+                }
             };
 
             close_button = Controls.AddImplicitControl (new TitleBarButton (TitleBarButton.TitleBarButtonGlyph.Close));
@@ -64,6 +69,7 @@ namespace Modern.Forms
             get => maximize_button.Visible;
             set {
                 maximize_button.Visible = value;
+                UpdateMaximizeButtonGlyph ();
                 Invalidate (); // TODO: Shouldn't be necessary, should automatically be triggered
             }
         }
@@ -126,6 +132,8 @@ namespace Modern.Forms
 
             // Keep our form image a square
             form_image.Width = Height;
+
+            UpdateMaximizeButtonGlyph ();
         }
 
         /// <summary>
@@ -136,7 +144,7 @@ namespace Modern.Forms
             set {
                 if (show_image != value) {
                     show_image = value;
-                    form_image.Visible = value && form_image is not null;
+                    form_image.Visible = value && form_image.Image is not null;
                     Invalidate (); // TODO: Shouldn't be required
                 }
             }
@@ -145,11 +153,38 @@ namespace Modern.Forms
         /// <inheritdoc/>
         public override ControlStyle Style { get; } = new ControlStyle (DefaultStyle);
 
+        private void UpdateMaximizeButtonGlyph ()
+        {
+            var form = FindForm ();
+
+            if (form == null || !maximize_button.Visible) {
+                maximize_button.Glyph = TitleBarButton.TitleBarButtonGlyph.Maximize;
+                return;
+            }
+
+            maximize_button.Glyph = form.WindowState == FormWindowState.Maximized
+                ? TitleBarButton.TitleBarButtonGlyph.Restore
+                : TitleBarButton.TitleBarButtonGlyph.Maximize;
+        }
+
         internal sealed class TitleBarButton : Button
         {
             private const int BUTTON_PADDING = 10;
 
-            private readonly TitleBarButtonGlyph glyph;
+            private TitleBarButtonGlyph glyph;
+
+            /// <summary>
+            /// Gets or sets the glyph displayed by the button.
+            /// </summary>
+            public TitleBarButtonGlyph Glyph {
+                get => glyph;
+                set {
+                    if (glyph != value) {
+                        glyph = value;
+                        Invalidate ();
+                    }
+                }
+            }
 
             public TitleBarButton (TitleBarButtonGlyph glyph)
             {
@@ -183,14 +218,21 @@ namespace Modern.Forms
                     case TitleBarButtonGlyph.Maximize:
                         ControlPaint.DrawMaximizeGlyph (e, glyph_bounds);
                         break;
+                    case TitleBarButtonGlyph.Restore:
+                        ControlPaint.DrawRestoreGlyph (e, glyph_bounds);
+                        break;
                 }
             }
 
+            /// <summary>
+            /// Specifies which glyph is displayed by the title bar button.
+            /// </summary>
             public enum TitleBarButtonGlyph
             {
                 Close,
                 Minimize,
-                Maximize
+                Maximize,
+                Restore
             }
         }
     }

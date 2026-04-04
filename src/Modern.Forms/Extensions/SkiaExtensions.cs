@@ -145,6 +145,16 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Draws a path.
+        /// </summary>
+        public static void DrawPath (this SKCanvas canvas, SKPath path, SKColor color, int thickness = 1)
+        {
+            using var paint = new SKPaint { Color = color, StrokeWidth = thickness, IsStroke = true };
+
+            canvas.DrawPath (path, paint);
+        }
+
+        /// <summary>
         /// Draws an unfilled rectangle.
         /// </summary>
         public static void DrawRectangle (this SKCanvas canvas, int x, int y, int width, int height, SKColor color, int strokeWidth = 1)
