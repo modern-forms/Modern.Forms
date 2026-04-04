@@ -340,7 +340,7 @@ namespace Modern.Forms
                 return maximum;
 
             var relative = value - minimum;
-            var snapped_relative = (int)Math.Round (relative / (double)tick_frequency, MidpointRounding.AwayFromZero) * tick_frequency;
+            var snapped_relative = (int)Math.Round (relative / (double)tick_frequency) * tick_frequency;
             var snapped = minimum + snapped_relative;
 
             return Clamp (snapped);
@@ -502,10 +502,10 @@ namespace Modern.Forms
             if (!Enabled)
                 return;
 
-            var wheel_change = (e.Delta.Y * SmallChange) / 120;
-
-            if (wheel_change != 0)
-                ChangeValueBy (wheel_change);
+            if (e.Delta.Y > 0)
+                ChangeValueBy (SmallChange);
+            else if (e.Delta.Y < 0)
+                ChangeValueBy (-SmallChange);
         }
 
         /// <inheritdoc/>
