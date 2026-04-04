@@ -24,6 +24,7 @@ namespace Modern.Forms
         private bool show_focus_cues;
         private string text = string.Empty;
         private bool use_system_decorations;
+        private readonly ControlStyle maximized_style;
 
         /// <summary>
         /// Initializes a new instance of the Form class.
@@ -31,6 +32,11 @@ namespace Modern.Forms
         public Form () : base (AvaloniaGlobals.GetRequiredService<IWindowingPlatform> ().CreateWindow ())
         {
             TitleBar = Controls.AddImplicitControl (new FormTitleBar ());
+
+            // Style used when the window is maximized: inherits everything from the instance
+            // Style but suppresses the border so no thin colored strip is visible at the edges.
+            maximized_style = new ControlStyle (Style);
+            maximized_style.Border.Width = 0;
 
             Resizeable = true;
             Window.SetSystemDecorations (SystemDecorations.None);
@@ -78,6 +84,10 @@ namespace Modern.Forms
                 Size = value.Size;
             }
         }
+
+        /// <inheritdoc/>
+        /// <remarks>Returns a no-border style when the window is maximized to prevent a thin border artifact at screen edges.</remarks>
+        public override ControlStyle CurrentStyle => WindowState == FormWindowState.Maximized ? maximized_style : base.CurrentStyle;
 
         /// <inheritdoc/>
         public override void Close ()
@@ -183,6 +193,9 @@ namespace Modern.Forms
 
         internal override bool HandleMouseDown (int x, int y)
         {
+            if (WindowState == FormWindowState.Maximized)
+                return false;
+
             var element = GetElementAtLocation (x, y);
 
             switch (element) {
@@ -217,6 +230,9 @@ namespace Modern.Forms
 
         internal override bool HandleMouseMove (int x, int y)
         {
+            if (WindowState == FormWindowState.Maximized)
+                return base.HandleMouseMove (x, y);
+
             var element = GetElementAtLocation (x, y);
 
             switch (element) {
