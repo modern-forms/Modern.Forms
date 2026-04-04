@@ -69,6 +69,7 @@ namespace Modern.Forms
             get => maximize_button.Visible;
             set {
                 maximize_button.Visible = value;
+                UpdateMaximizeButtonGlyph ();
                 Invalidate (); // TODO: Shouldn't be necessary, should automatically be triggered
             }
         }
@@ -132,7 +133,7 @@ namespace Modern.Forms
             // Keep our form image a square
             form_image.Width = Height;
 
-            UpdateMaximizeButtonGlyph();
+            UpdateMaximizeButtonGlyph ();
         }
 
         /// <summary>

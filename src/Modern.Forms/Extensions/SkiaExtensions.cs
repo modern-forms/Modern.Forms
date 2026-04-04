@@ -145,7 +145,7 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Draws a line.
+        /// Draws a path.
         /// </summary>
         public static void DrawPath (this SKCanvas canvas, SKPath path, SKColor color, int thickness = 1)
         {
