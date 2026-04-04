@@ -49,7 +49,7 @@ namespace ControlGallery
             tree.Items.Add ("TextBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("TitleBar", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ToolBar", ImageLoader.Get ("button.png"));
-            tree.Items.Add("TrackBar", ImageLoader.Get("button.png"));
+            tree.Items.Add ("TrackBar", ImageLoader.Get ("button.png"));
             tree.Items.Add ("TreeView", ImageLoader.Get ("button.png"));
 
             tree.ItemSelected += Tree_ItemSelected;
