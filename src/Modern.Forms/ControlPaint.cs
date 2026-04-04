@@ -115,26 +115,30 @@ namespace Modern.Forms
             var offset = e.LogicalToDeviceUnits (2);
 
             var back = new Rectangle (
-                rectangle.X,
+                rectangle.X + offset,
                 rectangle.Y,
-                rectangle.Width - offset,
-                rectangle.Height - offset);
+                rectangle.Width - offset - 1,
+                rectangle.Height - offset - 1);
 
             var front = new Rectangle (
-                rectangle.X + offset,
+                rectangle.X,
                 rectangle.Y + offset,
                 rectangle.Width - offset,
                 rectangle.Height - offset);
 
-            e.Canvas.DrawLine (back.Left, back.Top, back.Right, back.Top, color);
-
-            e.Canvas.DrawLine (back.Left, back.Top, back.Left, back.Bottom, color);
-
-            e.Canvas.DrawLine (back.Right, back.Top, back.Right, front.Top, color);
-
-            e.Canvas.DrawLine (back.Left, back.Bottom, front.Left, back.Bottom, color);
-
+            // Draw "front" "window"
             e.Canvas.DrawRectangle (front, color);
+
+            // Draw "back" "window"
+            using var path = new SKPath ();
+
+            path.MoveTo (back.Left, front.Top);
+            path.LineTo (back.Left, back.Top);
+            path.LineTo (back.Right, back.Top);
+            path.LineTo (back.Right, back.Bottom);
+            path.LineTo (front.Right, back.Bottom);
+
+            e.Canvas.DrawPath (path, color);
         }
 
         /// <summary>
@@ -144,7 +148,6 @@ namespace Modern.Forms
         {
             e.Canvas.DrawLine (rectangle.X, rectangle.Y, rectangle.Right, rectangle.Y, Theme.ForegroundColorOnAccent);
         }
-
 
         /// <summary>
         /// Draws a RadioButton glyph.
