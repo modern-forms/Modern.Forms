@@ -318,12 +318,52 @@ namespace Modern.Forms
 
         private void ChangeValueBy (int delta)
         {
-            var new_value = Clamp (current_value + delta);
-            SetValueCore (new_value, raiseScroll: true);
+            if (delta == 0)
+                return;
+
+            if (SnapToTicks && tick_frequency > 0) {
+                var direction = Math.Sign (delta);
+                var nextTickValue = GetNextTickValue (current_value, direction);
+                SetValueCore (nextTickValue, raiseScroll: true);
+                return;
+            }
+
+            var newValue = Clamp (current_value + delta);
+            SetValueCore (newValue, raiseScroll: true);
         }
 
         private Rectangle GetThumbBounds ()
             => GetRenderer ().GetThumbBounds (this);
+
+        private int GetNextTickValue (int value, int direction)
+        {
+            if (tick_frequency <= 0 || maximum <= minimum || direction == 0)
+                return Clamp (value);
+
+            if (direction > 0) {
+                if (value >= maximum)
+                    return maximum;
+
+                var relative = value - minimum;
+                var remainder = relative % tick_frequency;
+
+                if (remainder == 0)
+                    return Clamp (value + tick_frequency);
+
+                return Clamp (value + (tick_frequency - remainder));
+            }
+
+            if (value <= minimum)
+                return minimum;
+
+            var relativeDown = value - minimum;
+            var remainderDown = relativeDown % tick_frequency;
+
+            if (remainderDown == 0)
+                return Clamp (value - tick_frequency);
+
+            return Clamp (value - remainderDown);
+        }
 
         private int PositionToValue (Point location)
             => GetRenderer ().PositionToValue (this, location);
