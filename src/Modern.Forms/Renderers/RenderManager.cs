@@ -33,6 +33,7 @@
             SetRenderer<TabStrip> (new TabStripRenderer ());
             SetRenderer<TextBox> (new TextBoxRenderer ());
             SetRenderer<ToolBar> (new ToolBarRenderer ());
+            SetRenderer<TrackBar> (new TrackBarRenderer ());
             SetRenderer<TreeView> (new TreeViewRenderer ());
         }
 
