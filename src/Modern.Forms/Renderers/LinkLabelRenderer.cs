@@ -33,7 +33,7 @@ namespace Modern.Forms.Renderers
 
             if (control.Selected && control.ShowFocusCues && control.FocusLink is not null) {
                 foreach (var bounds in control.FocusLink.VisualBounds)
-                    e.Canvas.DrawRectangle (bounds, Theme.AccentColor2);
+                    e.Canvas.DrawFocusRectangle (bounds);
             }
         }
 

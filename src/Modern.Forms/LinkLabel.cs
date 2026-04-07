@@ -195,7 +195,7 @@ namespace Modern.Forms
         /// <summary>
         /// Occurs when a link is clicked.
         /// </summary>
-        public event LinkLabelLinkClickedEventHandler? LinkClicked;
+        public event EventHandler<LinkLabelLinkClickedEventArgs>? LinkClicked;
 
         /// <summary>
         /// Gets the link currently focused for keyboard interaction.
@@ -288,12 +288,6 @@ namespace Modern.Forms
                 case Keys.Right:
                 case Keys.Down:
                     if (FocusNextLink (true))
-                        e.Handled = true;
-
-                    break;
-
-                case Keys.Tab:
-                    if (FocusNextLink (!e.Shift))
                         e.Handled = true;
 
                     break;
@@ -612,6 +606,7 @@ namespace Modern.Forms
         {
             Links.Clear ();
             Links.Add (new Link (0, -1));
+            UpdateSelectability ();
         }
 
         private void UpdateSelectability ()

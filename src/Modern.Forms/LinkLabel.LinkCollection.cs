@@ -39,6 +39,10 @@ namespace Modern.Forms
                 set {
                     ArgumentNullException.ThrowIfNull (value);
 
+                    var previous = items[index];
+                    if (!ReferenceEquals (previous, value))
+                        previous.Owner = null;
+
                     value.Owner = owner;
                     items[index] = value;
 
@@ -100,7 +104,11 @@ namespace Modern.Forms
             /// </summary>
             public void Clear ()
             {
+                foreach (var item in items)
+                    item.Owner = null;
+
                 items.Clear ();
+                owner.FocusLink = null;
                 owner.UpdateSelectability ();
                 owner.InvalidateLayout ();
                 owner.Invalidate ();
@@ -162,6 +170,8 @@ namespace Modern.Forms
                 var removed = items.Remove (item);
 
                 if (removed) {
+                    item.Owner = null;
+
                     owner.UpdateSelectability ();
                     owner.InvalidateLayout ();
                     owner.Invalidate ();
@@ -181,6 +191,8 @@ namespace Modern.Forms
             {
                 var removed = items[index];
                 items.RemoveAt (index);
+
+                removed.Owner = null;
 
                 owner.UpdateSelectability ();
                 owner.InvalidateLayout ();
