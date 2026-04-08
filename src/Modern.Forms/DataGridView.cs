@@ -52,6 +52,7 @@ namespace Modern.Forms
 
             vscrollbar.ValueChanged += (o, e) => {
                 top_index = Math.Max (vscrollbar.Value, 0);
+                UpdateEditTextBoxPosition ();
                 Invalidate ();
             };
 
@@ -66,6 +67,7 @@ namespace Modern.Forms
 
             hscrollbar.ValueChanged += (o, e) => {
                 horizontal_scroll_offset = Math.Max (hscrollbar.Value, 0);
+                UpdateEditTextBoxPosition ();
                 Invalidate ();
             };
 
@@ -286,6 +288,25 @@ namespace Modern.Forms
             editing_column_index = -1;
 
             Invalidate ();
+        }
+
+        // Repositions the editing TextBox after a scroll; cancels the edit if the cell has scrolled out of view.
+        private void UpdateEditTextBoxPosition ()
+        {
+            if (edit_textbox is null || editing_row_index < 0 || editing_column_index < 0)
+                return;
+
+            var cell_bounds = GetCellBounds (editing_row_index, editing_column_index);
+
+            if (cell_bounds.IsEmpty) {
+                CancelEdit ();
+                return;
+            }
+
+            edit_textbox.Left = DeviceToLogicalUnits (cell_bounds.Left) + 1;
+            edit_textbox.Top = DeviceToLogicalUnits (cell_bounds.Top) + 1;
+            edit_textbox.Width = DeviceToLogicalUnits (cell_bounds.Width) - 2;
+            edit_textbox.Height = DeviceToLogicalUnits (cell_bounds.Height) - 2;
         }
 
         /// <summary>
@@ -692,9 +713,9 @@ namespace Modern.Forms
         /// <inheritdoc/>
         protected override void OnPaint (PaintEventArgs e)
         {
-            base.OnPaint (e);
-
             RenderManager.Render (this, e);
+
+            base.OnPaint (e);
         }
 
         /// <inheritdoc/>
