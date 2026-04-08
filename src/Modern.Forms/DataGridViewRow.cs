@@ -46,7 +46,7 @@ namespace Modern.Forms
             set {
                 if (height != value) {
                     height = Math.Max (value, 10);
-                    owner?.Invalidate ();
+                    owner?.OnRowsChanged ();
                 }
             }
         }

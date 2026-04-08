@@ -44,7 +44,7 @@ namespace Modern.Forms
                 column.SetOwner (null);
 
             base.ClearItems ();
-            owner.Invalidate ();
+            owner.OnColumnsChanged ();
         }
 
         /// <inheritdoc/>
@@ -52,7 +52,7 @@ namespace Modern.Forms
         {
             item.SetOwner (owner);
             base.InsertItem (index, item);
-            owner.Invalidate ();
+            owner.OnColumnsChanged ();
         }
 
         /// <inheritdoc/>
@@ -60,7 +60,7 @@ namespace Modern.Forms
         {
             this[index].SetOwner (null);
             base.RemoveItem (index);
-            owner.Invalidate ();
+            owner.OnColumnsChanged ();
         }
 
         /// <inheritdoc/>
@@ -69,7 +69,7 @@ namespace Modern.Forms
             this[index].SetOwner (null);
             item.SetOwner (owner);
             base.SetItem (index, item);
-            owner.Invalidate ();
+            owner.OnColumnsChanged ();
         }
     }
 }

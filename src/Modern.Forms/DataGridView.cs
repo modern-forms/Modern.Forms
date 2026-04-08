@@ -238,6 +238,7 @@ namespace Modern.Forms
 
             if (old_value != new_value) {
                 row.Cells[editing_column_index].Value = new_value;
+                var committed = true;
 
                 // Update the data source if bound
                 if (data_source is not null && editing_row_index < data_source.Count) {
@@ -252,13 +253,16 @@ namespace Modern.Forms
                             } catch {
                                 // Conversion failed - revert cell value
                                 row.Cells[editing_column_index].Value = old_value;
+                                committed = false;
                             }
                         }
                     }
                 }
 
-                var changed_args = new DataGridViewCellEditEventArgs (editing_row_index, editing_column_index);
-                OnCellValueChanged (changed_args);
+                if (committed) {
+                    var changed_args = new DataGridViewCellEditEventArgs (editing_row_index, editing_column_index);
+                    OnCellValueChanged (changed_args);
+                }
             }
 
             var end_args = new DataGridViewCellEditEventArgs (editing_row_index, editing_column_index);
@@ -473,12 +477,13 @@ namespace Modern.Forms
                 return -1;
 
             var client = GetContentArea ();
-            var row_header_rect = new Rectangle (client.Left, client.Top + (ColumnHeadersVisible ? ScaledHeaderHeight : 0), ScaledRowHeadersWidth, client.Height);
+            var header_offset = ColumnHeadersVisible ? ScaledHeaderHeight : 0;
+            var row_header_rect = new Rectangle (client.Left, client.Top + header_offset, ScaledRowHeadersWidth, Math.Max (0, client.Height - header_offset));
 
             if (!row_header_rect.Contains (location))
                 return -1;
 
-            var row_top = client.Top + (ColumnHeadersVisible ? ScaledHeaderHeight : 0);
+            var row_top = client.Top + header_offset;
             var resize_zone = LogicalToDeviceUnits (4);
 
             for (var i = top_index; i < Rows.Count; i++) {
@@ -726,7 +731,7 @@ namespace Modern.Forms
 
             // If editing, end edit when clicking outside the editor
             if (edit_textbox is not null) {
-                var edit_bounds = new Rectangle (edit_textbox.Left, edit_textbox.Top, edit_textbox.Width, edit_textbox.Height);
+                var edit_bounds = edit_textbox.ScaledBounds;
 
                 if (!edit_bounds.Contains (e.Location))
                     EndEdit ();
@@ -983,6 +988,15 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Called when the column collection changes.
+        /// </summary>
+        internal void OnColumnsChanged ()
+        {
+            UpdateScrollBars ();
+            Invalidate ();
+        }
+
+        /// <summary>
         /// Gets or sets whether the DataGridView is read-only.
         /// </summary>
         public bool ReadOnly {
@@ -1144,7 +1158,7 @@ namespace Modern.Forms
             if (columnIndex < 0 || columnIndex >= Columns.Count || order == SortOrder.None || Rows.Count == 0)
                 return;
 
-            // Sort the rows in-place using a stable sort
+            // Sort the rows in-place (note: List.Sort is not guaranteed to be stable)
             var sorted = Rows.ToList ();
 
             sorted.Sort ((a, b) => {
@@ -1189,9 +1203,24 @@ namespace Modern.Forms
         /// </summary>
         private void UpdateScrollBars ()
         {
-            var client = ClientRectangle;
-            var content_height = client.Height - (ColumnHeadersVisible ? ScaledHeaderHeight : 0);
-            var visible_rows = content_height > 0 && ScaledRowHeight > 0 ? content_height / ScaledRowHeight : 0;
+            var client = GetContentArea ();
+            var header_offset = ColumnHeadersVisible ? ScaledHeaderHeight : 0;
+            var content_height = client.Height - header_offset;
+
+            // Count how many rows fit in the content area using their actual heights
+            var visible_rows = 0;
+            var rows_height = 0;
+
+            for (var i = 0; i < Rows.Count; i++) {
+                var rh = LogicalToDeviceUnits (Rows[i].Height);
+
+                if (rows_height + rh <= content_height) {
+                    visible_rows++;
+                    rows_height += rh;
+                } else {
+                    break;
+                }
+            }
 
             // Vertical scrollbar
             if (Rows.Count > visible_rows && visible_rows > 0) {
@@ -1225,7 +1254,21 @@ namespace Modern.Forms
             get {
                 var content = GetContentArea ();
                 var available = content.Height - (ColumnHeadersVisible ? ScaledHeaderHeight : 0);
-                return ScaledRowHeight > 0 ? Math.Max (0, available / ScaledRowHeight) : 0;
+                var count = 0;
+                var h = 0;
+
+                for (var i = 0; i < Rows.Count; i++) {
+                    var rh = LogicalToDeviceUnits (Rows[i].Height);
+
+                    if (h + rh <= available) {
+                        count++;
+                        h += rh;
+                    } else {
+                        break;
+                    }
+                }
+
+                return count;
             }
         }
 

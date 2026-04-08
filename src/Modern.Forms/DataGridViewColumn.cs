@@ -94,7 +94,7 @@ namespace Modern.Forms
 
                 if (width != value) {
                     width = value;
-                    owner?.Invalidate ();
+                    owner?.OnColumnsChanged ();
                 }
             }
         }

@@ -88,13 +88,13 @@ namespace Modern.Forms.Renderers
 
             // Draw sort indicator
             if (column.SortOrder != SortOrder.None)
-                RenderSortGlyph (e, bounds, column.SortOrder);
+                RenderSortGlyph (e, bounds, column.SortOrder, fg);
         }
 
         /// <summary>
         /// Renders the sort direction glyph.
         /// </summary>
-        protected virtual void RenderSortGlyph (PaintEventArgs e, Rectangle bounds, SortOrder sortOrder)
+        protected virtual void RenderSortGlyph (PaintEventArgs e, Rectangle bounds, SortOrder sortOrder, SKColor color)
         {
             var glyph_size = 6;
             var glyph_x = bounds.Right - glyph_size - 8;
@@ -114,7 +114,7 @@ namespace Modern.Forms.Renderers
                 path.Close ();
             }
 
-            using var paint = new SKPaint { Color = Theme.ForegroundColor, IsAntialias = true };
+            using var paint = new SKPaint { Color = color, IsAntialias = true };
             e.Canvas.DrawPath (path, paint);
         }
 
@@ -248,7 +248,6 @@ namespace Modern.Forms.Renderers
             // Draw text using cell style or default cell style
             var text_bounds = bounds;
             text_bounds.Inflate (-4, 0);
-            text_bounds.Height = control.ScaledRowHeight;  // Ensure consistent text positioning
 
             var fg = cellStyle?.ForegroundColor ?? control.DefaultCellStyle.ForegroundColor ?? Theme.ForegroundColor;
             var font = cellStyle?.Font ?? control.DefaultCellStyle.Font ?? Theme.UIFont;
