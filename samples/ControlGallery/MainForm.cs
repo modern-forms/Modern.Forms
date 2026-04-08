@@ -29,6 +29,7 @@ namespace ControlGallery
             tree.Items.Add ("FormShortcuts", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ImageList", ImageLoader.Get ("button.png"));
             tree.Items.Add ("Label", ImageLoader.Get ("button.png"));
+            tree.Items.Add ("LinkLabel", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ListBox", ImageLoader.Get ("button.png"));
             tree.Items.Add ("ListView", ImageLoader.Get ("button.png"));
             tree.Items.Add ("Menu", ImageLoader.Get ("button.png"));
@@ -101,6 +102,8 @@ namespace ControlGallery
                     return new ImageListPanel ();
                 case "Label":
                     return new LabelPanel ();
+                case "LinkLabel":
+                    return new LinkLabelPanel ();
                 case "ListBox":
                     return new ListBoxPanel ();
                 case "ListView":
