@@ -20,9 +20,9 @@ This document compares every public member on the WinForms `System.Windows.Forms
 | `AllowUserToAddRows` | — | ❌ | |
 | `AllowUserToDeleteRows` | — | ❌ | |
 | `AllowUserToOrderColumns` | — | ❌ | |
-| `AllowUserToResizeColumns` | — | ⚠️ | Column resizing is implemented via mouse drag, but no explicit property to enable/disable |
-| `AllowUserToResizeRows` | — | ❌ | |
-| `AlternatingRowsDefaultCellStyle` | — | ❌ | Alternating row color is hard-coded in renderer |
+| `AllowUserToResizeColumns` | `AllowUserToResizeColumns` | ✅ | |
+| `AllowUserToResizeRows` | `AllowUserToResizeRows` | ✅ | |
+| `AlternatingRowsDefaultCellStyle` | `AlternatingRowsDefaultCellStyle` | ✅ | |
 | `AutoGenerateColumns` | — | ❌ | Auto-generation happens implicitly via `DataSource` |
 | `AutoSizeColumnsMode` | — | ❌ | |
 | `AutoSizeRowsMode` | — | ❌ | |
@@ -37,14 +37,14 @@ This document compares every public member on the WinForms `System.Windows.Forms
 | `ColumnHeadersHeightSizeMode` | — | ❌ | |
 | `ColumnHeadersVisible` | `ColumnHeadersVisible` | ✅ | |
 | `Columns` | `Columns` | ✅ | |
-| `CurrentCell` | — | ❌ | Can be derived from `SelectedRowIndex`/`SelectedColumnIndex` |
-| `CurrentCellAddress` | — | ❌ | |
-| `CurrentRow` | — | ❌ | |
+| `CurrentCell` | `CurrentCell` | ✅ | |
+| `CurrentCellAddress` | `CurrentCellAddress` | ✅ | Returns `Point` |
+| `CurrentRow` | `CurrentRow` | ✅ | |
 | `DataMember` | — | ❌ | |
 | `DataSource` | `DataSource` | ✅ | |
 | `DefaultCellStyle` | `DefaultCellStyle` | ✅ | |
 | `DisplayedColumnCount` | — | ❌ | |
-| `DisplayedRowCount` | `VisibleRowCount` | ⚠️ | Named differently |
+| `DisplayedRowCount` | `DisplayedRowCount` | ✅ | |
 | `EditingCell` | — | ❌ | |
 | `EditingControl` | — | ❌ | Internal `edit_textbox` field exists |
 | `EditingPanel` | — | ❌ | |
@@ -53,7 +53,7 @@ This document compares every public member on the WinForms `System.Windows.Forms
 | `FirstDisplayedCell` | — | ❌ | |
 | `FirstDisplayedScrollingColumnHiddenWidth` | — | ❌ | |
 | `FirstDisplayedScrollingColumnIndex` | — | ❌ | |
-| `FirstDisplayedScrollingRowIndex` | `FirstVisibleIndex` | ⚠️ | Named differently |
+| `FirstDisplayedScrollingRowIndex` | `FirstDisplayedScrollingRowIndex` | ✅ | |
 | `GridColor` | — | ❌ | Uses theme colors |
 | `HorizontalScrollingOffset` | `HorizontalScrollOffset` | ⚠️ | Internal, named differently |
 | `IsCurrentCellDirty` | — | ❌ | |
@@ -66,8 +66,8 @@ This document compares every public member on the WinForms `System.Windows.Forms
 | `RowCount` | `Rows.Count` | ⚠️ | No direct property; use collection |
 | `RowHeadersBorderStyle` | — | ❌ | |
 | `RowHeadersDefaultCellStyle` | `RowHeadersDefaultCellStyle` | ✅ | |
-| `RowHeadersVisible` | — | ❌ | Row headers not implemented |
-| `RowHeadersWidth` | — | ❌ | |
+| `RowHeadersVisible` | `RowHeadersVisible` | ✅ | |
+| `RowHeadersWidth` | `RowHeadersWidth` | ✅ | |
 | `RowHeadersWidthSizeMode` | — | ❌ | |
 | `Rows` | `Rows` | ✅ | |
 | `RowsDefaultCellStyle` | — | ❌ | |
@@ -107,7 +107,7 @@ This document compares every public member on the WinForms `System.Windows.Forms
 | `CreateColumnsInstance()` | — | ❌ | |
 | `CreateRowsInstance()` | — | ❌ | |
 | `DisplayedColumnCount()` | — | ❌ | |
-| `DisplayedRowCount()` | `VisibleRowCount` | ⚠️ | Property instead of method |
+| `DisplayedRowCount()` | `DisplayedRowCount` | ⚠️ | Property instead of method |
 | `EndEdit()` | `EndEdit()` | ✅ | |
 | `GetCellCount()` | — | ❌ | |
 | `GetCellDisplayRectangle()` | `GetCellBounds(int, int)` | ⚠️ | Named differently |

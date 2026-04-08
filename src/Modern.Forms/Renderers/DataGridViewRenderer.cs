@@ -32,12 +32,21 @@ namespace Modern.Forms.Renderers
         protected virtual void RenderColumnHeaders (DataGridView control, PaintEventArgs e, Rectangle contentArea)
         {
             var header_height = control.ScaledHeaderHeight;
-            var x = contentArea.Left - control.HorizontalScrollOffset;
+            var row_header_offset = control.RowHeadersVisible ? control.ScaledRowHeadersWidth : 0;
+            var x = contentArea.Left + row_header_offset - control.HorizontalScrollOffset;
             var y = contentArea.Top;
 
             // Draw header background
             var header_rect = new Rectangle (contentArea.Left, y, contentArea.Width, header_height);
-            e.Canvas.FillRectangle (header_rect, Theme.ControlMidColor);
+            var header_bg = control.ColumnHeadersDefaultCellStyle.BackgroundColor ?? Theme.ControlMidColor;
+            e.Canvas.FillRectangle (header_rect, header_bg);
+
+            // Draw row header corner cell
+            if (control.RowHeadersVisible) {
+                var corner_rect = new Rectangle (contentArea.Left, y, row_header_offset, header_height);
+                e.Canvas.FillRectangle (corner_rect, header_bg);
+                e.Canvas.DrawLine (corner_rect.Right - 1, corner_rect.Top, corner_rect.Right - 1, corner_rect.Bottom, Theme.BorderLowColor);
+            }
 
             for (var i = 0; i < control.Columns.Count; i++) {
                 var column = control.Columns[i];
@@ -71,7 +80,11 @@ namespace Modern.Forms.Renderers
             var text_bounds = bounds;
             text_bounds.Inflate (-6, 0);
 
-            e.Canvas.DrawText (column.HeaderText, Theme.UIFontBold, control.LogicalToDeviceUnits (Theme.ItemFontSize), text_bounds, Theme.ForegroundColor, ContentAlignment.MiddleLeft, maxLines: 1);
+            var fg = control.ColumnHeadersDefaultCellStyle.ForegroundColor ?? Theme.ForegroundColor;
+            var font = control.ColumnHeadersDefaultCellStyle.Font ?? Theme.UIFontBold;
+            var font_size = control.ColumnHeadersDefaultCellStyle.FontSize ?? Theme.ItemFontSize;
+
+            e.Canvas.DrawText (column.HeaderText, font, control.LogicalToDeviceUnits (font_size), text_bounds, fg, ContentAlignment.MiddleLeft, maxLines: 1);
 
             // Draw sort indicator
             if (column.SortOrder != SortOrder.None)
@@ -114,7 +127,7 @@ namespace Modern.Forms.Renderers
             var header_offset = control.ColumnHeadersVisible ? control.ScaledHeaderHeight : 0;
             var y = contentArea.Top + header_offset;
 
-            for (var i = control.FirstVisibleIndex; i < control.Rows.Count; i++) {
+            for (var i = control.FirstDisplayedScrollingRowIndex; i < control.Rows.Count; i++) {
                 if (y >= contentArea.Bottom)
                     break;
 
@@ -134,18 +147,33 @@ namespace Modern.Forms.Renderers
         /// </summary>
         protected virtual void RenderRow (DataGridView control, DataGridViewRow row, int rowIndex, Rectangle bounds, PaintEventArgs e)
         {
-            // Draw selection background
+            // Determine background color from cell styles
+            SKColor? bg = null;
+
             if (control.SelectedRowIndex == rowIndex)
-                e.Canvas.FillRectangle (bounds, Theme.ControlHighlightLowColor);
-            // Draw hover background
+                bg = Theme.ControlHighlightLowColor;
             else if (control.HoveredRowIndex == rowIndex)
-                e.Canvas.FillRectangle (bounds, Theme.ControlMidColor);
-            // Draw alternating row background
+                bg = Theme.ControlMidColor;
+            else if (rowIndex % 2 == 1 && control.AlternatingRowsDefaultCellStyle.BackgroundColor.HasValue)
+                bg = control.AlternatingRowsDefaultCellStyle.BackgroundColor.Value;
             else if (rowIndex % 2 == 1)
-                e.Canvas.FillRectangle (bounds, AlternatingRowColor ());
+                bg = AlternatingRowColor ();
+            else if (control.DefaultCellStyle.BackgroundColor.HasValue)
+                bg = control.DefaultCellStyle.BackgroundColor.Value;
+
+            if (bg.HasValue)
+                e.Canvas.FillRectangle (bounds, bg.Value);
+
+            // Draw row header
+            if (control.RowHeadersVisible) {
+                var rh_width = control.ScaledRowHeadersWidth;
+                var rh_rect = new Rectangle (bounds.Left, bounds.Top, rh_width, bounds.Height);
+                RenderRowHeader (control, row, rowIndex, rh_rect, e);
+            }
 
             // Draw cells
-            var x = bounds.Left - control.HorizontalScrollOffset;
+            var row_header_offset = control.RowHeadersVisible ? control.ScaledRowHeadersWidth : 0;
+            var x = bounds.Left + row_header_offset - control.HorizontalScrollOffset;
 
             for (var i = 0; i < control.Columns.Count; i++) {
                 var column = control.Columns[i];
@@ -161,7 +189,8 @@ namespace Modern.Forms.Renderers
                 if (i < row.Cells.Count)
                     row.Cells[i].Bounds = cell_rect;
 
-                RenderCell (control, cell_value, rowIndex, i, cell_rect, e);
+                var cell_style = i < row.Cells.Count ? row.Cells[i].Style : null;
+                RenderCell (control, cell_value, rowIndex, i, cell_rect, cell_style, e);
 
                 x += col_width;
             }
@@ -171,10 +200,44 @@ namespace Modern.Forms.Renderers
         }
 
         /// <summary>
+        /// Renders a row header cell.
+        /// </summary>
+        protected virtual void RenderRowHeader (DataGridView control, DataGridViewRow row, int rowIndex, Rectangle bounds, PaintEventArgs e)
+        {
+            var bg = control.RowHeadersDefaultCellStyle.BackgroundColor ?? Theme.ControlMidColor;
+            e.Canvas.FillRectangle (bounds, bg);
+
+            // Draw right border
+            e.Canvas.DrawLine (bounds.Right - 1, bounds.Top, bounds.Right - 1, bounds.Bottom, Theme.BorderLowColor);
+
+            // Draw selection indicator triangle for the selected row
+            if (control.SelectedRowIndex == rowIndex) {
+                var tri_size = 6;
+                var tri_x = bounds.Left + (bounds.Width - tri_size) / 2;
+                var tri_y = bounds.Top + (bounds.Height - tri_size) / 2;
+
+                using var path = new SKPath ();
+                path.MoveTo (tri_x, tri_y);
+                path.LineTo (tri_x + tri_size, tri_y + tri_size / 2);
+                path.LineTo (tri_x, tri_y + tri_size);
+                path.Close ();
+
+                using var paint = new SKPaint { Color = Theme.ForegroundColor, IsAntialias = true };
+                e.Canvas.DrawPath (path, paint);
+            }
+        }
+
+        /// <summary>
         /// Renders a single cell.
         /// </summary>
-        protected virtual void RenderCell (DataGridView control, string value, int rowIndex, int columnIndex, Rectangle bounds, PaintEventArgs e)
+        protected virtual void RenderCell (DataGridView control, string value, int rowIndex, int columnIndex, Rectangle bounds, ControlStyle? cellStyle, PaintEventArgs e)
         {
+            // Draw per-cell background if set
+            var cell_bg = cellStyle?.BackgroundColor;
+
+            if (cell_bg.HasValue && control.SelectedRowIndex != rowIndex && control.HoveredRowIndex != rowIndex)
+                e.Canvas.FillRectangle (bounds, cell_bg.Value);
+
             // Draw cell right border
             e.Canvas.DrawLine (bounds.Right - 1, bounds.Top, bounds.Right - 1, bounds.Bottom, Theme.BorderLowColor);
 
@@ -182,12 +245,16 @@ namespace Modern.Forms.Renderers
             if (control.SelectionMode != DataGridViewSelectionMode.FullRowSelect && control.SelectedRowIndex == rowIndex && control.SelectedColumnIndex == columnIndex)
                 e.Canvas.DrawRectangle (bounds, Theme.AccentColor, 2);
 
-            // Draw text
+            // Draw text using cell style or default cell style
             var text_bounds = bounds;
             text_bounds.Inflate (-4, 0);
             text_bounds.Height = control.ScaledRowHeight;  // Ensure consistent text positioning
 
-            e.Canvas.DrawText (value, Theme.UIFont, control.LogicalToDeviceUnits (Theme.ItemFontSize), text_bounds, Theme.ForegroundColor, ContentAlignment.MiddleLeft, maxLines: 1);
+            var fg = cellStyle?.ForegroundColor ?? control.DefaultCellStyle.ForegroundColor ?? Theme.ForegroundColor;
+            var font = cellStyle?.Font ?? control.DefaultCellStyle.Font ?? Theme.UIFont;
+            var font_size = cellStyle?.FontSize ?? control.DefaultCellStyle.FontSize ?? Theme.ItemFontSize;
+
+            e.Canvas.DrawText (value, font, control.LogicalToDeviceUnits (font_size), text_bounds, fg, ContentAlignment.MiddleLeft, maxLines: 1);
         }
 
         /// <summary>

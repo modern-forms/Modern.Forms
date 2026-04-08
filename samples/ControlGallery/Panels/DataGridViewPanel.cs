@@ -7,20 +7,28 @@ namespace ControlGallery.Panels
     {
         public DataGridViewPanel ()
         {
-            Controls.Add (new Label { Text = "DataGridView - Cell Selection (Tab/Shift-Tab to navigate, double-click or F2 to edit)", Left = 10, Top = 10, Width = 700 });
+            Controls.Add (new Label { Text = "DataGridView - Cell Selection with Row Headers (Tab/Shift-Tab to navigate, double-click or F2 to edit)", Left = 10, Top = 10, Width = 760 });
 
             var dgv1 = new DataGridView {
                 Left = 10,
                 Top = 30,
-                Width = 700,
+                Width = 750,
                 Height = 250,
                 SelectionMode = DataGridViewSelectionMode.CellSelect,
-                ColumnHeadersHeight = 36
+                ColumnHeadersHeight = 36,
+                RowHeadersVisible = true,
+                RowHeadersWidth = 30
             };
 
             // Customize column header style
             dgv1.ColumnHeadersDefaultCellStyle.BackgroundColor = new SKColor (60, 60, 80);
             dgv1.ColumnHeadersDefaultCellStyle.ForegroundColor = SKColors.White;
+
+            // Customize row header style
+            dgv1.RowHeadersDefaultCellStyle.BackgroundColor = new SKColor (60, 60, 80);
+
+            // Customize alternating row style
+            dgv1.AlternatingRowsDefaultCellStyle.BackgroundColor = new SKColor (45, 45, 48);
 
             dgv1.Columns.Add ("Name", 150);
             dgv1.Columns.Add ("Age", 60);
@@ -49,15 +57,20 @@ namespace ControlGallery.Panels
 
             Controls.Add (dgv1);
 
-            Controls.Add (new Label { Text = "DataGridView - Full Row Selection + Data Binding", Left = 10, Top = 300, Width = 400 });
+            Controls.Add (new Label { Text = "DataGridView - Full Row Selection + Data Binding (column resizing disabled)", Left = 10, Top = 300, Width = 500 });
 
             var dgv3 = new DataGridView {
                 Left = 10,
                 Top = 320,
                 Width = 500,
                 Height = 200,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                AllowUserToResizeColumns = false
             };
+
+            // Customize default cell style
+            dgv3.DefaultCellStyle.ForegroundColor = new SKColor (200, 220, 255);
+            dgv3.AlternatingRowsDefaultCellStyle.BackgroundColor = new SKColor (50, 50, 55);
 
             var products = new List<Product> {
                 new Product { Name = "Widget", Price = 9.99, Quantity = 100, Category = "Hardware" },

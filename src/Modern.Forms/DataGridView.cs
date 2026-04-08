@@ -13,15 +13,21 @@ namespace Modern.Forms
     {
         private int header_height = 30;
         private int row_height = 25;
+        private int row_headers_width = 40;
+        private bool row_headers_visible;
         private int top_index;
         private int horizontal_scroll_offset;
         private int selected_row_index = -1;
         private int selected_column_index = -1;
         private int hovered_row_index = -1;
         private int resize_column_index = -1;
+        private int resize_row_index = -1;
         private int resize_start_x;
+        private int resize_start_y;
         private int resize_start_width;
-        private bool is_resizing;
+        private int resize_start_height;
+        private bool is_resizing_column;
+        private bool is_resizing_row;
         private bool column_headers_visible = true;
         private DataGridViewSelectionMode selection_mode = DataGridViewSelectionMode.FullRowSelect;
         private bool read_only;
@@ -183,6 +189,21 @@ namespace Modern.Forms
             });
 
         /// <summary>
+        /// Gets or sets whether the user can resize columns by dragging column header borders.
+        /// </summary>
+        public bool AllowUserToResizeColumns { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets whether the user can resize rows by dragging row header borders.
+        /// </summary>
+        public bool AllowUserToResizeRows { get; set; } = true;
+
+        /// <summary>
+        /// Gets the default cell style applied to alternating rows.
+        /// </summary>
+        public ControlStyle AlternatingRowsDefaultCellStyle { get; } = new ControlStyle (DataGridViewCell.DefaultCellStyleInternal);
+
+        /// <summary>
         /// Gets the default cell style applied to cells in the DataGridView.
         /// </summary>
         public ControlStyle DefaultCellStyle { get; } = new ControlStyle (DataGridViewCell.DefaultCellStyleInternal);
@@ -326,9 +347,9 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Gets the first visible row index.
+        /// Gets or sets the index of the first row displayed on the DataGridView.
         /// </summary>
-        public int FirstVisibleIndex {
+        public int FirstDisplayedScrollingRowIndex {
             get => top_index;
             set {
                 if (top_index == value)
@@ -353,11 +374,12 @@ namespace Modern.Forms
             var row_top = client.Top + (ColumnHeadersVisible ? ScaledHeaderHeight : 0);
             var visible_row = rowIndex - top_index;
 
-            if (visible_row < 0 || visible_row >= VisibleRowCount)
+            if (visible_row < 0 || visible_row >= DisplayedRowCount)
                 return Rectangle.Empty;
 
             var y = row_top + visible_row * ScaledRowHeight;
-            var x = client.Left - horizontal_scroll_offset;
+            var row_header_offset = row_headers_visible ? ScaledRowHeadersWidth : 0;
+            var x = client.Left + row_header_offset - horizontal_scroll_offset;
 
             for (var i = 0; i < columnIndex; i++) {
                 if (Columns[i].Visible)
@@ -386,7 +408,8 @@ namespace Modern.Forms
         internal int GetColumnAtLocation (Point location)
         {
             var client = GetContentArea ();
-            var x = client.Left - horizontal_scroll_offset;
+            var row_header_offset = row_headers_visible ? ScaledRowHeadersWidth : 0;
+            var x = client.Left + row_header_offset - horizontal_scroll_offset;
 
             for (var i = 0; i < Columns.Count; i++) {
                 if (!Columns[i].Visible)
@@ -414,7 +437,8 @@ namespace Modern.Forms
             if (!header_rect.Contains (location))
                 return -1;
 
-            var x = client.Left - horizontal_scroll_offset;
+            var row_header_offset = row_headers_visible ? ScaledRowHeadersWidth : 0;
+            var x = client.Left + row_header_offset - horizontal_scroll_offset;
             var resize_zone = LogicalToDeviceUnits (4);
 
             for (var i = 0; i < Columns.Count; i++) {
@@ -424,6 +448,37 @@ namespace Modern.Forms
                 x += LogicalToDeviceUnits (Columns[i].Width);
 
                 if (Math.Abs (location.X - x) <= resize_zone)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Gets the row index if the mouse is near a row border in the row header area.
+        /// </summary>
+        private int GetResizeRowAtLocation (Point location)
+        {
+            if (!row_headers_visible)
+                return -1;
+
+            var client = GetContentArea ();
+            var row_header_rect = new Rectangle (client.Left, client.Top + (ColumnHeadersVisible ? ScaledHeaderHeight : 0), ScaledRowHeadersWidth, client.Height);
+
+            if (!row_header_rect.Contains (location))
+                return -1;
+
+            var row_top = client.Top + (ColumnHeadersVisible ? ScaledHeaderHeight : 0);
+            var resize_zone = LogicalToDeviceUnits (4);
+
+            for (var i = top_index; i < Rows.Count; i++) {
+                var scaled_row_height = LogicalToDeviceUnits (Rows[i].Height);
+                row_top += scaled_row_height;
+
+                if (row_top > client.Bottom)
+                    break;
+
+                if (Math.Abs (location.Y - row_top) <= resize_zone)
                     return i;
             }
 
@@ -460,6 +515,38 @@ namespace Modern.Forms
                     header_height = Math.Max (value, 10);
                     Invalidate ();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the currently selected cell, or null if no cell is selected.
+        /// </summary>
+        public DataGridViewCell? CurrentCell {
+            get {
+                if (selected_row_index < 0 || selected_row_index >= Rows.Count)
+                    return null;
+
+                if (selected_column_index < 0 || selected_column_index >= Rows[selected_row_index].Cells.Count)
+                    return null;
+
+                return Rows[selected_row_index].Cells[selected_column_index];
+            }
+        }
+
+        /// <summary>
+        /// Gets the row and column indices of the currently selected cell.
+        /// </summary>
+        public Point CurrentCellAddress => new Point (selected_column_index, selected_row_index);
+
+        /// <summary>
+        /// Gets the row containing the currently selected cell, or null if no row is selected.
+        /// </summary>
+        public DataGridViewRow? CurrentRow {
+            get {
+                if (selected_row_index >= 0 && selected_row_index < Rows.Count)
+                    return Rows[selected_row_index];
+
+                return null;
             }
         }
 
@@ -627,14 +714,27 @@ namespace Modern.Forms
             }
 
             // Check for column resize
-            if (ColumnHeadersVisible) {
+            if (ColumnHeadersVisible && AllowUserToResizeColumns) {
                 var resize_col = GetResizeColumnAtLocation (e.Location);
 
                 if (resize_col >= 0) {
-                    is_resizing = true;
+                    is_resizing_column = true;
                     resize_column_index = resize_col;
                     resize_start_x = e.Location.X;
                     resize_start_width = LogicalToDeviceUnits (Columns[resize_col].Width);
+                    return;
+                }
+            }
+
+            // Check for row resize
+            if (row_headers_visible && AllowUserToResizeRows) {
+                var resize_row = GetResizeRowAtLocation (e.Location);
+
+                if (resize_row >= 0) {
+                    is_resizing_row = true;
+                    resize_row_index = resize_row;
+                    resize_start_y = e.Location.Y;
+                    resize_start_height = LogicalToDeviceUnits (Rows[resize_row].Height);
                     return;
                 }
             }
@@ -674,7 +774,7 @@ namespace Modern.Forms
             base.OnMouseLeave (e);
             HoveredRowIndex = -1;
 
-            if (!is_resizing)
+            if (!is_resizing_column && !is_resizing_row)
                 SetCursorDirect (Cursors.Arrow);
         }
 
@@ -683,7 +783,7 @@ namespace Modern.Forms
         {
             base.OnMouseMove (e);
 
-            if (is_resizing) {
+            if (is_resizing_column) {
                 var delta = e.Location.X - resize_start_x;
                 var new_width = DeviceToLogicalUnits (resize_start_width + delta);
                 Columns[resize_column_index].Width = new_width;
@@ -691,14 +791,43 @@ namespace Modern.Forms
                 return;
             }
 
-            // Update cursor for column resize zones
-            if (ColumnHeadersVisible) {
-                var resize_col = GetResizeColumnAtLocation (e.Location);
-                var wanted = resize_col >= 0 ? Cursors.SizeWestEast : Cursors.Arrow;
-
-                if (Cursor != wanted)
-                    SetCursorDirect (wanted);
+            if (is_resizing_row) {
+                var delta = e.Location.Y - resize_start_y;
+                var new_height = DeviceToLogicalUnits (resize_start_height + delta);
+                Rows[resize_row_index].Height = Math.Max (new_height, 10);
+                UpdateScrollBars ();
+                return;
             }
+
+            // Update cursor for column resize zones
+            if (ColumnHeadersVisible && AllowUserToResizeColumns) {
+                var resize_col = GetResizeColumnAtLocation (e.Location);
+
+                if (resize_col >= 0) {
+                    if (Cursor != Cursors.SizeWestEast)
+                        SetCursorDirect (Cursors.SizeWestEast);
+
+                    // Update hovered row
+                    HoveredRowIndex = GetRowAtLocation (e.Location);
+                    return;
+                }
+            }
+
+            // Update cursor for row resize zones
+            if (row_headers_visible && AllowUserToResizeRows) {
+                var resize_row = GetResizeRowAtLocation (e.Location);
+
+                if (resize_row >= 0) {
+                    if (Cursor != Cursors.SizeNorthSouth)
+                        SetCursorDirect (Cursors.SizeNorthSouth);
+
+                    HoveredRowIndex = GetRowAtLocation (e.Location);
+                    return;
+                }
+            }
+
+            if (Cursor != Cursors.Arrow)
+                SetCursorDirect (Cursors.Arrow);
 
             // Update hovered row
             var row = GetRowAtLocation (e.Location);
@@ -710,9 +839,15 @@ namespace Modern.Forms
         {
             base.OnMouseUp (e);
 
-            if (is_resizing) {
-                is_resizing = false;
+            if (is_resizing_column) {
+                is_resizing_column = false;
                 resize_column_index = -1;
+                SetCursorDirect (Cursors.Arrow);
+            }
+
+            if (is_resizing_row) {
+                is_resizing_row = false;
+                resize_row_index = -1;
                 SetCursorDirect (Cursors.Arrow);
             }
         }
@@ -763,7 +898,7 @@ namespace Modern.Forms
             }
 
             if (e.KeyCode == Keys.PageDown) {
-                var new_index = Math.Min (selected_row_index + VisibleRowCount, Rows.Count - 1);
+                var new_index = Math.Min (selected_row_index + DisplayedRowCount, Rows.Count - 1);
                 SelectedRowIndex = new_index;
                 EnsureRowVisible (new_index);
                 e.Handled = true;
@@ -771,7 +906,7 @@ namespace Modern.Forms
             }
 
             if (e.KeyCode == Keys.PageUp) {
-                var new_index = Math.Max (selected_row_index - VisibleRowCount, 0);
+                var new_index = Math.Max (selected_row_index - DisplayedRowCount, 0);
                 SelectedRowIndex = new_index;
                 EnsureRowVisible (new_index);
                 e.Handled = true;
@@ -871,6 +1006,34 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Gets or sets whether the row header column is displayed.
+        /// </summary>
+        public bool RowHeadersVisible {
+            get => row_headers_visible;
+            set {
+                if (row_headers_visible != value) {
+                    row_headers_visible = value;
+                    UpdateScrollBars ();
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the width, in pixels, of the row header column.
+        /// </summary>
+        public int RowHeadersWidth {
+            get => row_headers_width;
+            set {
+                if (row_headers_width != value) {
+                    row_headers_width = Math.Max (value, 10);
+                    UpdateScrollBars ();
+                    Invalidate ();
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets how cells in the DataGridView can be selected.
         /// </summary>
         public DataGridViewSelectionMode SelectionMode {
@@ -892,6 +1055,11 @@ namespace Modern.Forms
         /// Gets the scaled height of each data row.
         /// </summary>
         public int ScaledRowHeight => LogicalToDeviceUnits (row_height);
+
+        /// <summary>
+        /// Gets the scaled width of the row header column.
+        /// </summary>
+        internal int ScaledRowHeadersWidth => LogicalToDeviceUnits (row_headers_width);
 
         /// <summary>
         /// Gets or sets the index of the currently selected column.
@@ -1042,7 +1210,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the number of full rows that can be displayed at a time.
         /// </summary>
-        public int VisibleRowCount {
+        public int DisplayedRowCount {
             get {
                 var content = GetContentArea ();
                 var available = content.Height - (ColumnHeadersVisible ? ScaledHeaderHeight : 0);
@@ -1055,13 +1223,13 @@ namespace Modern.Forms
         /// </summary>
         private void EnsureRowVisible (int index)
         {
-            if (VisibleRowCount >= Rows.Count)
+            if (DisplayedRowCount >= Rows.Count)
                 return;
 
             if (index < top_index)
-                FirstVisibleIndex = index;
-            else if (index >= top_index + VisibleRowCount)
-                FirstVisibleIndex = index - VisibleRowCount + 1;
+                FirstDisplayedScrollingRowIndex = index;
+            else if (index >= top_index + DisplayedRowCount)
+                FirstDisplayedScrollingRowIndex = index - DisplayedRowCount + 1;
         }
 
         // Moves the selection to the next cell, wrapping to the next row.
