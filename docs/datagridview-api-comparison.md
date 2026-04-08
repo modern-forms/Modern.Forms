@@ -256,7 +256,6 @@ This document compares every public member on the WinForms `System.Windows.Forms
 | Modern.Forms Member | Type | Notes |
 |---|---|---|
 | `ColumnHeaderClick` | Event | WinForms uses `ColumnHeaderMouseClick` with different args |
-| `FirstVisibleIndex` | Property | WinForms uses `FirstDisplayedScrollingRowIndex` |
 | `GetCellBounds(int, int)` | Method | WinForms uses `GetCellDisplayRectangle(int, int, bool)` |
 | `RefreshDataSource()` | Method | Re-reads the current `DataSource` |
 | `RowHeight` | Property | Default row height; WinForms uses `RowTemplate.Height` |
@@ -265,33 +264,34 @@ This document compares every public member on the WinForms `System.Windows.Forms
 | `SelectedColumnIndex` | Property | Single-selection index; WinForms uses `SelectedCells` collection |
 | `SelectedRowIndex` | Property | Single-selection index; WinForms uses `SelectedRows` collection |
 | `SortByColumn(int, SortOrder)` | Method | WinForms uses `Sort(DataGridViewColumn, ListSortDirection)` |
-| `VisibleRowCount` | Property | WinForms uses `DisplayedRowCount(bool)` method |
 
 ## Summary
 
 | Category | WinForms | Modern.Forms ✅ | Modern.Forms ⚠️ | Modern.Forms ❌ |
 |---|---|---|---|---|
-| Properties | ~55 | 12 | 6 | ~37 |
+| Properties | ~55 | 19 | 4 | ~32 |
 | Methods | ~30 | 3 | 3 | ~24 |
 | Events | ~100 | 4 | 1 | ~95 |
 
-**Overall coverage:** ~18% of WinForms public API members are implemented (fully or partially).
+**Overall coverage:** ~23% of WinForms public API members are implemented (fully or partially).
 
 ### Key areas implemented:
 - Basic column/row management and display
 - Cell editing (begin, end, cancel)
 - Column sorting (click headers)
-- Column resizing (mouse drag)
+- Column resizing (mouse drag, with `AllowUserToResizeColumns`)
+- Row resizing (mouse drag on row headers, with `AllowUserToResizeRows`)
+- Row headers (`RowHeadersVisible`, `RowHeadersWidth`)
 - Data binding via `DataSource`
 - Selection (single row/cell with `DataGridViewSelectionMode`)
 - Keyboard navigation (arrows, Page Up/Down, Home/End, Tab/Shift-Tab)
 - Scrolling (vertical + horizontal)
-- Cell styles (`DefaultCellStyle`, `ColumnHeadersDefaultCellStyle`, `RowHeadersDefaultCellStyle`)
+- Cell styles (`DefaultCellStyle`, `ColumnHeadersDefaultCellStyle`, `RowHeadersDefaultCellStyle`, `AlternatingRowsDefaultCellStyle`, per-cell `Style`)
 - Header cells (`DataGridViewColumnHeaderCell`, `DataGridViewRowHeaderCell`)
+- Current cell tracking (`CurrentCell`, `CurrentCellAddress`, `CurrentRow`)
 
 ### Key areas not yet implemented:
 - Multi-selection
-- Row headers
 - Virtual mode
 - Clipboard support
 - Cell validation/formatting/error handling
