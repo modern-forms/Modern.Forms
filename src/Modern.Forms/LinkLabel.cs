@@ -149,7 +149,7 @@ namespace Modern.Forms
         /// Gets or sets the color used to display normal links.
         /// </summary>
         public SKColor LinkColor {
-            get => link_color == SKColor.Empty ? Theme.AccentColor  : link_color;
+            get => link_color == SKColor.Empty ? Theme.AccentColor : link_color;
             set {
                 if (link_color != value) {
                     link_color = value;
@@ -216,7 +216,7 @@ namespace Modern.Forms
         /// Gets or sets the color used to display hovered links.
         /// </summary>
         public SKColor HoverLinkColor {
-            get => hover_link_color == SKColor.Empty ? Theme.AccentColor2: hover_link_color;
+            get => hover_link_color == SKColor.Empty ? Theme.AccentColor2 : hover_link_color;
             set {
                 if (hover_link_color != value) {
                     hover_link_color = value;
