@@ -6,7 +6,7 @@ namespace ControlGallery.Panels
     {
         public DataGridViewPanel ()
         {
-            Controls.Add (new Label { Text = "DataGridView - Row Selection", Left = 10, Top = 10, Width = 300 });
+            Controls.Add (new Label { Text = "DataGridView - Row Selection (click headers to sort, double-click cells to edit)", Left = 10, Top = 10, Width = 600 });
 
             var dgv1 = new DataGridView {
                 Left = 10,
@@ -41,26 +41,37 @@ namespace ControlGallery.Panels
 
             Controls.Add (dgv1);
 
-            Controls.Add (new Label { Text = "DataGridView - Cell Selection, No Headers", Left = 10, Top = 300, Width = 300 });
+            Controls.Add (new Label { Text = "DataGridView - Data Binding", Left = 10, Top = 300, Width = 300 });
 
-            var dgv2 = new DataGridView {
+            var dgv3 = new DataGridView {
                 Left = 10,
                 Top = 320,
                 Width = 500,
-                Height = 200,
-                RowSelectionMode = false,
-                ColumnHeadersVisible = false
+                Height = 200
             };
 
-            dgv2.Columns.Add ("Column 1", 120);
-            dgv2.Columns.Add ("Column 2", 120);
-            dgv2.Columns.Add ("Column 3", 120);
-            dgv2.Columns.Add ("Column 4", 120);
+            var products = new List<Product> {
+                new Product { Name = "Widget", Price = 9.99, Quantity = 100, Category = "Hardware" },
+                new Product { Name = "Gadget", Price = 24.95, Quantity = 50, Category = "Electronics" },
+                new Product { Name = "Doohickey", Price = 4.50, Quantity = 200, Category = "Hardware" },
+                new Product { Name = "Thingamajig", Price = 15.00, Quantity = 75, Category = "Electronics" },
+                new Product { Name = "Whatchamacallit", Price = 7.25, Quantity = 150, Category = "Misc" },
+                new Product { Name = "Contraption", Price = 49.99, Quantity = 10, Category = "Electronics" },
+                new Product { Name = "Gizmo", Price = 12.50, Quantity = 80, Category = "Hardware" },
+                new Product { Name = "Doodad", Price = 3.75, Quantity = 300, Category = "Misc" }
+            };
 
-            for (var i = 0; i < 10; i++)
-                dgv2.Rows.Add ($"Cell {i},0", $"Cell {i},1", $"Cell {i},2", $"Cell {i},3");
+            dgv3.DataSource = products;
 
-            Controls.Add (dgv2);
+            Controls.Add (dgv3);
+        }
+
+        private sealed class Product
+        {
+            public string Name { get; set; } = string.Empty;
+            public double Price { get; set; }
+            public int Quantity { get; set; }
+            public string Category { get; set; } = string.Empty;
         }
     }
 }

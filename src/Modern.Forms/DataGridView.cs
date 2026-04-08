@@ -1,4 +1,7 @@
-﻿using System.Drawing;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
+using System.Reflection;
 using Modern.Forms.Renderers;
 
 namespace Modern.Forms
@@ -21,6 +24,11 @@ namespace Modern.Forms
         private bool is_resizing;
         private bool column_headers_visible = true;
         private bool row_selection_mode = true;
+        private bool read_only;
+        private IList? data_source;
+        private TextBox? edit_textbox;
+        private int editing_row_index = -1;
+        private int editing_column_index = -1;
 
         private readonly VerticalScrollBar vscrollbar;
         private readonly HorizontalScrollBar hscrollbar;
@@ -66,6 +74,70 @@ namespace Modern.Forms
         }
 
         /// <summary>
+        /// Begins editing the specified cell.
+        /// </summary>
+        public void BeginEdit (int rowIndex, int columnIndex)
+        {
+            if (read_only || rowIndex < 0 || rowIndex >= Rows.Count || columnIndex < 0 || columnIndex >= Columns.Count)
+                return;
+
+            // End any current edit
+            EndEdit ();
+
+            editing_row_index = rowIndex;
+            editing_column_index = columnIndex;
+
+            var cell_bounds = GetCellBounds (rowIndex, columnIndex);
+
+            if (cell_bounds.IsEmpty)
+                return;
+
+            var cell_value = columnIndex < Rows[rowIndex].Cells.Count
+                ? Rows[rowIndex].Cells[columnIndex].Value
+                : string.Empty;
+
+            // Raise CellBeginEdit event
+            var begin_args = new DataGridViewCellEditEventArgs (rowIndex, columnIndex);
+            OnCellBeginEdit (begin_args);
+
+            if (begin_args.Cancel)
+                return;
+
+            edit_textbox = new TextBox {
+                Left = cell_bounds.Left + 1,
+                Top = cell_bounds.Top + 1,
+                Width = cell_bounds.Width - 2,
+                Height = cell_bounds.Height - 2,
+                Text = cell_value
+            };
+
+            edit_textbox.Style.Border.Width = 0;
+
+            edit_textbox.KeyDown += EditTextBox_KeyDown;
+            edit_textbox.LostFocus += EditTextBox_LostFocus;
+
+            Controls.Add (edit_textbox);
+
+            edit_textbox.Select ();
+            edit_textbox.SelectAll ();
+        }
+
+        /// <summary>
+        /// Raised when a cell begins editing.
+        /// </summary>
+        public event EventHandler<DataGridViewCellEditEventArgs>? CellBeginEdit;
+
+        /// <summary>
+        /// Raised when a cell ends editing.
+        /// </summary>
+        public event EventHandler<DataGridViewCellEditEventArgs>? CellEndEdit;
+
+        /// <summary>
+        /// Raised when a cell value has changed.
+        /// </summary>
+        public event EventHandler<DataGridViewCellEditEventArgs>? CellValueChanged;
+
+        /// <summary>
         /// Gets or sets whether column headers are visible.
         /// </summary>
         public bool ColumnHeadersVisible {
@@ -83,6 +155,19 @@ namespace Modern.Forms
         /// </summary>
         public DataGridViewColumnCollection Columns { get; }
 
+        /// <summary>
+        /// Gets or sets the data source for the DataGridView.
+        /// Setting this property auto-generates columns from the item type's public properties
+        /// and populates the rows from the collection.
+        /// </summary>
+        public IList? DataSource {
+            get => data_source;
+            set {
+                data_source = value;
+                OnDataSourceChanged ();
+            }
+        }
+
         /// <inheritdoc/>
         protected override Size DefaultSize => new Size (450, 300);
 
@@ -92,6 +177,114 @@ namespace Modern.Forms
                 style.BackgroundColor = Theme.ControlLowColor;
                 style.Border.Width = 1;
             });
+
+        /// <summary>
+        /// Commits the current edit and hides the edit TextBox.
+        /// </summary>
+        [UnconditionalSuppressMessage ("Trimming", "IL2075", Justification = "Data binding requires runtime reflection over user-provided types.")]
+        public bool EndEdit ()
+        {
+            if (edit_textbox is null || editing_row_index < 0 || editing_column_index < 0)
+                return false;
+
+            var new_value = edit_textbox.Text;
+            var row = Rows[editing_row_index];
+
+            // Ensure enough cells exist
+            while (row.Cells.Count <= editing_column_index)
+                row.Cells.Add (string.Empty);
+
+            var old_value = row.Cells[editing_column_index].Value;
+
+            if (old_value != new_value) {
+                row.Cells[editing_column_index].Value = new_value;
+
+                // Update the data source if bound
+                if (data_source is not null && editing_row_index < data_source.Count) {
+                    var item = data_source[editing_row_index];
+
+                    if (item is not null && editing_column_index < Columns.Count) {
+                        var prop = item.GetType ().GetProperty (Columns[editing_column_index].HeaderText);
+                        if (prop?.CanWrite == true) {
+                            try {
+                                var converted = Convert.ChangeType (new_value, prop.PropertyType);
+                                prop.SetValue (item, converted);
+                            } catch {
+                                // Conversion failed - revert cell value
+                                row.Cells[editing_column_index].Value = old_value;
+                            }
+                        }
+                    }
+                }
+
+                var changed_args = new DataGridViewCellEditEventArgs (editing_row_index, editing_column_index);
+                OnCellValueChanged (changed_args);
+            }
+
+            var end_args = new DataGridViewCellEditEventArgs (editing_row_index, editing_column_index);
+            OnCellEndEdit (end_args);
+
+            // Clean up the TextBox
+            edit_textbox.KeyDown -= EditTextBox_KeyDown;
+            edit_textbox.LostFocus -= EditTextBox_LostFocus;
+            Controls.Remove (edit_textbox);
+            edit_textbox.Dispose ();
+            edit_textbox = null;
+            editing_row_index = -1;
+            editing_column_index = -1;
+
+            Invalidate ();
+            return true;
+        }
+
+        // Handle key events during editing.
+        private void EditTextBox_KeyDown (object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) {
+                EndEdit ();
+                e.Handled = true;
+            } else if (e.KeyCode == Keys.Escape) {
+                CancelEdit ();
+                e.Handled = true;
+            } else if (e.KeyCode == Keys.Tab) {
+                EndEdit ();
+
+                // Move to next cell
+                if (selected_column_index < Columns.Count - 1) {
+                    SelectedColumnIndex = selected_column_index + 1;
+                } else if (selected_row_index < Rows.Count - 1) {
+                    SelectedColumnIndex = 0;
+                    SelectedRowIndex = selected_row_index + 1;
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        // Handle lost focus during editing.
+        private void EditTextBox_LostFocus (object? sender, EventArgs e)
+        {
+            EndEdit ();
+        }
+
+        /// <summary>
+        /// Cancels the current edit without committing changes.
+        /// </summary>
+        public void CancelEdit ()
+        {
+            if (edit_textbox is null)
+                return;
+
+            edit_textbox.KeyDown -= EditTextBox_KeyDown;
+            edit_textbox.LostFocus -= EditTextBox_LostFocus;
+            Controls.Remove (edit_textbox);
+            edit_textbox.Dispose ();
+            edit_textbox = null;
+            editing_row_index = -1;
+            editing_column_index = -1;
+
+            Invalidate ();
+        }
 
         /// <summary>
         /// Gets the first visible row index.
@@ -138,12 +331,13 @@ namespace Modern.Forms
 
         /// <summary>
         /// Gets the content area, accounting for scrollbars.
+        /// Use Math.Ceiling to avoid fractional DPI rounding artifacts.
         /// </summary>
         internal Rectangle GetContentArea ()
         {
             var client = ClientRectangle;
-            var w = client.Width - (vscrollbar.Visible ? vscrollbar.ScaledWidth : 0);
-            var h = client.Height - (hscrollbar.Visible ? hscrollbar.ScaledHeight : 0);
+            var w = client.Width - (vscrollbar.Visible ? (int)Math.Ceiling (vscrollbar.Width * ScaleFactor.Width) : 0);
+            var h = client.Height - (hscrollbar.Visible ? (int)Math.Ceiling (hscrollbar.Height * ScaleFactor.Height) : 0);
             return new Rectangle (client.Left, client.Top, w, h);
         }
 
@@ -231,7 +425,7 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Gets or sets the horizontal scroll offset.
+        /// Gets the horizontal scroll offset.
         /// </summary>
         internal int HorizontalScrollOffset => horizontal_scroll_offset;
 
@@ -248,6 +442,135 @@ namespace Modern.Forms
             }
         }
 
+        /// <summary>
+        /// Gets whether a cell is currently being edited.
+        /// </summary>
+        public bool IsCurrentCellInEditMode => edit_textbox is not null;
+
+        /// <summary>
+        /// Raises the CellBeginEdit event.
+        /// </summary>
+        protected virtual void OnCellBeginEdit (DataGridViewCellEditEventArgs e) => CellBeginEdit?.Invoke (this, e);
+
+        /// <summary>
+        /// Raises the CellEndEdit event.
+        /// </summary>
+        protected virtual void OnCellEndEdit (DataGridViewCellEditEventArgs e) => CellEndEdit?.Invoke (this, e);
+
+        /// <summary>
+        /// Raises the CellValueChanged event.
+        /// </summary>
+        protected virtual void OnCellValueChanged (DataGridViewCellEditEventArgs e) => CellValueChanged?.Invoke (this, e);
+
+        /// <summary>
+        /// Handles a column header click for sorting.
+        /// </summary>
+        private void OnColumnHeaderClick (int columnIndex)
+        {
+            var column = Columns[columnIndex];
+
+            // Toggle sort order
+            var new_order = column.SortOrder == SortOrder.Ascending
+                ? SortOrder.Descending
+                : SortOrder.Ascending;
+
+            // Reset all other columns
+            foreach (var col in Columns)
+                col.SortOrder = SortOrder.None;
+
+            column.SortOrder = new_order;
+
+            // Sort the data
+            SortByColumn (columnIndex, new_order);
+
+            // Raise the event
+            ColumnHeaderClick?.Invoke (this, new EventArgs<DataGridViewColumn> (column));
+
+            Invalidate ();
+        }
+
+        /// <summary>
+        /// Raised when a column header is clicked.
+        /// </summary>
+        public event EventHandler<EventArgs<DataGridViewColumn>>? ColumnHeaderClick;
+
+        // Populates rows and columns from the DataSource.
+        [UnconditionalSuppressMessage ("Trimming", "IL2075", Justification = "Data binding requires runtime reflection over user-provided types.")]
+        private void OnDataSourceChanged ()
+        {
+            Columns.Clear ();
+            Rows.Clear ();
+
+            if (data_source is null || data_source.Count == 0)
+                return;
+
+            // Get the element type
+            var element_type = GetElementType (data_source);
+
+            if (element_type is null)
+                return;
+
+            // Auto-generate columns from public readable properties
+            var properties = element_type.GetProperties (BindingFlags.Public | BindingFlags.Instance)
+                .Where (p => p.CanRead)
+                .ToArray ();
+
+            foreach (var prop in properties)
+                Columns.Add (prop.Name, EstimateColumnWidth (prop.Name));
+
+            // Populate rows
+            foreach (var item in data_source) {
+                if (item is null)
+                    continue;
+
+                var values = new string[properties.Length];
+
+                for (var i = 0; i < properties.Length; i++)
+                    values[i] = properties[i].GetValue (item)?.ToString () ?? string.Empty;
+
+                Rows.Add (values);
+            }
+        }
+
+        // Gets the element type from an IList.
+        private static Type? GetElementType (IList list)
+        {
+            var list_type = list.GetType ();
+
+            // Check for generic IList<T>
+            foreach (var iface in list_type.GetInterfaces ()) {
+                if (iface.IsGenericType && iface.GetGenericTypeDefinition () == typeof (IList<>))
+                    return iface.GetGenericArguments ()[0];
+            }
+
+            // Fallback: use type of first item
+            if (list.Count > 0 && list[0] is not null)
+                return list[0]!.GetType ();
+
+            return null;
+        }
+
+        // Estimates a column width based on header text length.
+        private static int EstimateColumnWidth (string headerText)
+        {
+            return Math.Max (80, headerText.Length * 10 + 20);
+        }
+
+        /// <inheritdoc/>
+        protected override void OnDoubleClick (MouseEventArgs e)
+        {
+            base.OnDoubleClick (e);
+
+            if (read_only || !Enabled)
+                return;
+
+            var row = GetRowAtLocation (e.Location);
+            var col = GetColumnAtLocation (e.Location);
+
+            if (row >= 0 && col >= 0)
+                BeginEdit (row, col);
+        }
+
         /// <inheritdoc/>
         protected override void OnMouseDown (MouseEventArgs e)
         {
@@ -255,6 +578,14 @@ namespace Modern.Forms
 
             if (!Enabled || !e.Button.HasFlag (MouseButtons.Left))
                 return;
+
+            // If editing, end edit when clicking outside the editor
+            if (edit_textbox is not null) {
+                var edit_bounds = new Rectangle (edit_textbox.Left, edit_textbox.Top, edit_textbox.Width, edit_textbox.Height);
+
+                if (!edit_bounds.Contains (e.Location))
+                    EndEdit ();
+            }
 
             // Check for column resize
             if (ColumnHeadersVisible) {
@@ -305,7 +636,7 @@ namespace Modern.Forms
             HoveredRowIndex = -1;
 
             if (!is_resizing)
-                Cursor = Cursors.Arrow;
+                SetCursorDirect (Cursors.Arrow);
         }
 
         /// <inheritdoc/>
@@ -324,7 +655,10 @@ namespace Modern.Forms
             // Update cursor for column resize zones
             if (ColumnHeadersVisible) {
                 var resize_col = GetResizeColumnAtLocation (e.Location);
-                Cursor = resize_col >= 0 ? Cursors.SizeWestEast : Cursors.Arrow;
+                var wanted = resize_col >= 0 ? Cursors.SizeWestEast : Cursors.Arrow;
+
+                if (Cursor != wanted)
+                    SetCursorDirect (wanted);
             }
 
             // Update hovered row
@@ -340,7 +674,7 @@ namespace Modern.Forms
             if (is_resizing) {
                 is_resizing = false;
                 resize_column_index = -1;
-                Cursor = Cursors.Arrow;
+                SetCursorDirect (Cursors.Arrow);
             }
         }
 
@@ -361,38 +695,16 @@ namespace Modern.Forms
             RenderManager.Render (this, e);
         }
 
-        /// <summary>
-        /// Handles a column header click for sorting.
-        /// </summary>
-        private void OnColumnHeaderClick (int columnIndex)
-        {
-            var column = Columns[columnIndex];
-
-            // Toggle sort order
-            var new_order = column.SortOrder == SortOrder.Ascending
-                ? SortOrder.Descending
-                : SortOrder.Ascending;
-
-            // Reset all other columns
-            foreach (var col in Columns)
-                col.SortOrder = SortOrder.None;
-
-            column.SortOrder = new_order;
-
-            // Raise the event
-            ColumnHeaderClick?.Invoke (this, new EventArgs<DataGridViewColumn> (column));
-
-            Invalidate ();
-        }
-
-        /// <summary>
-        /// Raised when a column header is clicked.
-        /// </summary>
-        public event EventHandler<EventArgs<DataGridViewColumn>>? ColumnHeaderClick;
-
         /// <inheritdoc/>
         protected override void OnKeyUp (KeyEventArgs e)
         {
+            // F2 begins editing
+            if (e.KeyCode == Keys.F2 && !read_only && selected_row_index >= 0 && selected_column_index >= 0) {
+                BeginEdit (selected_row_index, selected_column_index);
+                e.Handled = true;
+                return;
+            }
+
             if (e.KeyCode == Keys.Down) {
                 if (selected_row_index < Rows.Count - 1) {
                     SelectedRowIndex = selected_row_index + 1;
@@ -465,6 +777,29 @@ namespace Modern.Forms
         {
             UpdateScrollBars ();
             Invalidate ();
+        }
+
+        /// <summary>
+        /// Gets or sets whether the DataGridView is read-only.
+        /// </summary>
+        public bool ReadOnly {
+            get => read_only;
+            set {
+                if (read_only != value) {
+                    read_only = value;
+
+                    if (read_only)
+                        CancelEdit ();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the grid from the current DataSource.
+        /// </summary>
+        public void RefreshDataSource ()
+        {
+            OnDataSourceChanged ();
         }
 
         /// <summary>
@@ -556,12 +891,49 @@ namespace Modern.Forms
         /// </summary>
         public event EventHandler? SelectionChanged;
 
+        // Sets the cursor and immediately updates the OS cursor.
+        private void SetCursorDirect (Cursor cursor)
+        {
+            Cursor = cursor;
+            FindForm ()?.SetCursor (cursor);
+        }
+
         /// <inheritdoc/>
         protected override void SetBoundsCore (int x, int y, int width, int height, BoundsSpecified specified)
         {
             base.SetBoundsCore (x, y, width, height, specified);
 
             UpdateScrollBars ();
+        }
+
+        /// <summary>
+        /// Sorts the rows by the specified column.
+        /// </summary>
+        public void SortByColumn (int columnIndex, SortOrder order)
+        {
+            if (columnIndex < 0 || columnIndex >= Columns.Count || order == SortOrder.None || Rows.Count == 0)
+                return;
+
+            // Sort the rows in-place using a stable sort
+            var sorted = Rows.ToList ();
+
+            sorted.Sort ((a, b) => {
+                var val_a = columnIndex < a.Cells.Count ? a.Cells[columnIndex].Value : string.Empty;
+                var val_b = columnIndex < b.Cells.Count ? b.Cells[columnIndex].Value : string.Empty;
+
+                // Try numeric comparison first
+                if (double.TryParse (val_a, out var num_a) && double.TryParse (val_b, out var num_b)) {
+                    var cmp = num_a.CompareTo (num_b);
+                    return order == SortOrder.Descending ? -cmp : cmp;
+                }
+
+                // Fall back to string comparison
+                var result = string.Compare (val_a, val_b, StringComparison.CurrentCultureIgnoreCase);
+                return order == SortOrder.Descending ? -result : result;
+            });
+
+            // Replace rows without triggering per-item change notifications
+            Rows.ReplaceAll (sorted);
         }
 
         /// <inheritdoc/>
@@ -589,10 +961,10 @@ namespace Modern.Forms
         {
             var client = ClientRectangle;
             var content_height = client.Height - (ColumnHeadersVisible ? ScaledHeaderHeight : 0);
-            var visible_rows = content_height / ScaledRowHeight;
+            var visible_rows = content_height > 0 && ScaledRowHeight > 0 ? content_height / ScaledRowHeight : 0;
 
             // Vertical scrollbar
-            if (Rows.Count > visible_rows) {
+            if (Rows.Count > visible_rows && visible_rows > 0) {
                 vscrollbar.Visible = true;
                 vscrollbar.Maximum = Rows.Count - visible_rows;
                 vscrollbar.LargeChange = Math.Max (0, visible_rows);
@@ -603,9 +975,9 @@ namespace Modern.Forms
             }
 
             // Horizontal scrollbar
-            var available_width = client.Width - (vscrollbar.Visible ? vscrollbar.ScaledWidth : 0);
+            var available_width = client.Width - (vscrollbar.Visible ? (int)Math.Ceiling (vscrollbar.Width * ScaleFactor.Width) : 0);
 
-            if (TotalColumnsWidth > available_width) {
+            if (TotalColumnsWidth > available_width && available_width > 0) {
                 hscrollbar.Visible = true;
                 hscrollbar.Maximum = TotalColumnsWidth - available_width;
                 hscrollbar.LargeChange = Math.Max (0, available_width);
@@ -623,7 +995,7 @@ namespace Modern.Forms
             get {
                 var content = GetContentArea ();
                 var available = content.Height - (ColumnHeadersVisible ? ScaledHeaderHeight : 0);
-                return Math.Max (0, available / ScaledRowHeight);
+                return ScaledRowHeight > 0 ? Math.Max (0, available / ScaledRowHeight) : 0;
             }
         }
 
@@ -649,5 +1021,35 @@ namespace Modern.Forms
             var factor = Scaling;
             return factor > 0 ? (int)(value / factor) : value;
         }
+    }
+
+    /// <summary>
+    /// Provides data for cell editing events.
+    /// </summary>
+    public class DataGridViewCellEditEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Initializes a new instance of the DataGridViewCellEditEventArgs class.
+        /// </summary>
+        public DataGridViewCellEditEventArgs (int rowIndex, int columnIndex)
+        {
+            RowIndex = rowIndex;
+            ColumnIndex = columnIndex;
+        }
+
+        /// <summary>
+        /// Gets or sets whether the editing operation should be canceled.
+        /// </summary>
+        public bool Cancel { get; set; }
+
+        /// <summary>
+        /// Gets the column index of the cell.
+        /// </summary>
+        public int ColumnIndex { get; }
+
+        /// <summary>
+        /// Gets the row index of the cell.
+        /// </summary>
+        public int RowIndex { get; }
     }
 }

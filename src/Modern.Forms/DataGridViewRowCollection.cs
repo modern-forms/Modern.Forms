@@ -57,6 +57,25 @@ namespace Modern.Forms
             owner.OnRowsChanged ();
         }
 
+        /// <summary>
+        /// Replaces all rows with the specified list, raising a single change notification.
+        /// </summary>
+        internal void ReplaceAll (List<DataGridViewRow> rows)
+        {
+            // Clear without per-item notifications
+            foreach (var row in this)
+                row.SetOwner (null);
+
+            Items.Clear ();
+
+            foreach (var row in rows) {
+                row.SetOwner (owner);
+                Items.Add (row);
+            }
+
+            owner.OnRowsChanged ();
+        }
+
         /// <inheritdoc/>
         protected override void SetItem (int index, DataGridViewRow item)
         {
