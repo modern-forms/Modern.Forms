@@ -10,6 +10,13 @@ namespace Modern.Forms
         private string value = string.Empty;
         private DataGridViewRow? owner;
 
+        // Default style used as the base parent for all cell Style instances.
+        internal static readonly ControlStyle DefaultCellStyleInternal = new ControlStyle (null,
+            (style) => {
+                style.BackgroundColor = Theme.ControlLowColor;
+                style.ForegroundColor = Theme.ForegroundColor;
+            });
+
         /// <summary>
         /// Initializes a new instance of the DataGridViewCell class.
         /// </summary>
@@ -58,7 +65,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the style for this cell.
         /// </summary>
-        public ControlStyle Style { get; set; } = new ControlStyle (DataGridView.DefaultCellStyleInternal);
+        public ControlStyle Style { get; set; } = new ControlStyle (DefaultCellStyleInternal);
 
         /// <summary>
         /// Gets or sets an object that contains data to associate with the cell.

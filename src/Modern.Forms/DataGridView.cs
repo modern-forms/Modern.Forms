@@ -182,27 +182,20 @@ namespace Modern.Forms
                 style.Border.Width = 1;
             });
 
-        // Internal static style used as the base parent for DataGridViewCell.Style instances.
-        internal static readonly ControlStyle DefaultCellStyleInternal = new ControlStyle (null,
-            (style) => {
-                style.BackgroundColor = Theme.ControlLowColor;
-                style.ForegroundColor = Theme.ForegroundColor;
-            });
-
         /// <summary>
         /// Gets the default cell style applied to cells in the DataGridView.
         /// </summary>
-        public ControlStyle DefaultCellStyle { get; } = new ControlStyle (DefaultCellStyleInternal);
+        public ControlStyle DefaultCellStyle { get; } = new ControlStyle (DataGridViewCell.DefaultCellStyleInternal);
 
         /// <summary>
         /// Gets the default cell style applied to column header cells.
         /// </summary>
-        public ControlStyle ColumnHeadersDefaultCellStyle { get; } = new ControlStyle (DefaultCellStyleInternal);
+        public ControlStyle ColumnHeadersDefaultCellStyle { get; } = new ControlStyle (DataGridViewCell.DefaultCellStyleInternal);
 
         /// <summary>
         /// Gets the default cell style applied to row header cells.
         /// </summary>
-        public ControlStyle RowHeadersDefaultCellStyle { get; } = new ControlStyle (DefaultCellStyleInternal);
+        public ControlStyle RowHeadersDefaultCellStyle { get; } = new ControlStyle (DataGridViewCell.DefaultCellStyleInternal);
 
         /// <summary>
         /// Commits the current edit and hides the edit TextBox.
