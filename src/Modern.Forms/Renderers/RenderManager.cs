@@ -12,6 +12,7 @@
             SetRenderer<Button> (new ButtonRenderer ());
             SetRenderer<CheckBox> (new CheckBoxRenderer ());
             SetRenderer<ComboBox> (new ComboBoxRenderer ());
+            SetRenderer<DataGridView> (new DataGridViewRenderer ());
             SetRenderer<FormTitleBar> (new FormTitleBarRenderer ());
             SetRenderer<Label> (new LabelRenderer ());
             SetRenderer<LinkLabel> (new LinkLabelRenderer ());
