@@ -123,7 +123,6 @@ namespace Modern.Forms.Renderers
         /// </summary>
         protected virtual void RenderRows (DataGridView control, PaintEventArgs e, Rectangle contentArea)
         {
-            var row_height = control.ScaledRowHeight;
             var header_offset = control.ColumnHeadersVisible ? control.ScaledHeaderHeight : 0;
             var y = contentArea.Top + header_offset;
 
@@ -132,6 +131,7 @@ namespace Modern.Forms.Renderers
                     break;
 
                 var row = control.Rows[i];
+                var row_height = control.LogicalToDeviceUnits (row.Height);
                 var row_rect = new Rectangle (contentArea.Left, y, contentArea.Width, Math.Min (row_height, contentArea.Bottom - y));
 
                 row.Bounds = row_rect;

@@ -370,14 +370,24 @@ namespace Modern.Forms
             if (rowIndex < 0 || rowIndex >= Rows.Count || columnIndex < 0 || columnIndex >= Columns.Count)
                 return Rectangle.Empty;
 
-            var client = GetContentArea ();
-            var row_top = client.Top + (ColumnHeadersVisible ? ScaledHeaderHeight : 0);
-            var visible_row = rowIndex - top_index;
-
-            if (visible_row < 0 || visible_row >= DisplayedRowCount)
+            if (rowIndex < top_index)
                 return Rectangle.Empty;
 
-            var y = row_top + visible_row * ScaledRowHeight;
+            var client = GetContentArea ();
+            var row_top = client.Top + (ColumnHeadersVisible ? ScaledHeaderHeight : 0);
+
+            // Accumulate y by summing individual row heights from the first visible row
+            var y = row_top;
+
+            for (var i = top_index; i < rowIndex; i++)
+                y += LogicalToDeviceUnits (Rows[i].Height);
+
+            var scaled_row_height = LogicalToDeviceUnits (Rows[rowIndex].Height);
+
+            // Row is below the visible area
+            if (y >= client.Bottom)
+                return Rectangle.Empty;
+
             var row_header_offset = row_headers_visible ? ScaledRowHeadersWidth : 0;
             var x = client.Left + row_header_offset - horizontal_scroll_offset;
 
@@ -387,7 +397,7 @@ namespace Modern.Forms
             }
 
             var col_width = LogicalToDeviceUnits (Columns[columnIndex].Width);
-            return new Rectangle (x, y, col_width, ScaledRowHeight);
+            return new Rectangle (x, y, col_width, scaled_row_height);
         }
 
         /// <summary>
@@ -496,11 +506,19 @@ namespace Modern.Forms
             if (location.Y < row_top)
                 return -1;
 
-            var relative_y = location.Y - row_top;
-            var row_index = relative_y / ScaledRowHeight + top_index;
+            var y = row_top;
 
-            if (row_index >= 0 && row_index < Rows.Count)
-                return row_index;
+            for (var i = top_index; i < Rows.Count; i++) {
+                var h = LogicalToDeviceUnits (Rows[i].Height);
+
+                if (location.Y >= y && location.Y < y + h)
+                    return i;
+
+                y += h;
+
+                if (y >= client.Bottom)
+                    break;
+            }
 
             return -1;
         }
