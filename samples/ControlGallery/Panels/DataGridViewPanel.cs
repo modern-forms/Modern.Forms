@@ -1,4 +1,5 @@
 ﻿using Modern.Forms;
+using SkiaSharp;
 
 namespace ControlGallery.Panels
 {
@@ -6,14 +7,20 @@ namespace ControlGallery.Panels
     {
         public DataGridViewPanel ()
         {
-            Controls.Add (new Label { Text = "DataGridView - Row Selection (click headers to sort, double-click cells to edit)", Left = 10, Top = 10, Width = 600 });
+            Controls.Add (new Label { Text = "DataGridView - Cell Selection (Tab/Shift-Tab to navigate, double-click or F2 to edit)", Left = 10, Top = 10, Width = 700 });
 
             var dgv1 = new DataGridView {
                 Left = 10,
                 Top = 30,
                 Width = 700,
-                Height = 250
+                Height = 250,
+                SelectionMode = DataGridViewSelectionMode.CellSelect,
+                ColumnHeadersHeight = 36
             };
+
+            // Customize column header style
+            dgv1.ColumnHeadersDefaultCellStyle.BackgroundColor = new SKColor (60, 60, 80);
+            dgv1.ColumnHeadersDefaultCellStyle.ForegroundColor = SKColors.White;
 
             dgv1.Columns.Add ("Name", 150);
             dgv1.Columns.Add ("Age", 60);
@@ -38,16 +45,18 @@ namespace ControlGallery.Panels
             dgv1.Rows.Add ("Olivia Martin", "25", "Charlotte", "Intern", "olivia@example.com");
 
             dgv1.SelectedRowIndex = 2;
+            dgv1.SelectedColumnIndex = 0;
 
             Controls.Add (dgv1);
 
-            Controls.Add (new Label { Text = "DataGridView - Data Binding", Left = 10, Top = 300, Width = 300 });
+            Controls.Add (new Label { Text = "DataGridView - Full Row Selection + Data Binding", Left = 10, Top = 300, Width = 400 });
 
             var dgv3 = new DataGridView {
                 Left = 10,
                 Top = 320,
                 Width = 500,
-                Height = 200
+                Height = 200,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect
             };
 
             var products = new List<Product> {
