@@ -103,11 +103,13 @@ namespace Modern.Forms
             if (begin_args.Cancel)
                 return;
 
+            // GetCellBounds returns device pixel coordinates; child control bounds are
+            // in logical units, so convert before positioning the TextBox.
             edit_textbox = new TextBox {
-                Left = cell_bounds.Left + 1,
-                Top = cell_bounds.Top + 1,
-                Width = cell_bounds.Width - 2,
-                Height = cell_bounds.Height - 2,
+                Left = DeviceToLogicalUnits (cell_bounds.Left) + 1,
+                Top = DeviceToLogicalUnits (cell_bounds.Top) + 1,
+                Width = DeviceToLogicalUnits (cell_bounds.Width) - 2,
+                Height = DeviceToLogicalUnits (cell_bounds.Height) - 2,
                 Text = cell_value
             };
 
