@@ -21,14 +21,11 @@ namespace ControlGallery.Panels
             };
 
             // Customize column header style
-            dgv1.ColumnHeadersDefaultCellStyle.BackgroundColor = new SKColor (60, 60, 80);
+            dgv1.ColumnHeadersDefaultCellStyle.BackgroundColor = Theme.AccentColor;
             dgv1.ColumnHeadersDefaultCellStyle.ForegroundColor = SKColors.White;
 
-            // Customize row header style
-            dgv1.RowHeadersDefaultCellStyle.BackgroundColor = new SKColor (60, 60, 80);
-
             // Customize alternating row style
-            dgv1.AlternatingRowsDefaultCellStyle.BackgroundColor = new SKColor (45, 45, 48);
+            dgv1.AlternatingRowsDefaultCellStyle.BackgroundColor = new SKColor (150, 200, 225);
 
             dgv1.Columns.Add ("Name", 150);
             dgv1.Columns.Add ("Age", 60);
@@ -67,10 +64,6 @@ namespace ControlGallery.Panels
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 AllowUserToResizeColumns = false
             };
-
-            // Customize default cell style
-            dgv3.DefaultCellStyle.ForegroundColor = new SKColor (200, 220, 255);
-            dgv3.AlternatingRowsDefaultCellStyle.BackgroundColor = new SKColor (50, 50, 55);
 
             var products = new List<Product> {
                 new Product { Name = "Widget", Price = 9.99, Quantity = 100, Category = "Hardware" },

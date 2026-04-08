@@ -677,6 +677,7 @@ namespace Modern.Forms
         }
 
         // Gets the element type from an IList.
+        [UnconditionalSuppressMessage ("Trimming", "IL2075", Justification = "Data binding requires runtime reflection over user-provided types.")]
         private static Type? GetElementType (IList list)
         {
             var list_type = list.GetType ();
@@ -997,14 +998,6 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Refreshes the grid from the current DataSource.
-        /// </summary>
-        public void RefreshDataSource ()
-        {
-            OnDataSourceChanged ();
-        }
-
-        /// <summary>
         /// Gets the collection of rows in the DataGridView.
         /// </summary>
         public DataGridViewRowCollection Rows { get; }
@@ -1067,12 +1060,12 @@ namespace Modern.Forms
         /// <summary>
         /// Gets the scaled height of the header row.
         /// </summary>
-        public int ScaledHeaderHeight => LogicalToDeviceUnits (header_height);
+        internal int ScaledHeaderHeight => LogicalToDeviceUnits (header_height);
 
         /// <summary>
         /// Gets the scaled height of each data row.
         /// </summary>
-        public int ScaledRowHeight => LogicalToDeviceUnits (row_height);
+        internal int ScaledRowHeight => LogicalToDeviceUnits (row_height);
 
         /// <summary>
         /// Gets the scaled width of the row header column.
