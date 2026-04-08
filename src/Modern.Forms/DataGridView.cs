@@ -23,7 +23,7 @@ namespace Modern.Forms
         private int resize_start_width;
         private bool is_resizing;
         private bool column_headers_visible = true;
-        private bool row_selection_mode = true;
+        private DataGridViewSelectionMode selection_mode = DataGridViewSelectionMode.FullRowSelect;
         private bool read_only;
         private IList? data_source;
         private TextBox? edit_textbox;
@@ -182,6 +182,28 @@ namespace Modern.Forms
                 style.Border.Width = 1;
             });
 
+        // Internal static style used as the base parent for DataGridViewCell.Style instances.
+        internal static readonly ControlStyle DefaultCellStyleInternal = new ControlStyle (null,
+            (style) => {
+                style.BackgroundColor = Theme.ControlLowColor;
+                style.ForegroundColor = Theme.ForegroundColor;
+            });
+
+        /// <summary>
+        /// Gets the default cell style applied to cells in the DataGridView.
+        /// </summary>
+        public ControlStyle DefaultCellStyle { get; } = new ControlStyle (DefaultCellStyleInternal);
+
+        /// <summary>
+        /// Gets the default cell style applied to column header cells.
+        /// </summary>
+        public ControlStyle ColumnHeadersDefaultCellStyle { get; } = new ControlStyle (DefaultCellStyleInternal);
+
+        /// <summary>
+        /// Gets the default cell style applied to row header cells.
+        /// </summary>
+        public ControlStyle RowHeadersDefaultCellStyle { get; } = new ControlStyle (DefaultCellStyleInternal);
+
         /// <summary>
         /// Commits the current edit and hides the edit TextBox.
         /// </summary>
@@ -253,13 +275,14 @@ namespace Modern.Forms
             } else if (e.KeyCode == Keys.Tab) {
                 EndEdit ();
 
-                // Move to next cell
-                if (selected_column_index < Columns.Count - 1) {
-                    SelectedColumnIndex = selected_column_index + 1;
-                } else if (selected_row_index < Rows.Count - 1) {
-                    SelectedColumnIndex = 0;
-                    SelectedRowIndex = selected_row_index + 1;
-                }
+                if (e.Shift)
+                    NavigateToPreviousCell ();
+                else
+                    NavigateToNextCell ();
+
+                // Begin editing the newly selected cell
+                if (selected_row_index >= 0 && selected_column_index >= 0)
+                    BeginEdit (selected_row_index, selected_column_index);
 
                 e.Handled = true;
             }
@@ -437,7 +460,7 @@ namespace Modern.Forms
         /// <summary>
         /// Gets or sets the height, in pixels, of the column headers row.
         /// </summary>
-        public int HeaderHeight {
+        public int ColumnHeadersHeight {
             get => header_height;
             set {
                 if (header_height != value) {
@@ -642,7 +665,7 @@ namespace Modern.Forms
             var row = GetRowAtLocation (e.Location);
 
             if (row >= 0) {
-                if (row_selection_mode) {
+                if (selection_mode == DataGridViewSelectionMode.FullRowSelect) {
                     SelectedRowIndex = row;
                 } else {
                     var col = GetColumnAtLocation (e.Location);
@@ -776,7 +799,7 @@ namespace Modern.Forms
                 return;
             }
 
-            if (!row_selection_mode) {
+            if (selection_mode != DataGridViewSelectionMode.FullRowSelect) {
                 if (e.KeyCode == Keys.Left && selected_column_index > 0) {
                     SelectedColumnIndex = selected_column_index - 1;
                     e.Handled = true;
@@ -785,6 +808,16 @@ namespace Modern.Forms
 
                 if (e.KeyCode == Keys.Right && selected_column_index < Columns.Count - 1) {
                     SelectedColumnIndex = selected_column_index + 1;
+                    e.Handled = true;
+                    return;
+                }
+
+                if (e.KeyCode == Keys.Tab) {
+                    if (e.Shift)
+                        NavigateToPreviousCell ();
+                    else
+                        NavigateToNextCell ();
+
                     e.Handled = true;
                     return;
                 }
@@ -845,13 +878,13 @@ namespace Modern.Forms
         }
 
         /// <summary>
-        /// Gets or sets whether entire rows are selected when a cell is clicked.
+        /// Gets or sets how cells in the DataGridView can be selected.
         /// </summary>
-        public bool RowSelectionMode {
-            get => row_selection_mode;
+        public DataGridViewSelectionMode SelectionMode {
+            get => selection_mode;
             set {
-                if (row_selection_mode != value) {
-                    row_selection_mode = value;
+                if (selection_mode != value) {
+                    selection_mode = value;
                     Invalidate ();
                 }
             }
@@ -1036,6 +1069,36 @@ namespace Modern.Forms
                 FirstVisibleIndex = index;
             else if (index >= top_index + VisibleRowCount)
                 FirstVisibleIndex = index - VisibleRowCount + 1;
+        }
+
+        // Moves the selection to the next cell, wrapping to the next row.
+        private void NavigateToNextCell ()
+        {
+            if (Columns.Count == 0 || Rows.Count == 0)
+                return;
+
+            if (selected_column_index < Columns.Count - 1) {
+                SelectedColumnIndex = selected_column_index + 1;
+            } else if (selected_row_index < Rows.Count - 1) {
+                SelectedColumnIndex = 0;
+                SelectedRowIndex = selected_row_index + 1;
+                EnsureRowVisible (selected_row_index);
+            }
+        }
+
+        // Moves the selection to the previous cell, wrapping to the previous row.
+        private void NavigateToPreviousCell ()
+        {
+            if (Columns.Count == 0 || Rows.Count == 0)
+                return;
+
+            if (selected_column_index > 0) {
+                SelectedColumnIndex = selected_column_index - 1;
+            } else if (selected_row_index > 0) {
+                SelectedColumnIndex = Columns.Count - 1;
+                SelectedRowIndex = selected_row_index - 1;
+                EnsureRowVisible (selected_row_index);
+            }
         }
 
         /// <summary>

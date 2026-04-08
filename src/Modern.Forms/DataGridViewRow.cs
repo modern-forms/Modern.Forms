@@ -29,6 +29,11 @@ namespace Modern.Forms
         public DataGridViewCellCollection Cells { get; }
 
         /// <summary>
+        /// Gets the header cell for this row.
+        /// </summary>
+        public DataGridViewRowHeaderCell HeaderCell { get; } = new DataGridViewRowHeaderCell ();
+
+        /// <summary>
         /// Gets the DataGridView that contains this row.
         /// </summary>
         public DataGridView? DataGridView => owner;

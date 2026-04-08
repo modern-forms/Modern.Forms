@@ -56,6 +56,11 @@ namespace Modern.Forms
         public bool Selected { get; set; }
 
         /// <summary>
+        /// Gets or sets the style for this cell.
+        /// </summary>
+        public ControlStyle Style { get; set; } = new ControlStyle (DataGridView.DefaultCellStyleInternal);
+
+        /// <summary>
         /// Gets or sets an object that contains data to associate with the cell.
         /// </summary>
         public object? Tag { get; set; }

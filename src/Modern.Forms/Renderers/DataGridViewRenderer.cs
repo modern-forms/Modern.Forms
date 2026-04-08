@@ -179,7 +179,7 @@ namespace Modern.Forms.Renderers
             e.Canvas.DrawLine (bounds.Right - 1, bounds.Top, bounds.Right - 1, bounds.Bottom, Theme.BorderLowColor);
 
             // Draw cell selection for cell mode
-            if (!control.RowSelectionMode && control.SelectedRowIndex == rowIndex && control.SelectedColumnIndex == columnIndex)
+            if (control.SelectionMode != DataGridViewSelectionMode.FullRowSelect && control.SelectedRowIndex == rowIndex && control.SelectedColumnIndex == columnIndex)
                 e.Canvas.DrawRectangle (bounds, Theme.AccentColor, 2);
 
             // Draw text

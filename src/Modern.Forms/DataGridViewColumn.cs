@@ -32,6 +32,11 @@ namespace Modern.Forms
         internal Rectangle HeaderBounds { get; set; }
 
         /// <summary>
+        /// Gets the header cell for this column.
+        /// </summary>
+        public DataGridViewColumnHeaderCell HeaderCell { get; } = new DataGridViewColumnHeaderCell ();
+
+        /// <summary>
         /// Gets or sets the header text for this column.
         /// </summary>
         public string HeaderText {
