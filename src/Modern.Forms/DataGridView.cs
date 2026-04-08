@@ -204,7 +204,7 @@ namespace Modern.Forms
                     var item = data_source[editing_row_index];
 
                     if (item is not null && editing_column_index < Columns.Count) {
-                        var prop = item.GetType ().GetProperty (Columns[editing_column_index].HeaderText);
+                        var prop = item.GetType ().GetProperty (Columns[editing_column_index].HeaderText, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                         if (prop?.CanWrite == true) {
                             try {
                                 var converted = Convert.ChangeType (new_value, prop.PropertyType);
@@ -892,6 +892,8 @@ namespace Modern.Forms
         public event EventHandler? SelectionChanged;
 
         // Sets the cursor and immediately updates the OS cursor.
+        // Setting Cursor alone only takes effect on next OnMouseEnter, so we
+        // must call SetCursor directly to update the cursor during mouse move.
         private void SetCursorDirect (Cursor cursor)
         {
             Cursor = cursor;
