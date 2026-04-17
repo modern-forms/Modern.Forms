@@ -294,17 +294,26 @@ namespace Modern.Forms
             var framebufferImageInfo = new SKImageInfo (framebuffer.Size.Width, framebuffer.Size.Height,
                 framebuffer.Format.ToSkColorType (), framebuffer.Format == PixelFormat.Rgb565 ? SKAlphaType.Opaque : SKAlphaType.Premul);
 
-            var scaled_client_size = ScaledClientSize;
-            var scaled_display_rect = ScaledDisplayRectangle;
+            // Use the actual framebuffer pixel dimensions directly. Computing the size via
+            // (int)(ClientSize * RenderScaling) can lose 1 pixel at fractional DPI (e.g. 150%)
+            // because the float round-trip (pixels / scale * scale) truncates to one fewer pixel,
+            // leaving a strip of unfilled background at the right/bottom edges.
+            var fb_width = framebuffer.Size.Width;
+            var fb_height = framebuffer.Size.Height;
+            var border = CurrentStyle.Border;
+            var fb_display_rect = new System.Drawing.Rectangle (
+                border.Left.GetWidth (), border.Top.GetWidth (),
+                fb_width - border.Left.GetWidth () - border.Right.GetWidth (),
+                fb_height - border.Top.GetWidth () - border.Bottom.GetWidth ());
 
             using var surface = SKSurface.Create (framebufferImageInfo, framebuffer.Address, framebuffer.RowBytes);
 
             var e = new PaintEventArgs (framebufferImageInfo, surface.Canvas, Scaling);
             OnPaintBackground (e);
-            e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, (int)scaled_client_size.Width, (int)scaled_client_size.Height), CurrentStyle);
+            e.Canvas.DrawBorder (new System.Drawing.Rectangle (0, 0, fb_width, fb_height), CurrentStyle);
             OnPaint (e);
 
-            e.Canvas.ClipRect (new SKRect (scaled_display_rect.Left, scaled_display_rect.Top, scaled_display_rect.Width + 1, scaled_display_rect.Height + 1));
+            e.Canvas.ClipRect (new SKRect (fb_display_rect.Left, fb_display_rect.Top, fb_display_rect.Right, fb_display_rect.Bottom));
 
             adapter.RaisePaintBackground (e);
             adapter.RaisePaint (e);
@@ -344,7 +353,11 @@ namespace Modern.Forms
 
         private void OnResize (Size size, WindowResizeReason reason)
         {
-            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, Size.Width, Size.Height);
+            // Use Math.Ceiling so controls are sized to cover the full framebuffer even when
+            // the logical window size is fractional (e.g. 2576 device px / 1.5 = 1717.33 logical px).
+            // Without ceiling, (int) truncation would make controls 1 logical pixel too narrow,
+            // leaving a strip of form background showing at the right/bottom edges.
+            adapter.SetBounds (DisplayRectangle.Left, DisplayRectangle.Top, (int)Math.Ceiling (size.Width), (int)Math.Ceiling (size.Height));
         }
 
         /// <summary>
